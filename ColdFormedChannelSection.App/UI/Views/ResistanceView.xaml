@@ -5,13 +5,225 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ColdFormedChannelSection.App.UI.Views"
              mc:Ignorable="d" 
+             xmlns:markup="clr-namespace:ColdFormedChannelSection.App.UI.MarkupExtensions"
+              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:enums ="clr-namespace:ColdFormedChannelSection.App.ViewModels.Enums"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" 
                    Text="{Binding Name}" FontSize="24"/>
+        <GroupBox Grid.Row="1" Margin="5" Header="Shape &amp; General info." Style="{StaticResource MaterialDesignGroupBox}" 
+                                          materialDesign:ColorZoneAssist.Mode="Standard">
+            <Grid >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                    <Grid Margin="8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.8*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Straining Action:"/>
+                        <ComboBox Grid.Column="1" SelectedItem="{Binding StrainingAction}"
+                                  ItemsSource="{Binding Source={markup:EnumBindingSource {x:Type enums:StrainingActions}}}" />
+                    </Grid>
+                    <Grid Margin="8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.8*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Type of Channel:"/>
+                        <StackPanel  Grid.Column="1" Orientation="Horizontal">
+                            <RadioButton Content="Lipped" Margin="0 0 40 0"/>
+                            <RadioButton IsChecked="{Binding IsUnstiffened}" Content="Unstiffened" Margin="40 0 0 0"/>
+                        </StackPanel>
+                    </Grid>
+                    <Grid Margin="8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.8*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Units:"/>
+                        <ComboBox Grid.Column="1" SelectedItem="{Binding Unit}"
+                                  ItemsSource="{Binding Source={markup:EnumBindingSource {x:Type enums:Units}}}"/>
+                    </Grid>
+                   
+                    <Grid Margin="8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.8*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Material Strength (Fy)"/>
+                        <TextBox Text="{Binding Fy}" Grid.Column="1" />
+                    </Grid>
+                    <Grid Margin="8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.8*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Elastic Modulus (E)"/>
+                        <TextBox Text="{Binding E}" Grid.Column="1" />
+                    </Grid>
+                </StackPanel>
+                <Grid Grid.Column="1">
+                    <Image Grid.Row="2"  Width="250" Height="200" VerticalAlignment="Center" Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
+                       Source="../Resources/Lipped.png" />
+                </Grid>
+            </Grid>
+           
+        </GroupBox>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            
+            <GroupBox  Margin="5" Header="Geometry" Style="{StaticResource MaterialDesignGroupBox}" 
+                                          materialDesign:ColorZoneAssist.Mode="Standard">
+                <Grid>
+                 
+                    <StackPanel>
+                        <Grid Margin="8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="0.8*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Total Height (H):"/>
+                            <TextBox Grid.Column="1" Text="{Binding TotalHeightH}" />
+                        </Grid>
+                        <Grid Margin="8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="0.8*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Total Width of Flange (B):"/>
+                            <TextBox Grid.Column="1" Text="{Binding TotalWidthB}"/>
+                        </Grid>
+                        <Grid Margin="8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="0.8*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Internal Radius (R):"/>
+                            <TextBox Grid.Column="1" Text="{Binding InternalRadiusR}"/>
+                        </Grid>
+
+                        <Grid Margin="8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="0.8*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Thickness (t)"/>
+                            <TextBox Grid.Column="1" Text="{Binding ThicknessT}"/>
+                        </Grid>
+                        <Grid Margin="8" Visibility="{Binding IsUnstiffened, Converter={StaticResource InverseBoolToVisConverter}}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="0.8*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Total Width of Edge Fold (C)"/>
+                            <TextBox Grid.Column="1" Text="{Binding TotalFoldWidthC}"/>
+                        </Grid>
+                    </StackPanel>
+                </Grid>
+            </GroupBox>
+            <GroupBox Grid.Column="1" Margin="5" Header="Length &amp; Bracing Conditions" Style="{StaticResource MaterialDesignGroupBox}" 
+                                          materialDesign:ColorZoneAssist.Mode="Standard">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Margin="0 0 5 0">
+                        <Grid Margin="8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="0.8*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Lx:"/>
+                            <TextBox Grid.Column="1" Text="{Binding Lx}"/>
+                        </Grid>
+                        <Grid Margin="8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="0.8*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Ly:"/>
+                            <TextBox Grid.Column="1" Text="{Binding Ly}"/>
+                        </Grid>
+                        <Grid Margin="8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="0.8*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Lz:"/>
+                            <TextBox Grid.Column="1" Text="{Binding Lz}"/>
+                        </Grid>
+
+                        <Grid Margin="8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="0.8*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Kx"/>
+                            <TextBox Grid.Column="1" Text="{Binding Kx}"/>
+                        </Grid>
+                        <Grid Margin="8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="0.8*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Ky"/>
+                            <TextBox Grid.Column="1" Text="{Binding Ky}"/>
+                        </Grid>
+                    </StackPanel>
+                    <StackPanel Margin="5 0 0 0" Grid.Column="1">
+                        <Grid Margin="8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="0.8*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Kz:"/>
+                            <TextBox Grid.Column="1" Text="{Binding Kz}"/>
+                        </Grid>
+                        
+                        <Grid Margin="8" Visibility="{Binding IsLuUsed, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="0.8*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Lu:"/>
+                            <TextBox Grid.Column="1" Text="{Binding Lu}"/>
+                        </Grid>
+                        
+                        <Grid Margin="8" Visibility="{Binding IsCbUsed, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="0.8*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Cb:"/>
+                            <TextBox Grid.Column="1" Text="{Binding Cb}"/>
+                        </Grid>
+
+                        <Grid Margin="8" Visibility="{Binding IsC1Used, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="0.8*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="C1"/>
+                            <TextBox Grid.Column="1" Text="{Binding C1}"/>
+                        </Grid>
+                        
+                    </StackPanel>
+                </Grid>
+            </GroupBox>
+        </Grid>
     </Grid>
 </UserControl>
