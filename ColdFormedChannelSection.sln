@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32228.430
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColdFormedChannelSection.App", "ColdFormedChannelSection.App\ColdFormedChannelSection.App.csproj", "{4EBA0ECB-55B2-4412-BCC5-08EF71F7513B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColdFormedChannelSection.App", "ColdFormedChannelSection.App\ColdFormedChannelSection.App.csproj", "{4EBA0ECB-55B2-4412-BCC5-08EF71F7513B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColdFormedChannelSection.Core", "ColdFormedChannelSection.Core\ColdFormedChannelSection.Core.csproj", "{D11C4200-F7B8-48D0-93BF-8CA5D7787E2D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColdFormedChannelSection.Core", "ColdFormedChannelSection.Core\ColdFormedChannelSection.Core.csproj", "{D11C4200-F7B8-48D0-93BF-8CA5D7787E2D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

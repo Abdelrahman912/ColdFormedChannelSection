@@ -7,7 +7,22 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MaterialDesignThemes" Version="4.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\ColdFormedChannelSection.Core\ColdFormedChannelSection.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\" />
+    <Folder Include="UI\Views\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="CSharp.Functional">
+      <HintPath>..\Libraries\CSharp.Functional.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>
