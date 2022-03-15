@@ -4,9 +4,33 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ColdFormedChannelSection.App"
-        mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        mc:Ignorable="d" DataContext="{StaticResource mainVM}"
+        xmlns:vms="clr-namespace:ColdFormedChannelSection.App.ViewModels"
+        xmlns:vs="clr-namespace:ColdFormedChannelSection.App.UI.Views"
+        Title="Cold Formed Channel Section" Height="700" Width="1200">
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type vms:DirectStrengthResistanceViewModel}">
+            <vs:ResistanceView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vms:EgyptianCodeResistanceViewModel}">
+            <vs:ResistanceView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vms:EuroCodeReistanceViewModel}">
+            <vs:ResistanceView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vms:AISICodeResistanceViewModel}">
+            <vs:ResistanceView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vms:AISCCodeResistanceViewModel}">
+            <vs:ResistanceView/>
+        </DataTemplate>
+    </Window.Resources>
     <Grid>
-        <Button Content="Hamada" Width="50" Height="50"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <vs:MenuView DataContext="{Binding MenuVM}"/>
+        <ContentControl Grid.Row="1" Content="{Binding CurrentVM}"/>
     </Grid>
 </Window>
