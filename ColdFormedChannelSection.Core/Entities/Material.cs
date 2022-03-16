@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ColdFormedChannelSection.Core.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,6 +26,8 @@ namespace ColdFormedChannelSection.Core.Entities
         /// Poisson's ratio.
         /// </summary>
         public double V { get; }
+
+        public double G => E / (2 * (1 + V));
 
         #endregion
 

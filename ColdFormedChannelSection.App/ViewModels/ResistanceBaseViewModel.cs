@@ -231,8 +231,8 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         private void OnResults()
         {
-            var section = IsUnstiffened ? (new UnstiffenedSectionDimension(TotalHeightH, TotalWidthB, InternalRadiusR, ThicknessT)).CaclulateSectionProperties()
-                                        : (new LippedSectionDimension(TotalHeightH, TotalWidthB, InternalRadiusR, ThicknessT, TotalFoldWidthC)).CaclulateSectionProperties();
+            var section = IsUnstiffened ? (new SectionDimension(TotalHeightH, TotalWidthB, InternalRadiusR, ThicknessT, TotalFoldWidthC)).AsUnStiffenedSection() as Section
+                                        : (new SectionDimension(TotalHeightH, TotalWidthB, InternalRadiusR, ThicknessT, TotalFoldWidthC)).AsLippedSection();
         }
 
         #endregion

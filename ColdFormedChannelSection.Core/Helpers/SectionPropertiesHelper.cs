@@ -8,20 +8,21 @@ namespace ColdFormedChannelSection.Core.Helpers
     public static class SectionPropertiesHelper
     {
 
-        public static Section CaclulateSectionProperties(this UnstiffenedSectionDimension sectionDims) =>
-            sectionDims.CaclulateSectionProperties(TypeOfChannel.UNSTIFFENED);
+        public static LippedSection AsLippedSection(this SectionDimension sectionDim) =>
+            sectionDim.CaclulateSectionProperties(TypeOfChannel.LIPPED) as LippedSection;
 
-        public static Section CaclulateSectionProperties(this LippedSectionDimension sectionDims) =>
-            sectionDims.CaclulateSectionProperties(TypeOfChannel.LIPPED,sectionDims.TotalFoldWidthC);
 
-        private static Section CaclulateSectionProperties(this SectionDimension section , TypeOfChannel channel,double _C = 0)
+        public static UnStiffenedSection AsUnStiffenedSection(this SectionDimension sectionDim) =>
+            sectionDim.CaclulateSectionProperties(TypeOfChannel.UNSTIFFENED) as UnStiffenedSection;
+
+        private static Section CaclulateSectionProperties(this SectionDimension sectionDim , TypeOfChannel channel)
         {
             var alpha = (int)channel;
-            var H = section.TotalHeightH;
-            var B = section.TotalFlangeWidthB;
-            var R = section.InternalRadiusR;
-            var t = section.ThicknessT;
-            var C = _C;
+            var H = sectionDim.TotalHeightH;
+            var B = sectionDim.TotalFlangeWidthB;
+            var R = sectionDim.InternalRadiusR;
+            var t = sectionDim.ThicknessT;
+            var C = sectionDim.TotalFoldWidthC;
 
             var tover2 = t / 2;
 
@@ -61,7 +62,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var CwDunemenator = 6 * aPrime.Power(2) * bPrime + (aPrime + alpha * 2 * cPrime).Power(3) - alpha * 24 * aPrime * cPrime.Power(2);
             var Cw = ((aPrime.Power(2)*bPrime.Power(2)*t)/12) * (CwNumenator / CwDunemenator) ;
             var properties = new SectionProperties(aPrime,bPrime,cPrime,A,Ix,Zg,Iy,ix,iy,Xo,J,Cw);
-            var sec =  new Section(section,properties);
+            var sec =   new Section(sectionDim,properties);
             return sec;
         }
 

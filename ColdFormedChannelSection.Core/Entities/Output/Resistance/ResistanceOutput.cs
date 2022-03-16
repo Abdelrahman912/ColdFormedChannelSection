@@ -1,4 +1,4 @@
-﻿namespace ColdFormedChannelSection.Core.Entities.Output.Resistance
+﻿namespace ColdFormedChannelSection.Core.Entities
 {
     public abstract class ResistanceOutput
     {
@@ -18,16 +18,19 @@
 
         public string DesignResistanceName => $"{PhiName} * {NominalResistanceName}";
 
+        public string GoverningCase { get; }
+
         #endregion
 
         #region Constructors
 
-        protected ResistanceOutput(double nominalResistance, double phi, string nominalResistanceName, string phiName)
+        protected ResistanceOutput(double nominalResistance, double phi,string governingCase, string nominalResistanceName, string phiName)
         {
             NominalResistance = nominalResistance;
             Phi = phi;
             NominalResistanceName = nominalResistanceName;
             PhiName = phiName;
+            GoverningCase = governingCase;
         }
 
         #endregion
