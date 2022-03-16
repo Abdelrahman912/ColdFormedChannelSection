@@ -14,6 +14,7 @@
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" 
                    Text="{Binding Name}" FontSize="24"/>
@@ -225,5 +226,6 @@
                 </Grid>
             </GroupBox>
         </Grid>
+        <Button Grid.Row="3" Margin="10" Width="100" Height="35" Content="Results" Command="{Binding ResultsCommand}"/>
     </Grid>
 </UserControl>

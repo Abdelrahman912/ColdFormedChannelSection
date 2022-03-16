@@ -1,6 +1,10 @@
 ﻿using ColdFormedChannelSection.App.ViewModels.Base;
 using ColdFormedChannelSection.App.ViewModels.Enums;
+using ColdFormedChannelSection.Core.Entities;
+using ColdFormedChannelSection.Core.Enums;
+using ColdFormedChannelSection.Core.Helpers;
 using System;
+using System.Windows.Input;
 
 namespace ColdFormedChannelSection.App.ViewModels
 {
@@ -10,6 +14,7 @@ namespace ColdFormedChannelSection.App.ViewModels
         #region Private Fields
 
         protected event Action<StrainingActions> _isUsedParamsAction;
+        protected  Action<Section> _onResults = _ => { };
 
         private StrainingActions _strainingAction;
         private bool _isUnstiffened;
@@ -177,6 +182,8 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         public string Name { get; }
 
+        public ICommand ResultsCommand { get; }
+
         #endregion
 
         #region Constructors
@@ -199,6 +206,7 @@ namespace ColdFormedChannelSection.App.ViewModels
                         break;
                 }
             };
+            
             Name = name;
             IsUnstiffened = true;
             Unit = Units.TONCM;
@@ -206,9 +214,28 @@ namespace ColdFormedChannelSection.App.ViewModels
             IsLuUsed = false;
             IsC1Used = false;
             StrainingAction = StrainingActions.MOMENT;
+            ResultsCommand = new RelayCommand(OnResults, CanResults);
         }
+
+
 
         #endregion
 
+
+        #region Methods
+
+        private bool CanResults()
+        {
+            return true;
+        }
+
+        private void OnResults()
+        {
+            var dims = new SectionDimension(TotalHeightH, TotalWidthB, InternalRadiusR, ThicknessT, TotalFoldWidthC);
+            var channelType = IsUnstiffened ? TypeOfChannel.UNSTIFFENED : TypeOfChannel.LIPPED;
+            var section = dims.CaclulateSectionProperties(channelType);
+        }
+
+        #endregion
     }
 }
