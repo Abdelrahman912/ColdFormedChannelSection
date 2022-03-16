@@ -8,14 +8,20 @@ namespace ColdFormedChannelSection.Core.Helpers
     public static class SectionPropertiesHelper
     {
 
-        public static Section CaclulateSectionProperties(this SectionDimension section , TypeOfChannel channel)
+        public static Section CaclulateSectionProperties(this UnstiffenedSectionDimension sectionDims) =>
+            sectionDims.CaclulateSectionProperties(TypeOfChannel.UNSTIFFENED);
+
+        public static Section CaclulateSectionProperties(this LippedSectionDimension sectionDims) =>
+            sectionDims.CaclulateSectionProperties(TypeOfChannel.LIPPED,sectionDims.TotalFoldWidthC);
+
+        private static Section CaclulateSectionProperties(this SectionDimension section , TypeOfChannel channel,double _C = 0)
         {
             var alpha = (int)channel;
             var H = section.TotalHeightH;
             var B = section.TotalFlangeWidthB;
             var R = section.InternalRadiusR;
             var t = section.ThicknessT;
-            var C = section.TotalFoldWidthC;
+            var C = _C;
 
             var tover2 = t / 2;
 

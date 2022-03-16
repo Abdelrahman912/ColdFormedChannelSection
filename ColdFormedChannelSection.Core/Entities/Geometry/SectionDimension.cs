@@ -1,6 +1,6 @@
 ﻿namespace ColdFormedChannelSection.Core.Entities
 {
-    public  class SectionDimension
+    public abstract class SectionDimension
     {
         
 
@@ -14,19 +14,18 @@
 
         public double ThicknessT { get; }
 
-        public double TotalFoldWidthC { get; }
 
         #endregion
 
         #region Constructors
 
-        public SectionDimension(double totalHeightH, double totalFlangeWidthB, double internalRadius, double thicknessT,double totalFoldWidthC)
+        public SectionDimension(double totalHeightH, double totalFlangeWidthB, double internalRadius, double thicknessT)
         {
             TotalHeightH = totalHeightH;
             TotalFlangeWidthB = totalFlangeWidthB;
             InternalRadiusR = internalRadius;
             ThicknessT = thicknessT;
-            TotalFoldWidthC = totalFoldWidthC;
+            
         }
 
         #endregion
