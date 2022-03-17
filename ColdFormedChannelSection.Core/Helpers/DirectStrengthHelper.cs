@@ -454,13 +454,13 @@ namespace ColdFormedChannelSection.Core.Helpers
 
             var Lcr_vTerm = (4*Math.PI.Power(4)*aPrime*(1-v.Power(2))) / (t.Power(3));
             var Lcr_ITerm = Ixf * (Xof - hxf).Power(2) + Cwf - (Ixyf.Power(2)/Iyf) * (Xof - hxf).Power(2);
-            var Lcr = (Lcr_vTerm * Lcr_ITerm + ((Math.PI.Power(4) * aPrime.Power(4)) / (720.0)));
+            var Lcr = (Lcr_vTerm * Lcr_ITerm + ((Math.PI.Power(4) * aPrime.Power(4)) / (720.0))).Power(0.25);
             Lcr = Math.Min(Lcr,Lu);
 
             var piOverLCr = Math.PI / Lcr;
-            var K_phi_fe = (piOverLCr).Power(4) * (E * Ixf * (Xof - hxf).Power(2) + E * Cwf - E * (Ixyf.Power(2) / Iyf) * (Xof - hxf).Power(2)) * piOverLCr.Power(2) * G * Jf;
+            var K_phi_fe = (piOverLCr).Power(4) * (E * Ixf * (Xof - hxf).Power(2) + E * Cwf - E * (Ixyf.Power(2) / Iyf) * (Xof - hxf).Power(2)) + piOverLCr.Power(2) * G * Jf;
 
-            var K_phi_fg = piOverLCr.Power(2) * (Af * ((Xof - hxf).Power(2) * (Ixyf / Iyf).Power(2) - 2 * Yof * (Xof - hxf) * (Ixf / Iyf) + hxf.Power(2) + Yof.Power(2)) + Ixf + Iyf);
+            var K_phi_fg = piOverLCr.Power(2) * (Af * ((Xof - hxf).Power(2) * (Ixyf / Iyf).Power(2) - 2 * Yof * (Xof - hxf) * (Ixyf / Iyf) + hxf.Power(2) + Yof.Power(2)) + Ixf + Iyf);
 
             var k_phi_we = ((E * t.Power(3)) / (12 * (1 - v.Power(2)))) * ((3/aPrime) + piOverLCr.Power(2)*((19*aPrime)/(60.0)) + piOverLCr.Power(4)*(aPrime.Power(3)/240));
 
@@ -486,6 +486,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var Lx = bracingConditions.Lx;
             var Ly = bracingConditions.Ly;
             var Lz = bracingConditions.Lz;
+            var Cb = bracingConditions.Cb;
             var rx = input.Properties.Rx;
             var ry = input.Properties.Ry;
             var Xo = input.Properties.Xo;
@@ -495,21 +496,19 @@ namespace ColdFormedChannelSection.Core.Helpers
             var aPrime = input.Properties.APrime;
             var bPrime = input.Properties.BPrime;
             var cPrime = input.Properties.CPrime;
+            var Zg = input.Properties.Zg;
             var t = input.Dimensions.ThicknessT;
             //Individual Buckling modes.
-            var sigma_ex = (Math.PI.Power(2) * E) / ((Kx * Lx) / (rx)).Power(2);
 
             var sigma_ey = (Math.PI.Power(2) * E) / ((Ky * Ly) / (ry)).Power(2);
 
-            var F_e1 = Math.Min(sigma_ex, sigma_ey);
             var ro = Math.Sqrt((rx.Power(2) + ry.Power(2) + Xo.Power(2)));
 
-            var sigma_t = ((1.0) / (A * ro.Power(2))) * (G * J * ((Math.PI.Power(2) * E * Cw) / (Kz * Lz).Power(2)));
+            var sigma_t = ((1.0) / (A * ro.Power(2))) * (G * J + ((Math.PI.Power(2) * E * Cw) / (Kz * Lz).Power(2)));
 
-            var beta = 1 - (Xo / ro).Power(2);
-            var F_e2 = (1 / (2 * beta)) * ((sigma_ex - sigma_t) - Math.Sqrt((sigma_ex + sigma_t).Power(2) - 4 * beta * sigma_ex * sigma_t));
-            var F_cre = Math.Min(F_e1, F_e2);
-            var M_cre = A* F_cre;
+            var Fe = ((Cb*ro*A)/(Zg)) * (Math.Sqrt(sigma_ey*sigma_t));
+            var F_cre = Fe;
+            var M_cre = Zg* F_cre;
             return M_cre;
         }
 
