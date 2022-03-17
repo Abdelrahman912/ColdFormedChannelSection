@@ -8,12 +8,18 @@ namespace ColdFormedChannelSection.Core.Helpers
     public static class SectionPropertiesHelper
     {
 
-        public static LippedSection AsLippedSection(this SectionDimension sectionDim) =>
-            sectionDim.CaclulateSectionProperties(TypeOfChannel.LIPPED) as LippedSection;
+        public static LippedSection AsLippedSection(this SectionDimension sectionDim)
+        {
+          var sec = sectionDim.CaclulateSectionProperties(TypeOfChannel.LIPPED);
+            return new LippedSection(sec.Dimensions, sec.Properties);
+        }
 
 
-        public static UnStiffenedSection AsUnStiffenedSection(this SectionDimension sectionDim) =>
-            sectionDim.CaclulateSectionProperties(TypeOfChannel.UNSTIFFENED) as UnStiffenedSection;
+        public static UnStiffenedSection AsUnStiffenedSection(this SectionDimension sectionDim)
+        {
+           var sec =  sectionDim.CaclulateSectionProperties(TypeOfChannel.UNSTIFFENED);
+            return new UnStiffenedSection(sec.Dimensions, sec.Properties);
+        }
 
         private static Section CaclulateSectionProperties(this SectionDimension sectionDim , TypeOfChannel channel)
         {

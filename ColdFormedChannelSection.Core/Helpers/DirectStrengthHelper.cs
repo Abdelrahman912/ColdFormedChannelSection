@@ -91,7 +91,7 @@ namespace ColdFormedChannelSection.Core.Helpers
         {
             var cPrimeOverbPrime = lippedSection.Properties.CPrime / lippedSection.Properties.BPrime;
             var aPrimeOverbPrime = lippedSection.Properties.APrime / lippedSection.Properties.BPrime;
-            var bPrimeOveraPrime = lippedSection.Properties.APrime / lippedSection.Properties.BPrime;
+            var bPrimeOveraPrime = lippedSection.Properties.BPrime / lippedSection.Properties.APrime;
 
             var EOverVTerm = ((Math.PI.Power(2) * material.E) / (12 * (1 - material.V.Power(2))));
             //Flange - lip local buckling.
@@ -192,9 +192,9 @@ namespace ColdFormedChannelSection.Core.Helpers
 
             //Elastic & geometric rotational spring stiffness of the flange.
             var piOverLCr = Math.PI / Lcr;
-            var K_phi_fe = (piOverLCr).Power(4) * (E * Ixf * (Xof - hxf).Power(2) + E * Cwf - E * (Ixyf.Power(2) / Iyf) * (Xof - hxf).Power(2)) * piOverLCr.Power(2) * G * Jf;
+            var K_phi_fe = (piOverLCr).Power(4) * (E * Ixf * (Xof - hxf).Power(2) + E * Cwf - E * (Ixyf.Power(2) / Iyf) * (Xof - hxf).Power(2)) + piOverLCr.Power(2) * G * Jf;
 
-            var K_phi_fg = piOverLCr.Power(2) * (Af * ((Xof - hxf).Power(2) * (Ixyf / Iyf).Power(2) - 2 * Yof * (Xof - hxf) * (Ixf / Iyf) + hxf.Power(2) + Yof.Power(2)) + Ixf + Iyf);
+            var K_phi_fg = piOverLCr.Power(2) * (Af * ((Xof - hxf).Power(2) * (Ixyf / Iyf).Power(2) - 2 * Yof * (Xof - hxf) * (Ixyf / Iyf) + hxf.Power(2) + Yof.Power(2)) + Ixf + Iyf);
 
             var K_phi_we = (t.Power(3) * E) / (6 * aPrime * (1 - v.Power(2)));
             var K_phi_wg = piOverLCr.Power(2) * ((t * aPrime.Power(3)) / (60.0));
@@ -234,11 +234,11 @@ namespace ColdFormedChannelSection.Core.Helpers
             var F_e1 = Math.Min(sigma_ex, sigma_ey);
             var ro = Math.Sqrt((rx.Power(2) + ry.Power(2) + Xo.Power(2)));
 
-            var sigma_t = ((1.0) / (A * ro.Power(2))) * (G * J * ((Math.PI.Power(2) * E * Cw) / (Kz * Lz).Power(2)));
+            var sigma_t = ((1.0) / (A * ro.Power(2))) * (G * J + ((Math.PI.Power(2) * E * Cw) / (Kz * Lz).Power(2)));
 
             //Torsional flexural buckling.
             var beta = 1 - (Xo / ro).Power(2);
-            var F_e2 = ((1) / (2 * beta)) * ((sigma_ex + sigma_t) - Math.Sqrt((sigma_ex + sigma_t).Power(2) + 4 * beta * sigma_ex * sigma_ey));
+            var F_e2 = ((1) / (2 * beta)) * ((sigma_ex + sigma_t) - Math.Sqrt((sigma_ex + sigma_t).Power(2) - 4 * beta * sigma_ex * sigma_t));
             var F_cr = Math.Min(F_e1, F_e2);
             var Ag = (aPrime + 2 * bPrime + 2 * cPrime) * t;
             var P_cre = F_cr * Ag;
@@ -334,7 +334,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             throw new NotImplementedException();
         }
 
-        public static double GetMomentLBResistance(this UnStiffenedSection unstiffenedSection, Material material)
+        private static double GetMomentLBResistance(this UnStiffenedSection unstiffenedSection, Material material)
         {
 
             var EOverVTerm = ((Math.PI.Power(2) * material.E) / (12 * (1 - material.V.Power(2))));
