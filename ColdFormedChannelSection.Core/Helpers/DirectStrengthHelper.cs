@@ -160,7 +160,9 @@ namespace ColdFormedChannelSection.Core.Helpers
             var v = material.V;
             var E = material.E;
             var G = material.G;
-            var Lu = bracingConditions.Lu;
+            var kxLx = bracingConditions.Kx * bracingConditions.Lx;
+            var kyLy = bracingConditions.Ky * bracingConditions.Ly; 
+            var minK_L_ = Math.Min(kxLx, kyLy);
 
             var Af = (bPrime + cPrime) * t;
             var Jf = (1.0 / 3.0) * bPrime * t.Power(3) + (1.0 / 3.0) * cPrime * t.Power(3);
@@ -188,7 +190,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var Lcr_VTerm = (6 * Math.PI.Power(4) * aPrime * (1 - v.Power(2))) / (t.Power(3));
             var Lcr_ITerm = (Ixf * (Xof - hxf).Power(2) + Cwf - (Ixyf.Power(2) / Iyf) * (Xof - hxf).Power(2));
             var Lcr = (Lcr_VTerm * Lcr_ITerm).Power(0.25);
-            Lcr = Math.Min(Lcr, Lu);
+            Lcr = Math.Min(Lcr, minK_L_);
 
             //Elastic & geometric rotational spring stiffness of the flange.
             var piOverLCr = Math.PI / Lcr;

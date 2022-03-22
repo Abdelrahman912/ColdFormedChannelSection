@@ -182,7 +182,7 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         public string Name { get; }
 
-        public ICommand ResultsCommand { get; }
+        public virtual ICommand ResultsCommand { get; }
 
         #endregion
 
@@ -214,7 +214,7 @@ namespace ColdFormedChannelSection.App.ViewModels
             IsLuUsed = false;
             IsC1Used = false;
             StrainingAction = StrainingActions.MOMENT;
-            ResultsCommand = new RelayCommand(OnResults, CanResults);
+            
         }
 
 
@@ -224,28 +224,7 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         #region Methods
 
-        private bool CanResults()
-        {
-            return true;
-        }
-
-        private void OnResults()
-        {
-            var material = new Material(Fy, E, 0.3);
-            var bracingConditions = new LengthBracingConditions(Lx, Ly, Lz, Kx, Ky, Kz, Lu, Cb, C1);
-            switch (StrainingAction)
-            {
-                case StrainingActions.MOMENT:
-                    var momentOut = IsUnstiffened ? (new SectionDimension(TotalHeightH, TotalWidthB, InternalRadiusR, ThicknessT, TotalFoldWidthC)).AsUnStiffenedSection().AsMomentResistance(material,bracingConditions)
-                                                  : (new SectionDimension(TotalHeightH, TotalWidthB, InternalRadiusR, ThicknessT, TotalFoldWidthC)).AsLippedSection().AsMomentResistance(material,bracingConditions);
-                    break;
-                case StrainingActions.COMPRESSION:
-                     var compOut = IsUnstiffened ? (new SectionDimension(TotalHeightH, TotalWidthB, InternalRadiusR, ThicknessT, TotalFoldWidthC)).AsUnStiffenedSection().AsCompressionResistance(material,bracingConditions)
-                                                 : (new SectionDimension(TotalHeightH, TotalWidthB, InternalRadiusR, ThicknessT, TotalFoldWidthC)).AsLippedSection().AsCompressionResistance(material,bracingConditions);
-                    break;
-            }
-            
-        }
+      
 
        
 
