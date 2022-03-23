@@ -1,8 +1,8 @@
 ﻿namespace ColdFormedChannelSection.Core.Entities
 {
-    public class MomentDSResistanceOutput : ResistanceOutput
+    public class MomentResistanceOutput : ResistanceOutput
     {
-        public MomentDSResistanceOutput(double nominalResistance, double phi,string governingCase) 
+        public MomentResistanceOutput(double nominalResistance, double phi,string governingCase) 
             : base(nominalResistance, phi,governingCase, "Mn", "(phi)m")
         {
         }

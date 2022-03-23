@@ -67,7 +67,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var CwNumenator = 2 * aPrime.Power(3) * bPrime + 3 * aPrime.Power(2) * bPrime.Power(2) + alpha * (48 * cPrime.Power(4) + 112 * bPrime * cPrime.Power(3) + 8 * aPrime * cPrime.Power(3) + 48 * aPrime * bPrime * cPrime.Power(2) + 12 * aPrime.Power(2) * cPrime.Power(2) + 12 * aPrime.Power(2) * bPrime * cPrime + 6 * aPrime.Power(3) * cPrime);
             var CwDunemenator = 6 * aPrime.Power(2) * bPrime + (aPrime + alpha * 2 * cPrime).Power(3) - alpha * 24 * aPrime * cPrime.Power(2);
             var Cw = ((aPrime.Power(2)*bPrime.Power(2)*t)/12) * (CwNumenator / CwDunemenator) ;
-            var properties = new SectionProperties(aPrime,bPrime,cPrime,A,Ix,Zg,Iy,ix,iy,Xo,J,Cw,c,a);
+            var properties = new SectionProperties(aPrime,bPrime,cPrime,A,Ix,Zg,Iy,ix,iy,Xo,J,Cw,c,a,r,u);
             var sec =   new Section(sectionDim,properties);
             return sec;
         }
