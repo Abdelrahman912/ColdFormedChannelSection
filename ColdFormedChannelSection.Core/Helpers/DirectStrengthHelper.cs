@@ -1,4 +1,5 @@
 ﻿using ColdFormedChannelSection.Core.Entities;
+using ColdFormedChannelSection.Core.Enums;
 using ColdFormedChannelSection.Core.Extensions;
 using System;
 using System.Collections.Generic;
@@ -9,16 +10,6 @@ namespace ColdFormedChannelSection.Core.Helpers
 {
     public static class DirectStrengthHelper
     {
-
-        private enum FailureMode
-        {
-            [Description("Local Buckling")]
-            LOCALBUCKLING,
-            [Description("Distortional Buckling")]
-            DISTRORTIONALBUCKLING,
-            [Description("Global Buckling")]
-            GLOBALBUCKLING
-        }
 
         #region Compression
 
@@ -75,7 +66,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 Tuple.Create(Pnd,FailureMode.DISTRORTIONALBUCKLING)
             };
             var nominalLoad = nominalLoads.OrderBy(tup => tup.Item1).First();
-            var result = new CompressionResistanceOutput(nominalLoad.Item1, 0.85, $"{nominalLoad.Item2.GetDescription()} governs");
+            var result = new CompressionResistanceOutput(nominalLoad.Item1, 0.85, nominalLoad.Item2);
             return result;
         }
 
@@ -306,7 +297,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 Tuple.Create(Mnd,FailureMode.DISTRORTIONALBUCKLING)
             };
             var nominalLoad = nominalLoads.OrderBy(tup => tup.Item1).First();
-            var result = new MomentResistanceOutput(nominalLoad.Item1, 0.9, $"{nominalLoad.Item2.GetDescription()} governs");
+            var result = new MomentResistanceOutput(nominalLoad.Item1, 0.9, nominalLoad.Item2);
             return result;
         }
 

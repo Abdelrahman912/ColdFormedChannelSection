@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ColdFormedChannelSection.App.UI.Views"
              mc:Ignorable="d" 
+             xmlns:vs="clr-namespace:ColdFormedChannelSection.App.UI.Views"
              xmlns:markup="clr-namespace:ColdFormedChannelSection.App.UI.MarkupExtensions"
               xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:enums ="clr-namespace:ColdFormedChannelSection.App.ViewModels.Enums"
@@ -83,6 +84,7 @@
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="1.05*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             
@@ -225,6 +227,7 @@
                     </StackPanel>
                 </Grid>
             </GroupBox>
+            <vs:ResistanceOutputView IsEnabled="{Binding IsResistanceOutput}" Grid.Column="2" DataContext="{Binding ResistanceOutput}"/>
         </Grid>
         <Button Grid.Row="3" Margin="10" Width="100" Height="35" Content="Results" Command="{Binding ResultsCommand}"/>
     </Grid>

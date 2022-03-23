@@ -21,6 +21,7 @@ namespace ColdFormedChannelSection.App.ViewModels
             :base("Resistance | AISI Code")
         {
             ResultsCommand = new RelayCommand(OnResults,CanResults);
+            IsResistanceOutput = false; 
         }
 
         #endregion
@@ -34,17 +35,22 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         private void OnResults()
         {
+            IsResistanceOutput = false;
             var material = new Material(Fy, E, 0.3);
             var bracingConditions = new LengthBracingConditions(Lx, Ly, Lz, Kx, Ky, Kz, Lu, Cb, C1);
             switch (StrainingAction)
             {
                 case StrainingActions.MOMENT:
-                    var momentOut = IsUnstiffened ? (new SectionDimension(TotalHeightH, TotalWidthB, InternalRadiusR, ThicknessT, TotalFoldWidthC)).AsUnStiffenedSection().AsDSMomentResistance(material, bracingConditions)
-                                                  : (new SectionDimension(TotalHeightH, TotalWidthB, InternalRadiusR, ThicknessT, TotalFoldWidthC)).AsLippedSection().AsDSMomentResistance(material, bracingConditions);
+                    var momentOut = IsUnstiffened ? (new SectionDimension(TotalHeightH, TotalWidthB, InternalRadiusR, ThicknessT, TotalFoldWidthC)).AsUnStiffenedSection().AsAISIMomentResistance(material, bracingConditions)
+                                                  : (new SectionDimension(TotalHeightH, TotalWidthB, InternalRadiusR, ThicknessT, TotalFoldWidthC)).AsLippedSection().AsAISIMomentResistance(material, bracingConditions);
+                    IsResistanceOutput = true;
+                    ResistanceOutput = momentOut;
                     break;
                 case StrainingActions.COMPRESSION:
-                    var compOut = IsUnstiffened ? (new SectionDimension(TotalHeightH, TotalWidthB, InternalRadiusR, ThicknessT, TotalFoldWidthC)).AsUnStiffenedSection().AsDSCompressionResistance(material, bracingConditions)
-                                                : (new SectionDimension(TotalHeightH, TotalWidthB, InternalRadiusR, ThicknessT, TotalFoldWidthC)).AsLippedSection().AsDSCompressionResistance(material, bracingConditions);
+                    var compOut = IsUnstiffened ? (new SectionDimension(TotalHeightH, TotalWidthB, InternalRadiusR, ThicknessT, TotalFoldWidthC)).AsUnStiffenedSection().AsAISICompressionResistance(material, bracingConditions)
+                                                : (new SectionDimension(TotalHeightH, TotalWidthB, InternalRadiusR, ThicknessT, TotalFoldWidthC)).AsLippedSection().AsAISICompressionResistance(material, bracingConditions);
+                    IsResistanceOutput = true;
+                    ResistanceOutput = compOut;
                     break;
             }
 

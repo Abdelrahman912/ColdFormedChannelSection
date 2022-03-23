@@ -21,6 +21,7 @@ namespace ColdFormedChannelSection.App.ViewModels
             :base("Resistance | Direct Strength")
         {
             ResultsCommand = new RelayCommand(OnResults, CanResults);
+            IsResistanceOutput = false;
             //IsLuUsed = true;
             //_isUsedParamsAction += (sa) =>
             //{
@@ -40,6 +41,7 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         private void OnResults()
         {
+            IsResistanceOutput = false;
             var material = new Material(Fy, E, 0.3);
             var bracingConditions = new LengthBracingConditions(Lx, Ly, Lz, Kx, Ky, Kz, Lu, Cb, C1);
             switch (StrainingAction)
@@ -47,10 +49,14 @@ namespace ColdFormedChannelSection.App.ViewModels
                 case StrainingActions.MOMENT:
                     var momentOut = IsUnstiffened ? (new SectionDimension(TotalHeightH, TotalWidthB, InternalRadiusR, ThicknessT, TotalFoldWidthC)).AsUnStiffenedSection().AsDSMomentResistance(material, bracingConditions)
                                                   : (new SectionDimension(TotalHeightH, TotalWidthB, InternalRadiusR, ThicknessT, TotalFoldWidthC)).AsLippedSection().AsDSMomentResistance(material, bracingConditions);
+                    IsResistanceOutput=true;
+                    ResistanceOutput = momentOut;
                     break;
                 case StrainingActions.COMPRESSION:
                     var compOut = IsUnstiffened ? (new SectionDimension(TotalHeightH, TotalWidthB, InternalRadiusR, ThicknessT, TotalFoldWidthC)).AsUnStiffenedSection().AsDSCompressionResistance(material, bracingConditions)
                                                 : (new SectionDimension(TotalHeightH, TotalWidthB, InternalRadiusR, ThicknessT, TotalFoldWidthC)).AsLippedSection().AsDSCompressionResistance(material, bracingConditions);
+                    IsResistanceOutput = true;
+                    ResistanceOutput = compOut;
                     break;
             }
 

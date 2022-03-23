@@ -40,10 +40,24 @@ namespace ColdFormedChannelSection.App.ViewModels
         private bool _isCbUsed;
         private bool _isC1Used;
 
+        private bool _isResistanceOutput;
+
+        private ResistanceOutput _resistanceOutput;
         #endregion
 
         #region Properties
 
+        public bool IsResistanceOutput
+        {
+            get => _isResistanceOutput;
+            set => NotifyPropertyChanged(ref _isResistanceOutput, value);
+        }
+
+        public ResistanceOutput ResistanceOutput
+        {
+            get => _resistanceOutput;
+            set => NotifyPropertyChanged(ref _resistanceOutput, value);
+        }
         public bool IsLuUsed
         {
             get => _isLuUsed;
