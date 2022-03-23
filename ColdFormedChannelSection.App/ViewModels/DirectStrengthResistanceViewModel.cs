@@ -45,12 +45,12 @@ namespace ColdFormedChannelSection.App.ViewModels
             switch (StrainingAction)
             {
                 case StrainingActions.MOMENT:
-                    var momentOut = IsUnstiffened ? (new SectionDimension(TotalHeightH, TotalWidthB, InternalRadiusR, ThicknessT, TotalFoldWidthC)).AsUnStiffenedSection().AsMomentResistance(material, bracingConditions)
-                                                  : (new SectionDimension(TotalHeightH, TotalWidthB, InternalRadiusR, ThicknessT, TotalFoldWidthC)).AsLippedSection().AsMomentResistance(material, bracingConditions);
+                    var momentOut = IsUnstiffened ? (new SectionDimension(TotalHeightH, TotalWidthB, InternalRadiusR, ThicknessT, TotalFoldWidthC)).AsUnStiffenedSection().AsDSMomentResistance(material, bracingConditions)
+                                                  : (new SectionDimension(TotalHeightH, TotalWidthB, InternalRadiusR, ThicknessT, TotalFoldWidthC)).AsLippedSection().AsDSMomentResistance(material, bracingConditions);
                     break;
                 case StrainingActions.COMPRESSION:
-                    var compOut = IsUnstiffened ? (new SectionDimension(TotalHeightH, TotalWidthB, InternalRadiusR, ThicknessT, TotalFoldWidthC)).AsUnStiffenedSection().AsCompressionResistance(material, bracingConditions)
-                                                : (new SectionDimension(TotalHeightH, TotalWidthB, InternalRadiusR, ThicknessT, TotalFoldWidthC)).AsLippedSection().AsCompressionResistance(material, bracingConditions);
+                    var compOut = IsUnstiffened ? (new SectionDimension(TotalHeightH, TotalWidthB, InternalRadiusR, ThicknessT, TotalFoldWidthC)).AsUnStiffenedSection().AsDSCompressionResistance(material, bracingConditions)
+                                                : (new SectionDimension(TotalHeightH, TotalWidthB, InternalRadiusR, ThicknessT, TotalFoldWidthC)).AsLippedSection().AsDSCompressionResistance(material, bracingConditions);
                     break;
             }
 

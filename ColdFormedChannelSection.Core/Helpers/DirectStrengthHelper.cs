@@ -23,13 +23,13 @@ namespace ColdFormedChannelSection.Core.Helpers
         #region Compression
 
 
-        public static CompressionDSResistanceOutput AsCompressionResistance(this LippedSection lippedSection, Material material, LengthBracingConditions bracingConditions)
+        public static CompressionDSResistanceOutput AsDSCompressionResistance(this LippedSection lippedSection, Material material, LengthBracingConditions bracingConditions)
         {
             var p_crl = lippedSection.GetCompressionLBResistance(material);
             return lippedSection.AsCompressionResistance(material, bracingConditions, p_crl);
         }
 
-        public static CompressionDSResistanceOutput AsCompressionResistance(this UnStiffenedSection unstiffenedSection, Material material, LengthBracingConditions bracingConditions)
+        public static CompressionDSResistanceOutput AsDSCompressionResistance(this UnStiffenedSection unstiffenedSection, Material material, LengthBracingConditions bracingConditions)
         {
             var p_crl = unstiffenedSection.GetCompressionLBResistance(material);
             return unstiffenedSection.AsCompressionResistance(material, bracingConditions, p_crl);
@@ -253,13 +253,13 @@ namespace ColdFormedChannelSection.Core.Helpers
 
         #region Moment
 
-        public static MomentDSResistanceOutput AsMomentResistance(this UnStiffenedSection unstiffenedSection, Material material, LengthBracingConditions bracingConditions)
+        public static MomentDSResistanceOutput AsDSMomentResistance(this UnStiffenedSection unstiffenedSection, Material material, LengthBracingConditions bracingConditions)
         {
             var m_crl = unstiffenedSection.GetMomentLBResistance(material);
             return unstiffenedSection.AsMomentResistance(material,bracingConditions,m_crl);
         }
 
-        public static MomentDSResistanceOutput AsMomentResistance(this LippedSection lippedSection, Material material, LengthBracingConditions bracingConditions)
+        public static MomentDSResistanceOutput AsDSMomentResistance(this LippedSection lippedSection, Material material, LengthBracingConditions bracingConditions)
         {
             var m_crl = lippedSection.GetMomentLBResistance(material);
             return lippedSection.AsMomentResistance(material, bracingConditions, m_crl);
