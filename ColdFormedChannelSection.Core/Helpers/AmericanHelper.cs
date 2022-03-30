@@ -15,7 +15,7 @@ namespace ColdFormedChannelSection.Core.Helpers
 
         private static double GetAISIReducedArea(this LippedSection lippedSection, Material material, double F_ = 0)
         {
-            var b = lippedSection.Dimensions.TotalFlangeWidthB;
+            var b = lippedSection.Properties.BSmall;
             var t = lippedSection.Dimensions.ThicknessT;
             var C = lippedSection.Dimensions.TotalFoldWidthC;
             var c = lippedSection.Properties.CSmall;
@@ -24,21 +24,21 @@ namespace ColdFormedChannelSection.Core.Helpers
             var v = material.V;
             var Fy = F_ == 0 ? material.Fy : F_;
             var s = 1.28 * Math.Sqrt(E / Fy);
-            var be = lippedSection.Dimensions.TotalFlangeWidthB;
-            var Ce = lippedSection.Dimensions.TotalFoldWidthC;
+            var be = lippedSection.Properties.BSmall;
+            var Ce = c;
             var ae = lippedSection.Properties.ADimension;
             var b_over_t = b / t;
             var e_over_v_term = (Math.PI.Power(2) * E) / (12 * (1 - v.Power(2)));
             if (b_over_t > (s / 3))
             {
-                var Ia_1 = 399 * t.Power(4) * ((b - b_over_t / s) - 0.328).Power(3);
-                var Ia_2 = t.Power(4) * (115 * (b - b_over_t / s) + 5);
+                var Ia_1 = 399 * t.Power(4) * (( b_over_t / s) - 0.328).Power(3);
+                var Ia_2 = t.Power(4) * (115 * (b_over_t / s) + 5);
                 var Ia = Math.Min(Ia_1, Ia_2);
                 var Is = (c.Power(3) * t) / 12;
                 var Ri = Math.Min(Is / Ia, 1);
                 var n_1 = (0.582 - (b_over_t / (4 * s)));
                 var n_2 = (1.0 / 3.0);
-                var n = Math.Min(n_1, n_2);
+                var n = Math.Max(n_1, n_2);
 
                 //Flange.
                 var Kf = Math.Min(4.0, (4.82 - ((5 * C) / (b))) * Ri.Power(n) + 0.43);
@@ -51,7 +51,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 //Lip.
                 var kc = 0.43;
                 var Fcr_c = kc * e_over_v_term * (t / c).Power(2);
-                var lambda_c = Math.Sqrt(Fy / Fcr_c - c);
+                var lambda_c = Math.Sqrt(Fy / Fcr_c);
                 var row_c = Math.Min(1.0, (1 - (0.22 / lambda_c)) / (lambda_c));
                 if (lambda_c <= 0.673)
                     Ce = c * Ri;
@@ -65,19 +65,19 @@ namespace ColdFormedChannelSection.Core.Helpers
             var row_w = Math.Min(1.0, (1 - (0.22 / lambda_w)) / lambda_w);
             if (lambda_w > 0.673)
                 ae = row_w * a;
-            var Ae = t * (2 * Ce + 2 * be + ae);
+            var Ae = t * (2 * Ce + 2 * be + ae /*+ 4 * 0.341*/);
             return Ae;
         }
 
         private static double GetAISIReducedArea(this UnStiffenedSection unstiffenedSection, Material material, double F_ = 0)
         {
-            var b = unstiffenedSection.Dimensions.TotalFlangeWidthB;
+            var b = unstiffenedSection.Properties.BSmall;
             var t = unstiffenedSection.Dimensions.ThicknessT;
             var a = unstiffenedSection.Properties.ADimension;
             var E = material.E;
             var v = material.V;
             var Fy = F_ == 0 ? material.Fy : F_;
-            var be = unstiffenedSection.Dimensions.TotalFlangeWidthB;
+            var be = b;
             var ae = unstiffenedSection.Properties.ADimension;
             var e_over_v_term = (Math.PI.Power(2) * E) / (12 * (1 - v.Power(2)));
 
@@ -85,7 +85,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var kf = 0.43;
             var Fcr_f = kf * e_over_v_term * (t / b).Power(2);
             var lambda_f = Math.Sqrt(Fy / Fcr_f);
-            var row_f = Math.Min(1.0, (1 - (0.22 / lambda_f) / lambda_f));
+            var row_f = Math.Min(1.0, ((1 - (0.22 / lambda_f)) / lambda_f));
             if (lambda_f > 0.673)
                 be = row_f * b;
 
@@ -307,15 +307,15 @@ namespace ColdFormedChannelSection.Core.Helpers
 
         private static bool IsValidForCompression(this Section section)
         {
-            var b_over_t = Tuple.Create(section.Dimensions.TotalFlangeWidthB / section.Dimensions.ThicknessT, 60.0);
+            var b_over_t = Tuple.Create(section.Properties.BSmall / section.Dimensions.ThicknessT, 60.0);
 
             var c_over_t = Tuple.Create(section.Properties.CSmall / section.Dimensions.ThicknessT, 14.0);
             var a_over_t = Tuple.Create(section.Properties.ADimension / section.Dimensions.ThicknessT, 200.0);
-            var C_over_t = Tuple.Create(section.Dimensions.TotalFoldWidthC / section.Dimensions.TotalFlangeWidthB, 0.8);
+            var C_over_b = Tuple.Create(section.Dimensions.TotalFoldWidthC / section.Properties.BSmall, 0.8);
 
             var allows = new List<Tuple<double, double>>()
             {
-                b_over_t,c_over_t,a_over_t,C_over_t
+                b_over_t,c_over_t,a_over_t,C_over_b
             };
             return !allows.Any(tuple => tuple.Item1 > tuple.Item2);
         }
@@ -388,11 +388,11 @@ namespace ColdFormedChannelSection.Core.Helpers
             var G = material.G;
 
             var io_squared = ix.Power(2) + iy.Power(2) + xo_squared;
-            var beta = 1 - (xo_squared / io_squared);
+            var beta = 1 - (xo_squared / io_squared); 
 
             var sigma_ez = (1 / (A * io_squared)) * (((Math.PI.Power(2) * E * Cw) / (kz * lz).Power(2)) + G * J);
             var sigma_ex = (Math.PI.Power(2) * E) / ((kx * lx) / ix).Power(2);
-            var Fe2 = (1 / 2 * beta) * ((sigma_ex + sigma_ez) - Math.Sqrt((sigma_ex + sigma_ez).Power(2) - 4 * beta * sigma_ez * sigma_ex));
+            var Fe2 = (1 / (2.0 * beta)) * ((sigma_ex + sigma_ez) - Math.Sqrt((sigma_ex + sigma_ez).Power(2) - 4 * beta * sigma_ez * sigma_ex));
             var lambda_2 = Math.Sqrt(Fy / Fe2);
             var lambda_squared = lambda_2.Power(2);
             if (lambda_2 <= 1.5)
