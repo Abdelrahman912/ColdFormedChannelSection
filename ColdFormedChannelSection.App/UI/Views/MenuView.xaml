@@ -22,7 +22,7 @@
                     <MenuItem Header="Egyptian Code"  Command="{Binding ResistanceEgyptCommand}"/>
                     <MenuItem Header="Euro Code"  Command="{Binding ResistanceEuroCommand}"/>
                     <MenuItem Header="AISI Code" Command="{Binding ResistanceAISICommand}"/>
-                    <MenuItem Header="AISC Code"  Command="{Binding ResistanceAISCCommand}"/>
+                    <!--<MenuItem Header="AISC Code"  Command="{Binding ResistanceAISCCommand}"/>-->
                 </MenuItem>
                 <MenuItem Header="Direct Strength"  Command="{Binding ResistanceDSCommand}"/>
                 

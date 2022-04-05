@@ -20,6 +20,8 @@ namespace ColdFormedChannelSection.Core.Helpers
             var C = lippedSection.Dimensions.TotalFoldWidthC;
             var c = lippedSection.Properties.CSmall;
             var a = lippedSection.Properties.ADimension;
+            var u = lippedSection.Properties.U;
+            var alpha = lippedSection.Properties.Alpha;
             var E = material.E;
             var v = material.V;
             var Fy = F_ == 0 ? material.Fy : F_;
@@ -65,7 +67,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var row_w = Math.Min(1.0, (1 - (0.22 / lambda_w)) / lambda_w);
             if (lambda_w > 0.673)
                 ae = row_w * a;
-            var Ae = t * (2 * Ce + 2 * be + ae /*+ 4 * 0.341*/);
+            var Ae = t * (2 * Ce + 2 * be + ae + 2 * u *(1+alpha));
             return Ae;
         }
 
@@ -74,6 +76,8 @@ namespace ColdFormedChannelSection.Core.Helpers
             var b = unstiffenedSection.Properties.BSmall;
             var t = unstiffenedSection.Dimensions.ThicknessT;
             var a = unstiffenedSection.Properties.ADimension;
+            var u = unstiffenedSection.Properties.U;
+            var alpha = unstiffenedSection.Properties.Alpha;
             var E = material.E;
             var v = material.V;
             var Fy = F_ == 0 ? material.Fy : F_;
@@ -96,37 +100,37 @@ namespace ColdFormedChannelSection.Core.Helpers
             var row_w = Math.Min(1.0, (1 - (0.22 / lambda_w)) / lambda_w);
             if (lambda_w > 0.673)
                 ae = row_w * a;
-            var Ae = t * (2 * be + ae);
+            var Ae = t * (2 * be + ae+2 *u*(1+alpha));
             return Ae;
         }
 
 
-        private static double GetAISIReducedZe(this UnStiffenedSection unstiffenedSection, Material material, double F_ = 0)
+        private static double GetAISIReducedZe(this UnStiffenedSection unstiffenedSection, Material material, double F_ = 0, bool isOneIter = false)
         {
-            var b = unstiffenedSection.Dimensions.TotalFlangeWidthB;
+            var b = unstiffenedSection.Properties.BSmall;
             var t = unstiffenedSection.Dimensions.ThicknessT;
             var a = unstiffenedSection.Properties.ADimension;
             var E = material.E;
             var v = material.V;
             var Fy = F_ == 0 ? material.Fy : F_;
-            var be = unstiffenedSection.Dimensions.TotalFlangeWidthB;
+            var be = unstiffenedSection.Properties.BSmall;
             var e_over_v_term = (Math.PI.Power(2) * E) / (12 * (1 - v.Power(2)));
 
             //Flange.
             var kf = 0.43;
             var Fcr_f = kf * e_over_v_term * (t / b).Power(2);
             var lambda_f = Math.Sqrt(Fy / Fcr_f);
-            var row_f = Math.Min(1.0, (1 - (0.22 / lambda_f) / lambda_f));
+            var row_f = Math.Min(1.0, ((1 - (0.22 / lambda_f)) / lambda_f));
             if (lambda_f > 0.673)
                 be = row_f * b;
 
             //Web.
-            var Ze = unstiffenedSection.GetAISIReducedZe(material, be, 0, F_);
+            var Ze = unstiffenedSection.GetAISIReducedZe(material, be, 0, F_,isOneIter,0);
             return Ze;
         }
 
 
-        private static double GetAISIReducedZe(this LippedSection lippedSection, Material material, double F_ = 0)
+        private static double GetAISIReducedZe(this LippedSection lippedSection, Material material, double F_ = 0,bool isOneIter = false)
         {
             var b = lippedSection.Dimensions.TotalFlangeWidthB;
             var t = lippedSection.Dimensions.ThicknessT;
@@ -141,11 +145,11 @@ namespace ColdFormedChannelSection.Core.Helpers
             var v = material.V;
             var Fy = F_ == 0 ? material.Fy : F_;
             var s = 1.28 * Math.Sqrt(E / Fy);
-            var be = lippedSection.Dimensions.TotalFlangeWidthB;
+            var be = lippedSection.Properties.BSmall;
             var b_over_t = b / t;
             var e_over_v_term = (Math.PI.Power(2) * E) / (12 * (1 - v.Power(2)));
-            var Ia_1 = 399 * t.Power(4) * ((b - b_over_t / s) - 0.328).Power(3);
-            var Ia_2 = t.Power(4) * (115 * (b - b_over_t / s) + 5);
+            var Ia_1 = 399 * t.Power(4) * (( b_over_t / s) - 0.328).Power(3);
+            var Ia_2 = t.Power(4) * (115 * ( b_over_t / s) + 5);
             var Ia = Math.Min(Ia_1, Ia_2);
             var Is = (c.Power(3) * t) / 12;
             var Ri = Math.Min(Is / Ia, 1);
@@ -154,7 +158,7 @@ namespace ColdFormedChannelSection.Core.Helpers
 
                 var n_1 = (0.582 - (b_over_t / (4 * s)));
                 var n_2 = (1.0 / 3.0);
-                var n = Math.Min(n_1, n_2);
+                var n = Math.Max(n_1, n_2);
 
                 //Flange.
                 var Kf = Math.Min(4.0, (4.82 - ((5 * C) / (b))) * Ri.Power(n) + 0.43);
@@ -175,14 +179,14 @@ namespace ColdFormedChannelSection.Core.Helpers
             var ce = c * Ri;
             if (lambda_c > 0.673)
                 ce = row_c * c * Ri;
-           var Ze =  lippedSection.GetAISIReducedZe(material, be, ce, F_);
+           var Ze =  lippedSection.GetAISIReducedZe(material, be, ce, F_,isOneIter,1);
             return Ze;
         }
 
-        private static double GetAISIReducedZe(this Section section, Material material,double be , double ce,double F_ = 0)
+        private static double GetAISIReducedZe(this Section section, Material material,double be , double ce,double F_ = 0,bool isOneIter = false,int lipFactor=0)
         {
 
-            var b = section.Dimensions.TotalFlangeWidthB;
+            var b = section.Properties.BSmall;
             var t = section.Dimensions.ThicknessT;
             var C = section.Dimensions.TotalFoldWidthC;
             var H = section.Dimensions.TotalHeightH;
@@ -197,29 +201,9 @@ namespace ColdFormedChannelSection.Core.Helpers
             var s = 1.28 * Math.Sqrt(E / Fy);
             var ae = section.Properties.ADimension;
             var e_over_v_term = (Math.PI.Power(2) * E) / (12 * (1 - v.Power(2)));
+
             var y_bar = H / 2;
-            var F1 = Fy * ((y_bar - (t / 2) - r) / y_bar);
-
-            //Web
-            var F2 = Fy * ((H - y_bar - (t / 2) - r) / (y_bar));
-            var sai = Math.Abs(F2 / F1);
-            var kw = 4 + 2 * (1 + sai).Power(3) + 2 * (1 + sai);
-            var Fcr_w = kw * e_over_v_term * (t / a).Power(2);
-            var lambda_W = Math.Sqrt(F1 / Fcr_w);
-            var row_w = Math.Min(1, (1 - (0.22 / lambda_W)) / (lambda_W));
-            if (lambda_W > 0.673)
-                ae = row_w * a;
-            var he1 = (ae) / (3 + sai);
-            var he2 = ae - he1;
-            if (sai >= 0.236)
-            {
-                if ((H / b) <= 4)
-                    he2 = ae / 2;
-                else
-                    he2 = (ae / (1 + sai)) - he1;
-            }
-
-            var new_y_bar = y_bar;
+            var new_y_bar = H /2;
             var sum_Ix = 0.0;
             var sum_L = 0.0;
             var sum_LY = 0.0;
@@ -227,6 +211,26 @@ namespace ColdFormedChannelSection.Core.Helpers
             do
             {
                 y_bar = new_y_bar;
+                var F1 = Fy * ((y_bar - (t / 2) - r) / y_bar);
+
+                //Web
+                var F2 = Fy * ((H - y_bar - (t / 2) - r) / (y_bar));
+                var sai = Math.Abs(F2 / F1);
+                var kw = 4 + 2 * (1 + sai).Power(3) + 2 * (1 + sai);
+                var Fcr_w = kw * e_over_v_term * (t / a).Power(2);
+                var lambda_W = Math.Sqrt(F1 / Fcr_w);
+                var row_w = Math.Min(1, (1 - (0.22 / lambda_W)) / (lambda_W));
+                if (lambda_W > 0.673)
+                    ae = row_w * a;
+                var he1 = (ae) / (3 + sai);
+                var he2 = ae - he1;
+                if (sai >= 0.236)
+                {
+                    if ((H / b) <= 4)
+                        he2 = ae / 2;
+                    else
+                        he2 = (ae / (1 + sai)) - he1;
+                }
                 var hneg = y_bar - (t / 2) - r - (he1 + he2);
                 var yneg = t / 2 + r + he1 + hneg / 2;
                 if (hneg <= 0)
@@ -234,35 +238,35 @@ namespace ColdFormedChannelSection.Core.Helpers
                     hneg = 0;
                     yneg = 0;
                 }
-                var elements = new List<Tuple<double, double, double>>()
+                var elements = new List<Tuple<double, double, double,int>>()
                 {
-                    Tuple.Create(be,t/2,0.0), //Top Flange
-                    Tuple.Create(b,H-t/2,0.0),//Bottom Flange
-                    Tuple.Create(a,H/2,(a.Power(3)/12)), //Web
-                    Tuple.Create(-hneg,yneg,0.0), //Negative web
-                    Tuple.Create(u,((1-0.673)*r+t/2),0.149 *r.Power(3)), //Top inside corner
-                    Tuple.Create(u,(H-(1-0.673)*r-t/2),0.149 *r.Power(3)), //Bottom inside corner
-                     Tuple.Create(u,((1-0.673)*r+t/2),0.149 *r.Power(3)), //Top outer corner
-                    Tuple.Create(u,(H-(1-0.673)*r-t/2),0.149 *r.Power(3)), //Bottom outer corner
-                    Tuple.Create(ce,(R+t+ce/2),ce.Power(3)/12), //Top Lip
-                    Tuple.Create(c,H-R-t-c/2,c.Power(3)/12), //Bottom Lip
+                    Tuple.Create(be,t/2,0.0,1), //Top Flange
+                    Tuple.Create(b,H-t/2,0.0,1),//Bottom Flange
+                    Tuple.Create(a,H/2,(a.Power(3)/12),1), //Web
+                    Tuple.Create(-hneg,yneg,0.0,1), //Negative web
+                    Tuple.Create(u,((1-0.673)*r+(t/2)),0.149 *r.Power(3),1), //Top inside corner
+                    Tuple.Create(u,(H-(1-0.673)*r-(t/2)),0.149 *r.Power(3),1), //Bottom inside corner
+                     Tuple.Create(u,((1-0.673)*r+(t/2)),0.149 *r.Power(3),lipFactor), //Top outer corner
+                    Tuple.Create(u,(H-(1-0.673)*r-(t/2)),0.149 *r.Power(3),lipFactor), //Bottom outer corner
+                    Tuple.Create(ce,(R+t+(ce/2)),ce.Power(3)/12,lipFactor), //Top Lip
+                    Tuple.Create(c,H-R-t-(c/2),c.Power(3)/12,lipFactor), //Bottom Lip
                 };
-                sum_L = elements.Sum(tuple => tuple.Item1);
+                sum_L = elements.Sum(tuple => tuple.Item1*tuple.Item4);
                 sum_LY = elements.Aggregate(0.0, (soFar, current) =>
                 {
-                    var ly = current.Item1 * current.Item2;
+                    var ly = current.Item1 * current.Item2 *current.Item4;
                     soFar += ly;
                     return soFar;
                 });
                 sum_LY2 = elements.Aggregate(0.0, (soFar, current) =>
                 {
-                    var ly2 = current.Item1 * current.Item2.Power(2);
+                    var ly2 = current.Item1 * current.Item2.Power(2) *current.Item4;
                     soFar += ly2;
                     return soFar;
                 });
-                sum_Ix = elements.Sum(tuple => tuple.Item3);
+                sum_Ix = elements.Sum(tuple => tuple.Item3*tuple.Item4);
                 new_y_bar = sum_LY / sum_L;
-            } while (Math.Abs(new_y_bar - y_bar) > 0.00002);
+            } while (Math.Abs(new_y_bar - y_bar) > 0.00002 && !isOneIter);
             var Ixe = t * (sum_Ix + sum_LY2 - new_y_bar.Power(2) * sum_L);
             var Ze = Ixe / new_y_bar;
             return Ze;
@@ -504,7 +508,7 @@ namespace ColdFormedChannelSection.Core.Helpers
         private static double GetAISIMomentLTBRessistance(this LippedSection lippedSection, Material material, LengthBracingConditions bracingConditions)
         {
             var fltb = lippedSection.GetAISIMomentLTBStress(material, bracingConditions);
-            var Zf = lippedSection.GetAISIReducedZe(material,fltb);
+            var Zf = lippedSection.GetAISIReducedZe(material,fltb,true);
             var Mn = fltb * Zf;
             return Mn;
         }
@@ -512,7 +516,7 @@ namespace ColdFormedChannelSection.Core.Helpers
         private static double GetAISIMomentLTBRessistance(this UnStiffenedSection unStiffenedSection, Material material, LengthBracingConditions bracingConditions)
         {
             var fltb = unStiffenedSection.GetAISIMomentLTBStress(material, bracingConditions);
-            var Zf = unStiffenedSection.GetAISIReducedZe(material, fltb);
+            var Zf = unStiffenedSection.GetAISIReducedZe(material, fltb,true);
             var Mn = fltb * Zf;
             return Mn;
         }

@@ -45,11 +45,13 @@
 
         public double BSmall { get;}
 
+        public int Alpha { get; }
+
         #endregion
 
         #region Constructors
 
-        public SectionProperties(double aPrime, double bPrime, double cPrime, double a, double _Ix, double zg, double _Iy, double rx, double ry, double xo, double j, double cw, double cSmall,double aDimension,double rSmall,double u,double b_small)
+        public SectionProperties(double aPrime, double bPrime, double cPrime, double a, double _Ix, double zg, double _Iy, double rx, double ry, double xo, double j, double cw, double cSmall,double aDimension,double rSmall,double u,double b_small,int alpha)
         {
             APrime = aPrime;
             BPrime = bPrime;
@@ -68,6 +70,7 @@
             RSmall = rSmall;
             U = u;
             BSmall = b_small;
+            Alpha = alpha;
         }
 
         #endregion
