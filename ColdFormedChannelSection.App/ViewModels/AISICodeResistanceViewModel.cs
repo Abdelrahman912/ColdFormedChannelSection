@@ -42,14 +42,14 @@ namespace ColdFormedChannelSection.App.ViewModels
             switch (StrainingAction)
             {
                 case StrainingActions.MOMENT:
-                    var momentOut = IsUnstiffened ? (new SectionDimension(TotalHeightH, TotalWidthB, InternalRadiusR, ThicknessT, TotalFoldWidthC)).Convert(Unit,Units.KIPINCH).AsUnStiffenedSection().AsAISIMomentResistance(material, bracingConditions)
-                                                  : (new SectionDimension(TotalHeightH, TotalWidthB, InternalRadiusR, ThicknessT, TotalFoldWidthC)).Convert(Unit,Units.KIPINCH).AsLippedSection().AsAISIMomentResistance(material, bracingConditions);
+                    var momentOut = IsUnstiffened ? (new SectionDimension(TotalHeightH, TotalWidthB, InternalRadiusR, ThicknessT, TotalFoldWidthC)).Convert(Unit,Units.KIPINCH).AsUnStiffenedSection().AsAISIMomentResistance(material, bracingConditions).Convert(Units.KIPINCH,Unit)
+                                                  : (new SectionDimension(TotalHeightH, TotalWidthB, InternalRadiusR, ThicknessT, TotalFoldWidthC)).Convert(Unit,Units.KIPINCH).AsLippedSection().AsAISIMomentResistance(material, bracingConditions).Convert(Units.KIPINCH, Unit);
                     IsResistanceOutput = true;
                     ResistanceOutput = momentOut;
                     break;
                 case StrainingActions.COMPRESSION:
-                    var compOut = IsUnstiffened ? (new SectionDimension(TotalHeightH, TotalWidthB, InternalRadiusR, ThicknessT, TotalFoldWidthC)).Convert(Unit,Units.KIPINCH).AsUnStiffenedSection().AsAISICompressionResistance(material, bracingConditions)
-                                                : (new SectionDimension(TotalHeightH, TotalWidthB, InternalRadiusR, ThicknessT, TotalFoldWidthC)).Convert(Unit,Units.KIPINCH).AsLippedSection().AsAISICompressionResistance(material, bracingConditions);
+                    var compOut = IsUnstiffened ? (new SectionDimension(TotalHeightH, TotalWidthB, InternalRadiusR, ThicknessT, TotalFoldWidthC)).Convert(Unit,Units.KIPINCH).AsUnStiffenedSection().AsAISICompressionResistance(material, bracingConditions).Convert(Units.KIPINCH, Unit)
+                                                : (new SectionDimension(TotalHeightH, TotalWidthB, InternalRadiusR, ThicknessT, TotalFoldWidthC)).Convert(Unit,Units.KIPINCH).AsLippedSection().AsAISICompressionResistance(material, bracingConditions).Convert(Units.KIPINCH, Unit);
                     IsResistanceOutput = true;
                     ResistanceOutput = compOut;
                     break;

@@ -55,14 +55,14 @@ namespace ColdFormedChannelSection.App.ViewModels
             switch (StrainingAction)
             {
                 case StrainingActions.MOMENT:
-                    var momentOut = IsUnstiffened ? (new SectionDimension(TotalHeightH, TotalWidthB, InternalRadiusR, ThicknessT, TotalFoldWidthC)).Convert(Unit,Units.NMM).AsUnStiffenedSection().AsEuroMomentResistance(material, bracingConditions)
-                                                  : (new SectionDimension(TotalHeightH, TotalWidthB, InternalRadiusR, ThicknessT, TotalFoldWidthC)).Convert(Unit,Units.NMM).AsLippedSection().AsEuroMomentResistance(material, bracingConditions);
+                    var momentOut = IsUnstiffened ? (new SectionDimension(TotalHeightH, TotalWidthB, InternalRadiusR, ThicknessT, TotalFoldWidthC)).Convert(Unit, Units.NMM).AsUnStiffenedSection().AsEuroMomentResistance(material, bracingConditions).Convert(Units.NMM, Unit)
+                                                  : (new SectionDimension(TotalHeightH, TotalWidthB, InternalRadiusR, ThicknessT, TotalFoldWidthC)).Convert(Unit,Units.NMM).AsLippedSection().AsEuroMomentResistance(material, bracingConditions).Convert(Units.NMM, Unit);
                     IsResistanceOutput = true;
                     ResistanceOutput = momentOut;
                     break;
                 case StrainingActions.COMPRESSION:
-                    var compOut = IsUnstiffened ? (new SectionDimension(TotalHeightH, TotalWidthB, InternalRadiusR, ThicknessT, TotalFoldWidthC)).Convert(Unit,Units.NMM).AsUnStiffenedSection().AsEuroCompressionResistance(material, bracingConditions)
-                                                : (new SectionDimension(TotalHeightH, TotalWidthB, InternalRadiusR, ThicknessT, TotalFoldWidthC)).Convert(Unit,Units.NMM).AsLippedSection().AsEuroCompressionResistance(material, bracingConditions);
+                    var compOut = IsUnstiffened ? (new SectionDimension(TotalHeightH, TotalWidthB, InternalRadiusR, ThicknessT, TotalFoldWidthC)).Convert(Unit,Units.NMM).AsUnStiffenedSection().AsEuroCompressionResistance(material, bracingConditions).Convert(Units.NMM, Unit)
+                                                : (new SectionDimension(TotalHeightH, TotalWidthB, InternalRadiusR, ThicknessT, TotalFoldWidthC)).Convert(Unit,Units.NMM).AsLippedSection().AsEuroCompressionResistance(material, bracingConditions).Convert(Units.NMM, Unit);
                     IsResistanceOutput = true;
                     ResistanceOutput = compOut;
                     break;

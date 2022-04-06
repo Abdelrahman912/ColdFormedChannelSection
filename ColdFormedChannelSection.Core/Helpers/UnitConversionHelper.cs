@@ -38,6 +38,38 @@ namespace ColdFormedChannelSection.Core.Helpers
             {KeyValuePair.Create(Units.KIPINCH,Units.TONCM),1/14.223 },
         };
 
+
+        private static readonly Dictionary<KeyValuePair<Units, Units>, double> _momentUnitFactors = new Dictionary<KeyValuePair<Units, Units>, double>()
+        {
+            {KeyValuePair.Create(Units.KIPINCH,Units.KIPINCH),1.0 },
+            {KeyValuePair.Create(Units.KIPINCH,Units.NMM),112900.0 },
+            {KeyValuePair.Create(Units.KIPINCH,Units.TONCM),1.152124 },
+
+            {KeyValuePair.Create(Units.TONCM,Units.TONCM),1.0 },
+            {KeyValuePair.Create(Units.TONCM,Units.KIPINCH),1/1.152124},
+            {KeyValuePair.Create(Units.TONCM,Units.NMM),98066.5 },
+
+            {KeyValuePair.Create(Units.NMM,Units.NMM),1.0 },
+            {KeyValuePair.Create(Units.NMM,Units.KIPINCH), 1/112900.0},
+            {KeyValuePair.Create(Units.NMM,Units.TONCM),1/98066.5},
+        };
+
+
+        private static readonly Dictionary<KeyValuePair<Units, Units>, double> _forceUnitFactors = new Dictionary<KeyValuePair<Units, Units>, double>()
+        {
+            {KeyValuePair.Create(Units.KIPINCH,Units.KIPINCH),1.0 },
+            {KeyValuePair.Create(Units.KIPINCH,Units.NMM),4444.44 },
+            {KeyValuePair.Create(Units.KIPINCH,Units.TONCM),1/2.2046},
+
+            {KeyValuePair.Create(Units.TONCM,Units.TONCM),1.0 },
+            {KeyValuePair.Create(Units.TONCM,Units.KIPINCH),2.2046},
+            {KeyValuePair.Create(Units.TONCM,Units.NMM),9806.65 },
+
+            {KeyValuePair.Create(Units.NMM,Units.NMM),1.0 },
+            {KeyValuePair.Create(Units.NMM,Units.KIPINCH), 1/4444.44},
+            {KeyValuePair.Create(Units.NMM,Units.TONCM),1/9806.65},
+        };
+
         private static double ConvertLength(this double length, Units sourceUnit, Units targetUnit)
         {
             var key = KeyValuePair.Create(sourceUnit, targetUnit);
@@ -53,6 +85,22 @@ namespace ColdFormedChannelSection.Core.Helpers
             var factor = _stressUnitFactors[key];
             var newStress = stress * factor;
             return newStress;
+        }
+
+        private static double ConvertMoment(this double moment, Units sourceUnit, Units targetUnits)
+        {
+            var key = KeyValuePair.Create(sourceUnit, targetUnits);
+            var factor = _momentUnitFactors[key];
+            var newMoment = moment * factor;
+            return newMoment;
+        }
+
+        private static double ConvertForce(this double force , Units sourceUnit , Units targetUnits)
+        {
+            var key = KeyValuePair.Create(sourceUnit , targetUnits);
+            var factor = _forceUnitFactors[key];
+            var newForce = force * factor;
+            return newForce;
         }
 
         public static Material Convert(this Material material, Units sourceUnit, Units targetUnits)
@@ -85,10 +133,29 @@ namespace ColdFormedChannelSection.Core.Helpers
             var B = section.TotalFlangeWidthB.ConvertLength(sourceUnit, targetUnit);
             var C = section.TotalFoldWidthC.ConvertLength(sourceUnit, targetUnit);
             var R = section.InternalRadiusR.ConvertLength(sourceUnit, targetUnit);
-            var t = section.ThicknessT.ConvertLength(sourceUnit,targetUnit);
+            var t = section.ThicknessT.ConvertLength(sourceUnit, targetUnit);
             var newSection = new SectionDimension(H, B, R, t, C);
             return newSection;
         }
+
+        public static MomentResistanceOutput Convert(this MomentResistanceOutput output, Units sourceUnit, Units targetUnit)
+        {
+            var nominalResistance = output.NominalResistance.ConvertMoment(sourceUnit,targetUnit);
+            var phi = output.Phi;
+            var failureMode = output.GoverningCase;
+            var newOutput = new MomentResistanceOutput(nominalResistance, phi, failureMode);
+            return newOutput;
+        }
+
+        public static CompressionResistanceOutput Convert(this CompressionResistanceOutput output, Units sourceUnit, Units targetUnit)
+        {
+            var nominalResistance = output.NominalResistance.ConvertForce(sourceUnit, targetUnit);
+            var phi = output.Phi;
+            var failureMode = output.GoverningCase;
+            var newOutput = new CompressionResistanceOutput(nominalResistance, phi, failureMode);
+            return newOutput;
+        }
+
 
     }
 }
