@@ -103,43 +103,58 @@
                     <StackPanel>
                         <Grid Margin="8">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="0.8*"/>
+                                <ColumnDefinition Width="1.1*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="Total Height (H):"/>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Total Height (H)"/>
+                                <TextBlock Style="{StaticResource lengthUnit}"/>
+                            </StackPanel>
                             <TextBox Grid.Column="1" Text="{Binding TotalHeightH}" />
                         </Grid>
                         <Grid Margin="8">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="0.8*"/>
+                                <ColumnDefinition Width="1.1*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="Total Width of Flange (B):"/>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Total Width of Flange (B)"/>
+                                <TextBlock Style="{StaticResource lengthUnit}"/>
+                            </StackPanel>
                             <TextBox Grid.Column="1" Text="{Binding TotalWidthB}"/>
                         </Grid>
                         <Grid Margin="8">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="0.8*"/>
+                                <ColumnDefinition Width="1.1*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="Internal Radius (R):"/>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Internal Radius (R)"/>
+                                <TextBlock Style="{StaticResource lengthUnit}"/>
+                            </StackPanel>
                             <TextBox Grid.Column="1" Text="{Binding InternalRadiusR}"/>
                         </Grid>
 
                         <Grid Margin="8">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="0.8*"/>
+                                <ColumnDefinition Width="1.1*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="Thickness (t)"/>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Thickness (t)"/>
+                                <TextBlock Style="{StaticResource lengthUnit}"/>
+                            </StackPanel>
                             <TextBox Grid.Column="1" Text="{Binding ThicknessT}"/>
                         </Grid>
                         <Grid Margin="8" Visibility="{Binding IsUnstiffened, Converter={StaticResource InverseBoolToVisConverter}}">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="0.8*"/>
+                                <ColumnDefinition Width="1.1*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="Total Width of Edge Fold (C)"/>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Total Width of Edge Fold (C)"/>
+                                <TextBlock Style="{StaticResource lengthUnit}"/>
+                            </StackPanel>
                             <TextBox Grid.Column="1" Text="{Binding TotalFoldWidthC}"/>
                         </Grid>
                     </StackPanel>
@@ -158,7 +173,10 @@
                                 <ColumnDefinition Width="0.8*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="Lx:"/>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Lx"/>
+                                <TextBlock Style="{StaticResource lengthUnit}"/>
+                            </StackPanel>
                             <TextBox Grid.Column="1" Text="{Binding Lx}"/>
                         </Grid>
                         <Grid Margin="8">
@@ -166,7 +184,10 @@
                                 <ColumnDefinition Width="0.8*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="Ly:"/>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Ly"/>
+                                <TextBlock Style="{StaticResource lengthUnit}"/>
+                            </StackPanel>
                             <TextBox Grid.Column="1" Text="{Binding Ly}"/>
                         </Grid>
                         <Grid Margin="8">
@@ -174,7 +195,10 @@
                                 <ColumnDefinition Width="0.8*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="Lz:"/>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Lz"/>
+                                <TextBlock Style="{StaticResource lengthUnit}"/>
+                            </StackPanel>
                             <TextBox Grid.Column="1" Text="{Binding Lz}"/>
                         </Grid>
 
@@ -201,7 +225,7 @@
                                 <ColumnDefinition Width="0.8*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="Kz:"/>
+                            <TextBlock Text="Kz"/>
                             <TextBox Grid.Column="1" Text="{Binding Kz}"/>
                         </Grid>
 
@@ -210,7 +234,10 @@
                                 <ColumnDefinition Width="0.8*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="Lu:"/>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Lu"/>
+                                <TextBlock Style="{StaticResource lengthUnit}"/>
+                            </StackPanel>
                             <TextBox Grid.Column="1" Text="{Binding Lu}"/>
                         </Grid>
 
@@ -219,7 +246,7 @@
                                 <ColumnDefinition Width="0.8*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="Cb:"/>
+                            <TextBlock Text="Cb"/>
                             <TextBox Grid.Column="1" Text="{Binding Cb}"/>
                         </Grid>
 

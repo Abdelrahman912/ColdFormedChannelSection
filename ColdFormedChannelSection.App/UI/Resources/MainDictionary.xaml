@@ -16,4 +16,21 @@
         </Style.Triggers>
     </Style>
 
+
+    <Style TargetType="{x:Type TextBlock}" x:Key="lengthUnit">
+        <Setter Property="Foreground" Value="Red"/>
+        <Style.Triggers >
+            <DataTrigger Binding="{Binding Unit}" Value="TONCM">
+                <Setter Property="Text" Value=" (cm)"/>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Unit}" Value="NMM">
+                <Setter Property="Text" Value=" (mm)"/>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Unit}" Value="KIPINCH">
+                <Setter Property="Text" Value=" (in)"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    
 </ResourceDictionary>
