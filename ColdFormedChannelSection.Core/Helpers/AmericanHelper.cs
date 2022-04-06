@@ -281,7 +281,7 @@ namespace ColdFormedChannelSection.Core.Helpers
         public static CompressionResistanceOutput AsAISICompressionResistance(this LippedSection lippedSection, Material material, LengthBracingConditions bracingConditions)
         {
             if (!lippedSection.IsValidForCompression())
-                return new CompressionResistanceOutput(0.0, 0.85, FailureMode.UNSAFE);
+                return new CompressionResistanceOutput(0.0, 0.85, FailureMode.UNSAFE,"Kip");
             var pn1 = Tuple.Create(lippedSection.GetAISICompressionLBResistance(material), FailureMode.LOCALBUCKLING);
             var pn2 = Tuple.Create(lippedSection.GetAISICompressionFBRessistance(material, bracingConditions), FailureMode.FLEXURALBUCKLING);
             var pn3 = Tuple.Create(lippedSection.GetAISICompressionFTBRessistance(material, bracingConditions), FailureMode.TORSIONALBUCKLING);
@@ -290,14 +290,14 @@ namespace ColdFormedChannelSection.Core.Helpers
                 pn1, pn2, pn3
             };
             var pn = pns.OrderBy(tuple => tuple.Item1).First();
-            var result = new CompressionResistanceOutput(pn.Item1, 0.85, pn.Item2);
+            var result = new CompressionResistanceOutput(pn.Item1, 0.85, pn.Item2,"Kip");
             return result;
         }
 
         public static CompressionResistanceOutput AsAISICompressionResistance(this UnStiffenedSection unstiffenedSection, Material material, LengthBracingConditions bracingConditions)
         {
             if (!unstiffenedSection.IsValidForCompression())
-                return new CompressionResistanceOutput(0.0, 0.85, FailureMode.UNSAFE);
+                return new CompressionResistanceOutput(0.0, 0.85, FailureMode.UNSAFE,"Kip");
             var pn1 = Tuple.Create(unstiffenedSection.GetAISICompressionLBResistance(material), FailureMode.LOCALBUCKLING);
             var pn2 = Tuple.Create(unstiffenedSection.GetAISICompressionFBRessistance(material, bracingConditions), FailureMode.FLEXURALBUCKLING);
             var pn3 = Tuple.Create(unstiffenedSection.GetAISICompressionFTBRessistance(material, bracingConditions), FailureMode.TORSIONALBUCKLING);
@@ -306,7 +306,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 pn1, pn2, pn3
             };
             var pn = pns.OrderBy(tuple => tuple.Item1).First();
-            var result = new CompressionResistanceOutput(pn.Item1, 0.85, pn.Item2);
+            var result = new CompressionResistanceOutput(pn.Item1, 0.85, pn.Item2,"Kip");
             return result;
         }
 
@@ -435,7 +435,7 @@ namespace ColdFormedChannelSection.Core.Helpers
         public static MomentResistanceOutput AsAISIMomentResistance(this LippedSection lippedSection, Material material, LengthBracingConditions bracingConditions)
         {
             if (!lippedSection.IsValidForCompression())
-                return new MomentResistanceOutput(0.0, 0.9, FailureMode.UNSAFE);
+                return new MomentResistanceOutput(0.0, 0.9, FailureMode.UNSAFE,"Kip");
             var Mn1 = Tuple.Create(lippedSection.GetAISIMomentLBResistance(material), FailureMode.LOCALBUCKLING);
             var Mn2 = Tuple.Create(lippedSection.GetAISIMomentLTBRessistance(material, bracingConditions), FailureMode.LATERALTORSIONALBUCKLING);
             var Mns = new List<Tuple<double, FailureMode>>()
@@ -443,14 +443,14 @@ namespace ColdFormedChannelSection.Core.Helpers
                 Mn1,Mn2
             };
             var Mn = Mns.OrderBy(tuple => tuple.Item1).First();
-            var result = new MomentResistanceOutput(Mn.Item1, 0.9, Mn.Item2);
+            var result = new MomentResistanceOutput(Mn.Item1, 0.9, Mn.Item2,"Kip");
             return result;
         }
 
         public static MomentResistanceOutput AsAISIMomentResistance(this UnStiffenedSection unstiffenedSection, Material material, LengthBracingConditions bracingConditions)
         {
             if (!unstiffenedSection.IsValidForCompression())
-                return new MomentResistanceOutput(0.0, 0.9, FailureMode.UNSAFE);
+                return new MomentResistanceOutput(0.0, 0.9, FailureMode.UNSAFE,"Kip");
             var Mn1 = Tuple.Create(unstiffenedSection.GetAISIMomentLBResistance(material), FailureMode.LOCALBUCKLING);
             var Mn2 = Tuple.Create(unstiffenedSection.GetAISIMomentLTBRessistance(material, bracingConditions), FailureMode.LATERALTORSIONALBUCKLING);
             var Mns = new List<Tuple<double, FailureMode>>()
@@ -458,7 +458,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 Mn1,Mn2
             };
             var Mn = Mns.OrderBy(tuple => tuple.Item1).First();
-            var result = new MomentResistanceOutput(Mn.Item1, 0.9, Mn.Item2);
+            var result = new MomentResistanceOutput(Mn.Item1, 0.9, Mn.Item2,"Kip");
             return result;
         }
 
@@ -535,7 +535,7 @@ namespace ColdFormedChannelSection.Core.Helpers
         public static CompressionResistanceOutput AsAISCCompressionResistance(this LippedSection lippedSection, Material material, LengthBracingConditions bracingConditions)
         {
             if (!lippedSection.IsValidForCompression())
-                return new CompressionResistanceOutput(0.0, 0.9, FailureMode.UNSAFE);
+                return new CompressionResistanceOutput(0.0, 0.9, FailureMode.UNSAFE,"Kip");
             var pn1 = Tuple.Create(lippedSection.GetAISCCompressionLBResistance(material), FailureMode.LOCALBUCKLING);
             var pn2 = Tuple.Create(lippedSection.GetAISCCompressionFBRessistance(material, bracingConditions), FailureMode.FLEXURALBUCKLING);
             var pn3 = Tuple.Create(lippedSection.GetAISCCompressionFTBRessistance(material, bracingConditions), FailureMode.TORSIONALBUCKLING);
@@ -544,14 +544,14 @@ namespace ColdFormedChannelSection.Core.Helpers
                 pn1, pn2, pn3
             };
             var pn = pns.OrderBy(tuple => tuple.Item1).First();
-            var result = new CompressionResistanceOutput(pn.Item1, 0.9, pn.Item2);
+            var result = new CompressionResistanceOutput(pn.Item1, 0.9, pn.Item2,"Kip");
             return result;
         }
 
         public static CompressionResistanceOutput AsAISCCompressionResistance(this UnStiffenedSection unstiffenedSection, Material material, LengthBracingConditions bracingConditions)
         {
             if (!unstiffenedSection.IsValidForCompression())
-                return new CompressionResistanceOutput(0.0, 0.9, FailureMode.UNSAFE);
+                return new CompressionResistanceOutput(0.0, 0.9, FailureMode.UNSAFE,"Kip");
             var pn1 = Tuple.Create(unstiffenedSection.GetAISCCompressionLBResistance(material), FailureMode.LOCALBUCKLING);
             var pn2 = Tuple.Create(unstiffenedSection.GetAISCCompressionFBRessistance(material, bracingConditions), FailureMode.FLEXURALBUCKLING);
             var pn3 = Tuple.Create(unstiffenedSection.GetAISCCompressionFTBRessistance(material, bracingConditions), FailureMode.TORSIONALBUCKLING);
@@ -560,7 +560,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 pn1, pn2, pn3
             };
             var pn = pns.OrderBy(tuple => tuple.Item1).First();
-            var result = new CompressionResistanceOutput(pn.Item1, 0.9, pn.Item2);
+            var result = new CompressionResistanceOutput(pn.Item1, 0.9, pn.Item2,"Kip");
             return result;
         }
 

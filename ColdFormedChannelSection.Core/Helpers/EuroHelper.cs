@@ -212,7 +212,7 @@ namespace ColdFormedChannelSection.Core.Helpers
         public static CompressionResistanceOutput AsEuroCompressionResistance(this LippedSection section, Material material, LengthBracingConditions bracingConditions)
         {
             if (!section.IsValid())
-                return new CompressionResistanceOutput(0.0, 0.85, FailureMode.UNSAFE);
+                return new CompressionResistanceOutput(0.0, 0.85, FailureMode.UNSAFE,"N");
             var Ae = section.GetEuroReducedArea(material);
             var pn1 = Tuple.Create(section.GetEuroCompressionLBResistance(material, Ae), FailureMode.LOCALBUCKLING);
             var pn2 = Tuple.Create(section.GetEuroCompressionFBResistance(material, bracingConditions, Ae, 0.34), FailureMode.FLEXURALBUCKLING);
@@ -222,14 +222,14 @@ namespace ColdFormedChannelSection.Core.Helpers
                 pn1, pn2, pn3
             };
             var pn = pns.OrderBy(tuple => tuple.Item1).First();
-            var result = new CompressionResistanceOutput(pn.Item1, 0.85, pn.Item2);
+            var result = new CompressionResistanceOutput(pn.Item1, 0.85, pn.Item2,"N");
             return result;
         }
 
         public static CompressionResistanceOutput AsEuroCompressionResistance(this UnStiffenedSection section, Material material, LengthBracingConditions bracingConditions)
         {
             if (!section.IsValid())
-                return new CompressionResistanceOutput(0.0, 0.85, FailureMode.UNSAFE);
+                return new CompressionResistanceOutput(0.0, 0.85, FailureMode.UNSAFE,"N");
             var Ae = section.GetEuroReducedArea(material);
             var pn1 = Tuple.Create(section.GetEuroCompressionLBResistance(material, Ae), FailureMode.LOCALBUCKLING);
             var pn2 = Tuple.Create(section.GetEuroCompressionFBResistance(material, bracingConditions, Ae, 0.49), FailureMode.FLEXURALBUCKLING);
@@ -239,7 +239,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 pn1, pn2, pn3
             };
             var pn = pns.OrderBy(tuple => tuple.Item1).First();
-            var result = new CompressionResistanceOutput(pn.Item1, 0.85, pn.Item2);
+            var result = new CompressionResistanceOutput(pn.Item1, 0.85, pn.Item2,"N");
             return result;
         }
 
@@ -306,7 +306,7 @@ namespace ColdFormedChannelSection.Core.Helpers
         public static MomentResistanceOutput AsEuroMomentResistance(this LippedSection section, Material material, LengthBracingConditions bracingConditions)
         {
             if (!section.IsValid())
-                return new MomentResistanceOutput(0.0, 0.85, FailureMode.UNSAFE);
+                return new MomentResistanceOutput(0.0, 0.85, FailureMode.UNSAFE,"N.mm");
             var Ze = section.GetZe(material);
             var Mn1 = Tuple.Create(section.GetEuroMomentLBResistance(material, Ze), FailureMode.LOCALBUCKLING);
             var Mn2 = Tuple.Create(section.GetEuroMomentLTBResistance(material, bracingConditions, Ze), FailureMode.LATERALTORSIONALBUCKLING);
@@ -315,14 +315,14 @@ namespace ColdFormedChannelSection.Core.Helpers
                 Mn1,Mn2
             };
             var Mn = Mns.OrderBy(tuple => tuple.Item1).First();
-            var result = new MomentResistanceOutput(Mn.Item1, 0.85, Mn.Item2);
+            var result = new MomentResistanceOutput(Mn.Item1, 0.85, Mn.Item2,"N.mm");
             return result;
         }
 
         public static MomentResistanceOutput AsEuroMomentResistance(this UnStiffenedSection section, Material material, LengthBracingConditions bracingConditions)
         {
             if (!section.IsValid())
-                return new MomentResistanceOutput(0.0, 0.85, FailureMode.UNSAFE);
+                return new MomentResistanceOutput(0.0, 0.85, FailureMode.UNSAFE,"N.mm");
             var Ze = section.GetZe(material);
             var Mn1 = Tuple.Create(section.GetEuroMomentLBResistance(material, Ze), FailureMode.LOCALBUCKLING);
             var Mn2 = Tuple.Create(section.GetEuroMomentLTBResistance(material, bracingConditions, Ze), FailureMode.LATERALTORSIONALBUCKLING);
@@ -331,7 +331,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 Mn1,Mn2
             };
             var Mn = Mns.OrderBy(tuple => tuple.Item1).First();
-            var result = new MomentResistanceOutput(Mn.Item1, 0.85, Mn.Item2);
+            var result = new MomentResistanceOutput(Mn.Item1, 0.85, Mn.Item2,"N.mm");
             return result;
         }
 

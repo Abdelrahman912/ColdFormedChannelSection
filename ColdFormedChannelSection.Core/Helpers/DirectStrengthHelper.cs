@@ -66,7 +66,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 Tuple.Create(Pnd,FailureMode.DISTRORTIONALBUCKLING)
             };
             var nominalLoad = nominalLoads.OrderBy(tup => tup.Item1).First();
-            var result = new CompressionResistanceOutput(nominalLoad.Item1, 0.85, nominalLoad.Item2);
+            var result = new CompressionResistanceOutput(nominalLoad.Item1, 0.85, nominalLoad.Item2,"Kip");
             return result;
         }
 
@@ -297,7 +297,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 Tuple.Create(Mnd,FailureMode.DISTRORTIONALBUCKLING)
             };
             var nominalLoad = nominalLoads.OrderBy(tup => tup.Item1).First();
-            var result = new MomentResistanceOutput(nominalLoad.Item1, 0.9, nominalLoad.Item2);
+            var result = new MomentResistanceOutput(nominalLoad.Item1, 0.9, nominalLoad.Item2,"Kip.in");
             return result;
         }
 
