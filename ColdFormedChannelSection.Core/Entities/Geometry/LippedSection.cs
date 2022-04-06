@@ -1,4 +1,6 @@
-﻿namespace ColdFormedChannelSection.Core.Entities
+﻿using System;
+
+namespace ColdFormedChannelSection.Core.Entities
 {
     public class LippedSection : Section
     {
@@ -6,5 +8,6 @@
             : base(dimensions, properties)
         {
         }
+        
     }
 }

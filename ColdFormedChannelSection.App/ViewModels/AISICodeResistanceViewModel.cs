@@ -54,7 +54,6 @@ namespace ColdFormedChannelSection.App.ViewModels
                     ResistanceOutput = compOut;
                     break;
             }
-
         }
 
         #endregion
