@@ -56,13 +56,16 @@
                         <ComboBox Grid.Column="1" SelectedItem="{Binding Unit}"
                                   ItemsSource="{Binding Source={markup:EnumBindingSource {x:Type enums:Units}}}"/>
                     </Grid>
-                   
+
                     <Grid Margin="8">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="0.8*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="Material Strength (Fy)"/>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Material Strength (Fy)"/>
+                            <TextBlock Style="{StaticResource stressUnit}"/>
+                        </StackPanel>
                         <TextBox Text="{Binding Fy}" Grid.Column="1" />
                     </Grid>
                     <Grid Margin="8">
@@ -70,7 +73,10 @@
                             <ColumnDefinition Width="0.8*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="Elastic Modulus (E)"/>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Elastic Modulus (E)"/>
+                            <TextBlock Style="{StaticResource stressUnit}"/>
+                        </StackPanel>
                         <TextBox Text="{Binding E}" Grid.Column="1" />
                     </Grid>
                 </StackPanel>
@@ -81,7 +87,7 @@
                        Source="../Resources/Unstiffened C.jpg" Visibility="{Binding IsUnstiffened, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                 </Grid>
             </Grid>
-           
+
         </GroupBox>
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
@@ -89,11 +95,11 @@
                 <ColumnDefinition Width="1.05*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            
+
             <GroupBox  Margin="5" Header="Geometry" Style="{StaticResource MaterialDesignGroupBox}" 
                                           materialDesign:ColorZoneAssist.Mode="Standard">
                 <Grid>
-                 
+
                     <StackPanel>
                         <Grid Margin="8">
                             <Grid.ColumnDefinitions>
@@ -198,7 +204,7 @@
                             <TextBlock Text="Kz:"/>
                             <TextBox Grid.Column="1" Text="{Binding Kz}"/>
                         </Grid>
-                        
+
                         <Grid Margin="8" Visibility="{Binding IsLuUsed, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="0.8*"/>
@@ -207,7 +213,7 @@
                             <TextBlock Text="Lu:"/>
                             <TextBox Grid.Column="1" Text="{Binding Lu}"/>
                         </Grid>
-                        
+
                         <Grid Margin="8" Visibility="{Binding IsCbUsed, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="0.8*"/>
@@ -225,7 +231,7 @@
                             <TextBlock Text="C1"/>
                             <TextBox Grid.Column="1" Text="{Binding C1}"/>
                         </Grid>
-                        
+
                     </StackPanel>
                 </Grid>
             </GroupBox>
