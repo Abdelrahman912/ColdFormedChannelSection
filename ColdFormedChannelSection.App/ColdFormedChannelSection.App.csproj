@@ -7,7 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="UI\Resources\lipped C.jpg" />
     <None Remove="UI\Resources\Lipped.png" />
+    <None Remove="UI\Resources\Unstiffened C.jpg" />
   </ItemGroup>
 
   <ItemGroup>
@@ -29,9 +31,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="UI\Resources\lipped C.jpg" />
     <Resource Include="UI\Resources\Lipped.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="UI\Resources\Unstiffened C.jpg" />
   </ItemGroup>
 
 </Project>

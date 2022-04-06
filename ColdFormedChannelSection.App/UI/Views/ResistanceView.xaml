@@ -75,8 +75,10 @@
                     </Grid>
                 </StackPanel>
                 <Grid Grid.Column="1">
-                    <Image Grid.Row="2"  Width="250" Height="200" VerticalAlignment="Center" Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
-                       Source="../Resources/Lipped.png" />
+                    <Image Grid.Row="2"  Width="300" Height="200" VerticalAlignment="Center" Visibility="{Binding IsUnstiffened, Converter={StaticResource InverseBoolToVisConverter}}"
+                       Source="../Resources/lipped C.jpg" />
+                    <Image Grid.Row="2"  Width="300" Height="200" VerticalAlignment="Center" 
+                       Source="../Resources/Unstiffened C.jpg" Visibility="{Binding IsUnstiffened, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                 </Grid>
             </Grid>
            
