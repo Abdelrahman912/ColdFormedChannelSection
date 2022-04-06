@@ -132,7 +132,7 @@ namespace ColdFormedChannelSection.Core.Helpers
 
         private static double GetAISIReducedZe(this LippedSection lippedSection, Material material, double F_ = 0,bool isOneIter = false)
         {
-            var b = lippedSection.Dimensions.TotalFlangeWidthB;
+            var b = lippedSection.Properties.BSmall;
             var t = lippedSection.Dimensions.ThicknessT;
             var C = lippedSection.Dimensions.TotalFoldWidthC;
             var H = lippedSection.Dimensions.TotalHeightH;
@@ -187,6 +187,7 @@ namespace ColdFormedChannelSection.Core.Helpers
         {
 
             var b = section.Properties.BSmall;
+            var B = section.Dimensions.TotalFlangeWidthB;
             var t = section.Dimensions.ThicknessT;
             var C = section.Dimensions.TotalFoldWidthC;
             var H = section.Dimensions.TotalHeightH;
@@ -226,13 +227,13 @@ namespace ColdFormedChannelSection.Core.Helpers
                 var he2 = ae - he1;
                 if (sai >= 0.236)
                 {
-                    if ((H / b) <= 4)
+                    if ((H / B) <= 4)
                         he2 = ae / 2;
                     else
                         he2 = (ae / (1 + sai)) - he1;
                 }
                 var hneg = y_bar - (t / 2) - r - (he1 + he2);
-                var yneg = t / 2 + r + he1 + hneg / 2;
+                var yneg = (t / 2) + r + he1 + (hneg / 2);
                 if (hneg <= 0)
                 {
                     hneg = 0;
