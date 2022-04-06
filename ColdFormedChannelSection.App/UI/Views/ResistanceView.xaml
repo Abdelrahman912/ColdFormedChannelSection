@@ -9,6 +9,7 @@
              xmlns:markup="clr-namespace:ColdFormedChannelSection.App.UI.MarkupExtensions"
               xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:enums ="clr-namespace:ColdFormedChannelSection.App.ViewModels.Enums"
+             xmlns:enums2 ="clr-namespace:ColdFormedChannelSection.Core.Enums;assembly=ColdFormedChannelSection.Core"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <Grid.RowDefinitions>
@@ -54,7 +55,7 @@
                         </Grid.ColumnDefinitions>
                         <TextBlock Text="Units:"/>
                         <ComboBox Grid.Column="1" SelectedItem="{Binding Unit}"
-                                  ItemsSource="{Binding Source={markup:EnumBindingSource {x:Type enums:Units}}}"/>
+                                  ItemsSource="{Binding Source={markup:EnumBindingSource {x:Type enums2:Units}}}"/>
                     </Grid>
 
                     <Grid Margin="8">

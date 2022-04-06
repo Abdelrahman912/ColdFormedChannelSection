@@ -1,10 +1,9 @@
-﻿using ColdFormedChannelSection.Core.Enums;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 
-namespace ColdFormedChannelSection.App.ViewModels.Enums
+namespace ColdFormedChannelSection.Core.Enums
 {
     [TypeConverter(typeof(EnumDescriptionTypeConverter))]
-    internal enum Units
+    public enum Units
     {
         [Description("ton & cm")]
         TONCM,
