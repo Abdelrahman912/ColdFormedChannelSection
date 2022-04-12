@@ -37,19 +37,19 @@ namespace ColdFormedChannelSection.App.ViewModels
         private void OnResults()
         {
             IsResistanceOutput = false;
-            var material = (new Material(Fy, E, 0.3)).Convert(Unit, Units.NMM);
-            var bracingConditions = (new LengthBracingConditions(Lx, Ly, Lz, Kx, Ky, Kz, Lu, Cb, C1)).Convert(Unit, Units.NMM);
+            var material = (new Material(Fy, E, 0.3)).Convert(Unit, Units.TONCM);
+            var bracingConditions = (new LengthBracingConditions(Lx, Ly, Lz, Kx, Ky, Kz, Lu, Cb, C1)).Convert(Unit, Units.TONCM);
             switch (StrainingAction)
             {
                 case StrainingActions.MOMENT:
-                    var momentOut = IsUnstiffened ? (new SectionDimension(TotalHeightH, TotalWidthB, InternalRadiusR, ThicknessT, TotalFoldWidthC)).Convert(Unit, Units.NMM).AsUnStiffenedSection().AsEgyptMomentResistance(material, bracingConditions).Convert(Units.NMM, Unit)
-                                                  : (new SectionDimension(TotalHeightH, TotalWidthB, InternalRadiusR, ThicknessT, TotalFoldWidthC)).Convert(Unit, Units.NMM).AsLippedSection().AsEgyptMomentResistance(material, bracingConditions).Convert(Units.NMM, Unit);
+                    var momentOut = IsUnstiffened ? (new SectionDimension(TotalHeightH, TotalWidthB, InternalRadiusR, ThicknessT, TotalFoldWidthC)).Convert(Unit, Units.TONCM).AsUnStiffenedSection().AsEgyptMomentResistance(material, bracingConditions).Convert(Units.TONCM, Unit)
+                                                  : (new SectionDimension(TotalHeightH, TotalWidthB, InternalRadiusR, ThicknessT, TotalFoldWidthC)).Convert(Unit, Units.TONCM).AsLippedSection().AsEgyptMomentResistance(material, bracingConditions).Convert(Units.TONCM, Unit);
                     IsResistanceOutput = true;
                     ResistanceOutput = momentOut;
                     break;
                 case StrainingActions.COMPRESSION:
-                    var compOut = IsUnstiffened ? (new SectionDimension(TotalHeightH, TotalWidthB, InternalRadiusR, ThicknessT, TotalFoldWidthC)).Convert(Unit, Units.NMM).AsUnStiffenedSection().AsEgyptCompressionResistance(material, bracingConditions).Convert(Units.NMM, Unit)
-                                                : (new SectionDimension(TotalHeightH, TotalWidthB, InternalRadiusR, ThicknessT, TotalFoldWidthC)).Convert(Unit, Units.NMM).AsLippedSection().AsEgyptCompressionResistance(material, bracingConditions).Convert(Units.NMM, Unit);
+                    var compOut = IsUnstiffened ? (new SectionDimension(TotalHeightH, TotalWidthB, InternalRadiusR, ThicknessT, TotalFoldWidthC)).Convert(Unit, Units.TONCM).AsUnStiffenedSection().AsEgyptCompressionResistance(material, bracingConditions).Convert(Units.TONCM, Unit)
+                                                : (new SectionDimension(TotalHeightH, TotalWidthB, InternalRadiusR, ThicknessT, TotalFoldWidthC)).Convert(Unit, Units.TONCM).AsLippedSection().AsEgyptCompressionResistance(material, bracingConditions).Convert(Units.TONCM, Unit);
                     IsResistanceOutput = true;
                     ResistanceOutput = compOut;
                     break;

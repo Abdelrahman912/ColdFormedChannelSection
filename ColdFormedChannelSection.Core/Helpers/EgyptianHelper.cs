@@ -204,7 +204,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var c_over_t = c_prime / t;
             var c_ee =Math.Min( 0.78 * t * E_over_Fy_sqrt * (1 - (0.13 /c_over_t) * (E_over_Fy_sqrt)),c_prime);
 
-            var A_ee = t * (a_ee + 2 * b_ee+c_prime*c_ee);
+            var A_ee = t * (a_ee + 2 * b_ee+2*c_ee);
             return A_ee;
         }
 
@@ -222,7 +222,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var a_ee = Math.Min(1.92 * t * E_over_Fy_sqrt * (1 - 0.385 * (E_over_Fy_sqrt / a_over_t)),a_prime);
 
             //Flange
-            var b_ee =Math.Min(1, 0.78 * t * E_over_Fy_sqrt * (1-(0.13/(b_prime/t))*E_over_Fy_sqrt));
+            var b_ee =Math.Min(b_prime, 0.78 * t * E_over_Fy_sqrt * (1-(0.13/(b_prime/t))*E_over_Fy_sqrt));
 
 
             var A_ee = t * (a_ee + 2 * b_ee );
@@ -260,33 +260,33 @@ namespace ColdFormedChannelSection.Core.Helpers
             return pn;
         }
 
-        private static double GetEgyptCompressionFBResistance(this LippedSection section, Material material , LengthBracingConditions bracingConditions)
-        {
-            var Aee = section.GetEgyptReducedAreaEE(material);
-            var pn = section.GetEgyptCompressionFBResistance(material,bracingConditions,Aee);
-            return pn;
-        }
+        //private static double GetEgyptCompressionFBResistance(this LippedSection section, Material material , LengthBracingConditions bracingConditions)
+        //{
+        //    var Aee = section.GetEgyptReducedAreaEE(material);
+        //    var pn = section.GetEgyptCompressionFBResistance(material,bracingConditions,Aee);
+        //    return pn;
+        //}
 
-        private static double GetEgyptCompressionFBResistance(this UnStiffenedSection section, Material material, LengthBracingConditions bracingConditions)
-        {
-            var Aee = section.GetEgyptReducedAreaEE(material);
-            var pn = section.GetEgyptCompressionFBResistance(material, bracingConditions, Aee);
-            return pn;
-        }
+        //private static double GetEgyptCompressionFBResistance(this UnStiffenedSection section, Material material, LengthBracingConditions bracingConditions)
+        //{
+        //    var Aee = section.GetEgyptReducedAreaEE(material);
+        //    var pn = section.GetEgyptCompressionFBResistance(material, bracingConditions, Aee);
+        //    return pn;
+        //}
 
-        private static double GetEgyptCompressionTFBResistance(this LippedSection section , Material material , LengthBracingConditions bracingConditions)
-        {
-            var Aee= section.GetEgyptReducedAreaEE(material);
-            var pn = section.GetEgyptCompressionTFBResistance(material , bracingConditions, Aee);
-            return pn;
-        }
+        //private static double GetEgyptCompressionTFBResistance(this LippedSection section , Material material , LengthBracingConditions bracingConditions)
+        //{
+        //    var Aee= section.GetEgyptReducedAreaEE(material);
+        //    var pn = section.GetEgyptCompressionTFBResistance(material , bracingConditions, Aee);
+        //    return pn;
+        //}
 
-        private static double GetEgyptCompressionTFBResistance(this UnStiffenedSection section, Material material, LengthBracingConditions bracingConditions)
-        {
-            var Aee = section.GetEgyptReducedAreaEE(material);
-            var pn = section.GetEgyptCompressionTFBResistance(material, bracingConditions, Aee);
-            return pn;
-        }
+        //private static double GetEgyptCompressionTFBResistance(this UnStiffenedSection section, Material material, LengthBracingConditions bracingConditions)
+        //{
+        //    var Aee = section.GetEgyptReducedAreaEE(material);
+        //    var pn = section.GetEgyptCompressionTFBResistance(material, bracingConditions, Aee);
+        //    return pn;
+        //}
 
         private static double GetEgyptCompressionTFBResistance(this Section section , Material material , LengthBracingConditions bracingConditions,double Aee)
         {
@@ -325,8 +325,9 @@ namespace ColdFormedChannelSection.Core.Helpers
             if (!section.IsValid())
                 return new CompressionResistanceOutput(0.0, 0.8, FailureMode.UNSAFE, "ton");
             var pn1 = Tuple.Create(section.GetEgyptCompressionLBResistance(material), FailureMode.LOCALBUCKLING);
-            var pn2 = Tuple.Create(section.GetEgyptCompressionFBResistance(material, bracingConditions), FailureMode.FLEXURALBUCKLING);
-            var pn3 = Tuple.Create(section.GetEgyptCompressionTFBResistance(material, bracingConditions), FailureMode.TORSIONALBUCKLING);
+            var Aee = section.GetEgyptReducedAreaEE(material);
+            var pn2 = Tuple.Create(section.GetEgyptCompressionFBResistance(material, bracingConditions,Aee), FailureMode.FLEXURALBUCKLING);
+            var pn3 = Tuple.Create(section.GetEgyptCompressionTFBResistance(material, bracingConditions,Aee), FailureMode.TORSIONALBUCKLING);
             var pns = new List<Tuple<double, FailureMode>>()
             {
                 pn1, pn2, pn3
@@ -341,8 +342,9 @@ namespace ColdFormedChannelSection.Core.Helpers
             if (!section.IsValid())
                 return new CompressionResistanceOutput(0.0, 0.8, FailureMode.UNSAFE, "ton");
             var pn1 = Tuple.Create(section.GetEgyptCompressionLBResistance(material), FailureMode.LOCALBUCKLING);
-            var pn2 = Tuple.Create(section.GetEgyptCompressionFBResistance(material, bracingConditions), FailureMode.FLEXURALBUCKLING);
-            var pn3 = Tuple.Create(section.GetEgyptCompressionTFBResistance(material, bracingConditions), FailureMode.TORSIONALBUCKLING);
+            var Aee = section.GetEgyptReducedAreaEE(material);
+            var pn2 = Tuple.Create(section.GetEgyptCompressionFBResistance(material, bracingConditions,Aee), FailureMode.FLEXURALBUCKLING);
+            var pn3 = Tuple.Create(section.GetEgyptCompressionTFBResistance(material, bracingConditions,Aee), FailureMode.TORSIONALBUCKLING);
             var pns = new List<Tuple<double, FailureMode>>()
             {
                 pn1, pn2, pn3
