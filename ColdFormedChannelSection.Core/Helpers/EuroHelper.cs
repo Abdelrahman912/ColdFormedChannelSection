@@ -106,10 +106,10 @@ namespace ColdFormedChannelSection.Core.Helpers
             var epslon = Math.Sqrt(235.0 / Fy);
             var lambda_w = (a_prime / t) / (28.4 * epslon * Math.Sqrt(kw));
 
-            var lambda_w_limit = 0.5 + Math.Sqrt(0.85 - 0.055 * sai_w);
+            var lambda_w_limit = 0.5 + Math.Sqrt(0.085 - 0.055 * sai_w);
             var row_w = 1.0;
             if (lambda_w > lambda_w_limit)
-                row_w = Math.Min(1.0, ((lambda_w - 0.055 * (3 + lambda_w)) / (lambda_w.Power(2))));
+                row_w = Math.Min(1.0, ((lambda_w - 0.055 * (3 + sai_w)) / (lambda_w.Power(2))));
             var ae = row_w * a_prime;
             return ae;
         }
