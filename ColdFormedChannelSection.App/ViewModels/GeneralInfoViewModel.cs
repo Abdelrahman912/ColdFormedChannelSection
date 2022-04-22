@@ -32,7 +32,11 @@ namespace ColdFormedChannelSection.App.ViewModels
         public bool IsUnstiffened
         {
             get => _isUnstiffened;
-            set => NotifyPropertyChanged(ref _isUnstiffened, value);
+            set 
+            { 
+                NotifyPropertyChanged(ref _isUnstiffened, value);
+                Mediator.Mediator.Instance.NotifyColleagues(_isUnstiffened, Context.STIFF_UNSTIFF);
+            }
         }
 
         public Units Unit

@@ -45,11 +45,11 @@ namespace ColdFormedChannelSection.App
             _euroCodeReistanceVM = new Lazy<EuroCodeReistanceViewModel>(() =>new EuroCodeReistanceViewModel(generalInfoVM, bracingConditionsVM, geometryVM));
             _aisiCodeResistanceVM = new Lazy<AISICodeResistanceViewModel>(() =>new AISICodeResistanceViewModel(generalInfoVM, bracingConditionsVM, geometryVM));
             _aiscCodeResistanceVM = new Lazy<AISCCodeResistanceViewModel>(() =>new AISCCodeResistanceViewModel(generalInfoVM, bracingConditionsVM, geometryVM));
-            Mediator.Instance.Subscribe<object>(this, _ => CurrentVM = _directStrengthResistanceVM.Value,Context.ResistanceDirectStrength);
-            Mediator.Instance.Subscribe<object>(this, _ => CurrentVM = _egyptianCodeResistanceVM.Value, Context.ResistanceEgyptianCode);
-            Mediator.Instance.Subscribe<object>(this,_=>CurrentVM=_euroCodeReistanceVM.Value,Context.ResistanceEuroCode);
-            Mediator.Instance.Subscribe<object>(this,_=>CurrentVM=_aisiCodeResistanceVM.Value,Context.ResistanceAISICode);
-            Mediator.Instance.Subscribe<object>(this,_=>CurrentVM=_aiscCodeResistanceVM.Value,Context.ResistanceAISCCode);
+            Mediator.Instance.Subscribe<object>(this, _ => CurrentVM = _directStrengthResistanceVM.Value,Context.RESISTANCE_DIRECT_STRENGTH);
+            Mediator.Instance.Subscribe<object>(this, _ => CurrentVM = _egyptianCodeResistanceVM.Value, Context.RESISTANCE_EGYPT_CODE);
+            Mediator.Instance.Subscribe<object>(this,_=>CurrentVM=_euroCodeReistanceVM.Value,Context.RESISTANCE_EURO_CODE);
+            Mediator.Instance.Subscribe<object>(this,_=>CurrentVM=_aisiCodeResistanceVM.Value,Context.RESISTANCE_AISI_CODE);
+            Mediator.Instance.Subscribe<object>(this,_=>CurrentVM=_aiscCodeResistanceVM.Value,Context.RESISTANCE_AISC_CODE);
         }
 
         #endregion

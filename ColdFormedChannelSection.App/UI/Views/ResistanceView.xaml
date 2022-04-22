@@ -29,7 +29,7 @@
                 <ColumnDefinition Width="0.85*"/>
             </Grid.ColumnDefinitions>
 
-            <vs:GeometryView/>
+            <vs:GeometryView DataContext="{Binding GeometryVM}"/>
             <vs:BracingConditionsView Grid.Column="1" DataContext="{Binding BracingConditionsVM}"/>
 
             <vs:ResistanceOutputView IsEnabled="{Binding IsResistanceOutput}" Grid.Column="2" DataContext="{Binding ResistanceOutput}"/>

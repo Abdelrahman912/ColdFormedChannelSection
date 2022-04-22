@@ -49,35 +49,35 @@ namespace ColdFormedChannelSection.App.ViewModels
         private void OnResistanceAISC()
         {
             Name = "Resistance | AISC Code";
-            Mediator.Mediator.Instance.NotifyColleagues(new object(), Context.ResistanceAISCCode);
+            Mediator.Mediator.Instance.NotifyColleagues(new object(), Context.RESISTANCE_AISC_CODE);
         }
        
 
         private void OnResistanceAISI()
         {
             Name = "Resistance | AISI Code";
-            Mediator.Mediator.Instance.NotifyColleagues(new object(), Context.ResistanceAISICode);
+            Mediator.Mediator.Instance.NotifyColleagues(new object(), Context.RESISTANCE_AISI_CODE);
         }
        
 
         private void OnReistanceEuro()
         {
             Name = "Resistance | Euro Code";
-            Mediator.Mediator.Instance.NotifyColleagues(new object(), Context.ResistanceEuroCode);
+            Mediator.Mediator.Instance.NotifyColleagues(new object(), Context.RESISTANCE_EURO_CODE);
         }
        
 
         private void OnResistanceEgypt()
         {
             Name = "Resistance | Egyptian Code";
-            Mediator.Mediator.Instance.NotifyColleagues(new object(), Context.ResistanceEgyptianCode);
+            Mediator.Mediator.Instance.NotifyColleagues(new object(), Context.RESISTANCE_EGYPT_CODE);
         }
        
 
         private void OnResistanceDS()
         {
             Name = "Resistance | Direct Strength";
-            Mediator.Mediator.Instance.NotifyColleagues(new object(), Context.ResistanceDirectStrength);
+            Mediator.Mediator.Instance.NotifyColleagues(new object(), Context.RESISTANCE_DIRECT_STRENGTH);
         }
 
         #endregion

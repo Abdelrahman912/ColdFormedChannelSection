@@ -1,4 +1,5 @@
 ﻿using ColdFormedChannelSection.App.ViewModels.Base;
+using ColdFormedChannelSection.App.ViewModels.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,10 +18,16 @@ namespace ColdFormedChannelSection.App.ViewModels
         private double _internalRadiusR;
         private double _thicknessT;
         private double _totalFoldWidthC;
-
+        private bool _isUnstiffened;
         #endregion
 
         #region Properties
+
+        public bool IsUnstiffened
+        {
+            get => _isUnstiffened;
+            set => NotifyPropertyChanged(ref _isUnstiffened, value);
+        }
 
         public double TotalFoldWidthC
         {
@@ -63,9 +70,24 @@ namespace ColdFormedChannelSection.App.ViewModels
             TotalWidthB = 0;
             ThicknessT = 0.0;
             InternalRadiusR = 0.0;
+            IsUnstiffened = true;
+            Mediator.Mediator.Instance.Subscribe<bool>(this, OnStiffChanged, Context.STIFF_UNSTIFF);
+        }
+
+
+        #endregion
+
+        #region Methods
+
+        private void OnStiffChanged(bool isUnstiff)
+        {
+           IsUnstiffened=isUnstiff;
+            if (isUnstiff)
+                TotalFoldWidthC = 0;
         }
 
         #endregion
+
 
     }
 }
