@@ -1,15 +1,14 @@
 ﻿using ColdFormedChannelSection.App.ViewModels.Base;
 using ColdFormedChannelSection.App.ViewModels.Enums;
+using ColdFormedChannelSection.Core.Dtos;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ColdFormedChannelSection.App.ViewModels
 {
     internal class GeometryViewModel:ViewModelBase
     {
+
 
         #region Private Fields
 
@@ -19,9 +18,39 @@ namespace ColdFormedChannelSection.App.ViewModels
         private double _thicknessT;
         private double _totalFoldWidthC;
         private bool _isUnstiffened;
+
+        private bool _isUserDefined;
+
+        private List<SectionDimensionDto> _sections;
+
+        private SectionDimensionDto _selectedSection;
+
         #endregion
 
         #region Properties
+
+        public List<SectionDimensionDto> Sections
+        {
+            get => _sections;
+            set => NotifyPropertyChanged(ref _sections, value);
+        }
+
+        public SectionDimensionDto SelectedSection
+        {
+            get => _selectedSection;
+            set => NotifyPropertyChanged(ref _selectedSection, value);
+        }
+
+        public bool IsUserDefined
+        {
+            get => _isUserDefined;
+            set 
+            { 
+                NotifyPropertyChanged(ref _isUserDefined, value);
+                if (!_isUserDefined)
+                    Mediator.Mediator.Instance.NotifyColleagues(this, Context.SECTION_GEOMETRY);
+            }
+        }
 
         public bool IsUnstiffened
         {
@@ -65,6 +94,8 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         public GeometryViewModel()
         {
+            Sections = new List<SectionDimensionDto>();
+            IsUserDefined = true;
             TotalFoldWidthC = 0.0;
             TotalHeightH = 0.0;
             TotalWidthB = 0;

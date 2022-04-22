@@ -19,11 +19,12 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <StackPanel >
-                            <RadioButton Content="Import from Library" Margin="0 0 0 5" VerticalAlignment="Center"/>
-                            <RadioButton Grid.Column="1" Content="User defined" Margin="0 5 0 0" VerticalAlignment="Center"/>
+                            <RadioButton Content="Import from Library" IsChecked="{Binding IsUserDefined, Converter={StaticResource InvertBooleanConverter}}" Margin="0 0 0 5" VerticalAlignment="Center"/>
+                            <RadioButton Grid.Column="1" Content="User defined" IsChecked="{Binding IsUserDefined}" Margin="0 5 0 0" VerticalAlignment="Center"/>
                         </StackPanel>
 
-                        <ComboBox Grid.Column="1" VerticalAlignment="Top" Height="auto" Margin="0 5 0 0"/>
+                        <ComboBox Grid.Column="1" ItemsSource="{Binding Sections}" SelectedItem="{Binding SelectedSection}"
+                                  VerticalAlignment="Top" Height="auto" Margin="0 5 0 0" Visibility="{Binding IsUserDefined, Converter={StaticResource InverseBoolToVisConverter}}"/>
                     </Grid>
 
                     <Grid Margin="5">
@@ -35,7 +36,7 @@
                             <TextBlock Text="Total Height (H)" VerticalAlignment="Center"/>
                             <TextBlock Style="{StaticResource lengthUnit}" VerticalAlignment="Center"/>
                         </StackPanel>
-                        <TextBox Grid.Column="1" Text="{Binding TotalHeightH}" />
+                        <TextBox Grid.Column="1" Text="{Binding TotalHeightH}" IsEnabled="{Binding IsUserDefined}"/>
                     </Grid>
                     <Grid Margin="5">
                         <Grid.ColumnDefinitions>
@@ -46,7 +47,7 @@
                             <TextBlock Text="Total Width of Flange (B)" VerticalAlignment="Center"/>
                             <TextBlock Style="{StaticResource lengthUnit}" VerticalAlignment="Center"/>
                         </StackPanel>
-                        <TextBox Grid.Column="1" Text="{Binding TotalWidthB}"/>
+                        <TextBox Grid.Column="1" Text="{Binding TotalWidthB}" IsEnabled="{Binding IsUserDefined}"/>
                     </Grid>
                     <Grid Margin="5">
                         <Grid.ColumnDefinitions>
@@ -57,7 +58,7 @@
                             <TextBlock Text="Internal Radius (R)" VerticalAlignment="Center"/>
                             <TextBlock Style="{StaticResource lengthUnit}" VerticalAlignment="Center"/>
                         </StackPanel>
-                        <TextBox Grid.Column="1" Text="{Binding InternalRadiusR}"/>
+                        <TextBox Grid.Column="1" Text="{Binding InternalRadiusR}" IsEnabled="{Binding IsUserDefined}"/>
                     </Grid>
 
                     <Grid Margin="5">
@@ -69,7 +70,7 @@
                             <TextBlock Text="Thickness (t)" VerticalAlignment="Center"/>
                             <TextBlock Style="{StaticResource lengthUnit}" VerticalAlignment="Center"/>
                         </StackPanel>
-                        <TextBox Grid.Column="1" Text="{Binding ThicknessT}"/>
+                        <TextBox Grid.Column="1" Text="{Binding ThicknessT}" IsEnabled="{Binding IsUserDefined}"/>
                     </Grid>
                     <Grid Margin="5" Visibility="{Binding IsUnstiffened, Converter={StaticResource InverseBoolToVisConverter}}">
                         <Grid.ColumnDefinitions>
@@ -80,7 +81,7 @@
                             <TextBlock Text="Total Width of Edge Fold (C)" VerticalAlignment="Center"/>
                             <TextBlock Style="{StaticResource lengthUnit}" VerticalAlignment="Center"/>
                         </StackPanel>
-                        <TextBox Grid.Column="1" Text="{Binding TotalFoldWidthC}"/>
+                        <TextBox Grid.Column="1" Text="{Binding TotalFoldWidthC}" IsEnabled="{Binding IsUserDefined}"/>
                     </Grid>
                 </StackPanel>
             </Grid>
