@@ -7,7 +7,20 @@ namespace ColdFormedChannelSection.App.ViewModels
     internal class MenuViewModel:ViewModelBase
     {
 
+        #region Private Fields
+
+        private string _name;
+
+        #endregion
+
         #region Properties
+
+        public string Name
+        {
+            get => _name;
+            set => NotifyPropertyChanged(ref _name ,value);
+        }
+
         public ICommand ResistanceDSCommand { get;  }
         public ICommand ResistanceEgyptCommand { get; }
         public ICommand ResistanceEuroCommand { get; }
@@ -20,6 +33,7 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         public MenuViewModel()
         {
+            Name = "";
             ResistanceDSCommand = new RelayCommand(OnResistanceDS);
             ResistanceEgyptCommand = new RelayCommand(OnResistanceEgypt);
             ResistanceEuroCommand = new RelayCommand(OnReistanceEuro);
@@ -32,24 +46,39 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         #region Methods
 
-        private void OnResistanceAISC() =>
+        private void OnResistanceAISC()
+        {
+            Name = "Resistance | AISC Code";
             Mediator.Mediator.Instance.NotifyColleagues(new object(), Context.ResistanceAISCCode);
+        }
        
 
-        private void OnResistanceAISI() =>
+        private void OnResistanceAISI()
+        {
+            Name = "Resistance | AISI Code";
             Mediator.Mediator.Instance.NotifyColleagues(new object(), Context.ResistanceAISICode);
+        }
        
 
-        private void OnReistanceEuro() =>
+        private void OnReistanceEuro()
+        {
+            Name = "Resistance | Euro Code";
             Mediator.Mediator.Instance.NotifyColleagues(new object(), Context.ResistanceEuroCode);
+        }
        
 
-        private void OnResistanceEgypt() =>
+        private void OnResistanceEgypt()
+        {
+            Name = "Resistance | Egyptian Code";
             Mediator.Mediator.Instance.NotifyColleagues(new object(), Context.ResistanceEgyptianCode);
+        }
        
 
-        private void OnResistanceDS() =>
+        private void OnResistanceDS()
+        {
+            Name = "Resistance | Direct Strength";
             Mediator.Mediator.Instance.NotifyColleagues(new object(), Context.ResistanceDirectStrength);
+        }
 
         #endregion
 

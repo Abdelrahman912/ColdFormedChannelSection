@@ -19,7 +19,6 @@ namespace ColdFormedChannelSection.App.ViewModels
         #region Constructors
 
         public EgyptianCodeResistanceViewModel()
-            :base ("Resistance | Egyptian Code")
         {
             ResultsCommand = new RelayCommand(OnResults, CanResults);
             IsResistanceOutput = false;

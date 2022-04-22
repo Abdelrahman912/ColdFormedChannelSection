@@ -29,5 +29,7 @@
             </MenuItem>
             <MenuItem Header="_About" Height="50" Command="{Binding AboutCommand}"/>
         </Menu>
+        <TextBlock HorizontalAlignment="Right" VerticalAlignment="Center" 
+                   Text="{Binding Name}" FontSize="18" Margin="0 0 10 0" Foreground="#453E3E"/>
     </Grid>
 </UserControl>

@@ -22,7 +22,6 @@ namespace ColdFormedChannelSection.App.ViewModels
         #region Constructors
 
         public EuroCodeReistanceViewModel()
-            : base("Resistance | Euro Code")
         {
             _isUsedParamsAction += (sa) =>
               {

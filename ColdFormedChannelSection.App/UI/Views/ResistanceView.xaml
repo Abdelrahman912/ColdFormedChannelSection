@@ -13,14 +13,14 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <Grid.RowDefinitions>
+            <!--<RowDefinition Height="auto"/>-->
             <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
+            <RowDefinition Height="1.2*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" 
-                   Text="{Binding Name}" FontSize="24"/>
-        <GroupBox Grid.Row="1" Margin="5" Header="Shape &amp; General info." Style="{StaticResource MaterialDesignGroupBox}" 
+        <!--<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" 
+                   Text="{Binding Name}" FontSize="24"/>-->
+        <GroupBox Grid.Row="0" Margin="5" Header="Shape &amp; General info." Style="{StaticResource MaterialDesignGroupBox}" 
                                           materialDesign:ColorZoneAssist.Mode="Standard">
             <Grid >
                 <Grid.ColumnDefinitions>
@@ -33,68 +33,68 @@
                             <ColumnDefinition Width="0.8*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="Straining Action:"/>
+                        <TextBlock Text="Straining Action:" VerticalAlignment="Center"/>
                         <ComboBox Grid.Column="1" SelectedItem="{Binding StrainingAction}"
                                   ItemsSource="{Binding Source={markup:EnumBindingSource {x:Type enums:StrainingActions}}}" />
                     </Grid>
-                    <Grid Margin="8">
+                    <Grid Margin="5">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="0.8*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="Type of Channel:"/>
+                        <TextBlock Text="Type of Channel:" VerticalAlignment="Center"/>
                         <StackPanel  Grid.Column="1" Orientation="Horizontal">
                             <RadioButton Content="Lipped" Margin="0 0 40 0"/>
                             <RadioButton IsChecked="{Binding IsUnstiffened}" Content="Unstiffened" Margin="40 0 0 0"/>
                         </StackPanel>
                     </Grid>
-                    <Grid Margin="8">
+                    <Grid Margin="5">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="0.8*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="Units:"/>
+                        <TextBlock Text="Units:" VerticalAlignment="Center"/>
                         <ComboBox Grid.Column="1" SelectedItem="{Binding Unit}"
                                   ItemsSource="{Binding Source={markup:EnumBindingSource {x:Type enums2:Units}}}"/>
                     </Grid>
 
-                    <Grid Margin="8">
+                    <Grid Margin="5">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="0.8*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="Material Strength (Fy)"/>
-                            <TextBlock Style="{StaticResource stressUnit}"/>
+                            <TextBlock Text="Material Strength (Fy)" VerticalAlignment="Center"/>
+                            <TextBlock Style="{StaticResource stressUnit}" VerticalAlignment="Center"/>
                         </StackPanel>
                         <TextBox Text="{Binding Fy}" Grid.Column="1" />
                     </Grid>
-                    <Grid Margin="8">
+                    <Grid Margin="5">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="0.8*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="Elastic Modulus (E)"/>
-                            <TextBlock Style="{StaticResource stressUnit}"/>
+                            <TextBlock Text="Elastic Modulus (E)" VerticalAlignment="Center"/>
+                            <TextBlock Style="{StaticResource stressUnit}" VerticalAlignment="Center"/>
                         </StackPanel>
                         <TextBox Text="{Binding E}" Grid.Column="1" />
                     </Grid>
                 </StackPanel>
                 <Grid Grid.Column="1">
-                    <Image Grid.Row="2"  Width="300" Height="200" VerticalAlignment="Center" Visibility="{Binding IsUnstiffened, Converter={StaticResource InverseBoolToVisConverter}}"
+                    <Image Grid.Row="2"  Width="280" Height="187" VerticalAlignment="Center" Visibility="{Binding IsUnstiffened, Converter={StaticResource InverseBoolToVisConverter}}"
                        Source="../Resources/lipped C.jpg" />
-                    <Image Grid.Row="2"  Width="300" Height="200" VerticalAlignment="Center" 
+                    <Image Grid.Row="2"  Width="280" Height="187" VerticalAlignment="Center" 
                        Source="../Resources/Unstiffened C.jpg" Visibility="{Binding IsUnstiffened, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                 </Grid>
             </Grid>
 
         </GroupBox>
-        <Grid Grid.Row="2">
+        <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="1.05*"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="0.85*"/>
             </Grid.ColumnDefinitions>
 
             <GroupBox  Margin="5" Header="Geometry" Style="{StaticResource MaterialDesignGroupBox}" 
@@ -102,59 +102,73 @@
                 <Grid>
 
                     <StackPanel>
-                        <Grid Margin="8">
+
+                        <Grid Margin="5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel >
+                                <RadioButton Content="Import from Library" Margin="0 0 0 5" VerticalAlignment="Center"/>
+                                <RadioButton Grid.Column="1" Content="User defined" Margin="0 5 0 0" VerticalAlignment="Center"/>
+                            </StackPanel>
+                          
+                            <ComboBox Grid.Column="1" VerticalAlignment="Top" Height="auto" Margin="0 5 0 0"/>
+                        </Grid>
+
+                        <Grid Margin="5">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="1.1*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Total Height (H)"/>
-                                <TextBlock Style="{StaticResource lengthUnit}"/>
+                                <TextBlock Text="Total Height (H)" VerticalAlignment="Center"/>
+                                <TextBlock Style="{StaticResource lengthUnit}" VerticalAlignment="Center"/>
                             </StackPanel>
                             <TextBox Grid.Column="1" Text="{Binding TotalHeightH}" />
                         </Grid>
-                        <Grid Margin="8">
+                        <Grid Margin="5">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="1.1*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Total Width of Flange (B)"/>
-                                <TextBlock Style="{StaticResource lengthUnit}"/>
+                                <TextBlock Text="Total Width of Flange (B)" VerticalAlignment="Center"/>
+                                <TextBlock Style="{StaticResource lengthUnit}" VerticalAlignment="Center"/>
                             </StackPanel>
                             <TextBox Grid.Column="1" Text="{Binding TotalWidthB}"/>
                         </Grid>
-                        <Grid Margin="8">
+                        <Grid Margin="5">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="1.1*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Internal Radius (R)"/>
-                                <TextBlock Style="{StaticResource lengthUnit}"/>
+                                <TextBlock Text="Internal Radius (R)" VerticalAlignment="Center"/>
+                                <TextBlock Style="{StaticResource lengthUnit}" VerticalAlignment="Center"/>
                             </StackPanel>
                             <TextBox Grid.Column="1" Text="{Binding InternalRadiusR}"/>
                         </Grid>
 
-                        <Grid Margin="8">
+                        <Grid Margin="5">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="1.1*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Thickness (t)"/>
-                                <TextBlock Style="{StaticResource lengthUnit}"/>
+                                <TextBlock Text="Thickness (t)" VerticalAlignment="Center"/>
+                                <TextBlock Style="{StaticResource lengthUnit}" VerticalAlignment="Center"/>
                             </StackPanel>
                             <TextBox Grid.Column="1" Text="{Binding ThicknessT}"/>
                         </Grid>
-                        <Grid Margin="8" Visibility="{Binding IsUnstiffened, Converter={StaticResource InverseBoolToVisConverter}}">
+                        <Grid Margin="5" Visibility="{Binding IsUnstiffened, Converter={StaticResource InverseBoolToVisConverter}}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="1.1*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Total Width of Edge Fold (C)"/>
-                                <TextBlock Style="{StaticResource lengthUnit}"/>
+                                <TextBlock Text="Total Width of Edge Fold (C)" VerticalAlignment="Center"/>
+                                <TextBlock Style="{StaticResource lengthUnit}" VerticalAlignment="Center"/>
                             </StackPanel>
                             <TextBox Grid.Column="1" Text="{Binding TotalFoldWidthC}"/>
                         </Grid>
@@ -175,8 +189,8 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Lx"/>
-                                <TextBlock Style="{StaticResource lengthUnit}"/>
+                                <TextBlock Text="Lx" VerticalAlignment="Center"/>
+                                <TextBlock Style="{StaticResource lengthUnit}" VerticalAlignment="Center"/>
                             </StackPanel>
                             <TextBox Grid.Column="1" Text="{Binding Lx}"/>
                         </Grid>
@@ -186,8 +200,8 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Ly"/>
-                                <TextBlock Style="{StaticResource lengthUnit}"/>
+                                <TextBlock Text="Ly" VerticalAlignment="Center"/>
+                                <TextBlock Style="{StaticResource lengthUnit}" VerticalAlignment="Center"/>
                             </StackPanel>
                             <TextBox Grid.Column="1" Text="{Binding Ly}"/>
                         </Grid>
@@ -197,8 +211,8 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Lz"/>
-                                <TextBlock Style="{StaticResource lengthUnit}"/>
+                                <TextBlock Text="Lz" VerticalAlignment="Center"/>
+                                <TextBlock Style="{StaticResource lengthUnit}" VerticalAlignment="Center"/>
                             </StackPanel>
                             <TextBox Grid.Column="1" Text="{Binding Lz}"/>
                         </Grid>
@@ -208,16 +222,16 @@
                                 <ColumnDefinition Width="0.8*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="Kx"/>
-                            <TextBox Grid.Column="1" Text="{Binding Kx}"/>
+                            <TextBlock Text="Kx" VerticalAlignment="Center"/>
+                            <TextBox Grid.Column="1" Text="{Binding Kx}" VerticalAlignment="Center"/>
                         </Grid>
                         <Grid Margin="8">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="0.8*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="Ky"/>
-                            <TextBox Grid.Column="1" Text="{Binding Ky}"/>
+                            <TextBlock Text="Ky" VerticalAlignment="Center"/>
+                            <TextBox Grid.Column="1" Text="{Binding Ky}" VerticalAlignment="Center"/>
                         </Grid>
                     </StackPanel>
                     <StackPanel Margin="5 0 0 0" Grid.Column="1">
@@ -226,8 +240,8 @@
                                 <ColumnDefinition Width="0.8*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="Kz"/>
-                            <TextBox Grid.Column="1" Text="{Binding Kz}"/>
+                            <TextBlock Text="Kz" VerticalAlignment="Center"/>
+                            <TextBox Grid.Column="1" Text="{Binding Kz}" VerticalAlignment="Center"/>
                         </Grid>
 
                         <Grid Margin="8" Visibility="{Binding IsLuUsed, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -236,8 +250,8 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Lu"/>
-                                <TextBlock Style="{StaticResource lengthUnit}"/>
+                                <TextBlock Text="Lu" VerticalAlignment="Center"/>
+                                <TextBlock Style="{StaticResource lengthUnit}" VerticalAlignment="Center"/>
                             </StackPanel>
                             <TextBox Grid.Column="1" Text="{Binding Lu}"/>
                         </Grid>
@@ -247,7 +261,7 @@
                                 <ColumnDefinition Width="0.8*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="Cb"/>
+                            <TextBlock Text="Cb" VerticalAlignment="Center"/>
                             <TextBox Grid.Column="1" Text="{Binding Cb}"/>
                         </Grid>
 
@@ -256,7 +270,7 @@
                                 <ColumnDefinition Width="0.8*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="C1"/>
+                            <TextBlock Text="C1" VerticalAlignment="Center"/>
                             <TextBox Grid.Column="1" Text="{Binding C1}"/>
                         </Grid>
 
@@ -265,6 +279,6 @@
             </GroupBox>
             <vs:ResistanceOutputView IsEnabled="{Binding IsResistanceOutput}" Grid.Column="2" DataContext="{Binding ResistanceOutput}"/>
         </Grid>
-        <Button Grid.Row="3" Margin="10" Width="100" Height="35" Content="Results" Command="{Binding ResultsCommand}"/>
+        <Button Grid.Row="2" Margin="8" Width="100" Height="35" Content="Results" Command="{Binding ResultsCommand}"/>
     </Grid>
 </UserControl>

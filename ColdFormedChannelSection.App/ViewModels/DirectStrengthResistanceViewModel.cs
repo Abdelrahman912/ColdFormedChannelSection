@@ -24,7 +24,6 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         #region Constructors
         public DirectStrengthResistanceViewModel()
-            :base("Resistance | Direct Strength")
         {
             ResultsCommand = new RelayCommand(OnResults, CanResults);
             IsResistanceOutput = false;

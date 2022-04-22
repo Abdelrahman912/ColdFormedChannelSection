@@ -19,7 +19,6 @@ namespace ColdFormedChannelSection.App.ViewModels
         #region Cosntructors
 
         public AISICodeResistanceViewModel()
-            :base("Resistance | AISI Code")
         {
             ResultsCommand = new RelayCommand(OnResults,CanResults);
             IsResistanceOutput = false; 

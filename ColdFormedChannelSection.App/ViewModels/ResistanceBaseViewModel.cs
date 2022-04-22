@@ -194,7 +194,6 @@ namespace ColdFormedChannelSection.App.ViewModels
             set => NotifyPropertyChanged(ref _e, value);
         }
 
-        public string Name { get; }
 
         public virtual ICommand ResultsCommand { get; }
 
@@ -202,7 +201,7 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         #region Constructors
 
-        public ResistanceBaseViewModel(string name)
+        public ResistanceBaseViewModel()
         {
             
             _isUsedParamsAction = (sa) =>
@@ -221,7 +220,7 @@ namespace ColdFormedChannelSection.App.ViewModels
                 }
             };
             
-            Name = name;
+            
             IsUnstiffened = true;
             Unit = Units.TONCM;
             IsC1Used = false;
