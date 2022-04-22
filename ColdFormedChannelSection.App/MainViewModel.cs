@@ -38,11 +38,12 @@ namespace ColdFormedChannelSection.App
         {
             MenuVM = new MenuViewModel();
             var generalInfoVM = new GeneralInfoViewModel();
-            _directStrengthResistanceVM = new Lazy<DirectStrengthResistanceViewModel>(() =>new DirectStrengthResistanceViewModel(generalInfoVM));
-            _egyptianCodeResistanceVM = new Lazy<EgyptianCodeResistanceViewModel>(() =>new EgyptianCodeResistanceViewModel(generalInfoVM));
-            _euroCodeReistanceVM = new Lazy<EuroCodeReistanceViewModel>(() =>new EuroCodeReistanceViewModel(generalInfoVM));
-            _aisiCodeResistanceVM = new Lazy<AISICodeResistanceViewModel>(() =>new AISICodeResistanceViewModel(generalInfoVM));
-            _aiscCodeResistanceVM = new Lazy<AISCCodeResistanceViewModel>(() =>new AISCCodeResistanceViewModel(generalInfoVM));
+            var bracingConditionsVM = new BracingConditionsViewModel();
+            _directStrengthResistanceVM = new Lazy<DirectStrengthResistanceViewModel>(() =>new DirectStrengthResistanceViewModel(generalInfoVM, bracingConditionsVM));
+            _egyptianCodeResistanceVM = new Lazy<EgyptianCodeResistanceViewModel>(() =>new EgyptianCodeResistanceViewModel(generalInfoVM, bracingConditionsVM));
+            _euroCodeReistanceVM = new Lazy<EuroCodeReistanceViewModel>(() =>new EuroCodeReistanceViewModel(generalInfoVM, bracingConditionsVM));
+            _aisiCodeResistanceVM = new Lazy<AISICodeResistanceViewModel>(() =>new AISICodeResistanceViewModel(generalInfoVM, bracingConditionsVM));
+            _aiscCodeResistanceVM = new Lazy<AISCCodeResistanceViewModel>(() =>new AISCCodeResistanceViewModel(generalInfoVM, bracingConditionsVM));
             Mediator.Instance.Subscribe<object>(this, _ => CurrentVM = _directStrengthResistanceVM.Value,Context.ResistanceDirectStrength);
             Mediator.Instance.Subscribe<object>(this, _ => CurrentVM = _egyptianCodeResistanceVM.Value, Context.ResistanceEgyptianCode);
             Mediator.Instance.Subscribe<object>(this,_=>CurrentVM=_euroCodeReistanceVM.Value,Context.ResistanceEuroCode);

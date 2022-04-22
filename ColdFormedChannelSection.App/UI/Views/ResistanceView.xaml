@@ -30,7 +30,7 @@
             </Grid.ColumnDefinitions>
 
             <vs:GeometryView/>
-            <vs:BracingConditionsView Grid.Column="1"/>
+            <vs:BracingConditionsView Grid.Column="1" DataContext="{Binding BracingConditionsVM}"/>
 
             <vs:ResistanceOutputView IsEnabled="{Binding IsResistanceOutput}" Grid.Column="2" DataContext="{Binding ResistanceOutput}"/>
         </Grid>
