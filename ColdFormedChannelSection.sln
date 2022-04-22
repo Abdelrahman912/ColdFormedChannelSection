@@ -7,6 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColdFormedChannelSection.Ap
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColdFormedChannelSection.Core", "ColdFormedChannelSection.Core\ColdFormedChannelSection.Core.csproj", "{D11C4200-F7B8-48D0-93BF-8CA5D7787E2D}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{039309C0-7838-4AA2-B613-8D44A7A33520}"
+	ProjectSection(SolutionItems) = preProject
+		Libraries\CSharp.Functional.dll = Libraries\CSharp.Functional.dll
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
