@@ -12,7 +12,7 @@ namespace ColdFormedChannelSection.App.ViewModels
         #region Private Fields
 
 
-        protected event Action<StrainingActions> _isUsedParamsAction;
+        
         protected  Action<Section> _onResults = _ => { };
 
         
