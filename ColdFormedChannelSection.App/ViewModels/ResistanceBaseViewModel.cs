@@ -16,11 +16,7 @@ namespace ColdFormedChannelSection.App.ViewModels
         protected  Action<Section> _onResults = _ => { };
 
         
-        private double _totalHeightH;
-        private double _totalWidthB;
-        private double _internalRadiusR;
-        private double _thicknessT;
-        private double _totalFoldWidthC;
+       
        
 
         private bool _isResistanceOutput;
@@ -30,6 +26,8 @@ namespace ColdFormedChannelSection.App.ViewModels
         private GeneralInfoViewModel _generalInfoVM;
 
         private BracingConditionsViewModel _bracingConditionsVM;
+
+        private GeometryViewModel _geometryVM;
 
         #endregion
 
@@ -47,37 +45,6 @@ namespace ColdFormedChannelSection.App.ViewModels
             set => NotifyPropertyChanged(ref _resistanceOutput, value);
         }
 
-       
-
-        public double TotalFoldWidthC
-        {
-            get => _totalFoldWidthC;
-            set => NotifyPropertyChanged(ref _totalFoldWidthC, value);
-        }
-
-        public double ThicknessT
-        {
-            get => _thicknessT;
-            set => NotifyPropertyChanged(ref _thicknessT, value);
-        }
-
-        public double InternalRadiusR
-        {
-            get => _internalRadiusR;
-            set => NotifyPropertyChanged(ref _internalRadiusR, value);
-        }
-
-        public double TotalWidthB
-        {
-            get => _totalWidthB;
-            set => NotifyPropertyChanged(ref _totalWidthB, value);
-        }
-
-        public double TotalHeightH
-        {
-            get => _totalHeightH;
-            set => NotifyPropertyChanged(ref _totalHeightH, value);
-        }
 
         public GeneralInfoViewModel GeneralInfoVM
         {
@@ -91,6 +58,11 @@ namespace ColdFormedChannelSection.App.ViewModels
             set => NotifyPropertyChanged(ref _bracingConditionsVM, value);
         }
 
+        public GeometryViewModel GeometryVM
+        {
+            get => _geometryVM;
+            set=>NotifyPropertyChanged(ref _geometryVM, value);
+        }
 
         public virtual ICommand ResultsCommand { get; }
 
@@ -99,7 +71,8 @@ namespace ColdFormedChannelSection.App.ViewModels
         #region Constructors
 
         public ResistanceBaseViewModel(GeneralInfoViewModel generalInfoVM,
-                                       BracingConditionsViewModel bracingConditionsVM)
+                                       BracingConditionsViewModel bracingConditionsVM,
+                                       GeometryViewModel geometryVM)
         {
             
             //_isUsedParamsAction = (sa) =>
@@ -119,6 +92,7 @@ namespace ColdFormedChannelSection.App.ViewModels
             //};
             GeneralInfoVM = generalInfoVM;
             BracingConditionsVM = bracingConditionsVM;
+            GeometryVM = geometryVM;
            
             //IsC1Used = false;
             //IsLuUsed = false;

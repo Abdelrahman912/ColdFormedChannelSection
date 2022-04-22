@@ -19,5 +19,17 @@ namespace ColdFormedChannelSection.App.Extensions
                 c1: vm.C1);
 
         }
+
+        internal static SectionDimension AsEntity(this GeometryViewModel vm)
+        {
+            return new SectionDimension(
+                totalHeightH: vm.TotalHeightH,
+                totalFlangeWidthB:vm.TotalWidthB,
+                internalRadiusR:vm.InternalRadiusR,
+                thicknessT:vm.ThicknessT,
+                totalFoldWidthC:vm.TotalFoldWidthC
+                );
+        }
+
     }
 }
