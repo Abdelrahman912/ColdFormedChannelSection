@@ -13,14 +13,11 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         #region Private Fields
 
+
         protected event Action<StrainingActions> _isUsedParamsAction;
         protected  Action<Section> _onResults = _ => { };
 
-        private StrainingActions _strainingAction;
-        private bool _isUnstiffened;
-        private Units _unit;
-        private double _fy;
-        private double _e;
+        
         private double _totalHeightH;
         private double _totalWidthB;
         private double _internalRadiusR;
@@ -43,6 +40,9 @@ namespace ColdFormedChannelSection.App.ViewModels
         private bool _isResistanceOutput;
 
         private ResistanceOutput _resistanceOutput;
+
+        private GeneralInfoViewModel _generalInfoVM;
+
         #endregion
 
         #region Properties
@@ -160,38 +160,10 @@ namespace ColdFormedChannelSection.App.ViewModels
             set => NotifyPropertyChanged(ref _totalHeightH, value);
         }
 
-        public StrainingActions StrainingAction
+        public GeneralInfoViewModel GeneralInfoVM
         {
-            get => _strainingAction;
-            set
-            {
-                NotifyPropertyChanged(ref _strainingAction, value);
-                _isUsedParamsAction(_strainingAction);
-            }
-        }
-
-        public bool IsUnstiffened
-        {
-            get => _isUnstiffened;
-            set => NotifyPropertyChanged(ref _isUnstiffened, value);
-        }
-
-        public Units Unit
-        {
-            get => _unit;
-            set => NotifyPropertyChanged(ref _unit, value);
-        }
-
-        public double Fy
-        {
-            get => _fy;
-            set => NotifyPropertyChanged(ref _fy, value);
-        }
-
-        public double E
-        {
-            get => _e;
-            set => NotifyPropertyChanged(ref _e, value);
+            get => _generalInfoVM;
+            set=>NotifyPropertyChanged(ref _generalInfoVM, value);
         }
 
 
@@ -201,7 +173,7 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         #region Constructors
 
-        public ResistanceBaseViewModel()
+        public ResistanceBaseViewModel(GeneralInfoViewModel generalInfoVM)
         {
             
             _isUsedParamsAction = (sa) =>
@@ -219,14 +191,13 @@ namespace ColdFormedChannelSection.App.ViewModels
                         break;
                 }
             };
+            GeneralInfoVM = generalInfoVM;
             
-            
-            IsUnstiffened = true;
-            Unit = Units.TONCM;
+           
             IsC1Used = false;
             IsLuUsed = false;
             IsC1Used = false;
-            StrainingAction = StrainingActions.MOMENT;
+           
             
         }
 

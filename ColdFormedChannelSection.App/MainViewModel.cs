@@ -37,11 +37,12 @@ namespace ColdFormedChannelSection.App
         public MainViewModel()
         {
             MenuVM = new MenuViewModel();
-            _directStrengthResistanceVM = new Lazy<DirectStrengthResistanceViewModel>(() =>new DirectStrengthResistanceViewModel());
-            _egyptianCodeResistanceVM = new Lazy<EgyptianCodeResistanceViewModel>(() =>new EgyptianCodeResistanceViewModel());
-            _euroCodeReistanceVM = new Lazy<EuroCodeReistanceViewModel>(() =>new EuroCodeReistanceViewModel());
-            _aisiCodeResistanceVM = new Lazy<AISICodeResistanceViewModel>(() =>new AISICodeResistanceViewModel());
-            _aiscCodeResistanceVM = new Lazy<AISCCodeResistanceViewModel>(() =>new AISCCodeResistanceViewModel());
+            var generalInfoVM = new GeneralInfoViewModel();
+            _directStrengthResistanceVM = new Lazy<DirectStrengthResistanceViewModel>(() =>new DirectStrengthResistanceViewModel(generalInfoVM));
+            _egyptianCodeResistanceVM = new Lazy<EgyptianCodeResistanceViewModel>(() =>new EgyptianCodeResistanceViewModel(generalInfoVM));
+            _euroCodeReistanceVM = new Lazy<EuroCodeReistanceViewModel>(() =>new EuroCodeReistanceViewModel(generalInfoVM));
+            _aisiCodeResistanceVM = new Lazy<AISICodeResistanceViewModel>(() =>new AISICodeResistanceViewModel(generalInfoVM));
+            _aiscCodeResistanceVM = new Lazy<AISCCodeResistanceViewModel>(() =>new AISCCodeResistanceViewModel(generalInfoVM));
             Mediator.Instance.Subscribe<object>(this, _ => CurrentVM = _directStrengthResistanceVM.Value,Context.ResistanceDirectStrength);
             Mediator.Instance.Subscribe<object>(this, _ => CurrentVM = _egyptianCodeResistanceVM.Value, Context.ResistanceEgyptianCode);
             Mediator.Instance.Subscribe<object>(this,_=>CurrentVM=_euroCodeReistanceVM.Value,Context.ResistanceEuroCode);

@@ -36,7 +36,7 @@
                         </Grid.ColumnDefinitions>
                         <TextBlock Text="Type of Channel:" VerticalAlignment="Center"/>
                         <StackPanel  Grid.Column="1" Orientation="Horizontal">
-                            <RadioButton Content="Lipped" Margin="0 0 40 0"/>
+                            <RadioButton Content="Lipped" Margin="0 0 40 0" IsChecked="{Binding IsUnstiffened, Converter={StaticResource InvertBooleanConverter}}"/>
                             <RadioButton IsChecked="{Binding IsUnstiffened}" Content="Unstiffened" Margin="40 0 0 0"/>
                         </StackPanel>
                     </Grid>
