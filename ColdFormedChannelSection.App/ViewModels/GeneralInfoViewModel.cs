@@ -1,11 +1,14 @@
 ﻿using ColdFormedChannelSection.App.ViewModels.Base;
 using ColdFormedChannelSection.App.ViewModels.Enums;
 using ColdFormedChannelSection.Core.Enums;
+using System;
 
 namespace ColdFormedChannelSection.App.ViewModels
 {
     internal class GeneralInfoViewModel:ViewModelBase
     {
+
+        public Action OnStrainingActionsChange = delegate { };
 
         #region Private Fields
 
@@ -25,7 +28,7 @@ namespace ColdFormedChannelSection.App.ViewModels
             set
             {
                 NotifyPropertyChanged(ref _strainingAction, value);
-                //_isUsedParamsAction(_strainingAction);
+                OnStrainingActionsChange();
             }
         }
 

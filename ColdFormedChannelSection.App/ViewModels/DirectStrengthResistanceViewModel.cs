@@ -24,12 +24,23 @@ namespace ColdFormedChannelSection.App.ViewModels
         {
             ResultsCommand = new RelayCommand(OnResults, CanResults);
             IsResistanceOutput = false;
-            //IsLuUsed = true;
-            //_isUsedParamsAction += (sa) =>
-            //{
-            //    if (sa == StrainingActions.COMPRESSION)
-            //        IsLuUsed = true;
-            //};
+            switch (GeneralInfoVM.StrainingAction)
+            {
+                case StrainingActions.MOMENT:
+                    BracingConditionsVM.IsC1Used = false;
+                    BracingConditionsVM.C1 = 0;
+                    BracingConditionsVM.IsLuUsed = true;
+                    BracingConditionsVM.IsCbUsed = true;
+                    break;
+                case StrainingActions.COMPRESSION:
+                    BracingConditionsVM.IsC1Used = false;
+                    BracingConditionsVM.C1 = 0;
+                    BracingConditionsVM.IsLuUsed = false;
+                    BracingConditionsVM.Lu = 0;
+                    BracingConditionsVM.IsCbUsed = false;
+                    BracingConditionsVM.Cb = 0;
+                    break;
+            }
         }
         #endregion
 

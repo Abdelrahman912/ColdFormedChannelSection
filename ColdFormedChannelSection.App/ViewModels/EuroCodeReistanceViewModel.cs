@@ -25,17 +25,25 @@ namespace ColdFormedChannelSection.App.ViewModels
         public EuroCodeReistanceViewModel(GeneralInfoViewModel generalInfoVM,BracingConditionsViewModel bracingConditionsVM,GeometryViewModel geometryVM)
             :base(generalInfoVM,bracingConditionsVM,geometryVM)
         {
-            //_isUsedParamsAction += (sa) =>
-            //  {
-            //      if (sa == StrainingActions.MOMENT)
-            //          IsC1Used = true;
-            //      else
-            //          IsC1Used = false;
-            //  };
            
-
             ResultsCommand = new RelayCommand(OnResults, CanResults);
             IsResistanceOutput = false;
+            switch (GeneralInfoVM.StrainingAction)
+            {
+                case StrainingActions.MOMENT:
+                    BracingConditionsVM.IsC1Used = true;
+                    BracingConditionsVM.IsLuUsed = true;
+                    BracingConditionsVM.IsCbUsed = true;
+                    break;
+                case StrainingActions.COMPRESSION:
+                    BracingConditionsVM.IsC1Used = false;
+                    BracingConditionsVM.C1 = 0;
+                    BracingConditionsVM.IsLuUsed = false;
+                    BracingConditionsVM.Lu = 0;
+                    BracingConditionsVM.IsCbUsed = false;
+                    BracingConditionsVM.Cb = 0;
+                    break;
+            }
         }
 
         #endregion
