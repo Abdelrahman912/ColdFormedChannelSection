@@ -104,6 +104,8 @@ namespace ColdFormedChannelSection.Core.Helpers
             return Tuple.Create(newForce, unit);
         }
 
+        
+
         public static Material Convert(this Material material, Units sourceUnit, Units targetUnits)
         {
             var Fy = material.Fy.ConvertStress(sourceUnit, targetUnits);

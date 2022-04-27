@@ -45,7 +45,11 @@ namespace ColdFormedChannelSection.App.ViewModels
         public Units Unit
         {
             get => _unit;
-            set => NotifyPropertyChanged(ref _unit, value);
+            set
+            {
+                NotifyPropertyChanged(ref _unit, value);
+                Mediator.Mediator.Instance.NotifyColleagues(_unit, Context.UNITS);
+            }
         }
 
         public double Fy

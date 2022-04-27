@@ -8,6 +8,7 @@
         RESISTANCE_AISI_CODE,
         RESISTANCE_AISC_CODE,
         STIFF_UNSTIFF,
-        SECTION_GEOMETRY
+        SECTION_GEOMETRY,
+        UNITS
     }
 }

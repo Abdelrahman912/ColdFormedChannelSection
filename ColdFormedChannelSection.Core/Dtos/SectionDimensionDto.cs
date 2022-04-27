@@ -6,6 +6,7 @@
         public double B { get; set; }
         public double T { get; set; }
         public double R { get; set; }
+        public double C { get; set; }
         public string ID { get; set; }
     }
 }

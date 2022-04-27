@@ -26,8 +26,12 @@ namespace ColdFormedChannelSection.Core.Helpers
 
             try
             {
+                
+                var config = new CsvHelper.Configuration.CsvConfiguration(CultureInfo.InvariantCulture);
+                config.HeaderValidated = null;
+                config.MissingFieldFound = null;
                 using (var streamReader = new StreamReader(filePath))
-                using (var csvRedaer = new CsvReader(streamReader, CultureInfo.InvariantCulture))
+                using (var csvRedaer = new CsvReader(streamReader, config))
                 {
                     return await Task.Run(() =>
                      {
