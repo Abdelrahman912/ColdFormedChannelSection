@@ -1,7 +1,6 @@
 ﻿using ColdFormedChannelSection.App.ViewModels;
 using ColdFormedChannelSection.App.ViewModels.Base;
 using ColdFormedChannelSection.App.ViewModels.Enums;
-using ColdFormedChannelSection.App.ViewModels.Interfaces;
 using ColdFormedChannelSection.App.ViewModels.Mediator;
 using System;
 
@@ -52,7 +51,6 @@ namespace ColdFormedChannelSection.App
             Mediator.Instance.Subscribe<object>(this,OnEuroResistance,Context.RESISTANCE_EURO_CODE);
             Mediator.Instance.Subscribe<object>(this, _ => OnDefaultResistance(_, _aisiCodeResistanceVM.Value), Context.RESISTANCE_AISI_CODE);
             Mediator.Instance.Subscribe<object>(this, _ => OnDefaultResistance(_, _aiscCodeResistanceVM.Value), Context.RESISTANCE_AISC_CODE);
-            Mediator.Instance.Subscribe<GeometryViewModel>(this,OnGeometrySection,Context.SECTION_GEOMETRY);
         }
 
 
@@ -60,10 +58,6 @@ namespace ColdFormedChannelSection.App
 
         #region Methods
 
-        private void OnGeometrySection(GeometryViewModel vm)
-        {
-           (CurrentVM as IImportLibrary).ImportSectionsFromLib(vm);
-        }
 
         private void OnDefaultResistance(object _ , ResistanceBaseViewModel vm)
         {

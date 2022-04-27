@@ -1,29 +1,16 @@
 ﻿using ColdFormedChannelSection.App.Extensions;
 using ColdFormedChannelSection.App.ViewModels.Base;
 using ColdFormedChannelSection.App.ViewModels.Enums;
-using ColdFormedChannelSection.App.ViewModels.Interfaces;
-using ColdFormedChannelSection.Core.Dtos;
 using ColdFormedChannelSection.Core.Entities;
 using ColdFormedChannelSection.Core.Helpers;
-using CSharp.Functional.Constructs;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
 using System.Windows.Input;
-using static ColdFormedChannelSection.Core.Constants;
 
 namespace ColdFormedChannelSection.App.ViewModels
 {
-    internal class AISCCodeResistanceViewModel:ResistanceBaseViewModel,IImportLibrary
+    internal class AISCCodeResistanceViewModel:ResistanceBaseViewModel
     {
 
-        #region Private Fields
-
-        private readonly Lazy<Validation<List<SectionDimensionDto>>> _unStiffSections = new Lazy<Validation<List<SectionDimensionDto>>>(LoadUnstiffSections);
-        private readonly Lazy<Validation<List<SectionDimensionDto>>> _stiffSections = new Lazy<Validation<List<SectionDimensionDto>>>(LoadStiffSections);
-
-        #endregion
+       
 
         #region Properties
 
@@ -90,31 +77,8 @@ namespace ColdFormedChannelSection.App.ViewModels
         }
 
 
-        public void ImportSectionsFromLib(GeometryViewModel vm)
-        {
-            if (GeneralInfoVM.IsUnstiffened)
-            {
-                vm.Sections = _unStiffSections.Value.Match(errs => new List<SectionDimensionDto>(), dtos => dtos);
-            }
-            else
-            {
-                vm.Sections = _stiffSections.Value.Match(errs => new List<SectionDimensionDto>(), dtos => dtos);
-            }
-        }
-
-        private static Validation<List<SectionDimensionDto>> LoadUnstiffSections()
-        {
-            var dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var filePath = $"{dir}\\{DATABASE_FOLDER}\\{AISI_UNSTIFF_TABLE}.csv";
-            return filePath.ReadAsCsv<SectionDimensionDto>();
-        }
-
-        private static Validation<List<SectionDimensionDto>> LoadStiffSections()
-        {
-            var dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var filePath = $"{dir}\\{DATABASE_FOLDER}\\{AISI_STIFF_TABLE}.csv";
-            return filePath.ReadAsCsv<SectionDimensionDto>();
-        }
+       
+      
 
         #endregion
 

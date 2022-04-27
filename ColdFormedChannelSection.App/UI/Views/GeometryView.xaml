@@ -5,6 +5,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
+             xmlns:markup="clr-namespace:ColdFormedChannelSection.App.UI.MarkupExtensions"
+             xmlns:enums ="clr-namespace:ColdFormedChannelSection.Core.Enums;assembly=ColdFormedChannelSection.Core"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <GroupBox  Margin="5" Header="Geometry" Style="{StaticResource MaterialDesignGroupBox}" 
@@ -14,17 +16,38 @@
                 <StackPanel>
 
                     <Grid Margin="5">
-                        <Grid.ColumnDefinitions>
+                        <!--<Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <StackPanel >
+                        </Grid.ColumnDefinitions>-->
+                        <Grid >
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
                             <RadioButton Content="Import from Library" IsChecked="{Binding IsUserDefined, Converter={StaticResource InvertBooleanConverter}}" Margin="0 0 0 5" VerticalAlignment="Center"/>
-                            <RadioButton Grid.Column="1" Content="User defined" IsChecked="{Binding IsUserDefined}" Margin="0 5 0 0" VerticalAlignment="Center"/>
-                        </StackPanel>
 
-                        <ComboBox Grid.Column="1" ItemsSource="{Binding Sections}" SelectedItem="{Binding SelectedSection}"
-                                  VerticalAlignment="Top" Height="auto" Margin="0 5 0 0" Visibility="{Binding IsUserDefined, Converter={StaticResource InverseBoolToVisConverter}}"/>
+                            <Grid Grid.Row="1" Grid.Column="1" Visibility="{Binding IsUserDefined, Converter={StaticResource InverseBoolToVisConverter}}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="2*"/>
+                                </Grid.ColumnDefinitions>
+                                <ComboBox VerticalAlignment="Top" Margin="5" SelectedItem="{Binding SelectedTableName}"
+                                          ItemsSource="{Binding Source={markup:EnumBindingSource {x:Type enums:TablesName}}}"/>
+                                <ComboBox Grid.Column="1"  ItemsSource="{Binding Sections}" SelectedItem="{Binding SelectedSection}"
+                                  VerticalAlignment="Top" Height="auto" Margin="5" >
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding ID}"/>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                            </Grid>
+                            <RadioButton Grid.Row="2" Grid.Column="1" Content="User defined" IsChecked="{Binding IsUserDefined}" Margin="0 5 0 0" VerticalAlignment="Center"/>
+                        </Grid>
+
+                      
                     </Grid>
 
                     <Grid Margin="5">

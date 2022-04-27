@@ -1,5 +1,4 @@
 ﻿using ColdFormedChannelSection.App.ViewModels.Base;
-using ColdFormedChannelSection.App.ViewModels.Interfaces;
 using ColdFormedChannelSection.Core.Entities;
 using System;
 using System.Windows.Input;
