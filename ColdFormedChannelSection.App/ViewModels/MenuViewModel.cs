@@ -1,5 +1,6 @@
 ﻿using ColdFormedChannelSection.App.ViewModels.Base;
 using ColdFormedChannelSection.App.ViewModels.Enums;
+using System;
 using System.Windows.Input;
 
 namespace ColdFormedChannelSection.App.ViewModels
@@ -27,6 +28,12 @@ namespace ColdFormedChannelSection.App.ViewModels
         public ICommand ResistanceAISICommand { get; }
         public ICommand ResistanceAISCCommand { get; }
 
+
+        public ICommand CheckDSCommand { get; }
+        public ICommand CheckEgyptCommand { get; }
+        public ICommand CheckEuroCommand { get; }
+        public ICommand CheckAISICommand { get; }
+
         #endregion
 
         #region Constructors
@@ -39,12 +46,43 @@ namespace ColdFormedChannelSection.App.ViewModels
             ResistanceEuroCommand = new RelayCommand(OnReistanceEuro);
             ResistanceAISICommand = new RelayCommand(OnResistanceAISI);
             ResistanceAISCCommand = new RelayCommand(OnResistanceAISC);
+
+            CheckDSCommand = new RelayCommand(OnCheckDS);
+            CheckEgyptCommand = new RelayCommand(OnCheckEgypt);
+            CheckEuroCommand = new RelayCommand(OnCheckEuro);
+            CheckAISICommand = new RelayCommand(OnCheckAISI);
         }
+
+
 
 
         #endregion
 
         #region Methods
+
+        private void OnCheckAISI()
+        {
+            Name = "Check | AISI Code";
+            Mediator.Mediator.Instance.NotifyColleagues(new object(), Context.CHECK_AISI_CODE);
+        }
+
+        private void OnCheckEuro()
+        {
+            Name = "Check | Euro Code";
+            Mediator.Mediator.Instance.NotifyColleagues(new object(), Context.CHECK_EURO_CODE);
+        }
+
+        private void OnCheckEgypt()
+        {
+            Name = "Check | Egyptian Code";
+            Mediator.Mediator.Instance.NotifyColleagues(new object(), Context.CHECK_EGYPT_CODE);
+        }
+
+        private void OnCheckDS()
+        {
+            Name = "Check | Direct Strength";
+            Mediator.Mediator.Instance.NotifyColleagues(new object(), Context.CHECK_DIRECT_STRENGTH);
+        }
 
         private void OnResistanceAISC()
         {

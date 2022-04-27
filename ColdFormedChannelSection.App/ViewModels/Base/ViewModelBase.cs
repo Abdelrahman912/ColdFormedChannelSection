@@ -6,7 +6,7 @@ using System.Text;
 
 namespace ColdFormedChannelSection.App.ViewModels.Base
 {
-    internal abstract class ViewModelBase : INotifyPropertyChanged
+    public abstract class ViewModelBase : INotifyPropertyChanged
     {
         #region Event Handler
 

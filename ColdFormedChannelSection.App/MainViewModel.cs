@@ -15,7 +15,12 @@ namespace ColdFormedChannelSection.App
         private readonly Lazy<EgyptianCodeResistanceViewModel> _egyptianCodeResistanceVM;
         private readonly Lazy<EuroCodeReistanceViewModel> _euroCodeReistanceVM;
         private readonly Lazy<AISICodeResistanceViewModel> _aisiCodeResistanceVM;
-        private readonly Lazy<AISCCodeResistanceViewModel> _aiscCodeResistanceVM;
+        //private readonly Lazy<AISCCodeResistanceViewModel> _aiscCodeResistanceVM;
+
+        private readonly Lazy<DirectStrengthCheckViewModel> _directStrengthCheckVM;
+        private readonly Lazy<EgyptianCodeCheckViewModel> _egyptianCodeCheckVM;
+        private readonly Lazy<EuroCodeCheckViewModel> _euroCodeCheckVM;
+        private readonly Lazy<AISICodeCheckViewModel> _aisiCodeCheckVM;
 
         private ViewModelBase _currentVM;
         private readonly GeneralInfoViewModel _generalInfoVM;
@@ -45,12 +50,24 @@ namespace ColdFormedChannelSection.App
             _egyptianCodeResistanceVM = new Lazy<EgyptianCodeResistanceViewModel>(() =>new EgyptianCodeResistanceViewModel(_generalInfoVM, _bracingConditionsVM, geometryVM));
             _euroCodeReistanceVM = new Lazy<EuroCodeReistanceViewModel>(() =>new EuroCodeReistanceViewModel(_generalInfoVM, _bracingConditionsVM, geometryVM));
             _aisiCodeResistanceVM = new Lazy<AISICodeResistanceViewModel>(() =>new AISICodeResistanceViewModel(_generalInfoVM, _bracingConditionsVM, geometryVM));
-            _aiscCodeResistanceVM = new Lazy<AISCCodeResistanceViewModel>(() =>new AISCCodeResistanceViewModel(_generalInfoVM, _bracingConditionsVM, geometryVM));
+            //_aiscCodeResistanceVM = new Lazy<AISCCodeResistanceViewModel>(() =>new AISCCodeResistanceViewModel(_generalInfoVM, _bracingConditionsVM, geometryVM));
+
+            _directStrengthCheckVM = new Lazy<DirectStrengthCheckViewModel>(() => new DirectStrengthCheckViewModel(_generalInfoVM, _bracingConditionsVM, geometryVM));
+            _egyptianCodeCheckVM = new Lazy<EgyptianCodeCheckViewModel>(() => new EgyptianCodeCheckViewModel(_generalInfoVM, _bracingConditionsVM, geometryVM));
+            _euroCodeCheckVM = new Lazy<EuroCodeCheckViewModel>(() => new EuroCodeCheckViewModel(_generalInfoVM, _bracingConditionsVM, geometryVM));
+            _aisiCodeCheckVM = new Lazy<AISICodeCheckViewModel>(() => new AISICodeCheckViewModel(_generalInfoVM, _bracingConditionsVM, geometryVM));
+
             Mediator.Instance.Subscribe<object>(this,  _=> OnDefaultResistance(_,_directStrengthResistanceVM.Value),Context.RESISTANCE_DIRECT_STRENGTH);
             Mediator.Instance.Subscribe<object>(this, _ => OnDefaultResistance(_, _egyptianCodeResistanceVM.Value), Context.RESISTANCE_EGYPT_CODE);
-            Mediator.Instance.Subscribe<object>(this,OnEuroResistance,Context.RESISTANCE_EURO_CODE);
+            Mediator.Instance.Subscribe<object>(this,_=>OnEuroResistance(_,_euroCodeReistanceVM.Value),Context.RESISTANCE_EURO_CODE);
             Mediator.Instance.Subscribe<object>(this, _ => OnDefaultResistance(_, _aisiCodeResistanceVM.Value), Context.RESISTANCE_AISI_CODE);
-            Mediator.Instance.Subscribe<object>(this, _ => OnDefaultResistance(_, _aiscCodeResistanceVM.Value), Context.RESISTANCE_AISC_CODE);
+            //Mediator.Instance.Subscribe<object>(this, _ => OnDefaultResistance(_, _aiscCodeResistanceVM.Value), Context.RESISTANCE_AISC_CODE);
+
+
+            Mediator.Instance.Subscribe<object>(this, _ => OnDefaultResistance(_, _directStrengthCheckVM.Value), Context.CHECK_DIRECT_STRENGTH);
+            Mediator.Instance.Subscribe<object>(this, _ => OnDefaultResistance(_, _egyptianCodeCheckVM.Value), Context.CHECK_EGYPT_CODE);
+            Mediator.Instance.Subscribe<object>(this,_=> OnEuroResistance(_,_euroCodeCheckVM.Value), Context.CHECK_EURO_CODE);
+            Mediator.Instance.Subscribe<object>(this, _ => OnDefaultResistance(_, _aisiCodeCheckVM.Value), Context.CHECK_AISI_CODE);
         }
 
 
@@ -59,16 +76,17 @@ namespace ColdFormedChannelSection.App
         #region Methods
 
 
-        private void OnDefaultResistance(object _ , ResistanceBaseViewModel vm)
+
+        private void OnDefaultResistance(object _ , ViewModelBase vm)
         {
             CurrentVM = vm;
             DefaultChangeBracingConditions();
         }
       
 
-        private void OnEuroResistance(object _)
+        private void OnEuroResistance(object _,ViewModelBase euroVM)
         {
-            CurrentVM = _euroCodeReistanceVM.Value;
+            CurrentVM = euroVM;
             _generalInfoVM.OnStrainingActionsChange = () =>
             {
                 switch (_generalInfoVM.StrainingAction)

@@ -7,7 +7,7 @@ using System.Text;
 namespace ColdFormedChannelSection.App.ViewModels.Enums
 {
     [TypeConverter(typeof(EnumDescriptionTypeConverter))]
-    internal enum StrainingActions
+    public enum StrainingActions
     {
         [Description("Moment")]
         MOMENT,

@@ -5,7 +5,7 @@ using System;
 
 namespace ColdFormedChannelSection.App.ViewModels
 {
-    internal class GeneralInfoViewModel:ViewModelBase
+    public class GeneralInfoViewModel:ViewModelBase
     {
 
         public Action OnStrainingActionsChange = delegate { };

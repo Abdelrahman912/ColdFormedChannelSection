@@ -1,19 +1,12 @@
 ﻿using ColdFormedChannelSection.App.ViewModels.Base;
-using ColdFormedChannelSection.Core.Entities;
-using System;
 using System.Windows.Input;
 
 namespace ColdFormedChannelSection.App.ViewModels
 {
-    internal abstract class ResistanceBaseViewModel : ViewModelBase
+    public abstract class CheckBaseViewModel:ViewModelBase
     {
 
         #region Private Fields
-
-
-        private bool _isResistanceOutput;
-
-        private ResistanceOutput _resistanceOutput;
 
         private GeneralInfoViewModel _generalInfoVM;
 
@@ -24,19 +17,6 @@ namespace ColdFormedChannelSection.App.ViewModels
         #endregion
 
         #region Properties
-
-        public bool IsResistanceOutput
-        {
-            get => _isResistanceOutput;
-            set => NotifyPropertyChanged(ref _isResistanceOutput, value);
-        }
-
-        public ResistanceOutput ResistanceOutput
-        {
-            get => _resistanceOutput;
-            set => NotifyPropertyChanged(ref _resistanceOutput, value);
-        }
-
 
         public GeneralInfoViewModel GeneralInfoVM
         {
@@ -53,7 +33,7 @@ namespace ColdFormedChannelSection.App.ViewModels
         public GeometryViewModel GeometryVM
         {
             get => _geometryVM;
-            set=>NotifyPropertyChanged(ref _geometryVM, value);
+            set => NotifyPropertyChanged(ref _geometryVM, value);
         }
 
         public virtual ICommand ResultsCommand { get; }
@@ -61,27 +41,23 @@ namespace ColdFormedChannelSection.App.ViewModels
         #endregion
 
         #region Constructors
-
-        public ResistanceBaseViewModel(GeneralInfoViewModel generalInfoVM,
+        public CheckBaseViewModel(GeneralInfoViewModel generalInfoVM,
                                        BracingConditionsViewModel bracingConditionsVM,
                                        GeometryViewModel geometryVM)
         {
-            
-          
+
+
             GeneralInfoVM = generalInfoVM;
             BracingConditionsVM = bracingConditionsVM;
             GeometryVM = geometryVM;
-           
-            
-           
-            
+
+
+
+
         }
-
-
-
         #endregion
 
 
-       
+
     }
 }

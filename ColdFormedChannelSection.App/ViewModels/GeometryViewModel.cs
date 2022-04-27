@@ -14,7 +14,7 @@ using static ColdFormedChannelSection.Core.Constants;
 
 namespace ColdFormedChannelSection.App.ViewModels
 {
-    internal class GeometryViewModel:ViewModelBase
+    public class GeometryViewModel:ViewModelBase
     {
 
 
@@ -35,7 +35,7 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         private Units _tableUnit;
 
-        private Units _selectedUnit;
+        private Units _unit;
 
         private readonly Dictionary<KeyValuePair<bool, TablesName>, Tuple<Units,Lazy<Task<List<SectionDimensionDto>>>>> _tables = new Dictionary<KeyValuePair<bool, TablesName>, Tuple<Units, Lazy<Task<List<SectionDimensionDto>>>>> ()
         {
@@ -52,6 +52,12 @@ namespace ColdFormedChannelSection.App.ViewModels
         #endregion
 
         #region Properties
+
+        public Units Unit
+        {
+            get => _unit;
+            set=>NotifyPropertyChanged(ref _unit, value);   
+        }
 
         public TablesName SelectedTableName
         {
@@ -138,7 +144,7 @@ namespace ColdFormedChannelSection.App.ViewModels
             TotalWidthB = 0;
             ThicknessT = 0.0;
             InternalRadiusR = 0.0;
-            _selectedUnit = Units.TONCM;
+            Unit = Units.TONCM;
             IsUnstiffened = true;
             SelectedTableName = TablesName.EGYPT_EURO;
             Mediator.Mediator.Instance.Subscribe<bool>(this, OnStiffChanged, Context.STIFF_UNSTIFF);
@@ -165,7 +171,7 @@ namespace ColdFormedChannelSection.App.ViewModels
         {
             if(SelectedSection != null)
             {
-                var secDim = SelectedSection.AsEntity().Convert(_tableUnit,_selectedUnit);
+                var secDim = SelectedSection.AsEntity().Convert(_tableUnit,Unit);
                 TotalHeightH = secDim.TotalHeightH.Round(4);
                 TotalFoldWidthC = secDim.TotalFoldWidthC.Round(4);
                 TotalWidthB = secDim.TotalFlangeWidthB.Round(4);
@@ -176,7 +182,7 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         private void OnUnitsChanged(Units selectedUnit)
         {
-            _selectedUnit = selectedUnit;
+            Unit = selectedUnit;
             if (!IsUserDefined)
                 UpdateSection();
         }

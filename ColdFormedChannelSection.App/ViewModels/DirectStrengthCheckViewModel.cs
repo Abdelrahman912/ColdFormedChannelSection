@@ -1,21 +1,14 @@
 ﻿using ColdFormedChannelSection.App.Extensions;
 using ColdFormedChannelSection.App.ViewModels.Base;
 using ColdFormedChannelSection.App.ViewModels.Enums;
-using ColdFormedChannelSection.Core.Dtos;
 using ColdFormedChannelSection.Core.Entities;
 using ColdFormedChannelSection.Core.Enums;
 using ColdFormedChannelSection.Core.Helpers;
-using CSharp.Functional.Constructs;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
 using System.Windows.Input;
-using static ColdFormedChannelSection.Core.Constants;
 
 namespace ColdFormedChannelSection.App.ViewModels
 {
-    internal class DirectStrengthResistanceViewModel:ResistanceBaseViewModel
+    public class DirectStrengthCheckViewModel : CheckBaseViewModel
     {
 
 
@@ -25,13 +18,12 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         #endregion
 
-
         #region Constructors
-        public DirectStrengthResistanceViewModel(GeneralInfoViewModel generalInfoVM,BracingConditionsViewModel bracingConditionsVM,GeometryViewModel geometryVM)
-            :base(generalInfoVM,bracingConditionsVM,geometryVM)
+
+        public DirectStrengthCheckViewModel(GeneralInfoViewModel generalInfoVM, BracingConditionsViewModel bracingConditionsVM, GeometryViewModel geometryVM) 
+            : base(generalInfoVM, bracingConditionsVM, geometryVM)
         {
             ResultsCommand = new RelayCommand(OnResults, CanResults);
-            IsResistanceOutput = false;
             switch (GeneralInfoVM.StrainingAction)
             {
                 case StrainingActions.MOMENT:
@@ -50,8 +42,10 @@ namespace ColdFormedChannelSection.App.ViewModels
                     break;
             }
         }
-        #endregion
 
+
+
+        #endregion
 
         #region Methods
 
@@ -62,8 +56,6 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         private void OnResults()
         {
-           
-            IsResistanceOutput = false;
             var material = (new Material(GeneralInfoVM.Fy, GeneralInfoVM.E, 0.3)).Convert(GeneralInfoVM.Unit, Units.KIPINCH);
             var bracingConditions = BracingConditionsVM.AsEntity().Convert(GeneralInfoVM.Unit, Units.KIPINCH);
             switch (GeneralInfoVM.StrainingAction)
@@ -71,19 +63,15 @@ namespace ColdFormedChannelSection.App.ViewModels
                 case StrainingActions.MOMENT:
                     var momentOut = GeneralInfoVM.IsUnstiffened ? GeometryVM.AsEntity().Convert(GeneralInfoVM.Unit, Units.KIPINCH).AsUnStiffenedSection().AsDSMomentResistance(material, bracingConditions).Convert(Units.KIPINCH, GeneralInfoVM.Unit)
                                                   : GeometryVM.AsEntity().Convert(GeneralInfoVM.Unit, Units.KIPINCH).AsLippedSection().AsDSMomentResistance(material, bracingConditions).Convert(Units.KIPINCH, GeneralInfoVM.Unit);
-                    IsResistanceOutput = true;
-                    ResistanceOutput = momentOut;
+                    
                     break;
                 case StrainingActions.COMPRESSION:
                     var compOut = GeneralInfoVM.IsUnstiffened ? GeometryVM.AsEntity().Convert(GeneralInfoVM.Unit, Units.KIPINCH).AsUnStiffenedSection().AsDSCompressionResistance(material, bracingConditions).Convert(Units.KIPINCH, GeneralInfoVM.Unit)
                                                 : GeometryVM.AsEntity().Convert(GeneralInfoVM.Unit, Units.KIPINCH).AsLippedSection().AsDSCompressionResistance(material, bracingConditions).Convert(Units.KIPINCH, GeneralInfoVM.Unit);
-                    IsResistanceOutput = true;
-                    ResistanceOutput = compOut;
+                  
                     break;
             }
-
         }
-
 
         #endregion
 

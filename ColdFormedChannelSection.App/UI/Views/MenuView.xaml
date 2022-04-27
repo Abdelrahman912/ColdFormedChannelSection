@@ -15,7 +15,12 @@
                 
             </MenuItem>
             <MenuItem Header="_Check" Height="50" >
-                
+                <MenuItem Header="Effective Strength Method"  >
+                    <MenuItem Header="Egyptian Code"  Command="{Binding CheckEgyptCommand}"/>
+                    <MenuItem Header="Euro Code"  Command="{Binding CheckEuroCommand}"/>
+                    <MenuItem Header="AISI Code" Command="{Binding CheckAISICommand}"/>
+                </MenuItem>
+                <MenuItem Header="Direct Strength"  Command="{Binding CheckDSCommand}"/>
             </MenuItem>
             <MenuItem Header="_Resistance" Height="50" >
                 <MenuItem Header="Effective Strength Method"  >

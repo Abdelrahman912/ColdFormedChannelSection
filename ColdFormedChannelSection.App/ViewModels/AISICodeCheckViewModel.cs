@@ -1,37 +1,26 @@
 ﻿using ColdFormedChannelSection.App.Extensions;
 using ColdFormedChannelSection.App.ViewModels.Base;
 using ColdFormedChannelSection.App.ViewModels.Enums;
-using ColdFormedChannelSection.Core.Dtos;
 using ColdFormedChannelSection.Core.Entities;
 using ColdFormedChannelSection.Core.Enums;
 using ColdFormedChannelSection.Core.Helpers;
-using CSharp.Functional.Constructs;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
 using System.Windows.Input;
-using static ColdFormedChannelSection.Core.Constants;
 
 namespace ColdFormedChannelSection.App.ViewModels
 {
-    internal class DirectStrengthResistanceViewModel:ResistanceBaseViewModel
+    public class AISICodeCheckViewModel : CheckBaseViewModel
     {
-
-
         #region Properties
 
         public override ICommand ResultsCommand { get; }
 
         #endregion
 
-
         #region Constructors
-        public DirectStrengthResistanceViewModel(GeneralInfoViewModel generalInfoVM,BracingConditionsViewModel bracingConditionsVM,GeometryViewModel geometryVM)
-            :base(generalInfoVM,bracingConditionsVM,geometryVM)
+        public AISICodeCheckViewModel(GeneralInfoViewModel generalInfoVM, BracingConditionsViewModel bracingConditionsVM, GeometryViewModel geometryVM)
+            : base(generalInfoVM, bracingConditionsVM, geometryVM)
         {
             ResultsCommand = new RelayCommand(OnResults, CanResults);
-            IsResistanceOutput = false;
             switch (GeneralInfoVM.StrainingAction)
             {
                 case StrainingActions.MOMENT:
@@ -50,11 +39,11 @@ namespace ColdFormedChannelSection.App.ViewModels
                     break;
             }
         }
+
+
         #endregion
 
-
         #region Methods
-
         private bool CanResults()
         {
             return true;
@@ -62,29 +51,20 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         private void OnResults()
         {
-           
-            IsResistanceOutput = false;
             var material = (new Material(GeneralInfoVM.Fy, GeneralInfoVM.E, 0.3)).Convert(GeneralInfoVM.Unit, Units.KIPINCH);
             var bracingConditions = BracingConditionsVM.AsEntity().Convert(GeneralInfoVM.Unit, Units.KIPINCH);
             switch (GeneralInfoVM.StrainingAction)
             {
                 case StrainingActions.MOMENT:
-                    var momentOut = GeneralInfoVM.IsUnstiffened ? GeometryVM.AsEntity().Convert(GeneralInfoVM.Unit, Units.KIPINCH).AsUnStiffenedSection().AsDSMomentResistance(material, bracingConditions).Convert(Units.KIPINCH, GeneralInfoVM.Unit)
-                                                  : GeometryVM.AsEntity().Convert(GeneralInfoVM.Unit, Units.KIPINCH).AsLippedSection().AsDSMomentResistance(material, bracingConditions).Convert(Units.KIPINCH, GeneralInfoVM.Unit);
-                    IsResistanceOutput = true;
-                    ResistanceOutput = momentOut;
+                    var momentOut = GeneralInfoVM.IsUnstiffened ? GeometryVM.AsEntity().Convert(GeneralInfoVM.Unit, Units.KIPINCH).AsUnStiffenedSection().AsAISIMomentResistance(material, bracingConditions).Convert(Units.KIPINCH, GeneralInfoVM.Unit)
+                                                  : GeometryVM.AsEntity().Convert(GeneralInfoVM.Unit, Units.KIPINCH).AsLippedSection().AsAISIMomentResistance(material, bracingConditions).Convert(Units.KIPINCH, GeneralInfoVM.Unit);
                     break;
                 case StrainingActions.COMPRESSION:
-                    var compOut = GeneralInfoVM.IsUnstiffened ? GeometryVM.AsEntity().Convert(GeneralInfoVM.Unit, Units.KIPINCH).AsUnStiffenedSection().AsDSCompressionResistance(material, bracingConditions).Convert(Units.KIPINCH, GeneralInfoVM.Unit)
-                                                : GeometryVM.AsEntity().Convert(GeneralInfoVM.Unit, Units.KIPINCH).AsLippedSection().AsDSCompressionResistance(material, bracingConditions).Convert(Units.KIPINCH, GeneralInfoVM.Unit);
-                    IsResistanceOutput = true;
-                    ResistanceOutput = compOut;
+                    var compOut = GeneralInfoVM.IsUnstiffened ? GeometryVM.AsEntity().Convert(GeneralInfoVM.Unit, Units.KIPINCH).AsUnStiffenedSection().AsAISICompressionResistance(material, bracingConditions).Convert(Units.KIPINCH, GeneralInfoVM.Unit)
+                                                : GeometryVM.AsEntity().Convert(GeneralInfoVM.Unit, Units.KIPINCH).AsLippedSection().AsAISICompressionResistance(material, bracingConditions).Convert(Units.KIPINCH, GeneralInfoVM.Unit);
                     break;
             }
-
         }
-
-
         #endregion
 
     }

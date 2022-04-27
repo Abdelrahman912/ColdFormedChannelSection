@@ -1,8 +1,11 @@
 ﻿using ColdFormedChannelSection.App.ViewModels.Base;
+using ColdFormedChannelSection.App.ViewModels.Enums;
+using ColdFormedChannelSection.Core.Enums;
+using System;
 
 namespace ColdFormedChannelSection.App.ViewModels
 {
-    internal class BracingConditionsViewModel:ViewModelBase
+    public class BracingConditionsViewModel:ViewModelBase
     {
 
         #region Private Fields
@@ -21,9 +24,17 @@ namespace ColdFormedChannelSection.App.ViewModels
         private bool _isCbUsed;
         private bool _isC1Used;
 
+        private Units _unit;
+
         #endregion
 
         #region Properties
+
+        public Units Unit
+        {
+            get => _unit;
+            set => NotifyPropertyChanged(ref _unit,value);
+        }
 
         public bool IsLuUsed
         {
@@ -115,7 +126,19 @@ namespace ColdFormedChannelSection.App.ViewModels
             IsC1Used = false;
             IsLuUsed = false;
             IsC1Used = false;
+            Mediator.Mediator.Instance.Subscribe<Units>(this, OnUnitsChanged, Context.UNITS);
         }
+
+
+        #endregion
+
+        #region Methods
+
+        private void OnUnitsChanged(Units unit)
+        {
+            Unit = unit;
+        }
+
 
         #endregion
 

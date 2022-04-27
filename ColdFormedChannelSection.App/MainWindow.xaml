@@ -24,6 +24,20 @@
         <DataTemplate DataType="{x:Type vms:AISCCodeResistanceViewModel}">
             <vs:ResistanceView/>
         </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vms:DirectStrengthCheckViewModel}">
+            <vs:CheckView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vms:EgyptianCodeCheckViewModel}">
+            <vs:CheckView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vms:EuroCodeCheckViewModel}">
+            <vs:CheckView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vms:AISICodeCheckViewModel}">
+            <vs:CheckView/>
+        </DataTemplate>
+
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
