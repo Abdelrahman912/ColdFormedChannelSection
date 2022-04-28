@@ -48,10 +48,10 @@ namespace ColdFormedChannelSection.Core.Helpers
            
             var Ze = section.GetEgyptReducedZe(material);
             
-            var Mn = Tuple.Create(section.GetEgyptLTBMomentResistance(material, bracingConditions, Ze), FailureMode.LATERALTORSIONALBUCKLING);
+            (var Mn,var failureMode) = section.GetEgyptMomentResistance(material, bracingConditions, Ze);
             
            
-            var result = new MomentResistanceOutput(Mn.Item1, 0.8, Mn.Item2, "ton.cm");
+            var result = new MomentResistanceOutput(Mn, 0.85, failureMode, "ton.cm");
             return result;
         }
 
@@ -62,14 +62,14 @@ namespace ColdFormedChannelSection.Core.Helpers
 
             var Ze = section.GetEgyptReducedZe(material);
 
-            var Mn = Tuple.Create(section.GetEgyptLTBMomentResistance(material, bracingConditions, Ze), FailureMode.LATERALTORSIONALBUCKLING);
+            (var Mn,var failureMode) = section.GetEgyptMomentResistance(material, bracingConditions, Ze);
 
 
-            var result = new MomentResistanceOutput(Mn.Item1, 0.8, Mn.Item2, "ton.cm");
+            var result = new MomentResistanceOutput(Mn, 0.85, failureMode, "ton.cm");
             return result;
         }
 
-        private static double GetEgyptLTBMomentResistance(this Section section, Material material , LengthBracingConditions bracingConditions,double Ze)
+        private static Tuple<double, FailureMode> GetEgyptMomentResistance(this Section section, Material material , LengthBracingConditions bracingConditions,double Ze)
         {
             var Fy = material.Fy; 
             var b = section.Properties.BSmall;
@@ -87,12 +87,15 @@ namespace ColdFormedChannelSection.Core.Helpers
                 var At = b * t + (1.0 / 6.0) * a * t;
                 var rt = Math.Sqrt(It / At);
                 var Mn2 =Math.Min(Ze*Fy, Zg * Math.Sqrt(((1380*b*t)/(H*Lu)).Power(2) + ((20700)/(Lu/rt).Power(2)).Power(2)));
-                return Math.Min(Mn1, Mn2);
+                if (Mn1 < Mn2)
+                    return Tuple.Create(Mn1, FailureMode.LOCALBUCKLING);
+                else
+                    return Tuple.Create(Mn2, FailureMode.LATERALTORSIONALBUCKLING);
             }
             else
             {
                 var Mn = Ze * Fy;
-                return Mn;
+                return Tuple.Create( Mn,FailureMode.LOCALBUCKLING);
             }
             
         }
@@ -248,7 +251,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                     kw = 5.98 * (1 - sai_w).Power(2);
                 }
                 var lambda_w = ((a_prime / t) / 44) * (Math.Sqrt(Fy / kw));
-                var row_w = Math.Min(1, (1.1 * lambda_w - 0.16 - 0.1 * lambda_w) / (lambda_w.Power(2)));
+                var row_w = Math.Min(1, (1.1 * lambda_w - 0.16 - 0.1 * sai_w) / (lambda_w.Power(2)));
                 var ae = row_w * (a_prime / (1 - sai_w));
 
                 
