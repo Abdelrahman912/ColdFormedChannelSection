@@ -28,7 +28,7 @@
             <vs:GeometryView DataContext="{Binding GeometryVM}"/>
             <vs:BracingConditionsView Grid.Column="1" DataContext="{Binding BracingConditionsVM}"/>
 
-            <vs:ResistanceOutputView IsEnabled="{Binding IsResistanceOutput}" Grid.Column="2" DataContext="{Binding ResistanceOutput}"/>
+            <vs:CheckOutputView  Grid.Column="2" DataContext="{Binding CheckOutputVM}"/>
         </Grid>
         <Button Grid.Row="2" Margin="8" Width="160" Height="35" Content="Check Section" Command="{Binding ResultsCommand}"  />
     </Grid>

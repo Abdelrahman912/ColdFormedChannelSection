@@ -13,6 +13,7 @@
         CHECK_AISI_CODE,
         STIFF_UNSTIFF,
         SECTION_GEOMETRY,
-        UNITS
+        UNITS,
+        STRAININGACTIONS
     }
 }

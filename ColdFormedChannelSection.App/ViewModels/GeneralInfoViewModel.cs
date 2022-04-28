@@ -29,6 +29,7 @@ namespace ColdFormedChannelSection.App.ViewModels
             {
                 NotifyPropertyChanged(ref _strainingAction, value);
                 OnStrainingActionsChange();
+                Mediator.Mediator.Instance.NotifyColleagues(_strainingAction, Context.STRAININGACTIONS);
             }
         }
 

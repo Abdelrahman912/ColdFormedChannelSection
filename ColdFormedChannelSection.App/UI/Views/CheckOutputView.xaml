@@ -9,77 +9,89 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <GroupBox Grid.Row="1" Margin="5" Header="Check Results" Style="{StaticResource MaterialDesignGroupBox}" 
                                           materialDesign:ColorZoneAssist.Mode="Standard">
-        <Grid Margin="5">
+        <Grid>
+
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
-            <Grid Margin="5">
+
+            <Grid Grid.Row="0" Margin="5">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="Ultimate Load"/>
-                    <TextBlock Text="{Binding UnitName}" Foreground="Red"/>
+                    <TextBlock Style="{StaticResource ultimateLoad}" />
+
+
                 </StackPanel>
 
-                <StackPanel Orientation="Horizontal" Grid.Column="1">
 
-                    <TextBox  Margin="0 0 5 0"
+                <TextBox VerticalAlignment="Top" Grid.Column="1"  
                                    Text="{Binding UltimateLoad}"/>
 
-                </StackPanel>
+
             </Grid>
-            <Grid Grid.Row="1" Margin="5">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock Text="{Binding NominalResistanceName}"/>
 
-                <StackPanel Orientation="Horizontal" Grid.Column="1">
+            <Grid Grid.Row="1" Margin="5" DataContext="{Binding CheckOutput}" Visibility="{Binding IsCheckOutput, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+               
+                <Grid Grid.Row="0" Margin="5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="{Binding NominalResistanceName}"/>
 
-                    <TextBlock  Margin="0 0 5 0"
+                    <StackPanel Orientation="Horizontal" Grid.Column="1">
+
+                        <TextBlock  Margin="0 0 5 0"
                                    Text="{Binding NominalResistance, StringFormat=N3}"/>
-                    <TextBlock Text="{Binding UnitName}"/>
+                        <TextBlock Text="{Binding UnitName}"/>
 
-                </StackPanel>
-            </Grid>
+                    </StackPanel>
+                </Grid>
 
-            <Grid Grid.Row="2" Margin="5">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock Text="{Binding PhiName}"/>
-                <TextBlock Grid.Column="1" Text="{Binding Phi}"/>
-            </Grid>
-            <Grid Grid.Row="3" Margin="5">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock Text="{Binding DesignResistanceName}" />
-                <StackPanel Orientation="Horizontal" Grid.Column="1">
-                    <TextBlock  Text="{Binding DesignResistance,StringFormat=N3}" Margin=" 0 0 5 0"/>
-                    <TextBlock Text="{Binding UnitName}"/>
-                </StackPanel>
+                <Grid Grid.Row="1" Margin="5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="{Binding PhiName}"/>
+                    <TextBlock Grid.Column="1" Text="{Binding Phi}"/>
+                </Grid>
+                <Grid Grid.Row="2" Margin="5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="{Binding DesignResistanceName}" />
+                    <StackPanel Orientation="Horizontal" Grid.Column="1">
+                        <TextBlock  Text="{Binding DesignResistance,StringFormat=N3}" Margin=" 0 0 5 0"/>
+                        <TextBlock Text="{Binding UnitName}"/>
+                    </StackPanel>
 
-            </Grid>
-            <TextBlock Margin="5" HorizontalAlignment="Center" Grid.Row="4" Text="{Binding GoverningCase}"/>
-            <Grid Margin="5" Grid.Row="5">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock Text="{Binding CheckResult}"/>
-                <TextBlock Text="{Binding CheckResultStatus}" Grid.Column="1"/>
+                </Grid>
+                <TextBlock Margin="5" HorizontalAlignment="Center" Grid.Row="3" Text="{Binding GoverningCase}"/>
+                <Grid Margin="5" Grid.Row="4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="{Binding CheckResultName}"/>
+                    <TextBlock Style="{StaticResource checkStatus}" Text="{Binding Status}" Grid.Column="1"/>
+                </Grid>
             </Grid>
         </Grid>
+        
+      
     </GroupBox>
 </UserControl>

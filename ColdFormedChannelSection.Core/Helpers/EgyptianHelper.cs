@@ -260,33 +260,6 @@ namespace ColdFormedChannelSection.Core.Helpers
             return pn;
         }
 
-        //private static double GetEgyptCompressionFBResistance(this LippedSection section, Material material , LengthBracingConditions bracingConditions)
-        //{
-        //    var Aee = section.GetEgyptReducedAreaEE(material);
-        //    var pn = section.GetEgyptCompressionFBResistance(material,bracingConditions,Aee);
-        //    return pn;
-        //}
-
-        //private static double GetEgyptCompressionFBResistance(this UnStiffenedSection section, Material material, LengthBracingConditions bracingConditions)
-        //{
-        //    var Aee = section.GetEgyptReducedAreaEE(material);
-        //    var pn = section.GetEgyptCompressionFBResistance(material, bracingConditions, Aee);
-        //    return pn;
-        //}
-
-        //private static double GetEgyptCompressionTFBResistance(this LippedSection section , Material material , LengthBracingConditions bracingConditions)
-        //{
-        //    var Aee= section.GetEgyptReducedAreaEE(material);
-        //    var pn = section.GetEgyptCompressionTFBResistance(material , bracingConditions, Aee);
-        //    return pn;
-        //}
-
-        //private static double GetEgyptCompressionTFBResistance(this UnStiffenedSection section, Material material, LengthBracingConditions bracingConditions)
-        //{
-        //    var Aee = section.GetEgyptReducedAreaEE(material);
-        //    var pn = section.GetEgyptCompressionTFBResistance(material, bracingConditions, Aee);
-        //    return pn;
-        //}
 
         private static double GetEgyptCompressionTFBResistance(this Section section , Material material , LengthBracingConditions bracingConditions,double Aee)
         {

@@ -55,6 +55,7 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         private void OnResults()
         {
+            IsCheckOutput = false;
             var material = (new Material(GeneralInfoVM.Fy, GeneralInfoVM.E, 0.3)).Convert(GeneralInfoVM.Unit, Units.NMM);
             var bracingConditions = BracingConditionsVM.AsEntity().Convert(GeneralInfoVM.Unit, Units.NMM);
             switch (GeneralInfoVM.StrainingAction)
@@ -62,10 +63,14 @@ namespace ColdFormedChannelSection.App.ViewModels
                 case StrainingActions.MOMENT:
                     var momentOut = GeneralInfoVM.IsUnstiffened ? GeometryVM.AsEntity().Convert(GeneralInfoVM.Unit, Units.NMM).AsUnStiffenedSection().AsEuroMomentResistance(material, bracingConditions).Convert(Units.NMM, GeneralInfoVM.Unit)
                                                   : GeometryVM.AsEntity().Convert(GeneralInfoVM.Unit, Units.NMM).AsLippedSection().AsEuroMomentResistance(material, bracingConditions).Convert(Units.NMM, GeneralInfoVM.Unit);
+                    IsCheckOutput = true;
+                    CheckOutputVM.CheckOutput = momentOut.AsCheck(CheckOutputVM.UltimateLoad);
                     break;
                 case StrainingActions.COMPRESSION:
                     var compOut = GeneralInfoVM.IsUnstiffened ? GeometryVM.AsEntity().Convert(GeneralInfoVM.Unit, Units.NMM).AsUnStiffenedSection().AsEuroCompressionResistance(material, bracingConditions).Convert(Units.NMM, GeneralInfoVM.Unit)
                                                 : GeometryVM.AsEntity().Convert(GeneralInfoVM.Unit, Units.NMM).AsLippedSection().AsEuroCompressionResistance(material, bracingConditions).Convert(Units.NMM, GeneralInfoVM.Unit);
+                    IsCheckOutput=true;
+                    CheckOutputVM.CheckOutput = compOut.AsCheck(CheckOutputVM.UltimateLoad);
                     break;
             }
         }

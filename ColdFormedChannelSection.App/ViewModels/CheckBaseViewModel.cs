@@ -14,9 +14,17 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         private GeometryViewModel _geometryVM;
 
+        private bool _isCheckOutput;
+
         #endregion
 
         #region Properties
+
+        public bool IsCheckOutput
+        {
+            get => _isCheckOutput;
+            set=>NotifyPropertyChanged(ref _isCheckOutput, value);
+        }
 
         public GeneralInfoViewModel GeneralInfoVM
         {
@@ -36,6 +44,8 @@ namespace ColdFormedChannelSection.App.ViewModels
             set => NotifyPropertyChanged(ref _geometryVM, value);
         }
 
+        public CheckOutputViewModel CheckOutputVM { get;  }
+
         public virtual ICommand ResultsCommand { get; }
 
         #endregion
@@ -50,8 +60,8 @@ namespace ColdFormedChannelSection.App.ViewModels
             GeneralInfoVM = generalInfoVM;
             BracingConditionsVM = bracingConditionsVM;
             GeometryVM = geometryVM;
-
-
+            CheckOutputVM = new CheckOutputViewModel();
+            IsCheckOutput = false;
 
 
         }
