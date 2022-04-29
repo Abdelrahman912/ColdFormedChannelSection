@@ -22,6 +22,12 @@ namespace ColdFormedChannelSection.App
         private readonly Lazy<EuroCodeCheckViewModel> _euroCodeCheckVM;
         private readonly Lazy<AISICodeCheckViewModel> _aisiCodeCheckVM;
 
+
+        private readonly Lazy<DirectStrengthDesignViewModel> _directStrengthDesignVM;
+        private readonly Lazy<EgyptianCodeDesignViewModel> _egyptianCodeDesignVM;
+        private readonly Lazy<EuroCodeDesignViewModel> _euroCodeDesignVM;
+        private readonly Lazy<AISICodeDesignViewModel> _aisiCodeDesignVM;
+
         private ViewModelBase _currentVM;
         private readonly GeneralInfoViewModel _generalInfoVM;
         private readonly BracingConditionsViewModel _bracingConditionsVM;
@@ -57,6 +63,11 @@ namespace ColdFormedChannelSection.App
             _euroCodeCheckVM = new Lazy<EuroCodeCheckViewModel>(() => new EuroCodeCheckViewModel(_generalInfoVM, _bracingConditionsVM, geometryVM));
             _aisiCodeCheckVM = new Lazy<AISICodeCheckViewModel>(() => new AISICodeCheckViewModel(_generalInfoVM, _bracingConditionsVM, geometryVM));
 
+            _directStrengthDesignVM = new Lazy<DirectStrengthDesignViewModel>(() => new DirectStrengthDesignViewModel(_generalInfoVM, _bracingConditionsVM));
+            _egyptianCodeDesignVM = new Lazy<EgyptianCodeDesignViewModel>(() => new EgyptianCodeDesignViewModel(_generalInfoVM, _bracingConditionsVM));
+            _euroCodeDesignVM = new Lazy<EuroCodeDesignViewModel>(() => new EuroCodeDesignViewModel(_generalInfoVM, _bracingConditionsVM));
+            _aisiCodeDesignVM = new Lazy<AISICodeDesignViewModel>(() => new AISICodeDesignViewModel(_generalInfoVM, _bracingConditionsVM));
+
             Mediator.Instance.Subscribe<object>(this,  _=> OnDefaultResistance(_,_directStrengthResistanceVM.Value),Context.RESISTANCE_DIRECT_STRENGTH);
             Mediator.Instance.Subscribe<object>(this, _ => OnDefaultResistance(_, _egyptianCodeResistanceVM.Value), Context.RESISTANCE_EGYPT_CODE);
             Mediator.Instance.Subscribe<object>(this,_=>OnEuroResistance(_,_euroCodeReistanceVM.Value),Context.RESISTANCE_EURO_CODE);
@@ -68,6 +79,11 @@ namespace ColdFormedChannelSection.App
             Mediator.Instance.Subscribe<object>(this, _ => OnDefaultResistance(_, _egyptianCodeCheckVM.Value), Context.CHECK_EGYPT_CODE);
             Mediator.Instance.Subscribe<object>(this,_=> OnEuroResistance(_,_euroCodeCheckVM.Value), Context.CHECK_EURO_CODE);
             Mediator.Instance.Subscribe<object>(this, _ => OnDefaultResistance(_, _aisiCodeCheckVM.Value), Context.CHECK_AISI_CODE);
+
+            Mediator.Instance.Subscribe<object>(this, _ => OnDefaultResistance(_, _directStrengthDesignVM.Value), Context.DESIGN_DIRECT_STRENGTH);
+            Mediator.Instance.Subscribe<object>(this, _ => OnDefaultResistance(_, _egyptianCodeDesignVM.Value), Context.DESIGN_EGYPT_CODE);
+            Mediator.Instance.Subscribe<object>(this, _ => OnEuroResistance(_, _euroCodeDesignVM.Value), Context.DESIGN_EURO_CODE);
+            Mediator.Instance.Subscribe<object>(this, _ => OnDefaultResistance(_, _aisiCodeDesignVM.Value), Context.DESIGN_AISI_CODE);
         }
 
 

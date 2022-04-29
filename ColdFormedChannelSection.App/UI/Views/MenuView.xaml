@@ -12,7 +12,12 @@
         <Menu  IsMainMenu="True"  VerticalAlignment="Top"  >
             <MenuItem Header="{materialDesign:PackIcon Kind=Home, Size=25}" Command="{Binding HomeCommand}"/>
             <MenuItem Header="_Design" Height="50" >
-                
+                <MenuItem Header="Effective Strength Method"  >
+                    <MenuItem Header="Egyptian Code"  Command="{Binding DesignEgyptCommand}"/>
+                    <MenuItem Header="Euro Code"  Command="{Binding DesignEuroCommand}"/>
+                    <MenuItem Header="AISI Code" Command="{Binding DesignAISICommand}"/>
+                </MenuItem>
+                <MenuItem Header="Direct Strength"  Command="{Binding DesignDSCommand}"/>
             </MenuItem>
             <MenuItem Header="_Check" Height="50" >
                 <MenuItem Header="Effective Strength Method"  >

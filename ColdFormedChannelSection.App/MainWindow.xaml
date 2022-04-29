@@ -38,6 +38,20 @@
             <vs:CheckView/>
         </DataTemplate>
 
+
+        <DataTemplate DataType="{x:Type vms:DirectStrengthDesignViewModel}">
+            <vs:DesignView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vms:EgyptianCodeDesignViewModel}">
+            <vs:DesignView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vms:EuroCodeDesignViewModel}">
+            <vs:DesignView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vms:AISICodeDesignViewModel}">
+            <vs:DesignView/>
+        </DataTemplate>
+
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>

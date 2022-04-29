@@ -26,7 +26,7 @@
                                 <RowDefinition Height="auto"/>
                                 <RowDefinition Height="auto"/>
                             </Grid.RowDefinitions>
-                            <RadioButton Content="Import from Library" IsChecked="{Binding IsUserDefined, Converter={StaticResource InvertBooleanConverter}}" Margin="0 0 0 5" VerticalAlignment="Center"/>
+                            <RadioButton Visibility="{Binding IsDesign,Converter={StaticResource InverseBoolToVisConverter}}" Content="Import from Library" IsChecked="{Binding IsUserDefined, Converter={StaticResource InvertBooleanConverter}}" Margin="0 0 0 5" VerticalAlignment="Center"/>
 
                             <Grid Grid.Row="1" Grid.Column="1" Visibility="{Binding IsUserDefined, Converter={StaticResource InverseBoolToVisConverter}}">
                                 <Grid.ColumnDefinitions>
@@ -35,7 +35,7 @@
                                 </Grid.ColumnDefinitions>
                                 <ComboBox VerticalAlignment="Top" Margin="5" SelectedItem="{Binding SelectedTableName}"
                                           ItemsSource="{Binding Source={markup:EnumBindingSource {x:Type enums:TablesName}}}"/>
-                                <ComboBox Grid.Column="1"  ItemsSource="{Binding Sections}" SelectedItem="{Binding SelectedSection}"
+                                <ComboBox Grid.Column="1" IsEnabled="{Binding IsDesign,Converter={StaticResource InvertBooleanConverter}}" ItemsSource="{Binding Sections}" SelectedItem="{Binding SelectedSection}"
                                   VerticalAlignment="Top" Height="auto" Margin="5" >
                                     <ComboBox.ItemTemplate>
                                         <DataTemplate>
@@ -44,7 +44,7 @@
                                     </ComboBox.ItemTemplate>
                                 </ComboBox>
                             </Grid>
-                            <RadioButton Grid.Row="2" Grid.Column="1" Content="User defined" IsChecked="{Binding IsUserDefined}" Margin="0 5 0 0" VerticalAlignment="Center"/>
+                            <RadioButton Visibility="{Binding IsDesign,Converter={StaticResource InverseBoolToVisConverter}}" Grid.Row="2" Grid.Column="1" Content="User defined" IsChecked="{Binding IsUserDefined}" Margin="0 5 0 0" VerticalAlignment="Center"/>
                         </Grid>
 
                       

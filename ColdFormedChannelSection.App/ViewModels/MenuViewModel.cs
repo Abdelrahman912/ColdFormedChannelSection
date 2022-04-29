@@ -34,6 +34,11 @@ namespace ColdFormedChannelSection.App.ViewModels
         public ICommand CheckEuroCommand { get; }
         public ICommand CheckAISICommand { get; }
 
+        public ICommand DesignDSCommand { get; }
+        public ICommand DesignEgyptCommand { get; }
+        public ICommand DesignEuroCommand { get; }
+        public ICommand DesignAISICommand { get; }
+
         #endregion
 
         #region Constructors
@@ -51,7 +56,14 @@ namespace ColdFormedChannelSection.App.ViewModels
             CheckEgyptCommand = new RelayCommand(OnCheckEgypt);
             CheckEuroCommand = new RelayCommand(OnCheckEuro);
             CheckAISICommand = new RelayCommand(OnCheckAISI);
+
+            DesignDSCommand = new RelayCommand(OnDesignDS);
+            DesignEgyptCommand = new RelayCommand(OnDesignEgypt);
+            DesignEuroCommand = new RelayCommand(OnDesignEuro);
+            DesignAISICommand = new RelayCommand(OnDesignAISI);
         }
+
+
 
 
 
@@ -59,6 +71,31 @@ namespace ColdFormedChannelSection.App.ViewModels
         #endregion
 
         #region Methods
+
+        private void OnDesignAISI()
+        {
+            Name = "Design | AISI Code";
+            Mediator.Mediator.Instance.NotifyColleagues(new object(), Context.DESIGN_AISI_CODE);
+        }
+
+        private void OnDesignEuro()
+        {
+            Name = "Design | Euro Code";
+            Mediator.Mediator.Instance.NotifyColleagues(new object(), Context.DESIGN_EURO_CODE);
+        }
+
+        private void OnDesignEgypt()
+        {
+            Name = "Design | Egyptian Code";
+            Mediator.Mediator.Instance.NotifyColleagues(new object(), Context.DESIGN_EGYPT_CODE);
+        }
+
+        private void OnDesignDS()
+        {
+            Name = "Design | Direct Strength";
+            Mediator.Mediator.Instance.NotifyColleagues(new object(), Context.DESIGN_DIRECT_STRENGTH);
+        }
+
 
         private void OnCheckAISI()
         {

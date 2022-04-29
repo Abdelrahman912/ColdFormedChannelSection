@@ -20,6 +20,8 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         #region Private Fields
 
+        private bool _isDesign;
+
         private double _totalHeightH;
         private double _totalWidthB;
         private double _internalRadiusR;
@@ -52,6 +54,12 @@ namespace ColdFormedChannelSection.App.ViewModels
         #endregion
 
         #region Properties
+
+        public bool IsDesign
+        {
+            get => _isDesign;
+            set => NotifyPropertyChanged(ref _isDesign, value);
+        }
 
         public Units Unit
         {
@@ -149,6 +157,8 @@ namespace ColdFormedChannelSection.App.ViewModels
             SelectedTableName = TablesName.EGYPT_EURO;
             Mediator.Mediator.Instance.Subscribe<bool>(this, OnStiffChanged, Context.STIFF_UNSTIFF);
             Mediator.Mediator.Instance.Subscribe<Units>(this, OnUnitsChanged, Context.UNITS);
+            IsDesign = false;
+           
         }
 
 
