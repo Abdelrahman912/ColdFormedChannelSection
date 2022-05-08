@@ -1,6 +1,6 @@
 ﻿using ColdFormedChannelSection.Core.Enums;
 
-namespace ColdFormedChannelSection.Core.Entities.Output.Design
+namespace ColdFormedChannelSection.Core.Entities
 {
     public class CompressionDesignOutput : DesignOutput
     {

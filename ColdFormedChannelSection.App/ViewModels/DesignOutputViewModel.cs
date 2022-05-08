@@ -2,11 +2,6 @@
 using ColdFormedChannelSection.App.ViewModels.Enums;
 using ColdFormedChannelSection.Core.Entities;
 using ColdFormedChannelSection.Core.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ColdFormedChannelSection.App.ViewModels
 {
@@ -25,10 +20,17 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         private StrainingActions _strainingActions;
 
+        private DesignOutput _designOutput;
 
         #endregion
 
         #region Properties
+
+        public DesignOutput DesignOutput
+        {
+            get => _designOutput;
+            set => NotifyPropertyChanged(ref _designOutput, value);
+        }
 
         public bool IsDesignOutput
         {

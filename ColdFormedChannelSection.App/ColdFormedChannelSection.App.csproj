@@ -4,8 +4,20 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UseWPF>true</UseWPF>
+    <PackageIcon>Icon.ico</PackageIcon>
+    <SignAssembly>False</SignAssembly>
+    <ProduceReferenceAssembly>False</ProduceReferenceAssembly>
+    <StartupObject>ColdFormedChannelSection.App.App</StartupObject>
+    <ApplicationIcon>UI\Resources\Icon.ico</ApplicationIcon>
+    <Authors>Abdelrahman Fathy</Authors>
+    <Company>IFAT</Company>
+    <Product>Cold C</Product>
+    <Copyright>IFAT</Copyright>
+    <AssemblyName>ColdFormedChannelSection.App</AssemblyName>
   </PropertyGroup>
-
+    
+  
+    
   <ItemGroup>
     <None Remove="UI\Resources\lipped C.jpg" />
     <None Remove="UI\Resources\Lipped.png" />
@@ -13,7 +25,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="MaterialDesignThemes" Version="4.3.0" />
+    <PackageReference Include="MaterialDesignThemes" Version="4.3.0"/>
+      
   </ItemGroup>
 
   <ItemGroup>
@@ -22,6 +35,7 @@
 
   <ItemGroup>
     <Folder Include="Models\" />
+    <Folder Include="Resources\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -31,11 +45,42 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="UI\Resources\Icon.ico">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </Resource>
+    <Resource Include="UI\Resources\Icon.png" />
     <Resource Include="UI\Resources\lipped C.jpg" />
     <Resource Include="UI\Resources\Lipped.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="UI\Resources\Unstiffened C.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="UI\Resources\Icon.ico">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Update="UI\Resources\Icon.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>

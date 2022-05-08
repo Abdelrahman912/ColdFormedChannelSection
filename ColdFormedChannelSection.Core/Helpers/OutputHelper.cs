@@ -1,4 +1,5 @@
 ﻿using ColdFormedChannelSection.Core.Entities;
+using ColdFormedChannelSection.Core.Enums;
 
 namespace ColdFormedChannelSection.Core.Helpers
 {
@@ -24,5 +25,30 @@ namespace ColdFormedChannelSection.Core.Helpers
                 unitName: resist.UnitName
                 );
         }
+
+        public static CompressionDesignOutput AsDesign(this CompressionResistanceOutput resist, double ultimateLoad,string sectionName)
+        {
+            return new CompressionDesignOutput(
+                ultimateLoad: ultimateLoad,
+                designSection:sectionName,
+                nominalResistance: resist.NominalResistance,
+                phi: resist.Phi,
+                governingCase: resist.GoverningCase,
+                unitName: resist.UnitName
+                );
+        }
+        public static MomentDesignOutput AsDesign(this MomentResistanceOutput resist, double ultimateLoad,string sectionName)
+        {
+            return new MomentDesignOutput(
+                ultimateLoad: ultimateLoad,
+                designSection:sectionName,
+                nominalResistance: resist.NominalResistance,
+                phi: resist.Phi,
+                governingCase: resist.GoverningCase,
+                unitName: resist.UnitName
+                );
+        }
+
+
     } 
 }

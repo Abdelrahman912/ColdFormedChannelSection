@@ -188,6 +188,14 @@ namespace ColdFormedChannelSection.App.ViewModels
                 InternalRadiusR = secDim.InternalRadiusR.Round(4);
                 ThicknessT = secDim.ThicknessT.Round(4);
             }
+            else
+            {
+                TotalHeightH = 0.0;
+                TotalFoldWidthC = 0.0;
+                TotalWidthB = 0.0;
+                InternalRadiusR = 0.0;
+                ThicknessT = 0.0;
+            }
         }
 
         private void OnUnitsChanged(Units selectedUnit)
