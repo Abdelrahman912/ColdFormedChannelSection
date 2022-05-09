@@ -39,6 +39,8 @@ namespace ColdFormedChannelSection.App.ViewModels
         public ICommand DesignEuroCommand { get; }
         public ICommand DesignAISICommand { get; }
 
+        public ICommand AboutCommand { get; }
+
         #endregion
 
         #region Constructors
@@ -61,16 +63,20 @@ namespace ColdFormedChannelSection.App.ViewModels
             DesignEgyptCommand = new RelayCommand(OnDesignEgypt);
             DesignEuroCommand = new RelayCommand(OnDesignEuro);
             DesignAISICommand = new RelayCommand(OnDesignAISI);
+
+            AboutCommand = new RelayCommand(OnAbout);
         }
-
-
-
-
 
 
         #endregion
 
         #region Methods
+
+        private void OnAbout()
+        {
+            Name = "About | Cold C";
+            Mediator.Mediator.Instance.NotifyColleagues(new object(), Context.ABOUT);
+        }
 
         private void OnDesignAISI()
         {

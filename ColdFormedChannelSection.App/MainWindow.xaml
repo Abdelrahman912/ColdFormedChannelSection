@@ -53,6 +53,10 @@
             <vs:DesignView/>
         </DataTemplate>
 
+        <DataTemplate DataType="{x:Type vms:AboutViewModel}">
+            <vs:AboutView/>
+        </DataTemplate>
+
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>

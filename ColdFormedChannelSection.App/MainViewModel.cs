@@ -31,6 +31,7 @@ namespace ColdFormedChannelSection.App
         private ViewModelBase _currentVM;
         private readonly GeneralInfoViewModel _generalInfoVM;
         private readonly BracingConditionsViewModel _bracingConditionsVM;
+        private readonly AboutViewModel _aboutVM;
         #endregion
 
         #region Properties
@@ -50,6 +51,7 @@ namespace ColdFormedChannelSection.App
         {
             MenuVM = new MenuViewModel();
             _generalInfoVM = new GeneralInfoViewModel();
+            _aboutVM = new AboutViewModel();
             _bracingConditionsVM = new BracingConditionsViewModel();
             var geometryVM = new GeometryViewModel();
             _directStrengthResistanceVM = new Lazy<DirectStrengthResistanceViewModel>(() =>new DirectStrengthResistanceViewModel(_generalInfoVM, _bracingConditionsVM, geometryVM));
@@ -84,6 +86,8 @@ namespace ColdFormedChannelSection.App
             Mediator.Instance.Subscribe<object>(this, _ => OnDefaultResistance(_, _egyptianCodeDesignVM.Value), Context.DESIGN_EGYPT_CODE);
             Mediator.Instance.Subscribe<object>(this, _ => OnEuroResistance(_, _euroCodeDesignVM.Value), Context.DESIGN_EURO_CODE);
             Mediator.Instance.Subscribe<object>(this, _ => OnDefaultResistance(_, _aisiCodeDesignVM.Value), Context.DESIGN_AISI_CODE);
+
+            Mediator.Instance.Subscribe<object>(this, _ => CurrentVM = _aboutVM, Context.ABOUT);
         }
 
 

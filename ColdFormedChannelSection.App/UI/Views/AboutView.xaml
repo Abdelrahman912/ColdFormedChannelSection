@@ -1,0 +1,52 @@
+﻿<UserControl x:Class="ColdFormedChannelSection.App.UI.Views.AboutView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ColdFormedChannelSection.App.UI.Views"
+             mc:Ignorable="d" d:Background="White"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <ScrollViewer>
+        <Grid Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <StackPanel>
+                <TextBlock Text="By:" Foreground="Red" FontSize="20" FontWeight="Bold" Margin="0 5"/>
+                <TextBlock Text="Eng. Samar El-sayed Ibrahim Abd El-kawy Atya" FontSize="16" FontWeight="DemiBold"  Margin="0 3"/>
+                <TextBlock Text="Teaching Assistant - Structural Enginnering Department - Faculty of Engineering - Mansoura University"   Margin="0 3"/>
+                <TextBlock Text="Email: samaratya@mans.edu.eg"   Margin="0 3"/>
+                <TextBlock Text="Phone: 01014966863"   Margin="0 3"/>
+
+            </StackPanel>
+            <StackPanel Grid.Row="1">
+                <TextBlock Text="Supervisors:" Foreground="Red" FontSize="20" FontWeight="Bold" Margin="0 5"/>
+                <TextBlock Text="Prof. Dr. Nabil Sayed Mahmoud" FontSize="16" FontWeight="DemiBold"  Margin="0 3"/>
+                <TextBlock Text="Lecturer - Structural Engineering Department - Faculty of Engineering - Mansoura University"   Margin="0 3"/>
+                <TextBlock Text="Email: TODO@mans.edu.eg"   Margin="0 3"/>
+                <TextBlock Text="Phone: 01223154590"   Margin="0 3"/>
+
+                <TextBlock Text="" Margin="0 3"/>
+                <TextBlock Text="Assoc. Prof. Dr. Fikry Abdo Salem" FontSize="16" FontWeight="DemiBold"  Margin="0 3"/>
+                <TextBlock Text="Lecturer - Structural Engineering Department - Faculty of Engineering - Mansoura University"   Margin="0 3"/>
+                <TextBlock Text="Email: TODO@mans.edu.eg"   Margin="0 3"/>
+                <TextBlock Text="Phone: 01005270397"   Margin="0 3"/>
+
+                <TextBlock Text="" Margin="0 3"/>
+                <TextBlock Text="Assoc. Prof. Dr. Mohamed Mohamed Ghannam" FontSize="16" FontWeight="DemiBold"  Margin="0 3"/>
+                <TextBlock Text="Lecturer - Structural Engineering Department - Faculty of Engineering - Mansoura University"   Margin="0 3"/>
+                <TextBlock Text="Email: TODO@mans.edu.eg"   Margin="0 3"/>
+                <TextBlock Text="Phone: 01154485586"   Margin="0 3"/>
+
+                <TextBlock Text="" Margin="0 3"/>
+                <TextBlock Text="Dr. Ahmed Hussain Ali Abdelrahman" FontSize="16" FontWeight="DemiBold"  Margin="0 3"/>
+                <TextBlock Text="Lecturer - Structural Engineering Department - Faculty of Engineering - Mansoura University"   Margin="0 3"/>
+                <TextBlock Text="Former Visiting Scholar - Johns Hopkins University - USA"   Margin="0 3"/>
+                <TextBlock Text="Email: a_hussain@mans.edu.eg"   Margin="0 3"/>
+                <TextBlock Text="Phone: 01002220419"   Margin="0 3"/>
+            </StackPanel>
+        </Grid>
+    </ScrollViewer>
+    
+</UserControl>

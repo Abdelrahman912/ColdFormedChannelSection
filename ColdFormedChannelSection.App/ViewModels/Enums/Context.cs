@@ -18,6 +18,7 @@
         STIFF_UNSTIFF,
         SECTION_GEOMETRY,
         UNITS,
-        STRAININGACTIONS
+        STRAININGACTIONS,
+        ABOUT
     }
 }
