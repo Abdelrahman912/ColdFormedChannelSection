@@ -61,7 +61,13 @@ namespace ColdFormedChannelSection.App.ViewModels
         public DesignCode DesignCode
         {
             get => _designCode;
-            set=>NotifyPropertyChanged(ref _designCode, value);
+            set
+                
+            { 
+                NotifyPropertyChanged(ref _designCode, value);
+                Mediator.Mediator.Instance.NotifyColleagues(KeyValuePair.Create(_designCode, StrainingAction), Context.BRACING);
+            }
+
         }
 
         public bool IsDesignCode
@@ -78,6 +84,7 @@ namespace ColdFormedChannelSection.App.ViewModels
                 NotifyPropertyChanged(ref _strainingAction, value);
                 OnStrainingActionsChange();
                 Mediator.Mediator.Instance.NotifyColleagues(_strainingAction, Context.STRAININGACTIONS);
+                Mediator.Mediator.Instance.NotifyColleagues(KeyValuePair.Create(DesignCode, _strainingAction), Context.BRACING);
             }
         }
 

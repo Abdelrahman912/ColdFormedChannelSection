@@ -2,6 +2,8 @@
 using ColdFormedChannelSection.App.ViewModels.Enums;
 using ColdFormedChannelSection.Core.Enums;
 using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace ColdFormedChannelSection.App.ViewModels
 {
@@ -25,6 +27,8 @@ namespace ColdFormedChannelSection.App.ViewModels
         private bool _isC1Used;
 
         private Units _unit;
+
+        private Dictionary<KeyValuePair<DesignCode, StrainingActions>, Action> _bracingDict;
 
         #endregion
 
@@ -123,16 +127,66 @@ namespace ColdFormedChannelSection.App.ViewModels
             Ky = 0;
             Kz = 0;
 
-            IsCbUsed = true;
-            IsLuUsed = true;
-            IsC1Used = true;
-            Mediator.Mediator.Instance.Subscribe<Units>(this, OnUnitsChanged, Context.UNITS);
+            IsCbUsed = false;
+            IsLuUsed = false;
+            IsC1Used = false;
+           
+            init();
         }
+
+
 
 
         #endregion
 
         #region Methods
+
+        private void init()
+        {
+            Task.Run(() =>
+            {
+                Mediator.Mediator.Instance.Subscribe<Units>(this, OnUnitsChanged, Context.UNITS);
+                Mediator.Mediator.Instance.Subscribe<KeyValuePair<DesignCode, StrainingActions>>(this, OnBracingChanged, Context.BRACING);
+                _bracingDict = new Dictionary<KeyValuePair<DesignCode, StrainingActions>, Action>()
+                {
+                    [KeyValuePair.Create(DesignCode.EGYPTIAN, StrainingActions.COMPRESSION)] = DefaultCompression,
+                    [KeyValuePair.Create(DesignCode.EGYPTIAN,StrainingActions.MOMENT)]=DefaultMoment,
+                    [KeyValuePair.Create(DesignCode.EURO,StrainingActions.COMPRESSION)]=DefaultCompression,
+                    [KeyValuePair.Create(DesignCode.EURO,StrainingActions.MOMENT)] = EuroMoment,
+                    [KeyValuePair.Create(DesignCode.AISI,StrainingActions.COMPRESSION)] = DefaultCompression,
+                    [KeyValuePair.Create(DesignCode.AISI,StrainingActions.MOMENT)] = DefaultMoment
+                };
+            });
+        }
+        private void OnBracingChanged(KeyValuePair<DesignCode, StrainingActions> kvp)
+        {
+            _bracingDict[kvp]();
+        }
+
+        private  void DefaultCompression()
+        {
+            IsCbUsed = false;
+            Cb = 0;
+            IsLuUsed = false;
+            Lu = 0;
+            IsC1Used = false;
+            C1 = 0;
+        }
+
+        private void DefaultMoment()
+        {
+            IsCbUsed = true;
+            IsLuUsed = true;
+            IsC1Used = false;
+            C1 = 0;
+        }
+
+       private void EuroMoment()
+        {
+            IsC1Used = true;
+            IsLuUsed = true;
+            IsCbUsed = true;
+        }
 
         private void OnUnitsChanged(Units unit)
         {

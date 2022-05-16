@@ -2,7 +2,9 @@
 using ColdFormedChannelSection.App.ViewModels.Base;
 using ColdFormedChannelSection.App.ViewModels.Enums;
 using ColdFormedChannelSection.App.ViewModels.Mediator;
+using ColdFormedChannelSection.Core.Enums;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace ColdFormedChannelSection.App
@@ -62,6 +64,8 @@ namespace ColdFormedChannelSection.App
             IsMenu = true;
             CurrentVM = _effectiveWidthVM.Value;
             _effectiveWidthVM.Value.GeneralInfoVM.IsDesignCode = true;
+            Mediator.Instance.NotifyColleagues(KeyValuePair.Create(_generalInfoVM.DesignCode, _generalInfoVM.StrainingAction), Context.BRACING);
+
             MenuVM.Name = "Effective Wide Width";
         }
 
@@ -89,6 +93,7 @@ namespace ColdFormedChannelSection.App
             IsMenu = true;
             CurrentVM = _directStrengthVM.Value;
             _directStrengthVM.Value.GeneralInfoVM.IsDesignCode = false;
+            Mediator.Instance.NotifyColleagues(KeyValuePair.Create(DesignCode.AISI, _generalInfoVM.StrainingAction),Context.BRACING);
             MenuVM.Name = "Direct Strength";
         }
 
@@ -105,60 +110,12 @@ namespace ColdFormedChannelSection.App
             IsMenu = true;
         }
 
-        private void OnDefaultResistance(object _ , ViewModelBase vm)
-        {
-            CurrentVM = vm;
-            DefaultChangeBracingConditions();
-        }
+       
       
 
-        private void OnEuroResistance(object _,ViewModelBase euroVM)
-        {
-            CurrentVM = euroVM;
-            _generalInfoVM.OnStrainingActionsChange = () =>
-            {
-                switch (_generalInfoVM.StrainingAction)
-                {
-                    case StrainingActions.MOMENT:
-                        _bracingConditionsVM.IsC1Used = true;
-                        _bracingConditionsVM.IsLuUsed = true;
-                        _bracingConditionsVM.IsCbUsed = true;
-                        break;
-                    case StrainingActions.COMPRESSION:
-                        _bracingConditionsVM.IsC1Used = false;
-                        _bracingConditionsVM.C1 = 0;
-                        _bracingConditionsVM.IsLuUsed = false;
-                        _bracingConditionsVM.Lu = 0;
-                        _bracingConditionsVM.IsCbUsed = false;
-                        _bracingConditionsVM.Cb = 0;
-                        break;
-                }
-            };
-        }
+        
 
-        private void DefaultChangeBracingConditions()
-        {
-            _generalInfoVM.OnStrainingActionsChange = () =>
-            {
-                switch (_generalInfoVM.StrainingAction)
-                {
-                    case StrainingActions.MOMENT:
-                        _bracingConditionsVM.IsC1Used = false;
-                        _bracingConditionsVM.C1 = 0;
-                        _bracingConditionsVM.IsLuUsed = true;
-                        _bracingConditionsVM.IsCbUsed = true;
-                        break;
-                    case StrainingActions.COMPRESSION:
-                        _bracingConditionsVM.IsC1Used = false;
-                        _bracingConditionsVM.C1 = 0;
-                        _bracingConditionsVM.IsLuUsed = false;
-                        _bracingConditionsVM.Lu = 0;
-                        _bracingConditionsVM.IsCbUsed = false;
-                        _bracingConditionsVM.Cb = 0;
-                        break;
-                }
-            };
-        }
+       
 
         #endregion
 

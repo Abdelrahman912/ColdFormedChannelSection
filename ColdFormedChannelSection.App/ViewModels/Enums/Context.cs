@@ -22,6 +22,7 @@
         ABOUT,
         DIRECT_STRENGTH,
         EFFECTIVE_WIDTH,
-        HOME
+        HOME,
+        BRACING
     }
 }
