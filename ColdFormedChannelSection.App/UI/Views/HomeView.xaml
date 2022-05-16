@@ -1,0 +1,174 @@
+﻿<UserControl x:Class="ColdFormedChannelSection.App.UI.Views.HomeView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ColdFormedChannelSection.App.UI.Views"
+             mc:Ignorable="d" 
+             d:Background="White"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             d:DesignHeight="800" d:DesignWidth="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.5*"/>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="0.5*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.5*"/>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="0.5*"/>
+        </Grid.RowDefinitions>
+
+
+        <Grid Grid.Row="1" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+
+            <Grid >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Image   Width="100" Height="120" VerticalAlignment="Center" 
+                       Source="../Resources/Intro Icon.png" Visibility="{Binding IsUnstiffened, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                <StackPanel VerticalAlignment="Center"  Grid.Column="1" Margin="10 0">
+                    <TextBlock  Text="Welcome to Cold Formed Sections Program"  Style="{StaticResource MaterialDesignHeadline4TextBlock}"/>
+                    <Grid >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock 
+                                     TextWrapping="Wrap" 
+                                    Foreground="{DynamicResource MaterialDesignBodyLight}"
+                                    Text="A software program to design, check and calculate resistance of cold formed sections using direct strength method and effective wide width method."  />
+                    </Grid>
+                        <Button Grid.Column="1"  Style="{StaticResource MaterialDesignFlatDarkButton}">
+                            <StackPanel Orientation="Horizontal" >
+                                <materialDesign:PackIcon Kind="About" Margin="2 2"/>
+                                <TextBlock Text="About" />
+                            </StackPanel>
+                        </Button>
+
+                </StackPanel>
+            </Grid>
+
+            <Grid Grid.Row="1" Margin="0 30">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="0.1*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+
+
+
+                <materialDesign:Card Margin="5">
+
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+                        <Image Grid.Row="0" Source="../Resources/Intro Icon.png" Height="100" Width="150"/>
+
+
+                        <Separator 
+      Grid.Row="1"
+      Style="{StaticResource MaterialDesignDarkSeparator}"
+      Margin="8 0 8 0" />
+                        <Grid Grid.Row="2">
+                            <Grid.RowDefinitions >
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Row="0" Grid.ColumnSpan="2"
+                                    Margin="8 4 8 4" HorizontalAlignment="Center"
+                                    Style="{StaticResource MaterialDesignHeadline5TextBlock}"
+                                    Text="Direct Strength Method" />
+                            <StackPanel Grid.Column="0" Grid.Row="1" Margin="10">
+                                <TextBlock 
+                                    Margin="8 4 8 4" TextWrapping="Wrap" 
+                                    Foreground="{DynamicResource MaterialDesignBodyLight}"
+                                    Text="This method uses member elastic buckling solutions based on gross properties to determine the member strength." />
+                            </StackPanel>
+                            <Button Margin="10" Grid.Row="1" Grid.Column="1"  Style="{StaticResource MaterialDesignOutlinedDarkButton}">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="PlayCircle" VerticalAlignment="Center" Margin="2 2"/>
+                                    <TextBlock Text="Start" />
+                                </StackPanel>
+                            </Button>
+                        </Grid>
+
+
+                    </Grid>
+                </materialDesign:Card>
+
+
+
+                <materialDesign:Card Margin="5" Grid.Column="2">
+
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+                        <Image Grid.Row="0" Source="../Resources/Intro Icon.png" Height="100" Width="150"/>
+
+
+                        <Separator 
+      Grid.Row="1"
+      Style="{StaticResource MaterialDesignDarkSeparator}"
+      Margin="8 0 8 0" />
+                        <Grid Grid.Row="2">
+                            <Grid.RowDefinitions >
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Row="0" Grid.ColumnSpan="2"
+                                    Margin="8 4 8 4" HorizontalAlignment="Center"
+                                    Style="{StaticResource MaterialDesignHeadline5TextBlock}"
+                                    Text="Effective Wide Width Method" />
+                            <StackPanel Grid.Column="0" Grid.Row="1" Margin="10">
+                                <TextBlock 
+                                    Margin="8 4 8 4" TextWrapping="Wrap" 
+                                    Foreground="{DynamicResource MaterialDesignBodyLight}"
+                                    Text="This method uses effective properties of section to determine the member strength based on different design codes (Egyptian, Euro and AISI)." />
+                            </StackPanel>
+                            <Button Margin="10" Grid.Row="1" Grid.Column="1"  Style="{StaticResource MaterialDesignOutlinedDarkButton}">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="PlayCircle" VerticalAlignment="Center" Margin="2 2"/>
+                                    <TextBlock Text="Start" />
+                                </StackPanel>
+                            </Button>
+                        </Grid>
+
+
+                    </Grid>
+                </materialDesign:Card>
+
+
+
+            </Grid>
+
+
+        </Grid>
+    </Grid>
+</UserControl>

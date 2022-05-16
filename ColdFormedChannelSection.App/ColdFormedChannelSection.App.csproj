@@ -19,13 +19,14 @@
   
     
   <ItemGroup>
+    <None Remove="UI\Resources\Intro Icon.png" />
     <None Remove="UI\Resources\lipped C.jpg" />
     <None Remove="UI\Resources\Lipped.png" />
     <None Remove="UI\Resources\Unstiffened C.jpg" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="MaterialDesignThemes" Version="4.3.0"/>
+    <PackageReference Include="MaterialDesignThemes" Version="4.3.0" />
       
   </ItemGroup>
 
@@ -50,6 +51,7 @@
       <PackagePath>\</PackagePath>
     </Resource>
     <Resource Include="UI\Resources\Icon.png" />
+    <Resource Include="UI\Resources\Intro Icon.png" />
     <Resource Include="UI\Resources\lipped C.jpg" />
     <Resource Include="UI\Resources\Lipped.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>

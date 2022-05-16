@@ -59,11 +59,9 @@
 
     </Window.Resources>
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        <vs:MenuView DataContext="{Binding MenuVM}"/>
-        <ContentControl Grid.Row="1" Content="{Binding CurrentVM}"/>
+        
+        <!--<vs:MenuView DataContext="{Binding MenuVM}"/>-->
+        <!--<ContentControl Grid.Row="1" Content="{Binding CurrentVM}"/>-->
+        <vs:HomeView/>
     </Grid>
 </Window>
