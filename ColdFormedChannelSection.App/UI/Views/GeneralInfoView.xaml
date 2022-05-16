@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ColdFormedChannelSection.App.UI.Views"
-             mc:Ignorable="d" 
+             mc:Ignorable="d" d:Background="White"
              xmlns:markup="clr-namespace:ColdFormedChannelSection.App.UI.MarkupExtensions"
               xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:enums ="clr-namespace:ColdFormedChannelSection.App.ViewModels.Enums"
@@ -16,20 +16,46 @@
                                           materialDesign:ColorZoneAssist.Mode="Standard">
             <Grid >
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="2*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <StackPanel>
-                    <Grid Margin="8">
+                    <Grid Margin="8 0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="0.8*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="Straining Action:" VerticalAlignment="Center"/>
-                        <ComboBox Grid.Column="1" SelectedItem="{Binding StrainingAction}"
+                        <TextBlock Text="Module:" VerticalAlignment="Center"/>
+                        <StackPanel Grid.Column="1" HorizontalAlignment="Center" Orientation="Horizontal">
+                            <RadioButton Content="Design" Margin="0 0 15 0" IsChecked="{Binding Path=RunningModule, Converter={StaticResource enumToBoolConverter}, ConverterParameter=DESIGN}" Style="{StaticResource MaterialDesignChoiceChipPrimaryOutlineRadioButton}">
+                               
+                            </RadioButton>
+                            <RadioButton Content="Check" Margin="15 0" IsChecked="{Binding Path=RunningModule, Converter={StaticResource enumToBoolConverter}, ConverterParameter=CHECK}" Style="{StaticResource MaterialDesignChoiceChipPrimaryOutlineRadioButton}">
+                                
+                            </RadioButton>
+                            <RadioButton Content="Resistance" Margin="15 0 0 0" IsChecked="{Binding Path=RunningModule, Converter={StaticResource enumToBoolConverter}, ConverterParameter=RESISTANCE}"
+                                         Style="{StaticResource MaterialDesignChoiceChipPrimaryOutlineRadioButton}"/>
+                        </StackPanel>
+                    </Grid>
+                    <Grid Margin="8 8" Visibility="{Binding IsDesignCode}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.8*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Design Code:" VerticalAlignment="Bottom"/>
+                        <ComboBox Grid.Column="1" SelectedItem="{Binding DesignCode}"
+                                  ItemsSource="{Binding Source={markup:EnumBindingSource {x:Type enums2:DesignCode}}}"/>
+                    </Grid>
+                    <Grid Margin="8 8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.8*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Straining Action:" VerticalAlignment="Bottom"/>
+                        <ComboBox Grid.Column="1" SelectedItem="{Binding StrainingAction}" 
                                   ItemsSource="{Binding Source={markup:EnumBindingSource {x:Type enums:StrainingActions}}}" />
                     </Grid>
-                    <Grid Margin="5">
+                    <!--<Grid Margin="5">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="0.8*"/>
                             <ColumnDefinition Width="*"/>
@@ -39,8 +65,17 @@
                             <RadioButton Content="Lipped" Margin="0 0 40 0" IsChecked="{Binding IsUnstiffened, Converter={StaticResource InvertBooleanConverter}}"/>
                             <RadioButton IsChecked="{Binding IsUnstiffened}" Content="Unstiffened" Margin="40 0 0 0"/>
                         </StackPanel>
+                    </Grid>-->
+                    <Grid Margin="8 8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.8*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Section:" VerticalAlignment="Bottom"/>
+                        <ComboBox Grid.Column="1" SelectedItem="{Binding SteelSection}" 
+                                  ItemsSource="{Binding Source={markup:EnumBindingSource {x:Type enums2:SteelSection}}}" />
                     </Grid>
-                    <Grid Margin="5">
+                    <Grid Margin="8 8">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="0.8*"/>
                             <ColumnDefinition Width="*"/>
@@ -50,34 +85,15 @@
                                   ItemsSource="{Binding Source={markup:EnumBindingSource {x:Type enums2:Units}}}"/>
                     </Grid>
 
-                    <Grid Margin="5">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="0.8*"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="Material Strength (Fy)" VerticalAlignment="Center"/>
-                            <TextBlock Style="{StaticResource stressUnit}" VerticalAlignment="Center"/>
-                        </StackPanel>
-                        <TextBox Text="{Binding Fy}" Grid.Column="1" />
-                    </Grid>
-                    <Grid Margin="5">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="0.8*"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="Elastic Modulus (E)" VerticalAlignment="Center"/>
-                            <TextBlock Style="{StaticResource stressUnit}" VerticalAlignment="Center"/>
-                        </StackPanel>
-                        <TextBox Text="{Binding E}" Grid.Column="1" />
-                    </Grid>
+                   
                 </StackPanel>
                 <Grid Grid.Column="1">
-                    <Image Grid.Row="2"  Width="280" Height="187" VerticalAlignment="Center" Visibility="{Binding IsUnstiffened, Converter={StaticResource InverseBoolToVisConverter}}"
-                       Source="../Resources/lipped C.jpg" />
-                    <Image Grid.Row="2"  Width="280" Height="187" VerticalAlignment="Center" 
-                       Source="../Resources/Unstiffened C.jpg" Visibility="{Binding IsUnstiffened, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                    <Image Grid.Row="2"  Width="250" Height="157" VerticalAlignment="Center" 
+                       Source="{Binding SteelSectionImage}" >
+                       
+                    </Image>
+                    <!--<Image Grid.Row="2"  Width="250" Height="157" VerticalAlignment="Center" 
+                       Source="../Resources/Unstiffened C.jpg" Visibility="{Binding IsUnstiffened, Converter={StaticResource BooleanToVisibilityConverter}}"/>-->
                 </Grid>
             </Grid>
 

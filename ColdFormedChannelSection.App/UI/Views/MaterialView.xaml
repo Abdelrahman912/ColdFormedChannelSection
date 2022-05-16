@@ -1,0 +1,72 @@
+﻿<UserControl x:Class="ColdFormedChannelSection.App.UI.Views.MaterialView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ColdFormedChannelSection.App.UI.Views"
+             mc:Ignorable="d" d:Background="White"
+              xmlns:markup="clr-namespace:ColdFormedChannelSection.App.UI.MarkupExtensions"
+              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:enums ="clr-namespace:ColdFormedChannelSection.App.ViewModels.Enums"
+             xmlns:enums2 ="clr-namespace:ColdFormedChannelSection.Core.Enums;assembly=ColdFormedChannelSection.Core"
+             d:DesignHeight="450" d:DesignWidth="800">
+    
+    <Grid>
+        <GroupBox Grid.Row="0" Margin="5" Header="Material Properties" Style="{StaticResource MaterialDesignGroupBox}" 
+                                          materialDesign:ColorZoneAssist.Mode="Standard">
+            <Grid >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                    <Grid Margin="5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.8*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Yield Stress (Fy)" VerticalAlignment="Center"/>
+                            <TextBlock Style="{StaticResource stressUnit}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <TextBox Text="{Binding Fy}" Grid.Column="1" />
+                    </Grid>
+                    <Grid Margin="5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.8*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Elastic Modulus (E)" VerticalAlignment="Center"/>
+                            <TextBlock Style="{StaticResource stressUnit}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <TextBox Text="{Binding E}" Grid.Column="1" />
+                    </Grid>
+                    <Grid Margin="5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.8*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Poisson Ratio (v)" VerticalAlignment="Center"/>
+                            <TextBlock Style="{StaticResource stressUnit}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <TextBox Text="{Binding E}" Grid.Column="1" />
+                    </Grid>
+                    <Grid Margin="5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.8*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Shear Modulus (G)" VerticalAlignment="Center"/>
+                            <TextBlock Style="{StaticResource stressUnit}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <TextBox Text="{Binding E}" Grid.Column="1" />
+                    </Grid>
+                </StackPanel>
+                
+            </Grid>
+
+        </GroupBox>
+    </Grid>
+</UserControl>

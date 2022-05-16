@@ -1,6 +1,8 @@
 ﻿using ColdFormedChannelSection.App.ViewModels.Base;
 using ColdFormedChannelSection.Core.Entities;
+using ColdFormedChannelSection.Core.Enums;
 using System;
+using System.Collections.Generic;
 using System.Windows.Input;
 
 namespace ColdFormedChannelSection.App.ViewModels
@@ -10,6 +12,7 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         #region Private Fields
 
+       
 
         private bool _isResistanceOutput;
 
@@ -24,6 +27,7 @@ namespace ColdFormedChannelSection.App.ViewModels
         #endregion
 
         #region Properties
+
 
         public bool IsResistanceOutput
         {

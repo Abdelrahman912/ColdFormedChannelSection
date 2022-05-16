@@ -123,9 +123,9 @@ namespace ColdFormedChannelSection.App.ViewModels
             Ky = 0;
             Kz = 0;
 
-            IsC1Used = false;
-            IsLuUsed = false;
-            IsC1Used = false;
+            IsCbUsed = true;
+            IsLuUsed = true;
+            IsC1Used = true;
             Mediator.Mediator.Instance.Subscribe<Units>(this, OnUnitsChanged, Context.UNITS);
         }
 
