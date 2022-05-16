@@ -57,11 +57,21 @@
             <vs:AboutView/>
         </DataTemplate>
 
+        <DataTemplate DataType="{x:Type vms:HomeViewModel}">
+            <vs:HomeView/>
+        </DataTemplate>
+
     </Window.Resources>
     <Grid>
-        
-        <!--<vs:MenuView DataContext="{Binding MenuVM}"/>-->
-        <!--<ContentControl Grid.Row="1" Content="{Binding CurrentVM}"/>-->
-        <vs:HomeView/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <vs:MenuView DataContext="{Binding MenuVM}" 
+                     Visibility="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window } }, Path=DataContext.IsMenu ,Converter={StaticResource BooleanToVisibilityConverter}}"/>
+        <!--<vs:MenuView 
+                     Visibility="{Binding IsMenu ,Converter={StaticResource BooleanToVisibilityConverter}}"/>-->
+        <ContentControl Grid.Row="1" Content="{Binding CurrentVM}"/>
+        <!--<vs:HomeView/>-->
     </Grid>
 </Window>

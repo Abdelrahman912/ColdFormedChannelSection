@@ -11,35 +11,35 @@
     <Grid>
         <Menu  IsMainMenu="True"  VerticalAlignment="Top"  >
             <MenuItem Header="{materialDesign:PackIcon Kind=Home, Size=25}" Command="{Binding HomeCommand}"/>
-            <MenuItem Header="_Design" Height="50" >
+            <!--<MenuItem Header="_Design" Height="50" >
                 <MenuItem Header="Effective Strength Method"  >
                     <MenuItem Header="Egyptian Code"  Command="{Binding DesignEgyptCommand}"/>
                     <MenuItem Header="Euro Code"  Command="{Binding DesignEuroCommand}"/>
                     <MenuItem Header="AISI Code" Command="{Binding DesignAISICommand}"/>
                 </MenuItem>
                 <MenuItem Header="Direct Strength"  Command="{Binding DesignDSCommand}"/>
-            </MenuItem>
-            <MenuItem Header="_Check" Height="50" >
+            </MenuItem>-->
+            <!--<MenuItem Header="_Check" Height="50" >
                 <MenuItem Header="Effective Strength Method"  >
                     <MenuItem Header="Egyptian Code"  Command="{Binding CheckEgyptCommand}"/>
                     <MenuItem Header="Euro Code"  Command="{Binding CheckEuroCommand}"/>
                     <MenuItem Header="AISI Code" Command="{Binding CheckAISICommand}"/>
                 </MenuItem>
                 <MenuItem Header="Direct Strength"  Command="{Binding CheckDSCommand}"/>
-            </MenuItem>
-            <MenuItem Header="_Resistance" Height="50" >
+            </MenuItem>-->
+            <!--<MenuItem Header="_Resistance" Height="50" >
                 <MenuItem Header="Effective Strength Method"  >
                     <MenuItem Header="Egyptian Code"  Command="{Binding ResistanceEgyptCommand}"/>
                     <MenuItem Header="Euro Code"  Command="{Binding ResistanceEuroCommand}"/>
                     <MenuItem Header="AISI Code" Command="{Binding ResistanceAISICommand}"/>
-                    <!--<MenuItem Header="AISC Code"  Command="{Binding ResistanceAISCCommand}"/>-->
+                    --><!--<MenuItem Header="AISC Code"  Command="{Binding ResistanceAISCCommand}"/>--><!--
                 </MenuItem>
                 <MenuItem Header="Direct Strength"  Command="{Binding ResistanceDSCommand}"/>
                 
-            </MenuItem>
-            <MenuItem Header="_About" Height="50" Command="{Binding AboutCommand}"/>
+            </MenuItem>-->
+            <!--<MenuItem Header="_About" Height="50" Command="{Binding AboutCommand}"/>-->
         </Menu>
-        <TextBlock HorizontalAlignment="Right" VerticalAlignment="Center" 
+        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" 
                    Text="{Binding Name}" FontSize="18" Margin="0 0 10 0" Foreground="#453E3E"/>
     </Grid>
 </UserControl>

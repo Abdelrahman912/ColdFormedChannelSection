@@ -42,12 +42,13 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="auto"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock 
+                        <TextBlock Margin="0 2"
                                      TextWrapping="Wrap" 
                                     Foreground="{DynamicResource MaterialDesignBodyLight}"
                                     Text="A software program to design, check and calculate resistance of cold formed sections using direct strength method and effective wide width method."  />
                     </Grid>
-                        <Button Grid.Column="1"  Style="{StaticResource MaterialDesignFlatDarkButton}">
+                        <Button Grid.Column="1" Margin="0 2" Command="{Binding AboutCommand}"
+                                Style="{StaticResource MaterialDesignFlatDarkButton}">
                             <StackPanel Orientation="Horizontal" >
                                 <materialDesign:PackIcon Kind="About" Margin="2 2"/>
                                 <TextBlock Text="About" />
@@ -103,7 +104,8 @@
                                     Foreground="{DynamicResource MaterialDesignBodyLight}"
                                     Text="This method uses member elastic buckling solutions based on gross properties to determine the member strength." />
                             </StackPanel>
-                            <Button Margin="10" Grid.Row="1" Grid.Column="1"  Style="{StaticResource MaterialDesignOutlinedDarkButton}">
+                            <Button Margin="10" Grid.Row="1" Grid.Column="1"  Command="{Binding DirectStrengthCommand}"
+                                    Style="{StaticResource MaterialDesignOutlinedDarkButton}">
                                 <StackPanel Orientation="Horizontal">
                                     <materialDesign:PackIcon Kind="PlayCircle" VerticalAlignment="Center" Margin="2 2"/>
                                     <TextBlock Text="Start" />
@@ -152,7 +154,8 @@
                                     Foreground="{DynamicResource MaterialDesignBodyLight}"
                                     Text="This method uses effective properties of section to determine the member strength based on different design codes (Egyptian, Euro and AISI)." />
                             </StackPanel>
-                            <Button Margin="10" Grid.Row="1" Grid.Column="1"  Style="{StaticResource MaterialDesignOutlinedDarkButton}">
+                            <Button Margin="10" Grid.Row="1" Grid.Column="1"  Command="{Binding EffectiveWidthCommand}"
+                                    Style="{StaticResource MaterialDesignOutlinedDarkButton}">
                                 <StackPanel Orientation="Horizontal">
                                     <materialDesign:PackIcon Kind="PlayCircle" VerticalAlignment="Center" Margin="2 2"/>
                                     <TextBlock Text="Start" />

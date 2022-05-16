@@ -19,6 +19,9 @@
         SECTION_GEOMETRY,
         UNITS,
         STRAININGACTIONS,
-        ABOUT
+        ABOUT,
+        DIRECT_STRENGTH,
+        EFFECTIVE_WIDTH,
+        HOME
     }
 }
