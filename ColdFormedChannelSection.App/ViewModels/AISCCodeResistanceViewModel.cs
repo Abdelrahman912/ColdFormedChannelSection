@@ -20,8 +20,8 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         #region Constructors
 
-        public AISCCodeResistanceViewModel(GeneralInfoViewModel generalInfoVM, BracingConditionsViewModel bracingConditionsVM,GeometryViewModel geometryVM)
-            :base(generalInfoVM, bracingConditionsVM,geometryVM)
+        public AISCCodeResistanceViewModel(GeneralInfoViewModel generalInfoVM, BracingConditionsViewModel bracingConditionsVM,GeometryViewModel geometryVM,MaterialViewModel materialVM)
+            :base(generalInfoVM, bracingConditionsVM,geometryVM,materialVM)
         {
             ResultsCommand = new RelayCommand(OnResults, CanResult);
             IsResistanceOutput = false;
@@ -56,7 +56,7 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         private void OnResults()
         {
-            var material = new Material(GeneralInfoVM.Fy,GeneralInfoVM.E, 0.3);
+            //var material = new Material(GeneralInfoVM.Fy,GeneralInfoVM.E, 0.3);
             var bracingConditions = BracingConditionsVM.AsEntity();
             //switch (GeneralInfoVM.StrainingAction)
             //{

@@ -18,6 +18,7 @@ namespace ColdFormedChannelSection.App
         private ViewModelBase _currentVM;
         private  GeneralInfoViewModel _generalInfoVM;
         private  BracingConditionsViewModel _bracingConditionsVM;
+        private MaterialViewModel _materialVM;
         private  AboutViewModel _aboutVM;
         private  HomeViewModel _homeVM;
 
@@ -75,9 +76,10 @@ namespace ColdFormedChannelSection.App
                 _generalInfoVM = new GeneralInfoViewModel();
                 _aboutVM = new AboutViewModel();
                 _bracingConditionsVM = new BracingConditionsViewModel();
+                _materialVM = new MaterialViewModel();
                 var geometryVM = new GeometryViewModel();
-                _directStrengthVM = new Lazy<DirectStrengthViewModel>(() => new DirectStrengthViewModel(_generalInfoVM, _bracingConditionsVM, geometryVM));
-                _effectiveWidthVM = new Lazy<EffectiveWidthViewModel>(() => new EffectiveWidthViewModel(_generalInfoVM, _bracingConditionsVM, geometryVM));
+                _directStrengthVM = new Lazy<DirectStrengthViewModel>(() => new DirectStrengthViewModel(_generalInfoVM, _bracingConditionsVM, geometryVM,_materialVM));
+                _effectiveWidthVM = new Lazy<EffectiveWidthViewModel>(() => new EffectiveWidthViewModel(_generalInfoVM, _bracingConditionsVM, geometryVM,_materialVM));
             });
         }
 

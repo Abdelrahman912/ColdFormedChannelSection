@@ -24,6 +24,8 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         private GeometryViewModel _geometryVM;
 
+        private MaterialViewModel _materialVM;
+
         #endregion
 
         #region Properties
@@ -60,6 +62,12 @@ namespace ColdFormedChannelSection.App.ViewModels
             set=>NotifyPropertyChanged(ref _geometryVM, value);
         }
 
+        public MaterialViewModel MaterialVM
+        {
+            get => _materialVM;
+            set => NotifyPropertyChanged(ref _materialVM, value);
+        }
+
         public virtual ICommand ResultsCommand { get; }
 
         #endregion
@@ -68,12 +76,14 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         public ResistanceBaseViewModel(GeneralInfoViewModel generalInfoVM,
                                        BracingConditionsViewModel bracingConditionsVM,
-                                       GeometryViewModel geometryVM)
+                                       GeometryViewModel geometryVM,
+                                       MaterialViewModel materialVM)
         {
             
             GeneralInfoVM = generalInfoVM;
             BracingConditionsVM = bracingConditionsVM;
             GeometryVM = geometryVM;
+            MaterialVM = materialVM;
         }
 
 

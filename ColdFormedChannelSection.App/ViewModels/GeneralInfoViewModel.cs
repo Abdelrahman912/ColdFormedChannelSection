@@ -18,8 +18,7 @@ namespace ColdFormedChannelSection.App.ViewModels
         private SteelSection _steelSection;
         private StrainingActions _strainingAction;
         private Units _unit;
-        private double _fy;
-        private double _e;
+        
         private Module _runningModule;
 
         private readonly Dictionary<SteelSection, string> _sectionImageDict = new Dictionary<SteelSection, string>()
@@ -101,17 +100,7 @@ namespace ColdFormedChannelSection.App.ViewModels
             }
         }
 
-        public double Fy
-        {
-            get => _fy;
-            set => NotifyPropertyChanged(ref _fy, value);
-        }
-
-        public double E
-        {
-            get => _e;
-            set => NotifyPropertyChanged(ref _e, value);
-        }
+      
 
         #endregion
 
@@ -122,8 +111,6 @@ namespace ColdFormedChannelSection.App.ViewModels
             SteelSection = SteelSection.C_UNSTIFFENED;
             StrainingAction = StrainingActions.MOMENT;
             Unit = Units.TONCM;
-            Fy = 0;
-            E = 0;
         }
         #endregion
 

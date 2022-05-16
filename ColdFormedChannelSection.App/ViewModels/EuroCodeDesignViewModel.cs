@@ -60,7 +60,7 @@ namespace ColdFormedChannelSection.App.ViewModels
         private void OnResults()
         {
             DesignOutputVM.IsDesignOutput = false;
-            var material = (new Material(GeneralInfoVM.Fy, GeneralInfoVM.E, 0.3)).Convert(GeneralInfoVM.Unit, Units.KIPINCH);
+            //var material = (new Material(GeneralInfoVM.Fy, GeneralInfoVM.E, 0.3)).Convert(GeneralInfoVM.Unit, Units.KIPINCH);
             var bracingConditions = BracingConditionsVM.AsEntity().Convert(GeneralInfoVM.Unit, Units.KIPINCH);
             //switch (GeneralInfoVM.StrainingAction)
             //{

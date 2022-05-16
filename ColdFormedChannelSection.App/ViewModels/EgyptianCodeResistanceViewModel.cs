@@ -21,8 +21,8 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         #region Constructors
 
-        public EgyptianCodeResistanceViewModel(GeneralInfoViewModel generalInfoVM,BracingConditionsViewModel bracingConditionsVM,GeometryViewModel geometryVM)
-            :base(generalInfoVM,bracingConditionsVM,geometryVM)
+        public EgyptianCodeResistanceViewModel(GeneralInfoViewModel generalInfoVM,BracingConditionsViewModel bracingConditionsVM,GeometryViewModel geometryVM , MaterialViewModel materialVM)
+            :base(generalInfoVM,bracingConditionsVM,geometryVM, materialVM)
         {
             ResultsCommand = new RelayCommand(OnResults, CanResults);
             IsResistanceOutput = false;
@@ -57,7 +57,7 @@ namespace ColdFormedChannelSection.App.ViewModels
         private void OnResults()
         {
             IsResistanceOutput = false;
-            var material = (new Material(GeneralInfoVM.Fy, GeneralInfoVM.E, 0.3)).Convert(GeneralInfoVM.Unit, Units.TONCM);
+           // var material = (new Material(GeneralInfoVM.Fy, GeneralInfoVM.E, 0.3)).Convert(GeneralInfoVM.Unit, Units.TONCM);
             var bracingConditions = BracingConditionsVM.AsEntity().Convert(GeneralInfoVM.Unit, Units.TONCM);
             //switch (GeneralInfoVM.StrainingAction)
             //{

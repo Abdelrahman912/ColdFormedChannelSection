@@ -8,8 +8,8 @@ namespace ColdFormedChannelSection.App.ViewModels
 {
     public class DirectStrengthViewModel : ResistanceBaseViewModel
     {
-        public DirectStrengthViewModel(GeneralInfoViewModel generalInfoVM, BracingConditionsViewModel bracingConditionsVM, GeometryViewModel geometryVM) 
-            : base(generalInfoVM, bracingConditionsVM, geometryVM)
+        public DirectStrengthViewModel(GeneralInfoViewModel generalInfoVM, BracingConditionsViewModel bracingConditionsVM, GeometryViewModel geometryVM , MaterialViewModel materialVM) 
+            : base(generalInfoVM, bracingConditionsVM, geometryVM, materialVM)
         {
         }
     }

@@ -21,7 +21,7 @@
                 <StackPanel>
                     <Grid Margin="5">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="0.8*"/>
+                            <ColumnDefinition Width="1.2*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <StackPanel Orientation="Horizontal">
@@ -32,7 +32,7 @@
                     </Grid>
                     <Grid Margin="5">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="0.8*"/>
+                            <ColumnDefinition Width="1.2*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <StackPanel Orientation="Horizontal">
@@ -43,25 +43,25 @@
                     </Grid>
                     <Grid Margin="5">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="0.8*"/>
+                            <ColumnDefinition Width="1.2*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="Poisson Ratio (v)" VerticalAlignment="Center"/>
                             <TextBlock Style="{StaticResource stressUnit}" VerticalAlignment="Center"/>
                         </StackPanel>
-                        <TextBox Text="{Binding E}" Grid.Column="1" />
+                        <TextBox Text="{Binding V}" Grid.Column="1" />
                     </Grid>
                     <Grid Margin="5">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="0.8*"/>
+                            <ColumnDefinition Width="1.2*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="Shear Modulus (G)" VerticalAlignment="Center"/>
                             <TextBlock Style="{StaticResource stressUnit}" VerticalAlignment="Center"/>
                         </StackPanel>
-                        <TextBox Text="{Binding E}" Grid.Column="1" />
+                        <TextBox Text="{Binding G}" Grid.Column="1" />
                     </Grid>
                 </StackPanel>
                 

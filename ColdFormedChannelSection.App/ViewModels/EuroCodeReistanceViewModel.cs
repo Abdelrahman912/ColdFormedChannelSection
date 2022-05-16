@@ -29,8 +29,8 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         #region Constructors
 
-        public EuroCodeReistanceViewModel(GeneralInfoViewModel generalInfoVM,BracingConditionsViewModel bracingConditionsVM,GeometryViewModel geometryVM)
-            :base(generalInfoVM,bracingConditionsVM,geometryVM)
+        public EuroCodeReistanceViewModel(GeneralInfoViewModel generalInfoVM,BracingConditionsViewModel bracingConditionsVM,GeometryViewModel geometryVM, MaterialViewModel materialVM)
+            :base(generalInfoVM,bracingConditionsVM,geometryVM,materialVM)
         {
            
             ResultsCommand = new RelayCommand(OnResults, CanResults);
@@ -66,7 +66,7 @@ namespace ColdFormedChannelSection.App.ViewModels
         private void OnResults()
         {
             IsResistanceOutput = false;
-            var material = (new Material(GeneralInfoVM.Fy, GeneralInfoVM.E, 0.3)).Convert(GeneralInfoVM.Unit,Units.NMM);
+           // var material = (new Material(GeneralInfoVM.Fy, GeneralInfoVM.E, 0.3)).Convert(GeneralInfoVM.Unit,Units.NMM);
             var bracingConditions = BracingConditionsVM.AsEntity().Convert(GeneralInfoVM.Unit,Units.NMM);
             //switch (GeneralInfoVM.StrainingAction)
             //{

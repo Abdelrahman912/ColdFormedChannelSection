@@ -55,7 +55,7 @@ namespace ColdFormedChannelSection.App.ViewModels
         private void OnResults()
         {
             IsCheckOutput = false;
-            var material = (new Material(GeneralInfoVM.Fy, GeneralInfoVM.E, 0.3)).Convert(GeneralInfoVM.Unit, Units.TONCM);
+            //var material = (new Material(GeneralInfoVM.Fy, GeneralInfoVM.E, 0.3)).Convert(GeneralInfoVM.Unit, Units.TONCM);
             var bracingConditions = BracingConditionsVM.AsEntity().Convert(GeneralInfoVM.Unit, Units.TONCM);
             //switch (GeneralInfoVM.StrainingAction)
             //{
