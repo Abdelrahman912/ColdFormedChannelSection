@@ -37,7 +37,7 @@
                                          Style="{StaticResource MaterialDesignChoiceChipPrimaryOutlineRadioButton}"/>
                         </StackPanel>
                     </Grid>
-                    <Grid Margin="8 7" Visibility="{Binding IsDesignCode}">
+                    <Grid Margin="8 7" Visibility="{Binding IsDesignCode, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="0.8*"/>
                             <ColumnDefinition Width="*"/>

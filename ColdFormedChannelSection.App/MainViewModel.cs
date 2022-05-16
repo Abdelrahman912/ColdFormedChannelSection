@@ -61,6 +61,7 @@ namespace ColdFormedChannelSection.App
         {
             IsMenu = true;
             CurrentVM = _effectiveWidthVM.Value;
+            _effectiveWidthVM.Value.GeneralInfoVM.IsDesignCode = true;
             MenuVM.Name = "Effective Wide Width";
         }
 
@@ -87,6 +88,7 @@ namespace ColdFormedChannelSection.App
         {
             IsMenu = true;
             CurrentVM = _directStrengthVM.Value;
+            _directStrengthVM.Value.GeneralInfoVM.IsDesignCode = false;
             MenuVM.Name = "Direct Strength";
         }
 
