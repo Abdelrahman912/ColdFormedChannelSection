@@ -17,7 +17,6 @@ namespace ColdFormedChannelSection.App.ViewModels
         private DesignCode _designCode;
         private SteelSection _steelSection;
         private StrainingActions _strainingAction;
-        private bool _isUnstiffened;
         private Units _unit;
         private double _fy;
         private double _e;
@@ -55,6 +54,8 @@ namespace ColdFormedChannelSection.App.ViewModels
             { 
                 NotifyPropertyChanged(ref _steelSection, value);
                 SteelSectionImage = _sectionImageDict[_steelSection];
+                Mediator.Mediator.Instance.NotifyColleagues(SteelSection, Context.STIFF_UNSTIFF);
+
             }
         }
 
@@ -81,15 +82,14 @@ namespace ColdFormedChannelSection.App.ViewModels
             }
         }
 
-        public bool IsUnstiffened
-        {
-            get => _isUnstiffened;
-            set 
-            { 
-                NotifyPropertyChanged(ref _isUnstiffened, value);
-                Mediator.Mediator.Instance.NotifyColleagues(_isUnstiffened, Context.STIFF_UNSTIFF);
-            }
-        }
+        //public bool IsUnstiffened
+        //{
+        //    get => _isUnstiffened;
+        //    set 
+        //    { 
+        //        NotifyPropertyChanged(ref _isUnstiffened, value);
+        //    }
+        //}
 
         public Units Unit
         {
@@ -122,7 +122,6 @@ namespace ColdFormedChannelSection.App.ViewModels
             SteelSection = SteelSection.C_UNSTIFFENED;
             StrainingAction = StrainingActions.MOMENT;
             Unit = Units.TONCM;
-            IsUnstiffened = true;
             Fy = 0;
             E = 0;
         }

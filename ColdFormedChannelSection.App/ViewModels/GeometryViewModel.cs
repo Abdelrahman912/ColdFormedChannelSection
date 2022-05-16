@@ -155,7 +155,7 @@ namespace ColdFormedChannelSection.App.ViewModels
             Unit = Units.TONCM;
             IsUnstiffened = true;
             SelectedTableName = TablesName.EGYPT_EURO;
-            Mediator.Mediator.Instance.Subscribe<bool>(this, OnStiffChanged, Context.STIFF_UNSTIFF);
+            Mediator.Mediator.Instance.Subscribe<SteelSection>(this, OnStiffChanged, Context.STIFF_UNSTIFF);
             Mediator.Mediator.Instance.Subscribe<Units>(this, OnUnitsChanged, Context.UNITS);
             IsDesign = false;
            
@@ -204,11 +204,12 @@ namespace ColdFormedChannelSection.App.ViewModels
             if (!IsUserDefined)
                 UpdateSection();
         }
-        private void OnStiffChanged(bool isUnstiff)
+        private void OnStiffChanged(SteelSection steelSection)
         {
-            IsUnstiffened=isUnstiff;
+
+            IsUnstiffened=steelSection == SteelSection.C_UNSTIFFENED ;
            UpdateTable();
-            if (isUnstiff)
+            if (IsUnstiffened)
                 TotalFoldWidthC = 0;
         }
 

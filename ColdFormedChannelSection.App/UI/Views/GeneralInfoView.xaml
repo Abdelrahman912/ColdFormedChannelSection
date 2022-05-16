@@ -37,7 +37,7 @@
                                          Style="{StaticResource MaterialDesignChoiceChipPrimaryOutlineRadioButton}"/>
                         </StackPanel>
                     </Grid>
-                    <Grid Margin="8 8" Visibility="{Binding IsDesignCode}">
+                    <Grid Margin="8 7" Visibility="{Binding IsDesignCode}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="0.8*"/>
                             <ColumnDefinition Width="*"/>
@@ -46,7 +46,7 @@
                         <ComboBox Grid.Column="1" SelectedItem="{Binding DesignCode}"
                                   ItemsSource="{Binding Source={markup:EnumBindingSource {x:Type enums2:DesignCode}}}"/>
                     </Grid>
-                    <Grid Margin="8 8">
+                    <Grid Margin="8 7">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="0.8*"/>
                             <ColumnDefinition Width="*"/>
@@ -66,7 +66,7 @@
                             <RadioButton IsChecked="{Binding IsUnstiffened}" Content="Unstiffened" Margin="40 0 0 0"/>
                         </StackPanel>
                     </Grid>-->
-                    <Grid Margin="8 8">
+                    <Grid Margin="8 7">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="0.8*"/>
                             <ColumnDefinition Width="*"/>
@@ -75,7 +75,7 @@
                         <ComboBox Grid.Column="1" SelectedItem="{Binding SteelSection}" 
                                   ItemsSource="{Binding Source={markup:EnumBindingSource {x:Type enums2:SteelSection}}}" />
                     </Grid>
-                    <Grid Margin="8 8">
+                    <Grid Margin="8 7">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="0.8*"/>
                             <ColumnDefinition Width="*"/>

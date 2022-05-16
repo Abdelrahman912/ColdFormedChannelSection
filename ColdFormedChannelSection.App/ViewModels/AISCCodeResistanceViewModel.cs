@@ -58,21 +58,21 @@ namespace ColdFormedChannelSection.App.ViewModels
         {
             var material = new Material(GeneralInfoVM.Fy,GeneralInfoVM.E, 0.3);
             var bracingConditions = BracingConditionsVM.AsEntity();
-            switch (GeneralInfoVM.StrainingAction)
-            {
-                case StrainingActions.MOMENT:
-                    var momentOut = GeneralInfoVM.IsUnstiffened ? (GeometryVM.AsEntity()).AsUnStiffenedSection().AsAISIMomentResistance(material, bracingConditions)  //TODO
-                                                  : (GeometryVM.AsEntity()).AsLippedSection().AsAISIMomentResistance(material, bracingConditions); //TODO
-                    IsResistanceOutput=true;
-                    ResistanceOutput = momentOut;
-                    break;
-                case StrainingActions.COMPRESSION:
-                    var compOut = GeneralInfoVM.IsUnstiffened ? (GeometryVM.AsEntity()).AsUnStiffenedSection().AsAISCCompressionResistance(material, bracingConditions)
-                                                : (GeometryVM.AsEntity()).AsLippedSection().AsAISCCompressionResistance(material, bracingConditions);
-                    IsResistanceOutput = true;
-                    ResistanceOutput = compOut;
-                    break;
-            }
+            //switch (GeneralInfoVM.StrainingAction)
+            //{
+            //    case StrainingActions.MOMENT:
+            //        var momentOut = GeneralInfoVM.IsUnstiffened ? (GeometryVM.AsEntity()).AsUnStiffenedSection().AsAISIMomentResistance(material, bracingConditions)  //TODO
+            //                                      : (GeometryVM.AsEntity()).AsLippedSection().AsAISIMomentResistance(material, bracingConditions); //TODO
+            //        IsResistanceOutput=true;
+            //        ResistanceOutput = momentOut;
+            //        break;
+            //    case StrainingActions.COMPRESSION:
+            //        var compOut = GeneralInfoVM.IsUnstiffened ? (GeometryVM.AsEntity()).AsUnStiffenedSection().AsAISCCompressionResistance(material, bracingConditions)
+            //                                    : (GeometryVM.AsEntity()).AsLippedSection().AsAISCCompressionResistance(material, bracingConditions);
+            //        IsResistanceOutput = true;
+            //        ResistanceOutput = compOut;
+            //        break;
+            //}
 
         }
 
