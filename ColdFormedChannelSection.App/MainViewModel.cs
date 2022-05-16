@@ -18,10 +18,10 @@ namespace ColdFormedChannelSection.App
         private Lazy<EffectiveWidthViewModel> _effectiveWidthVM;
 
         private ViewModelBase _currentVM;
-        private  GeneralInfoViewModel _generalInfoVM;
-        private  BracingConditionsViewModel _bracingConditionsVM;
-        private MaterialViewModel _materialVM;
-        private  AboutViewModel _aboutVM;
+        private Lazy< GeneralInfoViewModel> _generalInfoVM;
+        private  Lazy<BracingConditionsViewModel> _bracingConditionsVM;
+        private Lazy<MaterialViewModel> _materialVM;
+        private  Lazy<AboutViewModel> _aboutVM;
         private  HomeViewModel _homeVM;
 
         private bool _isMenu;
@@ -64,7 +64,7 @@ namespace ColdFormedChannelSection.App
             IsMenu = true;
             CurrentVM = _effectiveWidthVM.Value;
             _effectiveWidthVM.Value.GeneralInfoVM.IsDesignCode = true;
-            Mediator.Instance.NotifyColleagues(KeyValuePair.Create(_generalInfoVM.DesignCode, _generalInfoVM.StrainingAction), Context.BRACING);
+            Mediator.Instance.NotifyColleagues(KeyValuePair.Create(_generalInfoVM.Value.DesignCode, _generalInfoVM.Value.StrainingAction), Context.BRACING);
 
             MenuVM.Name = "Effective Wide Width";
         }
@@ -78,13 +78,13 @@ namespace ColdFormedChannelSection.App
                 Mediator.Instance.Subscribe<object>(this, OnDirectStrength, Context.DIRECT_STRENGTH);
                 Mediator.Instance.Subscribe<object>(this, OnEffectiveWidth, Context.EFFECTIVE_WIDTH);
                 MenuVM = new MenuViewModel();
-                _generalInfoVM = new GeneralInfoViewModel();
-                _aboutVM = new AboutViewModel();
-                _bracingConditionsVM = new BracingConditionsViewModel();
-                _materialVM = new MaterialViewModel();
-                var geometryVM = new GeometryViewModel();
-                _directStrengthVM = new Lazy<DirectStrengthViewModel>(() => new DirectStrengthViewModel(_generalInfoVM, _bracingConditionsVM, geometryVM,_materialVM));
-                _effectiveWidthVM = new Lazy<EffectiveWidthViewModel>(() => new EffectiveWidthViewModel(_generalInfoVM, _bracingConditionsVM, geometryVM,_materialVM));
+                _generalInfoVM =new Lazy<GeneralInfoViewModel>(()=> new GeneralInfoViewModel());
+                _aboutVM =new Lazy<AboutViewModel>(()=> new AboutViewModel());
+                _bracingConditionsVM =new Lazy<BracingConditionsViewModel>(()=> new BracingConditionsViewModel());
+                _materialVM =new Lazy<MaterialViewModel>(()=> new MaterialViewModel());
+                var geometryVM =new Lazy<GeometryViewModel>( new GeometryViewModel());
+                _directStrengthVM = new Lazy<DirectStrengthViewModel>(() => new DirectStrengthViewModel(_generalInfoVM.Value, _bracingConditionsVM.Value, geometryVM.Value,_materialVM.Value));
+                _effectiveWidthVM = new Lazy<EffectiveWidthViewModel>(() => new EffectiveWidthViewModel(_generalInfoVM.Value, _bracingConditionsVM.Value, geometryVM.Value,_materialVM.Value));
             });
         }
 
@@ -93,7 +93,7 @@ namespace ColdFormedChannelSection.App
             IsMenu = true;
             CurrentVM = _directStrengthVM.Value;
             _directStrengthVM.Value.GeneralInfoVM.IsDesignCode = false;
-            Mediator.Instance.NotifyColleagues(KeyValuePair.Create(DesignCode.AISI, _generalInfoVM.StrainingAction),Context.BRACING);
+            Mediator.Instance.NotifyColleagues(KeyValuePair.Create(DesignCode.AISI, _generalInfoVM.Value.StrainingAction),Context.BRACING);
             MenuVM.Name = "Direct Strength";
         }
 
@@ -105,7 +105,7 @@ namespace ColdFormedChannelSection.App
 
         private void OnAbout(object _)
         {
-            CurrentVM = _aboutVM;
+            CurrentVM = _aboutVM.Value;
             MenuVM.Name = "About";
             IsMenu = true;
         }
