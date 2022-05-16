@@ -10,7 +10,7 @@
         Title="Cold C" Height="710" Width="1100"
         Icon="/UI/Resources/Icon.ico">
     <Window.Resources>
-        <DataTemplate DataType="{x:Type vms:DirectStrengthResistanceViewModel}">
+        <!--<DataTemplate DataType="{x:Type vms:DirectStrengthResistanceViewModel}">
             <vs:ResistanceView/>
         </DataTemplate>
         <DataTemplate DataType="{x:Type vms:EgyptianCodeResistanceViewModel}">
@@ -51,7 +51,16 @@
         </DataTemplate>
         <DataTemplate DataType="{x:Type vms:AISICodeDesignViewModel}">
             <vs:DesignView/>
+        </DataTemplate>-->
+
+        <DataTemplate DataType="{x:Type vms:DirectStrengthViewModel}">
+            <vs:ResistanceView/>
         </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vms:EffectiveWidthViewModel}">
+            <vs:ResistanceView/>
+        </DataTemplate>
+
 
         <DataTemplate DataType="{x:Type vms:AboutViewModel}">
             <vs:AboutView/>

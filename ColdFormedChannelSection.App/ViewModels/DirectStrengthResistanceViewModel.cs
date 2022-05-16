@@ -1,17 +1,10 @@
 ﻿using ColdFormedChannelSection.App.Extensions;
 using ColdFormedChannelSection.App.ViewModels.Base;
 using ColdFormedChannelSection.App.ViewModels.Enums;
-using ColdFormedChannelSection.Core.Dtos;
 using ColdFormedChannelSection.Core.Entities;
 using ColdFormedChannelSection.Core.Enums;
 using ColdFormedChannelSection.Core.Helpers;
-using CSharp.Functional.Constructs;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
 using System.Windows.Input;
-using static ColdFormedChannelSection.Core.Constants;
 
 namespace ColdFormedChannelSection.App.ViewModels
 {

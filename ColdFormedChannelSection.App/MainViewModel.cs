@@ -3,6 +3,7 @@ using ColdFormedChannelSection.App.ViewModels.Base;
 using ColdFormedChannelSection.App.ViewModels.Enums;
 using ColdFormedChannelSection.App.ViewModels.Mediator;
 using System;
+using System.Threading.Tasks;
 
 namespace ColdFormedChannelSection.App
 {
@@ -11,28 +12,14 @@ namespace ColdFormedChannelSection.App
 
         #region Pivate Fields
 
-        private readonly Lazy<DirectStrengthResistanceViewModel> _directStrengthResistanceVM;
-        private readonly Lazy<EgyptianCodeResistanceViewModel> _egyptianCodeResistanceVM;
-        private readonly Lazy<EuroCodeReistanceViewModel> _euroCodeReistanceVM;
-        private readonly Lazy<AISICodeResistanceViewModel> _aisiCodeResistanceVM;
-        //private readonly Lazy<AISCCodeResistanceViewModel> _aiscCodeResistanceVM;
-
-        private readonly Lazy<DirectStrengthCheckViewModel> _directStrengthCheckVM;
-        private readonly Lazy<EgyptianCodeCheckViewModel> _egyptianCodeCheckVM;
-        private readonly Lazy<EuroCodeCheckViewModel> _euroCodeCheckVM;
-        private readonly Lazy<AISICodeCheckViewModel> _aisiCodeCheckVM;
-
-
-        private readonly Lazy<DirectStrengthDesignViewModel> _directStrengthDesignVM;
-        private readonly Lazy<EgyptianCodeDesignViewModel> _egyptianCodeDesignVM;
-        private readonly Lazy<EuroCodeDesignViewModel> _euroCodeDesignVM;
-        private readonly Lazy<AISICodeDesignViewModel> _aisiCodeDesignVM;
+        private  Lazy<DirectStrengthViewModel> _directStrengthVM;
+        private Lazy<EffectiveWidthViewModel> _effectiveWidthVM;
 
         private ViewModelBase _currentVM;
-        private readonly GeneralInfoViewModel _generalInfoVM;
-        private readonly BracingConditionsViewModel _bracingConditionsVM;
-        private readonly AboutViewModel _aboutVM;
-        private readonly HomeViewModel _homeVM;
+        private  GeneralInfoViewModel _generalInfoVM;
+        private  BracingConditionsViewModel _bracingConditionsVM;
+        private  AboutViewModel _aboutVM;
+        private  HomeViewModel _homeVM;
 
         private bool _isMenu;
         #endregion
@@ -45,7 +32,7 @@ namespace ColdFormedChannelSection.App
             set => NotifyPropertyChanged(ref _isMenu, value);
         }
 
-        public MenuViewModel MenuVM { get;  }
+        public MenuViewModel MenuVM { get; set; }
 
         public ViewModelBase CurrentVM
         {
@@ -58,56 +45,48 @@ namespace ColdFormedChannelSection.App
 
         public MainViewModel()
         {
-            MenuVM = new MenuViewModel();
-            _generalInfoVM = new GeneralInfoViewModel();
-            _aboutVM = new AboutViewModel();
-            _bracingConditionsVM = new BracingConditionsViewModel();
             _homeVM = new HomeViewModel();
-            var geometryVM = new GeometryViewModel();
-            //_directStrengthResistanceVM = new Lazy<DirectStrengthResistanceViewModel>(() =>new DirectStrengthResistanceViewModel(_generalInfoVM, _bracingConditionsVM, geometryVM));
-            //_egyptianCodeResistanceVM = new Lazy<EgyptianCodeResistanceViewModel>(() =>new EgyptianCodeResistanceViewModel(_generalInfoVM, _bracingConditionsVM, geometryVM));
-            //_euroCodeReistanceVM = new Lazy<EuroCodeReistanceViewModel>(() =>new EuroCodeReistanceViewModel(_generalInfoVM, _bracingConditionsVM, geometryVM));
-            //_aisiCodeResistanceVM = new Lazy<AISICodeResistanceViewModel>(() =>new AISICodeResistanceViewModel(_generalInfoVM, _bracingConditionsVM, geometryVM));
-            ////_aiscCodeResistanceVM = new Lazy<AISCCodeResistanceViewModel>(() =>new AISCCodeResistanceViewModel(_generalInfoVM, _bracingConditionsVM, geometryVM));
-
-            //_directStrengthCheckVM = new Lazy<DirectStrengthCheckViewModel>(() => new DirectStrengthCheckViewModel(_generalInfoVM, _bracingConditionsVM, geometryVM));
-            //_egyptianCodeCheckVM = new Lazy<EgyptianCodeCheckViewModel>(() => new EgyptianCodeCheckViewModel(_generalInfoVM, _bracingConditionsVM, geometryVM));
-            //_euroCodeCheckVM = new Lazy<EuroCodeCheckViewModel>(() => new EuroCodeCheckViewModel(_generalInfoVM, _bracingConditionsVM, geometryVM));
-            //_aisiCodeCheckVM = new Lazy<AISICodeCheckViewModel>(() => new AISICodeCheckViewModel(_generalInfoVM, _bracingConditionsVM, geometryVM));
-
-            //_directStrengthDesignVM = new Lazy<DirectStrengthDesignViewModel>(() => new DirectStrengthDesignViewModel(_generalInfoVM, _bracingConditionsVM));
-            //_egyptianCodeDesignVM = new Lazy<EgyptianCodeDesignViewModel>(() => new EgyptianCodeDesignViewModel(_generalInfoVM, _bracingConditionsVM));
-            //_euroCodeDesignVM = new Lazy<EuroCodeDesignViewModel>(() => new EuroCodeDesignViewModel(_generalInfoVM, _bracingConditionsVM));
-            //_aisiCodeDesignVM = new Lazy<AISICodeDesignViewModel>(() => new AISICodeDesignViewModel(_generalInfoVM, _bracingConditionsVM));
-
-            //Mediator.Instance.Subscribe<object>(this,  _=> OnDefaultResistance(_,_directStrengthResistanceVM.Value),Context.RESISTANCE_DIRECT_STRENGTH);
-            //Mediator.Instance.Subscribe<object>(this, _ => OnDefaultResistance(_, _egyptianCodeResistanceVM.Value), Context.RESISTANCE_EGYPT_CODE);
-            //Mediator.Instance.Subscribe<object>(this,_=>OnEuroResistance(_,_euroCodeReistanceVM.Value),Context.RESISTANCE_EURO_CODE);
-            //Mediator.Instance.Subscribe<object>(this, _ => OnDefaultResistance(_, _aisiCodeResistanceVM.Value), Context.RESISTANCE_AISI_CODE);
-            ////Mediator.Instance.Subscribe<object>(this, _ => OnDefaultResistance(_, _aiscCodeResistanceVM.Value), Context.RESISTANCE_AISC_CODE);
-
-
-            //Mediator.Instance.Subscribe<object>(this, _ => OnDefaultResistance(_, _directStrengthCheckVM.Value), Context.CHECK_DIRECT_STRENGTH);
-            //Mediator.Instance.Subscribe<object>(this, _ => OnDefaultResistance(_, _egyptianCodeCheckVM.Value), Context.CHECK_EGYPT_CODE);
-            //Mediator.Instance.Subscribe<object>(this,_=> OnEuroResistance(_,_euroCodeCheckVM.Value), Context.CHECK_EURO_CODE);
-            //Mediator.Instance.Subscribe<object>(this, _ => OnDefaultResistance(_, _aisiCodeCheckVM.Value), Context.CHECK_AISI_CODE);
-
-            //Mediator.Instance.Subscribe<object>(this, _ => OnDefaultResistance(_, _directStrengthDesignVM.Value), Context.DESIGN_DIRECT_STRENGTH);
-            //Mediator.Instance.Subscribe<object>(this, _ => OnDefaultResistance(_, _egyptianCodeDesignVM.Value), Context.DESIGN_EGYPT_CODE);
-            //Mediator.Instance.Subscribe<object>(this, _ => OnEuroResistance(_, _euroCodeDesignVM.Value), Context.DESIGN_EURO_CODE);
-            //Mediator.Instance.Subscribe<object>(this, _ => OnDefaultResistance(_, _aisiCodeDesignVM.Value), Context.DESIGN_AISI_CODE);
-
-            Mediator.Instance.Subscribe<object>(this,  OnAbout, Context.ABOUT);
-            Mediator.Instance.Subscribe<object>(this, OnHome, Context.HOME);
-
             IsMenu = false;
             CurrentVM = _homeVM;
+            Init();
         }
 
 
         #endregion
 
         #region Methods
+
+        private void OnEffectiveWidth(object _)
+        {
+            IsMenu = true;
+            CurrentVM = _effectiveWidthVM.Value;
+            MenuVM.Name = "Effective Wide Width";
+        }
+
+        private  void Init()
+        {
+            Task.Run(() =>
+            {
+                Mediator.Instance.Subscribe<object>(this, OnAbout, Context.ABOUT);
+                Mediator.Instance.Subscribe<object>(this, OnHome, Context.HOME);
+                Mediator.Instance.Subscribe<object>(this, OnDirectStrength, Context.DIRECT_STRENGTH);
+                Mediator.Instance.Subscribe<object>(this, OnEffectiveWidth, Context.EFFECTIVE_WIDTH);
+                MenuVM = new MenuViewModel();
+                _generalInfoVM = new GeneralInfoViewModel();
+                _aboutVM = new AboutViewModel();
+                _bracingConditionsVM = new BracingConditionsViewModel();
+                var geometryVM = new GeometryViewModel();
+                _directStrengthVM = new Lazy<DirectStrengthViewModel>(() => new DirectStrengthViewModel(_generalInfoVM, _bracingConditionsVM, geometryVM));
+                _effectiveWidthVM = new Lazy<EffectiveWidthViewModel>(() => new EffectiveWidthViewModel(_generalInfoVM, _bracingConditionsVM, geometryVM));
+            });
+        }
+
+        private void OnDirectStrength(object _)
+        {
+            IsMenu = true;
+            CurrentVM = _directStrengthVM.Value;
+            MenuVM.Name = "Direct Strength";
+        }
 
         private void OnHome(object _)
         {

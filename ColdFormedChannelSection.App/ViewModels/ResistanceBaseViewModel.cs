@@ -5,7 +5,7 @@ using System.Windows.Input;
 
 namespace ColdFormedChannelSection.App.ViewModels
 {
-    internal abstract class ResistanceBaseViewModel : ViewModelBase
+    public abstract class ResistanceBaseViewModel : ViewModelBase
     {
 
         #region Private Fields
@@ -67,14 +67,9 @@ namespace ColdFormedChannelSection.App.ViewModels
                                        GeometryViewModel geometryVM)
         {
             
-          
             GeneralInfoVM = generalInfoVM;
             BracingConditionsVM = bracingConditionsVM;
             GeometryVM = geometryVM;
-           
-            
-           
-            
         }
 
 
