@@ -30,6 +30,8 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         private Dictionary<KeyValuePair<DesignCode, StrainingActions>, Action> _bracingDict;
 
+        private Task _initTask;
+
         #endregion
 
         #region Properties
@@ -131,7 +133,7 @@ namespace ColdFormedChannelSection.App.ViewModels
             IsLuUsed = false;
             IsC1Used = false;
            
-            init();
+           _initTask = init();
         }
 
 
@@ -141,9 +143,9 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         #region Methods
 
-        private void init()
+        private  Task init()
         {
-            Task.Run(() =>
+           return Task.Run(() =>
             {
                 Mediator.Mediator.Instance.Subscribe<Units>(this, OnUnitsChanged, Context.UNITS);
                 Mediator.Mediator.Instance.Subscribe<KeyValuePair<DesignCode, StrainingActions>>(this, OnBracingChanged, Context.BRACING);
@@ -158,8 +160,9 @@ namespace ColdFormedChannelSection.App.ViewModels
                 };
             });
         }
-        private void OnBracingChanged(KeyValuePair<DesignCode, StrainingActions> kvp)
+        private async void OnBracingChanged(KeyValuePair<DesignCode, StrainingActions> kvp)
         {
+            await _initTask;
             _bracingDict[kvp]();
         }
 
