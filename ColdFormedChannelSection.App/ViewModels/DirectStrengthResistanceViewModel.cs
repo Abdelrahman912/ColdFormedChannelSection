@@ -20,8 +20,8 @@ namespace ColdFormedChannelSection.App.ViewModels
 
 
         #region Constructors
-        public DirectStrengthResistanceViewModel(GeneralInfoViewModel generalInfoVM,BracingConditionsViewModel bracingConditionsVM,GeometryViewModel geometryVM, MaterialViewModel materialVM)
-            :base(generalInfoVM,bracingConditionsVM,geometryVM , materialVM)
+        public DirectStrengthResistanceViewModel(GeneralInfoViewModel generalInfoVM,BracingConditionsViewModel bracingConditionsVM,GeometryViewModel geometryVM, MaterialViewModel materialVM, InputLoadViewModel inputLoadVM)
+            :base(generalInfoVM,bracingConditionsVM,geometryVM , materialVM, inputLoadVM)
         {
             ResultsCommand = new RelayCommand(OnResults, CanResults);
             IsResistanceOutput = false;
@@ -62,10 +62,10 @@ namespace ColdFormedChannelSection.App.ViewModels
             //switch (GeneralInfoVM.StrainingAction)
             //{
             //    case StrainingActions.MOMENT:
-            //        var momentOut = GeneralInfoVM.IsUnstiffened ? GeometryVM.AsEntity().Convert(GeneralInfoVM.Unit, Units.KIPINCH).AsUnStiffenedSection().AsDSMomentResistance(material, bracingConditions).Convert(Units.KIPINCH, GeneralInfoVM.Unit)
-            //                                      : GeometryVM.AsEntity().Convert(GeneralInfoVM.Unit, Units.KIPINCH).AsLippedSection().AsDSMomentResistance(material, bracingConditions).Convert(Units.KIPINCH, GeneralInfoVM.Unit);
-            //        IsResistanceOutput = true;
-            //        ResistanceOutput = momentOut;
+            //var momentOut = GeneralInfoVM.IsUnstiffened ? GeometryVM.AsEntity().Convert(GeneralInfoVM.Unit, Units.KIPINCH).AsUnStiffenedSection().AsDSMomentResistance(material, bracingConditions).Convert(Units.KIPINCH, GeneralInfoVM.Unit)
+            //                              : GeometryVM.AsEntity().Convert(GeneralInfoVM.Unit, Units.KIPINCH).AsLippedSection().AsDSMomentResistance(material, bracingConditions).Convert(Units.KIPINCH, GeneralInfoVM.Unit);
+            //IsResistanceOutput = true;
+            //ResistanceOutput = momentOut;
             //        break;
             //    case StrainingActions.COMPRESSION:
             //        var compOut = GeneralInfoVM.IsUnstiffened ? GeometryVM.AsEntity().Convert(GeneralInfoVM.Unit, Units.KIPINCH).AsUnStiffenedSection().AsDSCompressionResistance(material, bracingConditions).Convert(Units.KIPINCH, GeneralInfoVM.Unit)

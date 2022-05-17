@@ -65,7 +65,7 @@ namespace ColdFormedChannelSection.App.ViewModels
             //        var momentOut = GeneralInfoVM.IsUnstiffened ? GeometryVM.AsEntity().Convert(GeneralInfoVM.Unit, Units.KIPINCH).AsUnStiffenedSection().AsDSMomentResistance(material, bracingConditions).Convert(Units.KIPINCH, GeneralInfoVM.Unit)
             //                                      : GeometryVM.AsEntity().Convert(GeneralInfoVM.Unit, Units.KIPINCH).AsLippedSection().AsDSMomentResistance(material, bracingConditions).Convert(Units.KIPINCH, GeneralInfoVM.Unit);
             //        IsCheckOutput = true;
-            //        CheckOutputVM.CheckOutput = momentOut.AsCheck(CheckOutputVM.UltimateLoad);
+            //CheckOutputVM.CheckOutput = momentOut.AsCheck(CheckOutputVM.UltimateLoad);
             //        break;
             //    case StrainingActions.COMPRESSION:
             //        var compOut = GeneralInfoVM.IsUnstiffened ? GeometryVM.AsEntity().Convert(GeneralInfoVM.Unit, Units.KIPINCH).AsUnStiffenedSection().AsDSCompressionResistance(material, bracingConditions).Convert(Units.KIPINCH, GeneralInfoVM.Unit)

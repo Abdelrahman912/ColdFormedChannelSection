@@ -1,4 +1,5 @@
 ﻿using ColdFormedChannelSection.App.ViewModels.Base;
+using ColdFormedChannelSection.App.ViewModels.Enums;
 using ColdFormedChannelSection.Core.Entities;
 using ColdFormedChannelSection.Core.Enums;
 using System;
@@ -12,7 +13,7 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         #region Private Fields
 
-       
+        private bool _isDisplayReport;
 
         private bool _isResistanceOutput;
 
@@ -26,10 +27,48 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         private MaterialViewModel _materialVM;
 
+        private InputLoadViewModel _inputLoadVM;
+
+        private double _ultimateLoad;
+
+        private double _ultimateMoment;
+
+        private bool _isInputLoad;
+
         #endregion
 
         #region Properties
 
+        public InputLoadViewModel InputLoadVM
+        {
+            get => _inputLoadVM;
+            set => NotifyPropertyChanged(ref _inputLoadVM, value);
+        }
+
+        public bool IsInputLoad
+        {
+            get => _isInputLoad;
+            set=>NotifyPropertyChanged(ref _isInputLoad, value);
+        }
+
+       
+        public double UltimateMoment
+        {
+            get => _ultimateMoment;
+            set => NotifyPropertyChanged(ref _ultimateMoment, value);
+        }
+
+        public double UltimateLoad
+        {
+            get => _ultimateLoad;
+            set => NotifyPropertyChanged(ref _ultimateLoad, value);
+        }
+
+        public bool IsDisplayReport
+        {
+            get => _isDisplayReport;
+            set=>NotifyPropertyChanged(ref _isDisplayReport, value);
+        }
 
         public bool IsResistanceOutput
         {
@@ -77,13 +116,25 @@ namespace ColdFormedChannelSection.App.ViewModels
         public ResistanceBaseViewModel(GeneralInfoViewModel generalInfoVM,
                                        BracingConditionsViewModel bracingConditionsVM,
                                        GeometryViewModel geometryVM,
-                                       MaterialViewModel materialVM)
+                                       MaterialViewModel materialVM,
+                                       InputLoadViewModel inputLoadVM)
         {
-            
+
+            InputLoadVM = inputLoadVM;
             GeneralInfoVM = generalInfoVM;
+            GeneralInfoVM.OnRunningModuleChange = () =>
+            {
+                if (GeneralInfoVM.RunningModule == Module.RESISTANCE)
+                    IsInputLoad = false;
+                else
+                    IsInputLoad = true;
+            };
+            GeneralInfoVM.RunningModule = Module.RESISTANCE;
+            GeneralInfoVM.StrainingAction = StrainingActions.COMPRESSION;
             BracingConditionsVM = bracingConditionsVM;
             GeometryVM = geometryVM;
             MaterialVM = materialVM;
+            IsInputLoad = false;
         }
 
 
@@ -91,6 +142,6 @@ namespace ColdFormedChannelSection.App.ViewModels
         #endregion
 
 
-       
+
     }
 }

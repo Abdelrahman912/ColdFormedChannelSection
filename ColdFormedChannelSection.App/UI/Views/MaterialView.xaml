@@ -48,7 +48,7 @@
                         </Grid.ColumnDefinitions>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="Poisson Ratio (v)" VerticalAlignment="Center"/>
-                            <TextBlock Style="{StaticResource stressUnit}" VerticalAlignment="Center"/>
+                            <!--<TextBlock Style="{StaticResource stressUnit}" VerticalAlignment="Center"/>-->
                         </StackPanel>
                         <TextBox Text="{Binding V}" Grid.Column="1" />
                     </Grid>
@@ -61,7 +61,7 @@
                             <TextBlock Text="Shear Modulus (G)" VerticalAlignment="Center"/>
                             <TextBlock Style="{StaticResource stressUnit}" VerticalAlignment="Center"/>
                         </StackPanel>
-                        <TextBox Text="{Binding G}" Grid.Column="1" />
+                        <TextBox Text="{Binding G}" Grid.Column="1" IsEnabled="False" />
                     </Grid>
                 </StackPanel>
                 

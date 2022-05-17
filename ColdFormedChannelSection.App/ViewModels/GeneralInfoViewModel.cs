@@ -10,6 +10,8 @@ namespace ColdFormedChannelSection.App.ViewModels
     {
 
         public Action OnStrainingActionsChange = delegate { };
+        public Action OnRunningModuleChange = delegate { };
+
 
         #region Private Fields
         private string _steelSectionImage;
@@ -37,6 +39,7 @@ namespace ColdFormedChannelSection.App.ViewModels
             set
             {
                 NotifyPropertyChanged(ref _runningModule, value);
+                OnRunningModuleChange();
             }
         }
 

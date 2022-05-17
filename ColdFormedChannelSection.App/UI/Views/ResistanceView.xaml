@@ -5,6 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vs="clr-namespace:ColdFormedChannelSection.App.UI.Views"
              mc:Ignorable="d" d:Background="White"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <Grid.RowDefinitions>
@@ -21,7 +22,7 @@
                 <ColumnDefinition Width="2.35*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-        <vs:GeneralInfoView DataContext="{Binding GeneralInfoVM}"/>
+            <vs:GeneralInfoView DataContext="{Binding GeneralInfoVM}"/>
             <vs:MaterialView Grid.Column="1" DataContext="{Binding MaterialVM}"/>
         </Grid>
         <Grid Grid.Row="1">
@@ -34,8 +35,33 @@
             <vs:GeometryView DataContext="{Binding GeometryVM}"/>
             <vs:BracingConditionsView Grid.Column="1" DataContext="{Binding BracingConditionsVM}"/>
 
-            <vs:ResistanceOutputView IsEnabled="{Binding IsResistanceOutput}" Grid.Column="2" DataContext="{Binding ResistanceOutput}"/>
+            <Grid Grid.Column="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <vs:InputLoadView DataContext="{Binding InputLoadVM}" 
+                                  Visibility="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl } }, Path=DataContext.IsInputLoad ,Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                <vs:ResistanceOutputView IsEnabled="{Binding IsResistanceOutput}" Grid.Row="1" 
+                                     Grid.Column="2" 
+                                     DataContext="{Binding ResistanceOutput}"/>
+
+            </Grid>
         </Grid>
-        <Button Grid.Row="2" Margin="8" Width="160" Height="35" Content="Calculate Resistance" Command="{Binding ResultsCommand}"  />
+        <StackPanel Grid.Row="2" Margin="8" Orientation="Horizontal" HorizontalAlignment="Center">
+            <Button Margin="5"  Width="150" Height="35" Style="{StaticResource MaterialDesignOutlinedSecondaryDarkButton}" 
+                    Command="{Binding ResultsCommand}"  IsEnabled="{Binding IsDisplayReport}">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon Kind="FileReport" VerticalAlignment="Center" Margin="2 2"/>
+                    <TextBlock Text="Display Report" />
+                </StackPanel>
+            </Button>
+            <Button Margin="5"  Width="150" Height="35" Style="{StaticResource MaterialDesignOutlinedDarkButton}" Command="{Binding ResultsCommand}"  >
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon Kind="Calculator" VerticalAlignment="Center" Margin="2 2"/>
+                    <TextBlock Text="Calculate" />
+                </StackPanel>
+            </Button>
+        </StackPanel>
     </Grid>
 </UserControl>

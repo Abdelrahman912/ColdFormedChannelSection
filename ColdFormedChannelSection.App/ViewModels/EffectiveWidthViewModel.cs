@@ -8,8 +8,8 @@ namespace ColdFormedChannelSection.App.ViewModels
 {
     public class EffectiveWidthViewModel : ResistanceBaseViewModel
     {
-        public EffectiveWidthViewModel(GeneralInfoViewModel generalInfoVM, BracingConditionsViewModel bracingConditionsVM, GeometryViewModel geometryVM,MaterialViewModel materialVM) 
-            : base(generalInfoVM, bracingConditionsVM, geometryVM,materialVM)
+        public EffectiveWidthViewModel(GeneralInfoViewModel generalInfoVM, BracingConditionsViewModel bracingConditionsVM, GeometryViewModel geometryVM,MaterialViewModel materialVM,InputLoadViewModel inputLoadVM) 
+            : base(generalInfoVM, bracingConditionsVM, geometryVM,materialVM,inputLoadVM)
         {
 
         }

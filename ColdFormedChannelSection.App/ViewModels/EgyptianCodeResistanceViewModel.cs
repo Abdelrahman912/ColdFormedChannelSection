@@ -1,7 +1,6 @@
 ﻿using ColdFormedChannelSection.App.Extensions;
 using ColdFormedChannelSection.App.ViewModels.Base;
 using ColdFormedChannelSection.App.ViewModels.Enums;
-using ColdFormedChannelSection.Core.Entities;
 using ColdFormedChannelSection.Core.Enums;
 using ColdFormedChannelSection.Core.Helpers;
 using System.Windows.Input;
@@ -21,8 +20,8 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         #region Constructors
 
-        public EgyptianCodeResistanceViewModel(GeneralInfoViewModel generalInfoVM,BracingConditionsViewModel bracingConditionsVM,GeometryViewModel geometryVM , MaterialViewModel materialVM)
-            :base(generalInfoVM,bracingConditionsVM,geometryVM, materialVM)
+        public EgyptianCodeResistanceViewModel(GeneralInfoViewModel generalInfoVM,BracingConditionsViewModel bracingConditionsVM,GeometryViewModel geometryVM , MaterialViewModel materialVM,InputLoadViewModel inputLoadVM)
+            :base(generalInfoVM,bracingConditionsVM,geometryVM, materialVM,inputLoadVM)
         {
             ResultsCommand = new RelayCommand(OnResults, CanResults);
             IsResistanceOutput = false;

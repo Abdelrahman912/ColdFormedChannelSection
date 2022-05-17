@@ -22,6 +22,7 @@ namespace ColdFormedChannelSection.App
         private  Lazy<BracingConditionsViewModel> _bracingConditionsVM;
         private Lazy<MaterialViewModel> _materialVM;
         private  Lazy<AboutViewModel> _aboutVM;
+        private Lazy<InputLoadViewModel> _inputLoadVM;
         private  HomeViewModel _homeVM;
 
         private bool _isMenu;
@@ -78,13 +79,14 @@ namespace ColdFormedChannelSection.App
                 Mediator.Instance.Subscribe<object>(this, OnDirectStrength, Context.DIRECT_STRENGTH);
                 Mediator.Instance.Subscribe<object>(this, OnEffectiveWidth, Context.EFFECTIVE_WIDTH);
                 MenuVM = new MenuViewModel();
+                _inputLoadVM =new Lazy<InputLoadViewModel>(()=> new InputLoadViewModel());
                 _generalInfoVM =new Lazy<GeneralInfoViewModel>(()=> new GeneralInfoViewModel());
                 _aboutVM =new Lazy<AboutViewModel>(()=> new AboutViewModel());
                 _bracingConditionsVM =new Lazy<BracingConditionsViewModel>(()=> new BracingConditionsViewModel());
                 _materialVM =new Lazy<MaterialViewModel>(()=> new MaterialViewModel());
                 var geometryVM =new Lazy<GeometryViewModel>( new GeometryViewModel());
-                _directStrengthVM = new Lazy<DirectStrengthViewModel>(() => new DirectStrengthViewModel(_generalInfoVM.Value, _bracingConditionsVM.Value, geometryVM.Value,_materialVM.Value));
-                _effectiveWidthVM = new Lazy<EffectiveWidthViewModel>(() => new EffectiveWidthViewModel(_generalInfoVM.Value, _bracingConditionsVM.Value, geometryVM.Value,_materialVM.Value));
+                _directStrengthVM = new Lazy<DirectStrengthViewModel>(() => new DirectStrengthViewModel(_generalInfoVM.Value, _bracingConditionsVM.Value, geometryVM.Value,_materialVM.Value,_inputLoadVM.Value));
+                _effectiveWidthVM = new Lazy<EffectiveWidthViewModel>(() => new EffectiveWidthViewModel(_generalInfoVM.Value, _bracingConditionsVM.Value, geometryVM.Value,_materialVM.Value,_inputLoadVM.Value));
             });
         }
 
