@@ -1,11 +1,12 @@
 ﻿using ColdFormedChannelSection.App.ViewModels.Base;
 using ColdFormedChannelSection.App.ViewModels.Enums;
+using ColdFormedChannelSection.Core.Enums;
 using System;
 using System.Collections.Generic;
 
 namespace ColdFormedChannelSection.App.ViewModels
 {
-    public class InputLoadViewModel:ViewModelBase
+    public class InputLoadViewModel : ViewModelBase
     {
         #region Private Fields
 
@@ -19,19 +20,27 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         private readonly Dictionary<StrainingActions, Action<InputLoadViewModel>> _displayDict;
 
+        private Units _unit;
+
         #endregion
 
         #region Properties
 
+        public Units Unit
+        {
+            get => _unit;
+            set => NotifyPropertyChanged(ref _unit, value);
+        }
+
         public double UltimateLoad
         {
             get => _ultimateLoad;
-            set=>NotifyPropertyChanged(ref _ultimateLoad, value);
+            set => NotifyPropertyChanged(ref _ultimateLoad, value);
         }
 
         public double UltimateMoment
         {
-            get=> _ultimateMoment;
+            get => _ultimateMoment;
             set => NotifyPropertyChanged(ref _ultimateMoment, value);
         }
 
@@ -44,7 +53,7 @@ namespace ColdFormedChannelSection.App.ViewModels
         public bool IsUltimateMoment
         {
             get => _isUltimateMoment;
-            set=>NotifyPropertyChanged(ref _isUltimateMoment, value);
+            set => NotifyPropertyChanged(ref _isUltimateMoment, value);
         }
 
         #endregion
@@ -59,11 +68,21 @@ namespace ColdFormedChannelSection.App.ViewModels
                 [StrainingActions.MOMENT] = DisplayMu
             };
             Mediator.Mediator.Instance.Subscribe<StrainingActions>(this, OnSAChanged, Context.STRAININGACTIONS);
+            Mediator.Mediator.Instance.Subscribe<Units>(this, OnUnitChanged, Context.UNITS);
+
         }
+
+
 
         #endregion
 
         #region Methods
+
+
+        private void OnUnitChanged(Units unit)
+        {
+            Unit = unit;
+        }
 
         private void OnSAChanged(StrainingActions sa)
         {

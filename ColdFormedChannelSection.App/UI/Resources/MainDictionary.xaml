@@ -40,7 +40,7 @@
             <DataTrigger Binding="{Binding Status}" Value="UNSAFE">
                 <Setter Property="Foreground" Value="Red"/>
             </DataTrigger>
-            
+
         </Style.Triggers>
     </Style>
 
@@ -56,7 +56,7 @@
                 <MultiDataTrigger.Setters>
                     <Setter Property="Text" Value="(t.cm)" />
                 </MultiDataTrigger.Setters>
-                
+
             </MultiDataTrigger>
             <MultiDataTrigger>
                 <MultiDataTrigger.Conditions>
@@ -109,6 +109,36 @@
                 </MultiDataTrigger.Setters>
 
             </MultiDataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style TargetType="{x:Type TextBlock}" x:Key="Pu">
+        <Setter Property="Foreground" Value="Red"/>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Unit}" Value="TONCM">
+                <Setter Property="Text" Value="(ton)" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Unit}" Value="NMM">
+                <Setter Property="Text" Value="(N)" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Unit}" Value="KIPINCH">
+                <Setter Property="Text" Value="(Kip)" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style TargetType="{x:Type TextBlock}" x:Key="Mu">
+        <Setter Property="Foreground" Value="Red"/>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Unit}" Value="TONCM">
+                <Setter Property="Text" Value="(t.cm)" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Unit}" Value="NMM">
+                <Setter Property="Text" Value="(N.mm)" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Unit}" Value="KIPINCH">
+                <Setter Property="Text" Value="(Kip.in)" />
+            </DataTrigger>
         </Style.Triggers>
     </Style>
 

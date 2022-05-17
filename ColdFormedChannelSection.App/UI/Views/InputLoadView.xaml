@@ -21,8 +21,8 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="Ultimate Load (Pu)" VerticalAlignment="Center"/>
-                            <TextBlock Style="{StaticResource ultimateLoad}" VerticalAlignment="Center"/>
+                            <TextBlock Text="Compression (Pu)" VerticalAlignment="Center"/>
+                            <TextBlock Style="{StaticResource Pu}" VerticalAlignment="Center"/>
                         </StackPanel>
                         <TextBox Text="{Binding UltimateLoad}" Grid.Column="1" />
                     </Grid>
@@ -32,8 +32,8 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="Ultimate Moment (Mu)" VerticalAlignment="Center"/>
-                            <TextBlock Style="{StaticResource ultimateLoad}" VerticalAlignment="Center"/>
+                            <TextBlock Text="Moment (Mu)" VerticalAlignment="Center"/>
+                            <TextBlock Style="{StaticResource Mu}" VerticalAlignment="Center"/>
                         </StackPanel>
                         <TextBox Text="{Binding UltimateMoment}" Grid.Column="1" />
                     </Grid>

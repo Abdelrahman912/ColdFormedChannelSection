@@ -131,6 +131,7 @@ namespace ColdFormedChannelSection.App.ViewModels
             };
             GeneralInfoVM.RunningModule = Module.RESISTANCE;
             GeneralInfoVM.StrainingAction = StrainingActions.COMPRESSION;
+            GeneralInfoVM.Unit = Units.TONCM;
             BracingConditionsVM = bracingConditionsVM;
             GeometryVM = geometryVM;
             MaterialVM = materialVM;
