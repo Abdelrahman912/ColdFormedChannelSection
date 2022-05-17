@@ -29,10 +29,6 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         private InputLoadViewModel _inputLoadVM;
 
-        private double _ultimateLoad;
-
-        private double _ultimateMoment;
-
         private bool _isInputLoad;
 
         #endregion
@@ -51,18 +47,6 @@ namespace ColdFormedChannelSection.App.ViewModels
             set=>NotifyPropertyChanged(ref _isInputLoad, value);
         }
 
-       
-        public double UltimateMoment
-        {
-            get => _ultimateMoment;
-            set => NotifyPropertyChanged(ref _ultimateMoment, value);
-        }
-
-        public double UltimateLoad
-        {
-            get => _ultimateLoad;
-            set => NotifyPropertyChanged(ref _ultimateLoad, value);
-        }
 
         public bool IsDisplayReport
         {

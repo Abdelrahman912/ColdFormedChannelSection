@@ -16,7 +16,7 @@
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
 
-            <Grid Grid.Row="0" Margin="5">
+            <!--<Grid Grid.Row="0" Margin="5">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
@@ -29,13 +29,13 @@
                 </StackPanel>
 
 
-                <TextBox VerticalAlignment="Top" Grid.Column="1"  
-                                   Text="{Binding UltimateLoad}"/>
+                --><!--<TextBox VerticalAlignment="Top" Grid.Column="1"  
+                                   Text="{Binding UltimateLoad}"/>--><!--
 
 
-            </Grid>
+            </Grid>-->
 
-            <Grid Grid.Row="1" Margin="5" DataContext="{Binding CheckOutput}" Visibility="{Binding IsCheckOutput, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Grid Grid.Row="1" Margin="5" >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
