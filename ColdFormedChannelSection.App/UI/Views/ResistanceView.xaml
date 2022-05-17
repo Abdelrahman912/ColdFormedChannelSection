@@ -42,9 +42,9 @@
                 </Grid.RowDefinitions>
                 <vs:InputLoadView DataContext="{Binding InputLoadVM}" 
                                   Visibility="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl } }, Path=DataContext.IsInputLoad ,Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                <vs:ResistanceOutputView IsEnabled="{Binding IsResistanceOutput}" Grid.Row="1" 
+                <ContentControl IsEnabled="{Binding IsResistanceOutput}" Grid.Row="1" 
                                      Grid.Column="2" 
-                                     DataContext="{Binding ResistanceOutput}"/>
+                                     Content="{Binding ResistanceOutput}"/>
 
             </Grid>
         </Grid>

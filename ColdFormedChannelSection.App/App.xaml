@@ -4,10 +4,33 @@
              xmlns:local="clr-namespace:ColdFormedChannelSection.App"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:c="clr-namespace:ColdFormedChannelSection.App.UI.Converters"
+             xmlns:vms="clr-namespace:ColdFormedChannelSection.App.ViewModels"
+             xmlns:vs="clr-namespace:ColdFormedChannelSection.App.UI.Views"
+              xmlns:core="clr-namespace:ColdFormedChannelSection.Core.Entities;assembly=ColdFormedChannelSection.Core"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
+        
+        
 
         <ResourceDictionary>
+            <DataTemplate DataType="{x:Type core:CompressionResistanceOutput}">
+                <vs:ResistanceOutputView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type core:MomentResistanceOutput}">
+                <vs:ResistanceOutputView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type core:CompressionCheckOutput}">
+                <vs:CheckOutputView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type core:MomentCheckOutput}">
+                <vs:CheckOutputView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type core:CompressionDesignOutput}">
+                <vs:DesignOutputView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type core:MomentDesignOutput}">
+                <vs:DesignOutputView/>
+            </DataTemplate>
             <local:MainViewModel x:Key="mainVM"/>
             <c:DummyConverter x:Key="dummyConverter"/>
             <c:EnumBooleanConverter x:Key="enumToBoolConverter"/>
