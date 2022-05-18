@@ -17,6 +17,7 @@ namespace ColdFormedChannelSection.App.ViewModels
         #region Properties
 
         public override ICommand ResultsCommand { get; }
+
         private readonly Dictionary<Module, Action<DirectStrengthViewModel>> _moduleDict;
         #endregion
 
@@ -24,9 +25,10 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         public Dictionary<KeyValuePair<StrainingActions, SteelSection>,Func<DirectStrengthViewModel,Material,LengthBracingConditions, DesignOutput>> DesignDict { get; }
 
-        #endregion
 
         public Dictionary<KeyValuePair<StrainingActions, SteelSection>, Func<DirectStrengthViewModel,Material,LengthBracingConditions, Tuple<Func<CheckOutput>, ResistanceOutput>>> ResistDict { get; }
+        
+        #endregion
 
         #region Constructors
 
