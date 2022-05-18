@@ -2,6 +2,8 @@
 {
     public class Errors
     {
+        public static GenericError LessThanZeroError(string valueName)=>
+            new GenericError($"{valueName} must be greater than zero.");
         public static GenericError FileNotFound(string filePath)=>
             new GenericError($"File: \"{filePath}\" is not Found.");
 

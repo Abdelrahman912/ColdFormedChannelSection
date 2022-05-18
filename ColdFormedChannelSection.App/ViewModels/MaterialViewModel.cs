@@ -1,11 +1,19 @@
 ﻿using ColdFormedChannelSection.App.ViewModels.Base;
 using ColdFormedChannelSection.App.ViewModels.Enums;
 using ColdFormedChannelSection.Core.Enums;
+using CSharp.Functional.Errors;
+using static ColdFormedChannelSection.Core.Errors.Errors;
 using System;
+using CSharp.Functional.Constructs;
+using CSharp.Functional.Extensions;
+using Unit = System.ValueTuple;
+using System.Collections.Generic;
+using static CSharp.Functional.Extensions.ValidationExtension;
+using static CSharp.Functional.Functional;
 
 namespace ColdFormedChannelSection.App.ViewModels
 {
-    public class MaterialViewModel:ViewModelBase
+    public class MaterialViewModel : ViewModelBase
     {
 
         #region Private Fields
@@ -28,24 +36,24 @@ namespace ColdFormedChannelSection.App.ViewModels
         public double G
         {
             get => _g;
-            set=>NotifyPropertyChanged(ref _g, value);
+            set => NotifyPropertyChanged(ref _g, value);
         }
 
         public double V
         {
             get => _v;
-            set 
-            { 
-                NotifyPropertyChanged(ref _v, value); 
-                G= E / (2 * (1 + V));
+            set
+            {
+                NotifyPropertyChanged(ref _v, value);
+                G = E / (2 * (1 + V));
             }
         }
 
         public double Fy
         {
             get => _fy;
-            set 
-            { 
+            set
+            {
                 NotifyPropertyChanged(ref _fy, value);
                 G = E / (2 * (1 + V));
             }
@@ -54,8 +62,8 @@ namespace ColdFormedChannelSection.App.ViewModels
         public double E
         {
             get => _e;
-            set 
-            { 
+            set
+            {
                 NotifyPropertyChanged(ref _e, value);
                 G = E / (2 * (1 + V));
             }
@@ -82,6 +90,18 @@ namespace ColdFormedChannelSection.App.ViewModels
         private void OnUnitsChanged(Units selectedUnit)
         {
             Unit = selectedUnit;
+        }
+
+        public List<Error> Validate()
+        {
+            var errs = new List<Error>();
+            if (Fy <= 0)
+                errs.Add(LessThanZeroError("Fy"));
+            if (E <= 0)
+                errs.Add(LessThanZeroError("E"));
+            if (V <= 0)
+                errs.Add(LessThanZeroError("v"));
+            return errs;
         }
 
         #endregion

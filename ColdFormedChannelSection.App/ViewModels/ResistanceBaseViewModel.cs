@@ -2,9 +2,11 @@
 using ColdFormedChannelSection.App.ViewModels.Enums;
 using ColdFormedChannelSection.Core.Entities;
 using ColdFormedChannelSection.Core.Enums;
+using CSharp.Functional.Errors;
 using System;
 using System.Collections.Generic;
 using System.Windows.Input;
+using Unit = System.ValueTuple;
 
 namespace ColdFormedChannelSection.App.ViewModels
 {
@@ -31,9 +33,12 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         private bool _isInputLoad;
 
+
         #endregion
 
         #region Properties
+
+        public Func<List<Error>,Unit> ShowErrorsService { get; }
 
         public InputLoadViewModel InputLoadVM
         {
@@ -101,9 +106,10 @@ namespace ColdFormedChannelSection.App.ViewModels
                                        BracingConditionsViewModel bracingConditionsVM,
                                        GeometryViewModel geometryVM,
                                        MaterialViewModel materialVM,
-                                       InputLoadViewModel inputLoadVM)
+                                       InputLoadViewModel inputLoadVM,
+                                       Func<List<Error>,Unit> showErrorsService)
         {
-
+            ShowErrorsService = showErrorsService;
             InputLoadVM = inputLoadVM;
             GeneralInfoVM = generalInfoVM;
             GeneralInfoVM.OnRunningModuleChange = () =>

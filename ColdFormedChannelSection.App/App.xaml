@@ -9,10 +9,26 @@
               xmlns:core="clr-namespace:ColdFormedChannelSection.Core.Entities;assembly=ColdFormedChannelSection.Core"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-        
-        
 
+       
         <ResourceDictionary>
+            <Style TargetType="materialDesign:PackIcon" x:Key="MessageTypeIcon">
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding MessageType}" Value="DONE">
+                        <Setter Property="Kind" Value="Done"/>
+                        <Setter Property="Foreground" Value="Green"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding MessageType}" Value="ERROR">
+                        <Setter Property="Kind" Value="Error"/>
+                        <Setter Property="Foreground" Value="Maroon"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding MessageType}" Value="WARNING">
+                        <Setter Property="Kind" Value="Warning"/>
+                        <Setter Property="Foreground" Value="#ffcc00"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+
             <DataTemplate DataType="{x:Type core:CompressionResistanceOutput}">
                 <vs:ResistanceOutputView/>
             </DataTemplate>

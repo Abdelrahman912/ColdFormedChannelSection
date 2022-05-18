@@ -1,0 +1,39 @@
+﻿<Window x:Class="ColdFormedChannelSection.App.UI.Windows.ResultMessagesWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ColdFormedChannelSection.App.UI.Windows"
+        mc:Ignorable="d"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        Title="Errors" Height="450" Width="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="20"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="20"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="20"/>
+        </Grid.RowDefinitions>
+
+        <ListBox Grid.Column="1" Grid.Row="1" ItemsSource="{Binding Converter={StaticResource dummyConverter}}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid  HorizontalAlignment="Left"  VerticalAlignment="Center">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <materialDesign:PackIcon   VerticalAlignment="Center" Width="20" Grid.Column="0"
+                                                   Height="20" Style="{StaticResource MessageTypeIcon}" Margin="5 0 5 0" />
+                        <TextBlock Text="{Binding Message, Converter={StaticResource dummyConverter}}" TextWrapping="Wrap" Margin="5"  Grid.Column="1" VerticalAlignment="Center"/>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+    </Grid>
+</Window>

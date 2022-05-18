@@ -5,10 +5,15 @@ using ColdFormedChannelSection.Core.Entities;
 using ColdFormedChannelSection.Core.Enums;
 using ColdFormedChannelSection.Core.Extensions;
 using ColdFormedChannelSection.Core.Helpers;
+using CSharp.Functional.Constructs;
+using CSharp.Functional.Errors;
+using CSharp.Functional.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
+using Unit = System.ValueTuple;
+using static CSharp.Functional.Functional;
 
 namespace ColdFormedChannelSection.App.ViewModels
 {
@@ -19,6 +24,8 @@ namespace ColdFormedChannelSection.App.ViewModels
         public override ICommand ResultsCommand { get; }
 
         private readonly Dictionary<Module, Action<DirectStrengthViewModel>> _moduleDict;
+
+        private List<Func<List<Error>>> _validateFuncs;
         #endregion
 
         #region Properties
@@ -32,8 +39,8 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         #region Constructors
 
-        public DirectStrengthViewModel(GeneralInfoViewModel generalInfoVM, BracingConditionsViewModel bracingConditionsVM, GeometryViewModel geometryVM, MaterialViewModel materialVM, InputLoadViewModel inputLoadVM)
-            : base(generalInfoVM, bracingConditionsVM, geometryVM, materialVM, inputLoadVM)
+        public DirectStrengthViewModel(GeneralInfoViewModel generalInfoVM, BracingConditionsViewModel bracingConditionsVM, GeometryViewModel geometryVM, MaterialViewModel materialVM, InputLoadViewModel inputLoadVM,Func<List<Error>,Unit> showErrorsService)
+            : base(generalInfoVM, bracingConditionsVM, geometryVM, materialVM, inputLoadVM, showErrorsService)
         {
             ResultsCommand = new RelayCommand(OnReults, CanResults);
             _moduleDict = new Dictionary<Module, Action<DirectStrengthViewModel>>()
@@ -56,9 +63,13 @@ namespace ColdFormedChannelSection.App.ViewModels
                 [KeyValuePair.Create(StrainingActions.COMPRESSION, SteelSection.C_LIPPED)] = DesignCLippedComp,
                 [KeyValuePair.Create(StrainingActions.MOMENT, SteelSection.C_LIPPED)] = DesignCLippedMoment
             };
+            _validateFuncs = new List<Func<List<Error>>>()
+            {
+                MaterialVM.Validate,
+            };
         }
 
-
+        
 
         #endregion
 
@@ -73,7 +84,15 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         private void OnReults()
         {
-            _moduleDict[GeneralInfoVM.RunningModule](this);
+             _validateFuncs.SelectMany(f => f())
+                           .AsUnitValidation()
+                           .Match(errs=>ShowErrorsService(errs.ToList()),
+                                 u=>
+                                 {
+                                     _moduleDict[GeneralInfoVM.RunningModule](this);
+                                     return u;
+                                 });
+           
         }
 
         private static void Design(DirectStrengthViewModel vm)

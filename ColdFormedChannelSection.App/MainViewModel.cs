@@ -3,9 +3,16 @@ using ColdFormedChannelSection.App.ViewModels.Base;
 using ColdFormedChannelSection.App.ViewModels.Enums;
 using ColdFormedChannelSection.App.ViewModels.Mediator;
 using ColdFormedChannelSection.Core.Enums;
+using CSharp.Functional.Errors;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Unit = System.ValueTuple;
+using static ColdFormedChannelSection.App.UI.Services.Services;
+using static CSharp.Functional.Functional;
+using System.Linq;
+using ColdFormedChannelSection.App.Models;
+using ColdFormedChannelSection.App.UI.Services;
 
 namespace ColdFormedChannelSection.App
 {
@@ -85,9 +92,18 @@ namespace ColdFormedChannelSection.App
                 _bracingConditionsVM =new Lazy<BracingConditionsViewModel>(()=> new BracingConditionsViewModel());
                 _materialVM =new Lazy<MaterialViewModel>(()=> new MaterialViewModel());
                 var geometryVM =new Lazy<GeometryViewModel>( new GeometryViewModel());
-                _directStrengthVM = new Lazy<DirectStrengthViewModel>(() => new DirectStrengthViewModel(_generalInfoVM.Value, _bracingConditionsVM.Value, geometryVM.Value,_materialVM.Value,_inputLoadVM.Value));
-                _effectiveWidthVM = new Lazy<EffectiveWidthViewModel>(() => new EffectiveWidthViewModel(_generalInfoVM.Value, _bracingConditionsVM.Value, geometryVM.Value,_materialVM.Value,_inputLoadVM.Value));
+                _directStrengthVM = new Lazy<DirectStrengthViewModel>(() => new DirectStrengthViewModel(_generalInfoVM.Value, _bracingConditionsVM.Value, geometryVM.Value,_materialVM.Value,_inputLoadVM.Value,ShowErrorService()));
+                _effectiveWidthVM = new Lazy<EffectiveWidthViewModel>(() => new EffectiveWidthViewModel(_generalInfoVM.Value, _bracingConditionsVM.Value, geometryVM.Value,_materialVM.Value,_inputLoadVM.Value,ShowErrorService()));
             });
+        }
+
+        private Func<List<Error>,Unit> ShowErrorService()
+        {
+            return (errs) =>
+            {
+                errs.Select(err => new ResultMessage(err.Message, ResultMessageType.ERROR)).ToList().ResultMessagesService();
+                return Unit();
+            };
         }
 
         private void OnDirectStrength(object _)

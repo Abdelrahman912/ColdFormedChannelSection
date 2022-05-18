@@ -5,12 +5,14 @@ using ColdFormedChannelSection.Core.Entities;
 using ColdFormedChannelSection.Core.Enums;
 using ColdFormedChannelSection.Core.Extensions;
 using ColdFormedChannelSection.Core.Helpers;
+using CSharp.Functional.Errors;
+using CSharp.Functional.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
+using static CSharp.Functional.Functional;
+using Unit = System.ValueTuple;
 
 namespace ColdFormedChannelSection.App.ViewModels
 {
@@ -22,6 +24,8 @@ namespace ColdFormedChannelSection.App.ViewModels
         public override ICommand ResultsCommand { get; }
 
         private readonly Dictionary<Module, Action<EffectiveWidthViewModel>> _moduleDict;
+
+        private List<Func<List<Error>>> _validateFuncs;
 
         #endregion
 
@@ -45,8 +49,8 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         #region Constructors
 
-        public EffectiveWidthViewModel(GeneralInfoViewModel generalInfoVM, BracingConditionsViewModel bracingConditionsVM, GeometryViewModel geometryVM, MaterialViewModel materialVM, InputLoadViewModel inputLoadVM)
-          : base(generalInfoVM, bracingConditionsVM, geometryVM, materialVM, inputLoadVM)
+        public EffectiveWidthViewModel(GeneralInfoViewModel generalInfoVM, BracingConditionsViewModel bracingConditionsVM, GeometryViewModel geometryVM, MaterialViewModel materialVM, InputLoadViewModel inputLoadVM,Func<List<Error>,Unit> showErrorsService)
+          : base(generalInfoVM, bracingConditionsVM, geometryVM, materialVM, inputLoadVM, showErrorsService)
         {
             ResultsCommand = new RelayCommand(OnReults, CanResults);
             _moduleDict = new Dictionary<Module, Action<EffectiveWidthViewModel>>()
@@ -111,6 +115,10 @@ namespace ColdFormedChannelSection.App.ViewModels
                 [DesignCode.EURO] = DesignEuroDict,
                 [DesignCode.AISI] = DesignAISIDict
             };
+            _validateFuncs = new List<Func<List<Error>>>()
+            {
+                materialVM.Validate,
+            };
         }
 
         #endregion
@@ -125,7 +133,14 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         private void OnReults()
         {
-            _moduleDict[GeneralInfoVM.RunningModule](this);
+            _validateFuncs.SelectMany(f => f())
+                          .AsUnitValidation()
+                          .Match(errs =>ShowErrorsService(errs.ToList()),
+                                u =>
+                                {
+                                    _moduleDict[GeneralInfoVM.RunningModule](this);
+                                    return u;
+                                });
         }
 
         private static void Design(EffectiveWidthViewModel vm)
