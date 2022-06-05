@@ -67,7 +67,8 @@ namespace ColdFormedChannelSection.App.ViewModels
             _displayDict = new Dictionary<StrainingActions, Action<InputLoadViewModel>>()
             {
                 [StrainingActions.COMPRESSION] = DisplayPu,
-                [StrainingActions.MOMENT] = DisplayMu
+                [StrainingActions.MOMENT] = DisplayMu,
+                [StrainingActions.MOMENT_COMPRESSION] = DisplayMuPU,
             };
             Mediator.Mediator.Instance.Subscribe<Tuple<Module,StrainingActions>>(this, OnSAChanged, Context.SA_MODULE);
             Mediator.Mediator.Instance.Subscribe<Units>(this, OnUnitChanged, Context.UNITS);
@@ -77,10 +78,17 @@ namespace ColdFormedChannelSection.App.ViewModels
         }
 
 
-
         #endregion
 
         #region Methods
+
+        private void DisplayMuPU(InputLoadViewModel obj)
+        {
+
+            IsUltimateLoad = true;
+            IsUltimateMoment = true;
+
+        }
 
         public List<Error> Validate()
         {
