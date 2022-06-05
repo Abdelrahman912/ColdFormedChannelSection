@@ -1,9 +1,11 @@
 ﻿using ColdFormedChannelSection.App.ViewModels.Base;
 using ColdFormedChannelSection.App.ViewModels.Enums;
 using ColdFormedChannelSection.Core.Enums;
+using CSharp.Functional.Errors;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using static ColdFormedChannelSection.Core.Errors.Errors;
 
 namespace ColdFormedChannelSection.App.ViewModels
 {
@@ -164,6 +166,30 @@ namespace ColdFormedChannelSection.App.ViewModels
         {
             await _initTask;
             _bracingDict[kvp]();
+        }
+
+        public List<Error> Validate()
+        {
+            var errs = new List<Error>();
+            if (Lx <= 0)
+                errs.Add(LessThanZeroError("Lx"));
+            if (Kx <= 0)
+                errs.Add(LessThanZeroError("Kx"));
+            if (Ly <= 0)
+                errs.Add(LessThanZeroError("Ly"));
+            if (Ky <= 0)
+                errs.Add(LessThanZeroError("Ky"));
+            if (Lz <= 0)
+                errs.Add(LessThanZeroError("Lz"));
+            if (Kz <= 0)
+                errs.Add(LessThanZeroError("Kz"));
+            if (IsCbUsed && Cb <= 0)
+                errs.Add(LessThanZeroError("Cb"));
+            if (IsLuUsed && Lu <= 0)
+                errs.Add(LessThanZeroError("Lu"));
+            if (IsC1Used && C1 <= 0)
+                errs.Add(LessThanZeroError("C1"));
+            return errs;
         }
 
         private  void DefaultCompression()

@@ -115,7 +115,11 @@ namespace ColdFormedChannelSection.App.ViewModels
             GeneralInfoVM.OnRunningModuleChange = () =>
             {
                 if (GeneralInfoVM.RunningModule == Module.RESISTANCE)
+                {
                     IsInputLoad = false;
+                    InputLoadVM.IsUltimateLoad = false;
+                    InputLoadVM.IsUltimateMoment = false;
+                }
                 else
                     IsInputLoad = true;
             };

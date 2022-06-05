@@ -118,6 +118,9 @@ namespace ColdFormedChannelSection.App.ViewModels
             _validateFuncs = new List<Func<List<Error>>>()
             {
                 materialVM.Validate,
+                GeometryVM.Validate,
+                InputLoadVM.Validate,
+                BracingConditionsVM.Validate
             };
         }
 

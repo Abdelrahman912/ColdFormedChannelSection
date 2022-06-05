@@ -40,6 +40,8 @@ namespace ColdFormedChannelSection.App.ViewModels
             {
                 NotifyPropertyChanged(ref _runningModule, value);
                 OnRunningModuleChange();
+                if (_runningModule != Module.RESISTANCE)
+                    Mediator.Mediator.Instance.NotifyColleagues(Tuple.Create(RunningModule, StrainingAction), Context.SA_MODULE);
             }
         }
 
@@ -86,6 +88,8 @@ namespace ColdFormedChannelSection.App.ViewModels
             {
                 NotifyPropertyChanged(ref _strainingAction, value);
                 OnStrainingActionsChange();
+                if(RunningModule != Module.RESISTANCE)
+                    Mediator.Mediator.Instance.NotifyColleagues(Tuple.Create(RunningModule,_strainingAction), Context.SA_MODULE);
                 Mediator.Mediator.Instance.NotifyColleagues(_strainingAction, Context.STRAININGACTIONS);
                 Mediator.Mediator.Instance.NotifyColleagues(KeyValuePair.Create(DesignCode, _strainingAction), Context.BRACING);
             }

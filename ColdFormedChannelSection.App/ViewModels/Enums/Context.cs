@@ -23,6 +23,7 @@
         DIRECT_STRENGTH,
         EFFECTIVE_WIDTH,
         HOME,
-        BRACING
+        BRACING,
+            SA_MODULE
     }
 }

@@ -1,8 +1,10 @@
 ﻿using ColdFormedChannelSection.App.ViewModels.Base;
 using ColdFormedChannelSection.App.ViewModels.Enums;
 using ColdFormedChannelSection.Core.Enums;
+using CSharp.Functional.Errors;
 using System;
 using System.Collections.Generic;
+using static ColdFormedChannelSection.Core.Errors.Errors;
 
 namespace ColdFormedChannelSection.App.ViewModels
 {
@@ -67,8 +69,10 @@ namespace ColdFormedChannelSection.App.ViewModels
                 [StrainingActions.COMPRESSION] = DisplayPu,
                 [StrainingActions.MOMENT] = DisplayMu
             };
-            Mediator.Mediator.Instance.Subscribe<StrainingActions>(this, OnSAChanged, Context.STRAININGACTIONS);
+            Mediator.Mediator.Instance.Subscribe<Tuple<Module,StrainingActions>>(this, OnSAChanged, Context.SA_MODULE);
             Mediator.Mediator.Instance.Subscribe<Units>(this, OnUnitChanged, Context.UNITS);
+            IsUltimateLoad = false;
+            IsUltimateMoment = false;
 
         }
 
@@ -78,15 +82,27 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         #region Methods
 
+        public List<Error> Validate()
+        {
+            var errs = new List<Error>();
+            if (IsUltimateLoad && UltimateLoad <= 0)
+                errs.Add(LessThanZeroError("Pu"));
+            if (IsUltimateMoment && UltimateMoment <= 0)
+                errs.Add(LessThanZeroError("Mu"));
+            return errs;
+
+        }
 
         private void OnUnitChanged(Units unit)
         {
             Unit = unit;
         }
 
-        private void OnSAChanged(StrainingActions sa)
+        private void OnSAChanged(Tuple<Module  , StrainingActions > tuple)
         {
-            _displayDict[sa](this);
+            (var module, var sa) = tuple;
+            if(module != Module.RESISTANCE)
+                     _displayDict[sa](this);
         }
 
         private static void DisplayPu(InputLoadViewModel vm)

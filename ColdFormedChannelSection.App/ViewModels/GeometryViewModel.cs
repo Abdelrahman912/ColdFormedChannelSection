@@ -4,6 +4,7 @@ using ColdFormedChannelSection.Core.Dtos;
 using ColdFormedChannelSection.Core.Enums;
 using ColdFormedChannelSection.Core.Extensions;
 using ColdFormedChannelSection.Core.Helpers;
+using CSharp.Functional.Errors;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,6 +12,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using static ColdFormedChannelSection.Core.Constants;
+using static ColdFormedChannelSection.Core.Errors.Errors;
 
 namespace ColdFormedChannelSection.App.ViewModels
 {
@@ -213,6 +215,21 @@ namespace ColdFormedChannelSection.App.ViewModels
                 TotalFoldWidthC = 0;
         }
 
+        public List<Error> Validate()
+        {
+            var errs = new List<Error>();
+            if (TotalHeightH <= 0)
+                errs.Add(LessThanZeroError("H"));
+            if (TotalWidthB <= 0)
+                errs.Add(LessThanZeroError("B"));
+            if (ThicknessT <= 0)
+                errs.Add(LessThanZeroError("t"));
+            if (InternalRadiusR <= 0)
+                errs.Add(LessThanZeroError("R"));
+            if (!_isUnstiffened &&TotalFoldWidthC <= 0 )
+                errs.Add(LessThanZeroError("C"));
+            return errs;
+        }
 
         private static async Task<List<SectionDimensionDto>> LoadSections(string tableName)
         {
