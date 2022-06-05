@@ -24,10 +24,13 @@ namespace ColdFormedChannelSection.App.ViewModels
             switch (GeneralInfoVM.StrainingAction)
             {
                 case StrainingActions.MOMENT:
+                case StrainingActions.MOMENT_COMPRESSION:
                     BracingConditionsVM.IsC1Used = false;
                     BracingConditionsVM.C1 = 0;
                     BracingConditionsVM.IsLuUsed = true;
                     BracingConditionsVM.IsCbUsed = true;
+                    BracingConditionsVM.IsCmUsed = false;
+                    BracingConditionsVM.Cm = 0;
                     break;
                 case StrainingActions.COMPRESSION:
                     BracingConditionsVM.IsC1Used = false;
@@ -36,6 +39,8 @@ namespace ColdFormedChannelSection.App.ViewModels
                     BracingConditionsVM.Lu = 0;
                     BracingConditionsVM.IsCbUsed = false;
                     BracingConditionsVM.Cb = 0;
+                    BracingConditionsVM.IsCmUsed = false;
+                    BracingConditionsVM.Cm = 0;
                     break;
             }
         }

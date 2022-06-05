@@ -125,7 +125,8 @@ namespace ColdFormedChannelSection.Core.Helpers
             var Kz = bracingConditions.Kz;
             var C1 = bracingConditions.C1;
             var Cb = bracingConditions.Cb;
-            var newBracingConditions = new LengthBracingConditions(Lx, Ly, Lz, Kx, Ky, Kz, Lu, Cb, C1);
+            var Cm = bracingConditions.Cm;
+            var newBracingConditions = new LengthBracingConditions(Lx, Ly, Lz, Kx, Ky, Kz, Lu, Cb, C1,Cm);
             return newBracingConditions;
         }
 

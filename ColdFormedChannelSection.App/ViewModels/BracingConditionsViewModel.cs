@@ -23,10 +23,12 @@ namespace ColdFormedChannelSection.App.ViewModels
         private double _lu;
         private double _cb;
         private double _c1;
+        private double _cm;
 
         private bool _isLuUsed;
         private bool _isCbUsed;
         private bool _isC1Used;
+        private bool _isCmUsed;
 
         private Units _unit;
 
@@ -38,10 +40,23 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         #region Properties
 
+
+        public double Cm
+        {
+            get => _cm;
+            set => NotifyPropertyChanged(ref _cm, value);
+        }
+
         public Units Unit
         {
             get => _unit;
             set => NotifyPropertyChanged(ref _unit,value);
+        }
+
+        public bool IsCmUsed
+        {
+            get => _isCmUsed;
+            set => NotifyPropertyChanged(ref _isCmUsed, value);
         }
 
         public bool IsLuUsed
@@ -155,13 +170,19 @@ namespace ColdFormedChannelSection.App.ViewModels
                 {
                     [KeyValuePair.Create(DesignCode.EGYPTIAN, StrainingActions.COMPRESSION)] = DefaultCompression,
                     [KeyValuePair.Create(DesignCode.EGYPTIAN,StrainingActions.MOMENT)]=DefaultMoment,
+                    [KeyValuePair.Create(DesignCode.EGYPTIAN, StrainingActions.MOMENT_COMPRESSION)] = DefaultMoment,
                     [KeyValuePair.Create(DesignCode.EURO,StrainingActions.COMPRESSION)]=DefaultCompression,
                     [KeyValuePair.Create(DesignCode.EURO,StrainingActions.MOMENT)] = EuroMoment,
+                    [KeyValuePair.Create(DesignCode.EURO, StrainingActions.MOMENT_COMPRESSION)] = EuroMoment,
                     [KeyValuePair.Create(DesignCode.AISI,StrainingActions.COMPRESSION)] = DefaultCompression,
-                    [KeyValuePair.Create(DesignCode.AISI,StrainingActions.MOMENT)] = DefaultMoment
+                    [KeyValuePair.Create(DesignCode.AISI,StrainingActions.MOMENT)] = DefaultMoment,
+                    [KeyValuePair.Create(DesignCode.AISI, StrainingActions.MOMENT_COMPRESSION)] = AISIMomentCompression
                 };
             });
         }
+
+       
+
         private async void OnBracingChanged(KeyValuePair<DesignCode, StrainingActions> kvp)
         {
             await _initTask;
@@ -189,7 +210,18 @@ namespace ColdFormedChannelSection.App.ViewModels
                 errs.Add(LessThanZeroError("Lu"));
             if (IsC1Used && C1 <= 0)
                 errs.Add(LessThanZeroError("C1"));
+            if (IsCmUsed && Cm <= 0)
+                errs.Add(LessThanZeroError("Cm"));
             return errs;
+        }
+
+        private void AISIMomentCompression()
+        {
+            IsCbUsed = true;
+            IsLuUsed = true;
+            IsC1Used = false;
+            IsCmUsed = true;
+            C1 = 0;
         }
 
         private  void DefaultCompression()
@@ -200,6 +232,8 @@ namespace ColdFormedChannelSection.App.ViewModels
             Lu = 0;
             IsC1Used = false;
             C1 = 0;
+            IsCmUsed = false;
+            Cm = 0;
         }
 
         private void DefaultMoment()
@@ -207,6 +241,8 @@ namespace ColdFormedChannelSection.App.ViewModels
             IsCbUsed = true;
             IsLuUsed = true;
             IsC1Used = false;
+            IsCmUsed = false;
+            Cm = 0;
             C1 = 0;
         }
 

@@ -16,7 +16,8 @@ namespace ColdFormedChannelSection.App.Extensions
                 kz: vm.Kz,
                 lu: vm.Lu,
                 cb: vm.Cb,
-                c1: vm.C1);
+                c1: vm.C1,
+                cm: vm.Cm);
 
         }
 

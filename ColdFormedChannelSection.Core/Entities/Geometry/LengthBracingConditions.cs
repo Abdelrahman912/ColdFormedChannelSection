@@ -14,13 +14,13 @@
         public double Lu { get; }
         public double Cb { get; }
         public double C1 { get; }
-
+        public double Cm { get; }
 
         #endregion
 
         #region Constructors
 
-        public LengthBracingConditions(double lx, double ly, double lz, double kx, double ky, double kz, double lu, double cb, double c1)
+        public LengthBracingConditions(double lx, double ly, double lz, double kx, double ky, double kz, double lu, double cb, double c1, double cm)
         {
             Lx = lx;
             Ly = ly;
@@ -31,6 +31,7 @@
             Lu = lu;
             Cb = cb;
             C1 = c1;
+            Cm = cm;
         }
 
         #endregion
