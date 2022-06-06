@@ -37,7 +37,7 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         private SectionDimensionDto _selectedSection;
 
-        private Units _tableUnit;
+        public Units TableUnit { get; set; }
 
         private Units _unit;
 
@@ -174,7 +174,7 @@ namespace ColdFormedChannelSection.App.ViewModels
             if (!IsUserDefined)
             {
               var tuple =   _tables[KeyValuePair.Create(IsUnstiffened, SelectedTableName)];
-                _tableUnit = tuple.Item1;
+                TableUnit = tuple.Item1;
                 Sections = await tuple.Item2.Value;
                 SelectedSection = Sections.FirstOrDefault();
             }
@@ -183,7 +183,7 @@ namespace ColdFormedChannelSection.App.ViewModels
         {
             if(SelectedSection != null)
             {
-                var secDim = SelectedSection.AsEntity().Convert(_tableUnit,Unit);
+                var secDim = SelectedSection.AsEntity().Convert(TableUnit,Unit);
                 TotalHeightH = secDim.TotalHeightH.Round(4);
                 TotalFoldWidthC = secDim.TotalFoldWidthC.Round(4);
                 TotalWidthB = secDim.TotalFlangeWidthB.Round(4);

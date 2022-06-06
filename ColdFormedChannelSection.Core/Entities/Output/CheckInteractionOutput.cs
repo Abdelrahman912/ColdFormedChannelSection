@@ -23,12 +23,12 @@ namespace ColdFormedChannelSection.Core.Entities
             if(IEValue <= 1)
             {
                 Status = CheckResultStatus.SAFE;
-                CheckResultName = $"{IE} = {IEValue.ToString("0.##")} < 1.0";
+                CheckResultName = $"{IE} = {IEValue.ToString("0.###")} < 1.0";
             }
             else
             {
                 Status = CheckResultStatus.UNSAFE;
-                CheckResultName = $"{IE}  = {IEValue.ToString("0.##")} > 1.0";
+                CheckResultName = $"{IE}  = {IEValue.ToString("0.###")} > 1.0";
             }
         }
 
