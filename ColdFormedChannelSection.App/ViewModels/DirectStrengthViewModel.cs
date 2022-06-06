@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
 using Unit = System.ValueTuple;
+using static CSharp.Functional.Functional;
 
 namespace ColdFormedChannelSection.App.ViewModels
 {
@@ -20,6 +21,7 @@ namespace ColdFormedChannelSection.App.ViewModels
         #region Properties
 
         public override ICommand ResultsCommand { get; }
+
 
         private readonly Dictionary<Module, Action<DirectStrengthViewModel>> _moduleDict;
 
@@ -37,8 +39,8 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         #region Constructors
 
-        public DirectStrengthViewModel(GeneralInfoViewModel generalInfoVM, BracingConditionsViewModel bracingConditionsVM, GeometryViewModel geometryVM, MaterialViewModel materialVM, InputLoadViewModel inputLoadVM,Func<List<Error>,Unit> showErrorsService)
-            : base(generalInfoVM, bracingConditionsVM, geometryVM, materialVM, inputLoadVM, showErrorsService)
+        public DirectStrengthViewModel(GeneralInfoViewModel generalInfoVM, BracingConditionsViewModel bracingConditionsVM, GeometryViewModel geometryVM, MaterialViewModel materialVM, InputLoadViewModel inputLoadVM,Func<List<Error>,Unit> showErrorsService,Action<IReport> reportService)
+            : base(generalInfoVM, bracingConditionsVM, geometryVM, materialVM, inputLoadVM, showErrorsService,reportService)
         {
             ResultsCommand = new RelayCommand(OnReults, CanResults);
             _moduleDict = new Dictionary<Module, Action<DirectStrengthViewModel>>()
@@ -75,15 +77,13 @@ namespace ColdFormedChannelSection.App.ViewModels
         }
 
 
-
-
-
-
         #endregion
 
 
         #region Methods
 
+
+       
 
         private Tuple<Func<IOutput>, IOutput> ResistanceCLippedMomentComp(DirectStrengthViewModel vm, Material material, LengthBracingConditions bracingConditions)
         {
@@ -123,10 +123,11 @@ namespace ColdFormedChannelSection.App.ViewModels
         {
              _validateFuncs.SelectMany(f => f())
                            .AsUnitValidation()
-                           .Match(errs=>ShowErrorsService(errs.ToList()),
+                           .Match(errs=> { IsDisplayReport = false; ShowErrorsService(errs.ToList());return Unit(); } ,
                                  u=>
                                  {
                                      _moduleDict[GeneralInfoVM.RunningModule](this);
+                                     IsDisplayReport = true;
                                      return u;
                                  });
            

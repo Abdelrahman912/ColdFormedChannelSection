@@ -50,10 +50,10 @@
         </Grid>
         <StackPanel Grid.Row="2" Margin="8" Orientation="Horizontal" HorizontalAlignment="Center">
             <Button Margin="5"  Width="150" Height="35" Style="{StaticResource MaterialDesignOutlinedSecondaryDarkButton}" 
-                    Command="{Binding ResultsCommand}"  IsEnabled="{Binding IsDisplayReport}">
+                    Command="{Binding PrintReportCommand}"  IsEnabled="{Binding IsDisplayReport}">
                 <StackPanel Orientation="Horizontal">
                     <materialDesign:PackIcon Kind="FileReport" VerticalAlignment="Center" Margin="2 2"/>
-                    <TextBlock Text="Display Report" />
+                    <TextBlock Text="Display Report"  />
                 </StackPanel>
             </Button>
             <Button Margin="5"  Width="150" Height="35" Style="{StaticResource MaterialDesignOutlinedDarkButton}" Command="{Binding ResultsCommand}"  >

@@ -11,8 +11,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
-using static CSharp.Functional.Functional;
 using Unit = System.ValueTuple;
+using static CSharp.Functional.Functional;
 
 namespace ColdFormedChannelSection.App.ViewModels
 {
@@ -49,8 +49,8 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         #region Constructors
 
-        public EffectiveWidthViewModel(GeneralInfoViewModel generalInfoVM, BracingConditionsViewModel bracingConditionsVM, GeometryViewModel geometryVM, MaterialViewModel materialVM, InputLoadViewModel inputLoadVM,Func<List<Error>,Unit> showErrorsService)
-          : base(generalInfoVM, bracingConditionsVM, geometryVM, materialVM, inputLoadVM, showErrorsService)
+        public EffectiveWidthViewModel(GeneralInfoViewModel generalInfoVM, BracingConditionsViewModel bracingConditionsVM, GeometryViewModel geometryVM, MaterialViewModel materialVM, InputLoadViewModel inputLoadVM,Func<List<Error>,Unit> showErrorsService , Action<IReport> reportService)
+          : base(generalInfoVM, bracingConditionsVM, geometryVM, materialVM, inputLoadVM, showErrorsService,reportService)
         {
             ResultsCommand = new RelayCommand(OnReults, CanResults);
             _moduleDict = new Dictionary<Module, Action<EffectiveWidthViewModel>>()
@@ -154,10 +154,11 @@ namespace ColdFormedChannelSection.App.ViewModels
         {
             _validateFuncs.SelectMany(f => f())
                           .AsUnitValidation()
-                          .Match(errs =>ShowErrorsService(errs.ToList()),
+                          .Match(errs => { IsDisplayReport = false; ShowErrorsService(errs.ToList()); return Unit(); },
                                 u =>
                                 {
                                     _moduleDict[GeneralInfoVM.RunningModule](this);
+                                    IsDisplayReport = true;
                                     return u;
                                 });
         }

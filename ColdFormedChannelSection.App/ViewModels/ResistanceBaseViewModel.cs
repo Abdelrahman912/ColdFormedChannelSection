@@ -33,10 +33,12 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         private bool _isInputLoad;
 
+        private Action<IReport> _reportService;
 
         #endregion
 
         #region Properties
+
 
         public Func<List<Error>,Unit> ShowErrorsService { get; }
 
@@ -98,6 +100,8 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         public virtual ICommand ResultsCommand { get; }
 
+        public virtual ICommand PrintReportCommand { get; }
+
         #endregion
 
         #region Constructors
@@ -107,8 +111,10 @@ namespace ColdFormedChannelSection.App.ViewModels
                                        GeometryViewModel geometryVM,
                                        MaterialViewModel materialVM,
                                        InputLoadViewModel inputLoadVM,
-                                       Func<List<Error>,Unit> showErrorsService)
+                                       Func<List<Error>,Unit> showErrorsService,
+                                       Action<IReport> reportService)
         {
+            _reportService = reportService;
             ShowErrorsService = showErrorsService;
             InputLoadVM = inputLoadVM;
             GeneralInfoVM = generalInfoVM;
@@ -130,13 +136,27 @@ namespace ColdFormedChannelSection.App.ViewModels
             GeometryVM = geometryVM;
             MaterialVM = materialVM;
             IsInputLoad = false;
+            IsDisplayReport = false;
+            PrintReportCommand = new RelayCommand(OnPrintReport, CanPrintReport);
         }
 
 
 
         #endregion
 
+        #region Methods
 
+        private void OnPrintReport()
+        {
+            _reportService(null);
+        }
+
+        private bool CanPrintReport()
+        {
+            return IsDisplayReport;
+        }
+
+        #endregion
 
     }
 }

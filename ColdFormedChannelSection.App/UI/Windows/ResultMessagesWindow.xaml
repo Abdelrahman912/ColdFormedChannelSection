@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ColdFormedChannelSection.App.UI.Windows"
         mc:Ignorable="d"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-        Title="Errors" Height="450" Width="800">
+        Title="Errors" Height="350" Width="600">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="20"/>
