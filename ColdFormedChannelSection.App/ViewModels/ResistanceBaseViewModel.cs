@@ -19,7 +19,7 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         private bool _isResistanceOutput;
 
-        private ResistanceOutput _resistanceOutput;
+        private IOutput _resistanceOutput;
 
         private GeneralInfoViewModel _generalInfoVM;
 
@@ -65,7 +65,7 @@ namespace ColdFormedChannelSection.App.ViewModels
             set => NotifyPropertyChanged(ref _isResistanceOutput, value);
         }
 
-        public ResistanceOutput ResistanceOutput
+        public IOutput ResistanceOutput
         {
             get => _resistanceOutput;
             set => NotifyPropertyChanged(ref _resistanceOutput, value);

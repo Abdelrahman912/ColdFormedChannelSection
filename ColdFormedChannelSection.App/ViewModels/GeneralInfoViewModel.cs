@@ -3,10 +3,11 @@ using ColdFormedChannelSection.App.ViewModels.Enums;
 using ColdFormedChannelSection.Core.Enums;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ColdFormedChannelSection.App.ViewModels
 {
-    public class GeneralInfoViewModel:ViewModelBase
+    public class GeneralInfoViewModel : ViewModelBase
     {
 
         public Action OnStrainingActionsChange = delegate { };
@@ -20,7 +21,11 @@ namespace ColdFormedChannelSection.App.ViewModels
         private SteelSection _steelSection;
         private StrainingActions _strainingAction;
         private Units _unit;
-        
+
+        private List<StrainingActions> _availableSa;
+        private readonly List<StrainingActions> _resistSa = new List<StrainingActions>() { StrainingActions.COMPRESSION, StrainingActions.MOMENT };
+        private readonly List<StrainingActions> _designCheckSa = new List<StrainingActions>() { StrainingActions.COMPRESSION, StrainingActions.MOMENT, StrainingActions.MOMENT_COMPRESSION };
+
         private Module _runningModule;
 
         private readonly Dictionary<SteelSection, string> _sectionImageDict = new Dictionary<SteelSection, string>()
@@ -33,6 +38,12 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         #region Properties
 
+        public List<StrainingActions> AvailabeSa
+        {
+            get => _availableSa;
+            set => NotifyPropertyChanged(ref _availableSa, value);
+        }
+
         public Module RunningModule
         {
             get => _runningModule;
@@ -41,7 +52,16 @@ namespace ColdFormedChannelSection.App.ViewModels
                 NotifyPropertyChanged(ref _runningModule, value);
                 OnRunningModuleChange();
                 if (_runningModule != Module.RESISTANCE)
+                {
+                    AvailabeSa = _designCheckSa;
+                    //StrainingAction = AvailabeSa.First();
                     Mediator.Mediator.Instance.NotifyColleagues(Tuple.Create(RunningModule, StrainingAction), Context.SA_MODULE);
+                }
+                else
+                {
+                    AvailabeSa = _resistSa;
+                    //StrainingAction = AvailabeSa.First();
+                }
             }
         }
 
@@ -54,8 +74,8 @@ namespace ColdFormedChannelSection.App.ViewModels
         public SteelSection SteelSection
         {
             get => _steelSection;
-            set 
-            { 
+            set
+            {
                 NotifyPropertyChanged(ref _steelSection, value);
                 SteelSectionImage = _sectionImageDict[_steelSection];
                 Mediator.Mediator.Instance.NotifyColleagues(SteelSection, Context.STIFF_UNSTIFF);
@@ -67,8 +87,8 @@ namespace ColdFormedChannelSection.App.ViewModels
         {
             get => _designCode;
             set
-                
-            { 
+
+            {
                 NotifyPropertyChanged(ref _designCode, value);
                 Mediator.Mediator.Instance.NotifyColleagues(KeyValuePair.Create(_designCode, StrainingAction), Context.BRACING);
             }
@@ -88,8 +108,8 @@ namespace ColdFormedChannelSection.App.ViewModels
             {
                 NotifyPropertyChanged(ref _strainingAction, value);
                 OnStrainingActionsChange();
-                if(RunningModule != Module.RESISTANCE)
-                    Mediator.Mediator.Instance.NotifyColleagues(Tuple.Create(RunningModule,_strainingAction), Context.SA_MODULE);
+                if (RunningModule != Module.RESISTANCE)
+                    Mediator.Mediator.Instance.NotifyColleagues(Tuple.Create(RunningModule, _strainingAction), Context.SA_MODULE);
                 Mediator.Mediator.Instance.NotifyColleagues(_strainingAction, Context.STRAININGACTIONS);
                 Mediator.Mediator.Instance.NotifyColleagues(KeyValuePair.Create(DesignCode, _strainingAction), Context.BRACING);
             }
@@ -114,7 +134,7 @@ namespace ColdFormedChannelSection.App.ViewModels
             }
         }
 
-      
+
 
         #endregion
 

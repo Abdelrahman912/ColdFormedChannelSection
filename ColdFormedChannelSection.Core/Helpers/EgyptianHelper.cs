@@ -10,6 +10,50 @@ namespace ColdFormedChannelSection.Core.Helpers
     public static class EgyptianHelper
     {
 
+        #region Moment & Compression
+
+        public static ResistanceInteractionOutput AsEgyptInteractionResistance(this LippedSection section, Material material, LengthBracingConditions bracingConditions, double pu, double mu)
+        {
+            var Pn = section.AsEgyptCompressionResistance(material, bracingConditions);
+            var Mn = section.AsEgyptMomentResistance(material, bracingConditions);
+            var phi_c = 0.8;
+            var phi_b = 0.85;
+            //tex:
+            //Load Ratio =$$ \frac {P_u} {\phi_c P_n} $$
+            var loadRatio = pu / (phi_c * Pn.NominalResistance);
+            var ie = 0.0;
+            var ieName = "";
+            if(loadRatio >= 0.2)
+            {
+                //tex:
+                //$$\frac {P_u} {\phi_c P_n} + \frac {8} {9} \frac {M_u} {\phi_b M_n}$$
+                ie = (pu / (phi_c * Pn.NominalResistance)) + (8.0 / 9.0) * (mu / (phi_b * Mn.NominalResistance));
+                ieName = "(Pu/(phi)c*Pn) + (8/9)*(Mu/(phi)b*Mn)";
+            }
+            else
+            {
+                //tex:
+                //$$\frac {P_u} {2 \phi_c P_n} +  \frac {M_u} {\phi_b M_n}$$
+                ie = (pu / (2*phi_c * Pn.NominalResistance)) +  (mu / (phi_b * Mn.NominalResistance));
+                ieName = "(Pu/2*(phi)c*Pn) + (Mu/(phi)b*Mn)";
+            }
+           
+            return new ResistanceInteractionOutput(pu, Pn.NominalResistance, mu, Mn.NominalResistance, ieName, ie,"t.cm","ton");
+        }
+
+
+        public static ResistanceInteractionOutput AsEgyptInteractionResistance(this UnStiffenedSection section, Material material, LengthBracingConditions bracingConditions, double pu, double mu)
+        {
+            var Pn = section.AsEgyptCompressionResistance(material, bracingConditions);
+            var Mn = section.AsEgyptMomentResistance(material, bracingConditions);
+            //tex:
+            //$$ (\frac{P_u}{ P_n})^{0.8} + (\frac{M_u}{M_n})^{0.8}  $$
+            var ie = (pu / Pn.NominalResistance).Power(0.8) + (mu / Mn.NominalResistance).Power(0.8);
+            return new ResistanceInteractionOutput(pu, Pn.NominalResistance, mu, Mn.NominalResistance, "(Pu/Pn)^0.8 + (Mu/Mn)^0.8", ie,"t.cm","ton");
+        }
+
+        #endregion
+
         #region Moment
 
         private static bool IsValidMoment(this LippedSection section)
@@ -44,28 +88,28 @@ namespace ColdFormedChannelSection.Core.Helpers
         public static MomentResistanceOutput AsEgyptMomentResistance(this LippedSection section, Material material, LengthBracingConditions bracingConditions)
         {
             if (!section.IsValidMoment())
-                return new MomentResistanceOutput(0.0, 0.85, FailureMode.UNSAFE, "ton.cm");
+                return new MomentResistanceOutput(0.0, 0.85, FailureMode.UNSAFE, "t.cm");
            
             var Ze = section.GetEgyptReducedZe(material);
             
             (var Mn,var failureMode) = section.GetEgyptMomentResistance(material, bracingConditions, Ze);
             
            
-            var result = new MomentResistanceOutput(Mn, 0.85, failureMode, "ton.cm");
+            var result = new MomentResistanceOutput(Mn, 0.85, failureMode, "t.cm");
             return result;
         }
 
         public static MomentResistanceOutput AsEgyptMomentResistance(this UnStiffenedSection section, Material material, LengthBracingConditions bracingConditions)
         {
             if (!section.IsValidMoment())
-                return new MomentResistanceOutput(0.0, 0.85, FailureMode.UNSAFE, "ton.cm");
+                return new MomentResistanceOutput(0.0, 0.85, FailureMode.UNSAFE, "t.cm");
 
             var Ze = section.GetEgyptReducedZe(material);
 
             (var Mn,var failureMode) = section.GetEgyptMomentResistance(material, bracingConditions, Ze);
 
 
-            var result = new MomentResistanceOutput(Mn, 0.85, failureMode, "ton.cm");
+            var result = new MomentResistanceOutput(Mn, 0.85, failureMode, "t.cm");
             return result;
         }
 

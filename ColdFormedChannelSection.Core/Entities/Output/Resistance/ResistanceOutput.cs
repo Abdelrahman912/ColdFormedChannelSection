@@ -2,7 +2,7 @@
 
 namespace ColdFormedChannelSection.Core.Entities
 {
-    public abstract class ResistanceOutput
+    public abstract class ResistanceOutput:IOutput
     {
 
 

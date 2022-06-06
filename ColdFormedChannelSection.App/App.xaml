@@ -28,7 +28,12 @@
                     </DataTrigger>
                 </Style.Triggers>
             </Style>
-
+            <DataTemplate DataType="{x:Type core:CheckInteractionOutput}">
+                <vs:InteractionCheckOutputView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type core:DesignInteractionOutput}">
+                <vs:InteractionDesignOutputView/>
+            </DataTemplate>
             <DataTemplate DataType="{x:Type core:CompressionResistanceOutput}">
                 <vs:ResistanceOutputView/>
             </DataTemplate>

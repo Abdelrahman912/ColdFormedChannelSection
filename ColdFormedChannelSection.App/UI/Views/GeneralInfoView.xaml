@@ -53,7 +53,7 @@
                         </Grid.ColumnDefinitions>
                         <TextBlock Text="Member Type (SA):" VerticalAlignment="Bottom"/>
                         <ComboBox Grid.Column="1" SelectedItem="{Binding StrainingAction}" 
-                                  ItemsSource="{Binding Source={markup:EnumBindingSource {x:Type enums:StrainingActions}}}" />
+                                  ItemsSource="{Binding AvailabeSa}" />
                     </Grid>
                     <!--<Grid Margin="5">
                         <Grid.ColumnDefinitions>

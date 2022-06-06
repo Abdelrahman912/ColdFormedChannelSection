@@ -11,9 +11,67 @@ namespace ColdFormedChannelSection.Core.Helpers
     public static class AmericanHelper
     {
 
-     
+        #region Moment & Compression
 
-        private static double GetAISIReducedArea(this LippedSection lippedSection, Material material, double F_ = 0)
+        private static ResistanceInteractionOutput AsAISIInteractionResistance(this Section section , Material material , LengthBracingConditions bracingconditions, double pu , double mu , double pn , double mn,Func<double> getAe)
+        {
+            var phi_c = 0.85;
+            var phi_b = 0.95;
+            var E = material.E;
+            var Fy = material.Fy;
+            var Ix = section.Properties.Ix;
+            var Kx = bracingconditions.Kx;
+            var Lx = bracingconditions.Lx;
+            var Cm = bracingconditions.Cm;
+
+            var Pex = (Math.PI.Power(2)*E*Ix) / (Kx*Lx).Power(2);
+            var alpha_x = 1 - (pu / Pex);
+
+            var loadRatio = (pu / (phi_c * pn));
+            var ieName = "";
+            var ie = 0.0;
+            if(loadRatio <= 0.15)
+            {
+                ie = (pu / (phi_c * pn)) + (mu / (phi_b * mn));
+                ieName = "(Pu/(phi)c*Pn) + (Mu/(phi)b*Mn)";
+            }
+            else
+            {
+                var ie_1 = (pu / (phi_c * pn)) + ((Cm * mu) / (phi_b * mn * alpha_x));
+                var Ae = getAe();
+                var Pno = Ae * Fy;
+                var ie_2 = (pu/(phi_c*Pno)) + (mu/(phi_b*mn));
+                ie = Math.Max(ie_1, ie_2);
+                if(ie_1 > ie_2)
+                {
+                    ieName = "(Pu/(phi)c*Pn) + ((Cm * Mu)/((phi))b*Mn*alpha)";
+                }
+                else
+                {
+                    ieName = "(Pu/(phi)c*Pno) + (Mu/(phi)b*Mn";
+                }
+            }
+            return new ResistanceInteractionOutput(pu, pn, mu, mn, ieName, ie,"kip.in","kip");
+        }
+
+        public static ResistanceInteractionOutput AsAISIInteractionResistance(this LippedSection section, Material material, LengthBracingConditions bracingConditions, double pu, double mu)
+        {
+            var Pn = section.AsAISICompressionResistance(material, bracingConditions);
+            var Mn = section.AsAISIMomentResistance(material, bracingConditions);
+
+            return section.AsAISIInteractionResistance(material, bracingConditions, pu, mu, Pn.NominalResistance, Mn.NominalResistance, () => section.GetAISIReducedArea(material));
+        }
+
+        public static ResistanceInteractionOutput AsAISIInteractionResistance(this UnStiffenedSection section, Material material, LengthBracingConditions bracingConditions, double pu, double mu)
+        {
+            var Pn = section.AsAISICompressionResistance(material, bracingConditions);
+            var Mn = section.AsAISIMomentResistance(material, bracingConditions);
+            return section.AsAISIInteractionResistance(material, bracingConditions, pu, mu, Pn.NominalResistance, Mn.NominalResistance, () => section.GetAISIReducedArea(material));
+        }
+
+        #endregion
+
+        public static double GetAISIReducedArea(this LippedSection lippedSection, Material material, double F_ = 0)
         {
             var b = lippedSection.Properties.BSmall;
             var t = lippedSection.Dimensions.ThicknessT;
@@ -71,7 +129,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             return Ae;
         }
 
-        private static double GetAISIReducedArea(this UnStiffenedSection unstiffenedSection, Material material, double F_ = 0)
+        public static double GetAISIReducedArea(this UnStiffenedSection unstiffenedSection, Material material, double F_ = 0)
         {
             var b = unstiffenedSection.Properties.BSmall;
             var t = unstiffenedSection.Dimensions.ThicknessT;

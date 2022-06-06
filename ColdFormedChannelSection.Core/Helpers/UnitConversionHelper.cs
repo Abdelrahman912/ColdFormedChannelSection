@@ -88,7 +88,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             return newStress;
         }
 
-        private static Tuple<double, string> ConvertMoment(this double moment, Units sourceUnit, Units targetUnits)
+        public   static Tuple<double, string> ConvertMoment(this double moment, Units sourceUnit, Units targetUnits)
         {
             var key = KeyValuePair.Create(sourceUnit, targetUnits);
             (var factor, var unit) = _momentUnitFactors[key];
@@ -96,7 +96,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             return Tuple.Create(newMoment, unit);
         }
 
-        private static Tuple<double, string> ConvertForce(this double force, Units sourceUnit, Units targetUnits)
+        public static Tuple<double, string> ConvertForce(this double force, Units sourceUnit, Units targetUnits)
         {
             var key = KeyValuePair.Create(sourceUnit, targetUnits);
             (var factor, var unit) = _forceUnitFactors[key];
@@ -140,6 +140,18 @@ namespace ColdFormedChannelSection.Core.Helpers
             var t = section.ThicknessT.ConvertLength(sourceUnit, targetUnit);
             var newSection = new SectionDimension(H, B, R, t, C);
             return newSection;
+        }
+
+        public static ResistanceInteractionOutput Convert(this ResistanceInteractionOutput output, Units sourceUnit, Units targetUnit)
+        {
+            (var mu, var mu_unit) = output.Mu.ConvertMoment(sourceUnit, targetUnit);
+            (var mn, var mn_unit) = output.Mn.ConvertMoment(sourceUnit, targetUnit);
+
+            (var pu, var pu_unit) = output.Pu.ConvertForce(sourceUnit, targetUnit);
+            (var pn, var pn_unit) = output.Pn.ConvertForce(sourceUnit, targetUnit);
+
+            var newOutput = new ResistanceInteractionOutput(pu,pn,mu,mn,output.IE,output.IEValue,mu_unit,pu_unit);
+            return newOutput;
         }
 
         public static MomentResistanceOutput Convert(this MomentResistanceOutput output, Units sourceUnit, Units targetUnit)

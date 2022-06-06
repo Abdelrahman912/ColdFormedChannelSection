@@ -43,6 +43,30 @@ namespace ColdFormedChannelSection.Core.Helpers
         }
 
 
+        #region Moment & Compression
+
+        public static ResistanceInteractionOutput AsEuroInteractionResistance(this LippedSection section, Material material, LengthBracingConditions bracingConditions,double pu, double mu)
+        {
+            var Pn = section.AsEuroCompressionResistance(material, bracingConditions);
+            var Mn = section.AsEuroMomentResistance(material, bracingConditions);
+            //tex:
+            //$$ (\frac{P_u}{ P_n})^{0.8} + (\frac{M_u}{M_n})^{0.8}  $$
+            var ie = (pu / Pn.NominalResistance).Power(0.8) + (mu / Mn.NominalResistance).Power(0.8);
+            return new ResistanceInteractionOutput(pu, Pn.NominalResistance, mu, Mn.NominalResistance, "(Pu/Pn)^0.8 + (Mu/Mn)^0.8", ie,"N.mm","N");
+        }
+
+        public static ResistanceInteractionOutput AsEuroInteractionResistance(this UnStiffenedSection section, Material material, LengthBracingConditions bracingConditions, double pu, double mu)
+        {
+            var Pn = section.AsEuroCompressionResistance(material, bracingConditions);
+            var Mn = section.AsEuroMomentResistance(material, bracingConditions);
+            //tex:
+            //$$ (\frac{P_u}{ P_n})^{0.8} + (\frac{M_u}{M_n})^{0.8}  $$
+            var ie = (pu / Pn.NominalResistance).Power(0.8) + (mu / Mn.NominalResistance).Power(0.8);
+            return new ResistanceInteractionOutput(pu, Pn.NominalResistance, mu, Mn.NominalResistance, "(Pu/Pn)^0.8 + (Mu/Mn)^0.8", ie,"N.mm","N");
+        }
+
+        #endregion
+
         #region Compression
 
         /// <summary>
