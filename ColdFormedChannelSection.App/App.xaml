@@ -28,6 +28,15 @@
                     </DataTrigger>
                 </Style.Triggers>
             </Style>
+            <DataTemplate DataType="{x:Type core:CompressionReport}">
+                <vs:CompressionReportView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type core:MomentReport}">
+                <vs:MomentReportView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type core:InteractionReport}">
+                <vs:InteractionReportView/>
+            </DataTemplate>
             <DataTemplate DataType="{x:Type core:CheckInteractionOutput}">
                 <vs:InteractionCheckOutputView/>
             </DataTemplate>

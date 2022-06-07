@@ -39,7 +39,7 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         #region Constructors
 
-        public DirectStrengthViewModel(GeneralInfoViewModel generalInfoVM, BracingConditionsViewModel bracingConditionsVM, GeometryViewModel geometryVM, MaterialViewModel materialVM, InputLoadViewModel inputLoadVM,Func<List<Error>,Unit> showErrorsService,Action<ReportBase> reportService)
+        public DirectStrengthViewModel(GeneralInfoViewModel generalInfoVM, BracingConditionsViewModel bracingConditionsVM, GeometryViewModel geometryVM, MaterialViewModel materialVM, InputLoadViewModel inputLoadVM,Func<List<Error>,Unit> showErrorsService,Action<IReport> reportService)
             : base(generalInfoVM, bracingConditionsVM, geometryVM, materialVM, inputLoadVM, showErrorsService,reportService)
         {
             ResultsCommand = new RelayCommand(OnReults, CanResults);
@@ -127,6 +127,7 @@ namespace ColdFormedChannelSection.App.ViewModels
                                  u=>
                                  {
                                      _moduleDict[GeneralInfoVM.RunningModule](this);
+                                     Report = ResistanceOutput.Report;
                                      IsDisplayReport = true;
                                      return u;
                                  });

@@ -33,11 +33,19 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         private bool _isInputLoad;
 
-        private Action<ReportBase> _reportService;
+        private Action<IReport> _reportService;
+
+        private IReport _report;
 
         #endregion
 
         #region Properties
+
+        public IReport Report
+        {
+            get => _report;
+            set => NotifyPropertyChanged(ref _report, value);
+        }
 
 
         public Func<List<Error>,Unit> ShowErrorsService { get; }
@@ -112,12 +120,13 @@ namespace ColdFormedChannelSection.App.ViewModels
                                        MaterialViewModel materialVM,
                                        InputLoadViewModel inputLoadVM,
                                        Func<List<Error>,Unit> showErrorsService,
-                                       Action<ReportBase> reportService)
+                                       Action<IReport> reportService)
         {
             _reportService = reportService;
             ShowErrorsService = showErrorsService;
             InputLoadVM = inputLoadVM;
             GeneralInfoVM = generalInfoVM;
+            Report = null;
             GeneralInfoVM.OnRunningModuleChange = () =>
             {
                 if (GeneralInfoVM.RunningModule == Module.RESISTANCE)
@@ -148,12 +157,12 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         private void OnPrintReport()
         {
-            _reportService(null);
+            _reportService(Report);
         }
 
         private bool CanPrintReport()
         {
-            return IsDisplayReport;
+            return IsDisplayReport && Report!= null;
         }
 
         #endregion
