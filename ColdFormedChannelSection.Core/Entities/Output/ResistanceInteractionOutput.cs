@@ -1,6 +1,6 @@
 ﻿namespace ColdFormedChannelSection.Core.Entities
 {
-    public class ResistanceInteractionOutput:IOutput
+    public class ResistanceInteractionOutput:OutputBase
     {
         #region Properties
 
@@ -25,7 +25,8 @@
 
         #region Constructors
 
-        public ResistanceInteractionOutput(double pu, double pn, double mu, double mn, string iE, double iEValue, string momentUnitName, string forceUnitName)
+        public ResistanceInteractionOutput(double pu, double pn, double mu, double mn, string iE, double iEValue, string momentUnitName, string forceUnitName,IReport report)
+            :base (report)
         {
             Pu = pu;
             Pn = pn;

@@ -19,7 +19,7 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         private bool _isResistanceOutput;
 
-        private IOutput _resistanceOutput;
+        private OutputBase _resistanceOutput;
 
         private GeneralInfoViewModel _generalInfoVM;
 
@@ -33,7 +33,7 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         private bool _isInputLoad;
 
-        private Action<IReport> _reportService;
+        private Action<ReportBase> _reportService;
 
         #endregion
 
@@ -67,7 +67,7 @@ namespace ColdFormedChannelSection.App.ViewModels
             set => NotifyPropertyChanged(ref _isResistanceOutput, value);
         }
 
-        public IOutput ResistanceOutput
+        public OutputBase ResistanceOutput
         {
             get => _resistanceOutput;
             set => NotifyPropertyChanged(ref _resistanceOutput, value);
@@ -112,7 +112,7 @@ namespace ColdFormedChannelSection.App.ViewModels
                                        MaterialViewModel materialVM,
                                        InputLoadViewModel inputLoadVM,
                                        Func<List<Error>,Unit> showErrorsService,
-                                       Action<IReport> reportService)
+                                       Action<ReportBase> reportService)
         {
             _reportService = reportService;
             ShowErrorsService = showErrorsService;

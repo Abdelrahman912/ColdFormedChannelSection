@@ -150,7 +150,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             (var pu, var pu_unit) = output.Pu.ConvertForce(sourceUnit, targetUnit);
             (var pn, var pn_unit) = output.Pn.ConvertForce(sourceUnit, targetUnit);
 
-            var newOutput = new ResistanceInteractionOutput(pu,pn,mu,mn,output.IE,output.IEValue,mu_unit,pu_unit);
+            var newOutput = new ResistanceInteractionOutput(pu,pn,mu,mn,output.IE,output.IEValue,mu_unit,pu_unit,output.Report);
             return newOutput;
         }
 
@@ -159,7 +159,7 @@ namespace ColdFormedChannelSection.Core.Helpers
            ( var nominalResistance , var unit) = output.NominalResistance.ConvertMoment(sourceUnit, targetUnit);
             var phi = output.Phi;
             var failureMode = output.GoverningCase;
-            var newOutput = new MomentResistanceOutput(nominalResistance, phi, failureMode ,unit);
+            var newOutput = new MomentResistanceOutput(nominalResistance, phi, failureMode ,unit,output.Report);
             return newOutput;
         }
 
@@ -168,7 +168,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             (var nominalResistance , var unit) = output.NominalResistance.ConvertForce(sourceUnit, targetUnit);
             var phi = output.Phi;
             var failureMode = output.GoverningCase;
-            var newOutput = new CompressionResistanceOutput(nominalResistance, phi, failureMode ,unit);
+            var newOutput = new CompressionResistanceOutput(nominalResistance, phi, failureMode ,unit,output.Report);
             return newOutput;
         }
 

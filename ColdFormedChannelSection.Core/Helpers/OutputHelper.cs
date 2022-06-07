@@ -15,7 +15,8 @@ namespace ColdFormedChannelSection.Core.Helpers
                 iE:resist.IE,
                 iEValue:resist.IEValue,
                 momentUnitName: resist.MomentUnitName,
-                forceUnitName: resist.ForceUnitName
+                forceUnitName: resist.ForceUnitName,
+                resist.Report
                 );
         }
 
@@ -30,7 +31,8 @@ namespace ColdFormedChannelSection.Core.Helpers
                 iEValue: resist.IEValue,
                 sectionName: sectionName,
                 momentUnitName: resist.MomentUnitName,
-                forceUnitName: resist.ForceUnitName
+                forceUnitName: resist.ForceUnitName,
+                resist.Report
                 );
         }
 
@@ -41,7 +43,8 @@ namespace ColdFormedChannelSection.Core.Helpers
                 nominalResistance: resist.NominalResistance,
                 phi: resist.Phi,
                 governingCase: resist.GoverningCase,
-                unitName: resist.UnitName
+                unitName: resist.UnitName,
+                report: resist.Report
                 );
         }
         public static MomentCheckOutput AsCheck(this MomentResistanceOutput resist, double ultimateLoad)
@@ -51,7 +54,8 @@ namespace ColdFormedChannelSection.Core.Helpers
                 nominalResistance: resist.NominalResistance,
                 phi: resist.Phi,
                 governingCase: resist.GoverningCase,
-                unitName: resist.UnitName
+                unitName: resist.UnitName,
+                report: resist.Report
                 );
         }
 
@@ -63,7 +67,8 @@ namespace ColdFormedChannelSection.Core.Helpers
                 nominalResistance: resist.NominalResistance,
                 phi: resist.Phi,
                 governingCase: resist.GoverningCase,
-                unitName: resist.UnitName
+                unitName: resist.UnitName,
+                report:resist.Report
                 );
         }
         public static MomentDesignOutput AsDesign(this MomentResistanceOutput resist, double ultimateLoad,string sectionName)
@@ -74,7 +79,8 @@ namespace ColdFormedChannelSection.Core.Helpers
                 nominalResistance: resist.NominalResistance,
                 phi: resist.Phi,
                 governingCase: resist.GoverningCase,
-                unitName: resist.UnitName
+                unitName: resist.UnitName,
+                report:resist.Report
                 );
         }
 

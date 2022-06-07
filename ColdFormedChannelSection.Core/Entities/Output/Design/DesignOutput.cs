@@ -17,8 +17,8 @@ namespace ColdFormedChannelSection.Core.Entities
 
         #region Constructors
 
-        protected DesignOutput(double ultimateLoad , string ultimateLoadName , string designSection,double nominalResistance, double phi, FailureMode governingCase, string nominalResistanceName, string phiName, string unitName) 
-            : base(nominalResistance, phi, governingCase, nominalResistanceName, phiName, unitName)
+        protected DesignOutput(double ultimateLoad , string ultimateLoadName , string designSection,double nominalResistance, double phi, FailureMode governingCase, string nominalResistanceName, string phiName, string unitName,IReport report) 
+            : base(nominalResistance, phi, governingCase, nominalResistanceName, phiName, unitName,report)
         {
             UltimateLoad = ultimateLoad;
             UltimateLoadName = ultimateLoadName;

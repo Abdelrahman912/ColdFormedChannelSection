@@ -4,8 +4,8 @@ namespace ColdFormedChannelSection.Core.Entities
 {
     public class MomentDesignOutput : DesignOutput
     {
-        public MomentDesignOutput(double ultimateLoad, string designSection, double nominalResistance, double phi, FailureMode governingCase, string unitName) 
-            : base(ultimateLoad, "Mu", designSection, nominalResistance, phi, governingCase, "Mn", "(phi)b", unitName)
+        public MomentDesignOutput(double ultimateLoad, string designSection, double nominalResistance, double phi, FailureMode governingCase, string unitName,IReport report) 
+            : base(ultimateLoad, "Mu", designSection, nominalResistance, phi, governingCase, "Mn", "(phi)b", unitName,report)
         {
         }
     }

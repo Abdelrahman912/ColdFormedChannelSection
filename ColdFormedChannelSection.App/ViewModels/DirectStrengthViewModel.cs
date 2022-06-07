@@ -30,16 +30,16 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         #region Properties
 
-        public Dictionary<KeyValuePair<StrainingActions, SteelSection>,Func<DirectStrengthViewModel,Material,LengthBracingConditions, IOutput>> DesignDict { get; }
+        public Dictionary<KeyValuePair<StrainingActions, SteelSection>,Func<DirectStrengthViewModel,Material,LengthBracingConditions, OutputBase>> DesignDict { get; }
 
 
-        public Dictionary<KeyValuePair<StrainingActions, SteelSection>, Func<DirectStrengthViewModel,Material,LengthBracingConditions, Tuple<Func<IOutput>, IOutput>>> ResistDict { get; }
+        public Dictionary<KeyValuePair<StrainingActions, SteelSection>, Func<DirectStrengthViewModel,Material,LengthBracingConditions, Tuple<Func<OutputBase>, OutputBase>>> ResistDict { get; }
         
         #endregion
 
         #region Constructors
 
-        public DirectStrengthViewModel(GeneralInfoViewModel generalInfoVM, BracingConditionsViewModel bracingConditionsVM, GeometryViewModel geometryVM, MaterialViewModel materialVM, InputLoadViewModel inputLoadVM,Func<List<Error>,Unit> showErrorsService,Action<IReport> reportService)
+        public DirectStrengthViewModel(GeneralInfoViewModel generalInfoVM, BracingConditionsViewModel bracingConditionsVM, GeometryViewModel geometryVM, MaterialViewModel materialVM, InputLoadViewModel inputLoadVM,Func<List<Error>,Unit> showErrorsService,Action<ReportBase> reportService)
             : base(generalInfoVM, bracingConditionsVM, geometryVM, materialVM, inputLoadVM, showErrorsService,reportService)
         {
             ResultsCommand = new RelayCommand(OnReults, CanResults);
@@ -49,7 +49,7 @@ namespace ColdFormedChannelSection.App.ViewModels
                 [Module.DESIGN] = Design,
                 [Module.CHECK] = Check
             };
-            ResistDict = new Dictionary<KeyValuePair<StrainingActions, SteelSection>, Func<DirectStrengthViewModel,Material,LengthBracingConditions, Tuple<Func<IOutput>, IOutput>>>()
+            ResistDict = new Dictionary<KeyValuePair<StrainingActions, SteelSection>, Func<DirectStrengthViewModel,Material,LengthBracingConditions, Tuple<Func<OutputBase>, OutputBase>>>()
             {
                 [KeyValuePair.Create(StrainingActions.COMPRESSION,SteelSection.C_UNSTIFFENED)]= ResistanceCUnstiffComp,
                 [KeyValuePair.Create(StrainingActions.MOMENT,SteelSection.C_UNSTIFFENED)] = ResistanceCUnstiffMoment,
@@ -58,7 +58,7 @@ namespace ColdFormedChannelSection.App.ViewModels
                 [KeyValuePair.Create(StrainingActions.MOMENT,SteelSection.C_LIPPED)]=ResistanceCLippedMoment,
                 [KeyValuePair.Create(StrainingActions.MOMENT_COMPRESSION, SteelSection.C_LIPPED)] = ResistanceCLippedMomentComp,
             };
-            DesignDict = new Dictionary<KeyValuePair<StrainingActions, SteelSection>,Func<DirectStrengthViewModel,Material,LengthBracingConditions, IOutput>>()
+            DesignDict = new Dictionary<KeyValuePair<StrainingActions, SteelSection>,Func<DirectStrengthViewModel,Material,LengthBracingConditions, OutputBase>>()
             {
                 [KeyValuePair.Create(StrainingActions.COMPRESSION, SteelSection.C_UNSTIFFENED)] = DesignCUnstiffComp,
                 [KeyValuePair.Create(StrainingActions.MOMENT, SteelSection.C_UNSTIFFENED)] = DesignCUnstiffMoment,
@@ -85,7 +85,7 @@ namespace ColdFormedChannelSection.App.ViewModels
 
        
 
-        private Tuple<Func<IOutput>, IOutput> ResistanceCLippedMomentComp(DirectStrengthViewModel vm, Material material, LengthBracingConditions bracingConditions)
+        private Tuple<Func<OutputBase>, OutputBase> ResistanceCLippedMomentComp(DirectStrengthViewModel vm, Material material, LengthBracingConditions bracingConditions)
         {
             var result = vm.GeometryVM.AsEntity()
                                        .Convert(vm.GeneralInfoVM.Unit, UnitSystems.KIPINCH)
@@ -93,12 +93,12 @@ namespace ColdFormedChannelSection.App.ViewModels
                                        .AsDSInteractionResistance(material, bracingConditions,vm.InputLoadVM.UltimateLoad.ConvertForce(vm.GeneralInfoVM.Unit, UnitSystems.KIPINCH).Item1,vm.InputLoadVM.UltimateMoment.ConvertMoment(vm.GeneralInfoVM.Unit, UnitSystems.KIPINCH).Item1)
                                        .Convert(UnitSystems.KIPINCH, vm.GeneralInfoVM.Unit);
 
-            Func<IOutput> fun = () => result.AsCheck();
+            Func<OutputBase> fun = () => result.AsCheck();
 
-            return Tuple.Create(fun, result as IOutput);
+            return Tuple.Create(fun, result as OutputBase);
         }
 
-        private Tuple<Func<IOutput>, IOutput> ResistanceCUnstiffMomentComp(DirectStrengthViewModel vm, Material material, LengthBracingConditions bracingConditions)
+        private Tuple<Func<OutputBase>, OutputBase> ResistanceCUnstiffMomentComp(DirectStrengthViewModel vm, Material material, LengthBracingConditions bracingConditions)
         {
             var result = vm.GeometryVM.AsEntity()
                                         .Convert(vm.GeneralInfoVM.Unit, UnitSystems.KIPINCH)
@@ -106,9 +106,9 @@ namespace ColdFormedChannelSection.App.ViewModels
                                         .AsDSInteractionResistance(material, bracingConditions, vm.InputLoadVM.UltimateLoad.ConvertForce(vm.GeneralInfoVM.Unit, UnitSystems.KIPINCH).Item1, vm.InputLoadVM.UltimateMoment.ConvertMoment(vm.GeneralInfoVM.Unit, UnitSystems.KIPINCH).Item1)
                                         .Convert(UnitSystems.KIPINCH, vm.GeneralInfoVM.Unit);
 
-            Func<IOutput> fun = () => result.AsCheck();
+            Func<OutputBase> fun = () => result.AsCheck();
 
-            return Tuple.Create(fun, result as IOutput);
+            return Tuple.Create(fun, result as OutputBase);
         }
 
 
@@ -283,7 +283,7 @@ namespace ColdFormedChannelSection.App.ViewModels
             vm.ResistanceOutput = result.Item2;
         }
 
-        private static Tuple<Func<IOutput> ,IOutput> ResistanceCUnstiffComp(DirectStrengthViewModel vm,Material material,LengthBracingConditions bracingConditions)
+        private static Tuple<Func<OutputBase> ,OutputBase> ResistanceCUnstiffComp(DirectStrengthViewModel vm,Material material,LengthBracingConditions bracingConditions)
         {
            var result =  vm.GeometryVM.AsEntity()
                                       .Convert(vm.GeneralInfoVM.Unit, UnitSystems.KIPINCH)
@@ -291,23 +291,23 @@ namespace ColdFormedChannelSection.App.ViewModels
                                       .AsDSCompressionResistance(material, bracingConditions)
                                       .Convert(UnitSystems.KIPINCH, vm.GeneralInfoVM.Unit);
 
-            Func< IOutput> fun = () => result.AsCheck(vm.InputLoadVM.UltimateLoad);
+            Func< OutputBase> fun = () => result.AsCheck(vm.InputLoadVM.UltimateLoad);
             
-            return Tuple.Create(fun, result as IOutput);
+            return Tuple.Create(fun, result as OutputBase);
 
         }
-        private static Tuple<Func<IOutput>, IOutput> ResistanceCUnstiffMoment(DirectStrengthViewModel vm, Material material, LengthBracingConditions bracingConditions)
+        private static Tuple<Func<OutputBase>, OutputBase> ResistanceCUnstiffMoment(DirectStrengthViewModel vm, Material material, LengthBracingConditions bracingConditions)
         {
             var result = vm.GeometryVM.AsEntity()
                                        .Convert(vm.GeneralInfoVM.Unit, UnitSystems.KIPINCH)
                                        .AsUnStiffenedSection()
                                        .AsDSMomentResistance(material, bracingConditions)
                                        .Convert(UnitSystems.KIPINCH, vm.GeneralInfoVM.Unit);
-            Func<IOutput> fun = () => result.AsCheck(vm.InputLoadVM.UltimateMoment);
+            Func<OutputBase> fun = () => result.AsCheck(vm.InputLoadVM.UltimateMoment);
 
-            return Tuple.Create(fun, result as IOutput);
+            return Tuple.Create(fun, result as OutputBase);
         }
-        private static Tuple<Func<IOutput>, IOutput> ResistanceCLippedComp(DirectStrengthViewModel vm, Material material, LengthBracingConditions bracingConditions)
+        private static Tuple<Func<OutputBase>, OutputBase> ResistanceCLippedComp(DirectStrengthViewModel vm, Material material, LengthBracingConditions bracingConditions)
         {
             var result = vm.GeometryVM.AsEntity()
                                       .Convert(vm.GeneralInfoVM.Unit, UnitSystems.KIPINCH)
@@ -315,18 +315,18 @@ namespace ColdFormedChannelSection.App.ViewModels
                                       .AsDSCompressionResistance(material, bracingConditions)
                                       .Convert(UnitSystems.KIPINCH, vm.GeneralInfoVM.Unit);
 
-            Func<IOutput> fun = () => result.AsCheck(vm.InputLoadVM.UltimateLoad);
+            Func<OutputBase> fun = () => result.AsCheck(vm.InputLoadVM.UltimateLoad);
 
-            return Tuple.Create(fun, result as IOutput);
+            return Tuple.Create(fun, result as OutputBase);
         }
-        private static Tuple<Func<IOutput>, IOutput> ResistanceCLippedMoment(DirectStrengthViewModel vm, Material material, LengthBracingConditions bracingConditions)
+        private static Tuple<Func<OutputBase>, OutputBase> ResistanceCLippedMoment(DirectStrengthViewModel vm, Material material, LengthBracingConditions bracingConditions)
         {
             var result = vm.GeometryVM.AsEntity()
                                       .Convert(vm.GeneralInfoVM.Unit, UnitSystems.KIPINCH)
                                       .AsLippedSection()
                                       .AsDSMomentResistance(material, bracingConditions).Convert(UnitSystems.KIPINCH, vm.GeneralInfoVM.Unit);
-            Func<IOutput> fun = () => result.AsCheck(vm.InputLoadVM.UltimateMoment);
-            return Tuple.Create(fun, result as IOutput);
+            Func<OutputBase> fun = () => result.AsCheck(vm.InputLoadVM.UltimateMoment);
+            return Tuple.Create(fun, result as OutputBase);
         }
         #endregion
 

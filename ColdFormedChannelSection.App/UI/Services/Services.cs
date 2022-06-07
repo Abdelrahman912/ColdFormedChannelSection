@@ -23,7 +23,7 @@ namespace ColdFormedChannelSection.App.UI.Services
             return Unit();
         }
 
-        public static Unit ReportService(this IReport report)
+        public static Unit ReportService(this ReportBase report)
         {
             var wnd = new ReportWindow();
             wnd.DataContext = report;

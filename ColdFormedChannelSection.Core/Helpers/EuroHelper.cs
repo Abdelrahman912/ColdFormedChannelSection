@@ -52,7 +52,8 @@ namespace ColdFormedChannelSection.Core.Helpers
             //tex:
             //$$ (\frac{P_u}{ P_n})^{0.8} + (\frac{M_u}{M_n})^{0.8}  $$
             var ie = (pu / Pn.NominalResistance).Power(0.8) + (mu / Mn.NominalResistance).Power(0.8);
-            return new ResistanceInteractionOutput(pu, Pn.NominalResistance, mu, Mn.NominalResistance, "(Pu/Pn)^0.8 + (Mu/Mn)^0.8", ie,"N.mm","N");
+            var report = new InteractionReport(Pn.Report, Mn.Report);
+            return new ResistanceInteractionOutput(pu, Pn.NominalResistance, mu, Mn.NominalResistance, "(Pu/Pn)^0.8 + (Mu/Mn)^0.8", ie,"N.mm","N",report);
         }
 
         public static ResistanceInteractionOutput AsEuroInteractionResistance(this UnStiffenedSection section, Material material, LengthBracingConditions bracingConditions, double pu, double mu)
@@ -62,7 +63,8 @@ namespace ColdFormedChannelSection.Core.Helpers
             //tex:
             //$$ (\frac{P_u}{ P_n})^{0.8} + (\frac{M_u}{M_n})^{0.8}  $$
             var ie = (pu / Pn.NominalResistance).Power(0.8) + (mu / Mn.NominalResistance).Power(0.8);
-            return new ResistanceInteractionOutput(pu, Pn.NominalResistance, mu, Mn.NominalResistance, "(Pu/Pn)^0.8 + (Mu/Mn)^0.8", ie,"N.mm","N");
+            var report = new InteractionReport(Pn.Report, Mn.Report);
+            return new ResistanceInteractionOutput(pu, Pn.NominalResistance, mu, Mn.NominalResistance, "(Pu/Pn)^0.8 + (Mu/Mn)^0.8", ie,"N.mm","N",report);
         }
 
         #endregion
@@ -265,7 +267,7 @@ namespace ColdFormedChannelSection.Core.Helpers
         public static CompressionResistanceOutput AsEuroCompressionResistance(this LippedSection section, Material material, LengthBracingConditions bracingConditions)
         {
             if (!section.IsValid())
-                return new CompressionResistanceOutput(0.0, 1.0, FailureMode.UNSAFE, "N");
+                return new CompressionResistanceOutput(0.0, 1.0, FailureMode.UNSAFE, "N",null);
             (var Ae,var items_local )= section.GetEuroReducedArea(material);
             var pn1 = Tuple.Create(section.GetEuroCompressionLBResistance(material, Ae), FailureMode.LOCALBUCKLING);
             (var pn_FB, var items_FB) = section.GetEuroCompressionFBResistance(material, bracingConditions, Ae, 0.34);
@@ -284,14 +286,24 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("Gamma",1.0.ToString(),Units.N),
                 new ReportItem("Design Load (Pn)",pn.Item1.ToString("0.###"),Units.N),
             };
-            var result = new CompressionResistanceOutput(pn.Item1, 1.0, pn.Item2, "N");
+            var report = new CompressionReport(
+              "Euro Code - Compression",
+              "Local Buckling",
+               items_local,
+               "Flexural Buckling",
+               items_FB,
+               "Torsional Flexural Buckling",
+               items_TFB,
+               items
+               );
+            var result = new CompressionResistanceOutput(pn.Item1, 1.0, pn.Item2, "N",report);
             return result;
         }
 
         public static CompressionResistanceOutput AsEuroCompressionResistance(this UnStiffenedSection section, Material material, LengthBracingConditions bracingConditions)
         {
             if (!section.IsValid())
-                return new CompressionResistanceOutput(0.0, 1.0, FailureMode.UNSAFE, "N");
+                return new CompressionResistanceOutput(0.0, 1.0, FailureMode.UNSAFE, "N", null);
             (var Ae,var items_local) = section.GetEuroReducedArea(material);
              var pn1 = Tuple.Create(section.GetEuroCompressionLBResistance(material, Ae), FailureMode.LOCALBUCKLING);
             (var pn_FB, var items_FB) = section.GetEuroCompressionFBResistance(material, bracingConditions, Ae, 0.49);
@@ -310,7 +322,17 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("Gamma",1.0.ToString(),Units.N),
                 new ReportItem("Design Load (Pn)",pn.Item1.ToString("0.###"),Units.N),
             };
-            var result = new CompressionResistanceOutput(pn.Item1, 1.0, pn.Item2, "N");
+            var report = new CompressionReport(
+              "Euro Code - Compression",
+              "Local Buckling",
+               items_local,
+               "Flexural Buckling",
+               items_FB,
+               "Torsional Flexural Buckling",
+               items_TFB,
+               items
+               );
+            var result = new CompressionResistanceOutput(pn.Item1, 1.0, pn.Item2, "N",report);
             return result;
         }
 
@@ -389,7 +411,7 @@ namespace ColdFormedChannelSection.Core.Helpers
         public static MomentResistanceOutput AsEuroMomentResistance(this LippedSection section, Material material, LengthBracingConditions bracingConditions)
         {
             if (!section.IsValid())
-                return new MomentResistanceOutput(0.0, 1.0, FailureMode.UNSAFE, "N.mm");
+                return new MomentResistanceOutput(0.0, 1.0, FailureMode.UNSAFE, "N.mm",null);
             (var Ze,var items_local) = section.GetZe(material);
             var Mn1 = Tuple.Create(section.GetEuroMomentLBResistance(material, Ze), FailureMode.LOCALBUCKLING);
             (var Mn_LTB , var items_LTB) = section.GetEuroMomentLTBResistance(material, bracingConditions, Ze);
@@ -407,14 +429,22 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("Design Moment (Mn/gamma)",Mn.Item1.ToString("0.###"),Units.N_MM)
 
             };
-            var result = new MomentResistanceOutput(Mn.Item1, 1.0, Mn.Item2, "N.mm");
+            var report = new MomentReport(
+                "Euro Code - Moment",
+                "Local Buckling",
+                items_local,
+                "Lateral Torsional Buckling",
+                items_LTB,
+                items_nominal
+                );
+            var result = new MomentResistanceOutput(Mn.Item1, 1.0, Mn.Item2, "N.mm",report);
             return result;
         }
 
         public static MomentResistanceOutput AsEuroMomentResistance(this UnStiffenedSection section, Material material, LengthBracingConditions bracingConditions)
         {
             if (!section.IsValid())
-                return new MomentResistanceOutput(0.0, 1.0, FailureMode.UNSAFE, "N.mm");
+                return new MomentResistanceOutput(0.0, 1.0, FailureMode.UNSAFE, "N.mm", null);
             (var Ze , var items_local) = section.GetZe(material);
             var Mn1 = Tuple.Create(section.GetEuroMomentLBResistance(material, Ze), FailureMode.LOCALBUCKLING);
             (var Mn_LTB, var items_LTB) = section.GetEuroMomentLTBResistance(material, bracingConditions, Ze);
@@ -432,7 +462,15 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("Design Moment (Mn/gamma)",Mn.Item1.ToString("0.###"),Units.N_MM)
 
             };
-            var result = new MomentResistanceOutput(Mn.Item1, 0.85, Mn.Item2, "N.mm");
+            var report = new MomentReport(
+               "Euro Code - Moment",
+               "Local Buckling",
+               items_local,
+               "Lateral Torsional Buckling",
+               items_LTB,
+               items_nominal
+               );
+            var result = new MomentResistanceOutput(Mn.Item1, 1.0, Mn.Item2, "N.mm", report);
             return result;
         }
 

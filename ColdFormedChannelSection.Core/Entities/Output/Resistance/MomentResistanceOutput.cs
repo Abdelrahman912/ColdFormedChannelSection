@@ -4,8 +4,8 @@ namespace ColdFormedChannelSection.Core.Entities
 {
     public class MomentResistanceOutput : ResistanceOutput
     {
-        public MomentResistanceOutput(double nominalResistance, double phi,FailureMode governingCase, string unitName) 
-            : base(nominalResistance, phi,governingCase, "Mn", "(phi)b",unitName)
+        public MomentResistanceOutput(double nominalResistance, double phi,FailureMode governingCase, string unitName,IReport report) 
+            : base(nominalResistance, phi,governingCase, "Mn", "(phi)b",unitName,report)
         {
         }
     }

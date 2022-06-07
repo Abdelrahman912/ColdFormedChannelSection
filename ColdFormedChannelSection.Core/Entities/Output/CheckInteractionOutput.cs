@@ -16,8 +16,8 @@ namespace ColdFormedChannelSection.Core.Entities
 
         #region Constructors
 
-        public CheckInteractionOutput(double pu, double pn, double mu, double mn, string iE, double iEValue,string momentUnitName, string forceUnitName)
-            :base(pu,pn,mu,mn,iE,iEValue,momentUnitName,forceUnitName)
+        public CheckInteractionOutput(double pu, double pn, double mu, double mn, string iE, double iEValue,string momentUnitName, string forceUnitName,IReport report)
+            :base(pu,pn,mu,mn,iE,iEValue,momentUnitName,forceUnitName,report)
         {
            
             if(IEValue <= 1)

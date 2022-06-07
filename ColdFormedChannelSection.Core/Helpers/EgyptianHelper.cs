@@ -37,8 +37,8 @@ namespace ColdFormedChannelSection.Core.Helpers
                 ie = (pu / (2 * phi_c * Pn.NominalResistance)) + (mu / (phi_b * Mn.NominalResistance));
                 ieName = "(Pu/2*(phi)c*Pn) + (Mu/(phi)b*Mn)";
             }
-
-            return new ResistanceInteractionOutput(pu, Pn.NominalResistance, mu, Mn.NominalResistance, ieName, ie, "t.cm", "ton");
+            var report = new InteractionReport(Pn.Report, Mn.Report);
+            return new ResistanceInteractionOutput(pu, Pn.NominalResistance, mu, Mn.NominalResistance, ieName, ie, "t.cm", "ton",report);
         }
 
 
@@ -49,7 +49,8 @@ namespace ColdFormedChannelSection.Core.Helpers
             //tex:
             //$$ (\frac{P_u}{ P_n})^{0.8} + (\frac{M_u}{M_n})^{0.8}  $$
             var ie = (pu / Pn.NominalResistance).Power(0.8) + (mu / Mn.NominalResistance).Power(0.8);
-            return new ResistanceInteractionOutput(pu, Pn.NominalResistance, mu, Mn.NominalResistance, "(Pu/Pn)^0.8 + (Mu/Mn)^0.8", ie, "t.cm", "ton");
+            var report = new InteractionReport(Pn.Report, Mn.Report);
+            return new ResistanceInteractionOutput(pu, Pn.NominalResistance, mu, Mn.NominalResistance, "(Pu/Pn)^0.8 + (Mu/Mn)^0.8", ie, "t.cm", "ton",report);
         }
 
         #endregion
@@ -88,25 +89,41 @@ namespace ColdFormedChannelSection.Core.Helpers
         public static MomentResistanceOutput AsEgyptMomentResistance(this LippedSection section, Material material, LengthBracingConditions bracingConditions)
         {
             if (!section.IsValidMoment())
-                return new MomentResistanceOutput(0.0, 0.85, FailureMode.UNSAFE, "t.cm");
+                return new MomentResistanceOutput(0.0, 0.85, FailureMode.UNSAFE, "t.cm",null);
 
             (var Ze ,var Z_items)= section.GetEgyptReducedZe(material);
 
             (var Mn, var failureMode,var items_stress) = section.GetEgyptMomentResistance(material, bracingConditions, Ze);
 
-
-            var result = new MomentResistanceOutput(Mn, 0.85, failureMode, "t.cm");
+            var items = Z_items.Concat(items_stress).ToList();
+            var nominal_items = new List<ReportItem>()
+            {
+                new ReportItem("Governing Case",failureMode.ToString(),Units.NONE),
+                new ReportItem("Nominal Moment (Mn)",Mn.ToString("0.###"),Units.TON_CM),
+                new ReportItem("phi",0.85.ToString("0.###"),Units.NONE),
+                new ReportItem("Design Moment",(0.85*Mn).ToString("0.###"),Units.TON_CM)
+            };
+            var report = new MomentReport(
+              "Egytian Code - Moment",
+              "Nominal Moment",
+              items,
+              "",
+              null,
+              nominal_items
+              );
+            var result = new MomentResistanceOutput(Mn, 0.85, failureMode, "t.cm",report);
             return result;
         }
 
         public static MomentResistanceOutput AsEgyptMomentResistance(this UnStiffenedSection section, Material material, LengthBracingConditions bracingConditions)
         {
             if (!section.IsValidMoment())
-                return new MomentResistanceOutput(0.0, 0.85, FailureMode.UNSAFE, "t.cm");
+                return new MomentResistanceOutput(0.0, 0.85, FailureMode.UNSAFE, "t.cm",null);
 
             (var Ze,var Z_items) = section.GetEgyptReducedZe(material);
-
             (var Mn, var failureMode,var items_stress) = section.GetEgyptMomentResistance(material, bracingConditions, Ze);
+
+            var items = Z_items.Concat(items_stress).ToList();
 
             var nominal_items = new List<ReportItem>()
             {
@@ -115,8 +132,15 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("phi",0.85.ToString("0.###"),Units.NONE),
                 new ReportItem("Design Moment",(0.85*Mn).ToString("0.###"),Units.TON_CM)
             };
-
-            var result = new MomentResistanceOutput(Mn, 0.85, failureMode, "t.cm");
+            var report = new MomentReport(
+                "Egyptian Code - Moment",
+                "Nominal Moment",
+                items,
+                "",
+                null,
+                nominal_items
+                );
+            var result = new MomentResistanceOutput(Mn, 0.85, failureMode, "t.cm",report);
             return result;
         }
 
@@ -686,7 +710,7 @@ namespace ColdFormedChannelSection.Core.Helpers
         public static CompressionResistanceOutput AsEgyptCompressionResistance(this LippedSection section, Material material, LengthBracingConditions bracingConditions)
         {
             if (!section.IsValidCompression())
-                return new CompressionResistanceOutput(0.0, 0.8, FailureMode.UNSAFE, "ton");
+                return new CompressionResistanceOutput(0.0, 0.8, FailureMode.UNSAFE, "ton",null);
             (var pn_local, var items_local) = section.GetEgyptCompressionLBResistance(material);
             var Aee = section.GetEgyptReducedAreaEE(material);
             (var pn_FB, var items_FB) = section.GetEgyptCompressionFBResistance(material, bracingConditions, Aee);
@@ -706,14 +730,24 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("phi",$"{0.8}",Units.TON),
                 new ReportItem("Design Load (phi*Pn)",$"{(0.8*pn.Item1).ToString("0.###")}",Units.TON),
             };
-            var result = new CompressionResistanceOutput(pn.Item1, 0.8, pn.Item2, "ton");
+            var report = new CompressionReport(
+                "Egyptian Code - Compression",
+                "Local Buckling",
+                 items_local,
+                 "Flexural Buckling",
+                 items_FB,
+                 "Torsional Flexural Buckling",
+                 items_TFB,
+                 resistance_items
+                 );
+            var result = new CompressionResistanceOutput(pn.Item1, 0.8, pn.Item2, "ton",report);
             return result;
         }
 
         public static CompressionResistanceOutput AsEgyptCompressionResistance(this UnStiffenedSection section, Material material, LengthBracingConditions bracingConditions)
         {
             if (!section.IsValidCompression())
-                return new CompressionResistanceOutput(0.0, 0.8, FailureMode.UNSAFE, "ton");
+                return new CompressionResistanceOutput(0.0, 0.8, FailureMode.UNSAFE, "ton", null);
             (var pn_local , var items_local) = section.GetEgyptCompressionLBResistance(material);
             var Aee = section.GetEgyptReducedAreaEE(material);
             (var pn_FB , var items_FB) = section.GetEgyptCompressionFBResistance(material, bracingConditions, Aee);
@@ -733,7 +767,17 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("phi",$"{0.8}",Units.TON),
                 new ReportItem("Design Load (phi*Pn)",$"{(0.8*pn.Item1).ToString("0.###")}",Units.TON),
             };
-            var result = new CompressionResistanceOutput(pn.Item1, 0.8, pn.Item2, "ton");
+            var report = new CompressionReport(
+              "Egyptian Code - Compression",
+              "Local Buckling",
+               items_local,
+               "Flexural Buckling",
+               items_FB,
+               "Torsional Flexural Buckling",
+               items_TFB,
+               resistance_items
+               );
+            var result = new CompressionResistanceOutput(pn.Item1, 0.8, pn.Item2, "ton",report);
             return result;
         }
 

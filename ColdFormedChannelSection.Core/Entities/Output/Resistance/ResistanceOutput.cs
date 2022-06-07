@@ -2,7 +2,7 @@
 
 namespace ColdFormedChannelSection.Core.Entities
 {
-    public abstract class ResistanceOutput:IOutput
+    public abstract class ResistanceOutput:OutputBase
     {
 
         #region properties
@@ -27,7 +27,8 @@ namespace ColdFormedChannelSection.Core.Entities
 
         #region Constructors
 
-        protected ResistanceOutput(double nominalResistance, double phi, FailureMode governingCase, string nominalResistanceName, string phiName, string unitName)
+        protected ResistanceOutput(double nominalResistance, double phi, FailureMode governingCase, string nominalResistanceName, string phiName, string unitName, IReport report)
+            :base(report)
         {
             DesignResistanceName = $"{phiName} * {nominalResistanceName} =";
             NominalResistance = nominalResistance;

@@ -14,8 +14,10 @@ namespace ColdFormedChannelSection.Core.Helpers
 
         #region Moment & Compression
 
-        private static ResistanceInteractionOutput AsDSInteractionResistance(this Section section, Material material, LengthBracingConditions bracingconditions, double pu, double mu, double pn, double mn, Func<double> getAe)
+        private static ResistanceInteractionOutput AsDSInteractionResistance(this Section section, Material material, LengthBracingConditions bracingconditions, double pu, double mu, CompressionResistanceOutput pn_out, MomentResistanceOutput mn_out, Func<double> getAe)
         {
+            var pn = pn_out.NominalResistance;
+            var mn = mn_out.NominalResistance;
             var phi_c = 0.85;
             var phi_b = 0.95;
             var E = material.E;
@@ -52,21 +54,22 @@ namespace ColdFormedChannelSection.Core.Helpers
                     ieName = "(Pu/(phi)c*Pno) + (Mu/(phi)b*Mn";
                 }
             }
-            return new ResistanceInteractionOutput(pu, pn, mu, mn, ieName, ie,"kip.in","kip");
+            var report = new InteractionReport(pn_out.Report, mn_out.Report);
+            return new ResistanceInteractionOutput(pu, pn, mu, mn, ieName, ie,"kip.in","kip",report);
         }
 
         public static ResistanceInteractionOutput AsDSInteractionResistance(this LippedSection section, Material material, LengthBracingConditions bracingConditions, double pu, double mu)
         {
             var Pn = section.AsDSCompressionResistance(material, bracingConditions);
             var Mn = section.AsDSMomentResistance(material, bracingConditions);
-            return section.AsDSInteractionResistance(material, bracingConditions, pu, mu, Pn.NominalResistance, Mn.NominalResistance, () => section.GetAISIReducedArea(material).Item1);
+            return section.AsDSInteractionResistance(material, bracingConditions, pu, mu, Pn, Mn, () => section.GetAISIReducedArea(material).Item1);
         }
 
         public static ResistanceInteractionOutput AsDSInteractionResistance(this UnStiffenedSection section, Material material, LengthBracingConditions bracingConditions, double pu, double mu)
         {
             var Pn = section.AsDSCompressionResistance(material, bracingConditions);
             var Mn = section.AsDSMomentResistance(material, bracingConditions);
-            return section.AsDSInteractionResistance(material, bracingConditions, pu, mu, Pn.NominalResistance, Mn.NominalResistance, () => section.GetAISIReducedArea(material).Item1);
+            return section.AsDSInteractionResistance(material, bracingConditions, pu, mu, Pn, Mn, () => section.GetAISIReducedArea(material).Item1);
         }
 
         #endregion
@@ -139,6 +142,10 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("Nominal Distortional Buckling Load (Pnd)",p_crd.ToString("0.###"),Units.KIP),
                 new ReportItem("Nominal Global Buckling Load (Pne)",p_cre.ToString("0.###"),Units.KIP),
             };
+            var squash_items = new List<ReportItem>()
+            {
+                new ReportItem("Squash Load (Py)",Py.ToString("0.###"),Units.KIP)
+            };
             var nominal_items = new List<ReportItem>()
             {
                 new ReportItem("Governing Case",nominalLoad.Item2.ToString(),Units.NONE),
@@ -146,7 +153,17 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("phi",0.85.ToString("0.###"),Units.KIP),
                 new ReportItem("Design Strength (phi*Pn)",(0.85*nominalLoad.Item1).ToString("0.###"),Units.KIP),
             };
-            var result = new CompressionResistanceOutput(nominalLoad.Item1, 0.85, nominalLoad.Item2,"Kip");
+            var report = new CompressionReport(
+                "Direct Strength - Compression",
+                "Elastic Buckling Loads",
+                elastic_items,
+                "Yielding Load",
+                squash_items,
+                "Nominal Axial Strength",
+                strength_items,
+                nominal_items
+                );
+            var result = new CompressionResistanceOutput(nominalLoad.Item1, 0.85, nominalLoad.Item2,"Kip",report);
             return result;
         }
 
@@ -386,6 +403,10 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("Nominal Distortional Buckling Moment (Mnd)" , Mnd.ToString("0.###"),Units.KIP_IN),
                 new ReportItem("Nominal Global Buckling Moment (Mne)" , Mne.ToString("0.###"),Units.KIP_IN),
             };
+            var squash_items = new List<ReportItem>()
+            {
+                new ReportItem("Squash Moment (My)",My.ToString("0.###"),Units.KIP_IN)
+            };
 
             var items_nominal = new List<ReportItem>()
             {
@@ -394,7 +415,15 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("phi",0.9.ToString("0.###"),Units.NONE),
                 new ReportItem("Design Moment",(0.9*nominalLoad.Item1).ToString("0.###"),Units.KIP_IN)
             };
-            var result = new MomentResistanceOutput(nominalLoad.Item1, 0.9, nominalLoad.Item2,"Kip.in");
+            var report = new MomentReport(
+                "Direct Strength - Moment",
+                "Elastic Buckling Moment",
+                items_buckling,
+                "Nominal Flexural Strength",
+                items,
+                items_nominal
+                );
+            var result = new MomentResistanceOutput(nominalLoad.Item1, 0.9, nominalLoad.Item2,"Kip.in",report);
             return result;
         }
 
