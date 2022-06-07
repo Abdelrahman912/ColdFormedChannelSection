@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ColdFormedChannelSection.Core.Entities;
+using System;
 
 namespace ColdFormedChannelSection.Core.Entities
 {

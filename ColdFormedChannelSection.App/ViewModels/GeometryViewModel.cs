@@ -37,20 +37,20 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         private SectionDimensionDto _selectedSection;
 
-        public Units TableUnit { get; set; }
+        public UnitSystems TableUnit { get; set; }
 
-        private Units _unit;
+        private UnitSystems _unit;
 
-        private readonly Dictionary<KeyValuePair<bool, TablesName>, Tuple<Units,Lazy<Task<List<SectionDimensionDto>>>>> _tables = new Dictionary<KeyValuePair<bool, TablesName>, Tuple<Units, Lazy<Task<List<SectionDimensionDto>>>>> ()
+        private readonly Dictionary<KeyValuePair<bool, TablesName>, Tuple<UnitSystems,Lazy<Task<List<SectionDimensionDto>>>>> _tables = new Dictionary<KeyValuePair<bool, TablesName>, Tuple<UnitSystems, Lazy<Task<List<SectionDimensionDto>>>>> ()
         {
             //Unstiffened, Egypt
-            {KeyValuePair.Create(true,TablesName.EGYPT_EURO),Tuple.Create(Units.NMM, new Lazy<Task<List<SectionDimensionDto>>>(()=>LoadSections(EGYPT_UNSTIFF_TABLE))) },
+            {KeyValuePair.Create(true,TablesName.EGYPT_EURO),Tuple.Create(UnitSystems.NMM, new Lazy<Task<List<SectionDimensionDto>>>(()=>LoadSections(EGYPT_UNSTIFF_TABLE))) },
             //Stiffened, Egypt
-            {KeyValuePair.Create(false,TablesName.EGYPT_EURO),Tuple.Create(Units.NMM, new Lazy<Task<List<SectionDimensionDto>>>(()=>LoadSections(EGYPT_STIFF_TABLE))) },
+            {KeyValuePair.Create(false,TablesName.EGYPT_EURO),Tuple.Create(UnitSystems.NMM, new Lazy<Task<List<SectionDimensionDto>>>(()=>LoadSections(EGYPT_STIFF_TABLE))) },
             //Unstiffened, American
-            {KeyValuePair.Create(true,TablesName.AMERICAN),Tuple.Create(Units.KIPINCH, new Lazy<Task<List<SectionDimensionDto>>>(()=>LoadSections(AISI_UNSTIFF_TABLE))) },
+            {KeyValuePair.Create(true,TablesName.AMERICAN),Tuple.Create(UnitSystems.KIPINCH, new Lazy<Task<List<SectionDimensionDto>>>(()=>LoadSections(AISI_UNSTIFF_TABLE))) },
               //Stiffened, American
-            {KeyValuePair.Create(false,TablesName.AMERICAN), Tuple.Create(Units.KIPINCH,new Lazy<Task<List<SectionDimensionDto>>>(()=>LoadSections(AISI_STIFF_TABLE))) },
+            {KeyValuePair.Create(false,TablesName.AMERICAN), Tuple.Create(UnitSystems.KIPINCH,new Lazy<Task<List<SectionDimensionDto>>>(()=>LoadSections(AISI_STIFF_TABLE))) },
         };
 
         #endregion
@@ -63,7 +63,7 @@ namespace ColdFormedChannelSection.App.ViewModels
             set => NotifyPropertyChanged(ref _isDesign, value);
         }
 
-        public Units Unit
+        public UnitSystems Unit
         {
             get => _unit;
             set=>NotifyPropertyChanged(ref _unit, value);   
@@ -154,11 +154,11 @@ namespace ColdFormedChannelSection.App.ViewModels
             TotalWidthB = 0;
             ThicknessT = 0.0;
             InternalRadiusR = 0.0;
-            Unit = Units.TONCM;
+            Unit = UnitSystems.TONCM;
             IsUnstiffened = true;
             SelectedTableName = TablesName.EGYPT_EURO;
             Mediator.Mediator.Instance.Subscribe<SteelSection>(this, OnStiffChanged, Context.STIFF_UNSTIFF);
-            Mediator.Mediator.Instance.Subscribe<Units>(this, OnUnitsChanged, Context.UNITS);
+            Mediator.Mediator.Instance.Subscribe<UnitSystems>(this, OnUnitsChanged, Context.UNITS);
             IsDesign = false;
            
         }
@@ -200,7 +200,7 @@ namespace ColdFormedChannelSection.App.ViewModels
             }
         }
 
-        private void OnUnitsChanged(Units selectedUnit)
+        private void OnUnitsChanged(UnitSystems selectedUnit)
         {
             Unit = selectedUnit;
             if (!IsUserDefined)

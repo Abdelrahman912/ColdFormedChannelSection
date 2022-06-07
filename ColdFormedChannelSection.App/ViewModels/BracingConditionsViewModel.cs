@@ -30,7 +30,7 @@ namespace ColdFormedChannelSection.App.ViewModels
         private bool _isC1Used;
         private bool _isCmUsed;
 
-        private Units _unit;
+        private UnitSystems _unit;
 
         private Dictionary<KeyValuePair<DesignCode, StrainingActions>, Action> _bracingDict;
 
@@ -47,7 +47,7 @@ namespace ColdFormedChannelSection.App.ViewModels
             set => NotifyPropertyChanged(ref _cm, value);
         }
 
-        public Units Unit
+        public UnitSystems Unit
         {
             get => _unit;
             set => NotifyPropertyChanged(ref _unit,value);
@@ -164,7 +164,7 @@ namespace ColdFormedChannelSection.App.ViewModels
         {
            return Task.Run(() =>
             {
-                Mediator.Mediator.Instance.Subscribe<Units>(this, OnUnitsChanged, Context.UNITS);
+                Mediator.Mediator.Instance.Subscribe<UnitSystems>(this, OnUnitsChanged, Context.UNITS);
                 Mediator.Mediator.Instance.Subscribe<KeyValuePair<DesignCode, StrainingActions>>(this, OnBracingChanged, Context.BRACING);
                 _bracingDict = new Dictionary<KeyValuePair<DesignCode, StrainingActions>, Action>()
                 {
@@ -253,7 +253,7 @@ namespace ColdFormedChannelSection.App.ViewModels
             IsCbUsed = true;
         }
 
-        private void OnUnitsChanged(Units unit)
+        private void OnUnitsChanged(UnitSystems unit)
         {
             Unit = unit;
         }

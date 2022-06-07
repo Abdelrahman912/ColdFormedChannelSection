@@ -1,15 +1,13 @@
-﻿using System.ComponentModel;
-
-namespace ColdFormedChannelSection.Core.Enums
+﻿namespace ColdFormedChannelSection.Core.Enums
 {
-    [TypeConverter(typeof(EnumDescriptionTypeConverter))]
     public enum Units
     {
-        [Description("ton & cm")]
-        TONCM,
-        [Description("N & mm")]
-        NMM,
-        [Description("kip & inch")]
-        KIPINCH,
+        CM,IN,MM,
+        CM_2,IN_2,MM_2,
+        CM_3,IN_3,MM_3,
+        TON,KIP,N,
+        TON_CM,KIP_IN,N_MM,
+        TON_CM_2,KSI,N_MM_2,
+        NONE
     }
 }

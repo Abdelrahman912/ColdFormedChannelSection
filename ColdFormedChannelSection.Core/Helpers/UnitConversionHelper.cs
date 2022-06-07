@@ -8,70 +8,70 @@ namespace ColdFormedChannelSection.Core.Helpers
     public static class UnitConversionHelper
     {
 
-        private static readonly Dictionary<KeyValuePair<Units, Units>, double> _lengthUnitFactors = new Dictionary<KeyValuePair<Units, Units>, double>()
+        private static readonly Dictionary<KeyValuePair<UnitSystems, UnitSystems>, double> _lengthUnitFactors = new Dictionary<KeyValuePair<UnitSystems, UnitSystems>, double>()
         {
-            {KeyValuePair.Create(Units.NMM,Units.NMM),1.0 },
-            {KeyValuePair.Create(Units.TONCM,Units.NMM),10.0 },
-            {KeyValuePair.Create(Units.KIPINCH,Units.NMM),25.4 },
+            {KeyValuePair.Create(UnitSystems.NMM,UnitSystems.NMM),1.0 },
+            {KeyValuePair.Create(UnitSystems.TONCM,UnitSystems.NMM),10.0 },
+            {KeyValuePair.Create(UnitSystems.KIPINCH,UnitSystems.NMM),25.4 },
 
-            {KeyValuePair.Create(Units.KIPINCH,Units.KIPINCH),1.0 },
-            {KeyValuePair.Create(Units.TONCM,Units.KIPINCH),1/2.54 },
-            {KeyValuePair.Create(Units.NMM,Units.KIPINCH),1/25.4 },
+            {KeyValuePair.Create(UnitSystems.KIPINCH,UnitSystems.KIPINCH),1.0 },
+            {KeyValuePair.Create(UnitSystems.TONCM,UnitSystems.KIPINCH),1/2.54 },
+            {KeyValuePair.Create(UnitSystems.NMM,UnitSystems.KIPINCH),1/25.4 },
 
-            {KeyValuePair.Create(Units.TONCM,Units.TONCM),1.0 },
-            {KeyValuePair.Create(Units.NMM,Units.TONCM), 1/10.0},
-            {KeyValuePair.Create(Units.KIPINCH,Units.TONCM),2.54 },
+            {KeyValuePair.Create(UnitSystems.TONCM,UnitSystems.TONCM),1.0 },
+            {KeyValuePair.Create(UnitSystems.NMM,UnitSystems.TONCM), 1/10.0},
+            {KeyValuePair.Create(UnitSystems.KIPINCH,UnitSystems.TONCM),2.54 },
         };
 
 
-        private static readonly Dictionary<KeyValuePair<Units, Units>, double> _stressUnitFactors = new Dictionary<KeyValuePair<Units, Units>, double>()
+        private static readonly Dictionary<KeyValuePair<UnitSystems, UnitSystems>, double> _stressUnitFactors = new Dictionary<KeyValuePair<UnitSystems, UnitSystems>, double>()
         {
-            {KeyValuePair.Create(Units.NMM,Units.NMM),1.0 },
-            {KeyValuePair.Create(Units.TONCM,Units.NMM),98.07 },
-            {KeyValuePair.Create(Units.KIPINCH,Units.NMM),6.889 },
+            {KeyValuePair.Create(UnitSystems.NMM,UnitSystems.NMM),1.0 },
+            {KeyValuePair.Create(UnitSystems.TONCM,UnitSystems.NMM),98.07 },
+            {KeyValuePair.Create(UnitSystems.KIPINCH,UnitSystems.NMM),6.889 },
 
-            {KeyValuePair.Create(Units.KIPINCH,Units.KIPINCH),1.0 },
-            {KeyValuePair.Create(Units.TONCM,Units.KIPINCH),14.223 },
-            {KeyValuePair.Create(Units.NMM,Units.KIPINCH),1/6.889 },
+            {KeyValuePair.Create(UnitSystems.KIPINCH,UnitSystems.KIPINCH),1.0 },
+            {KeyValuePair.Create(UnitSystems.TONCM,UnitSystems.KIPINCH),14.223 },
+            {KeyValuePair.Create(UnitSystems.NMM,UnitSystems.KIPINCH),1/6.889 },
 
-            {KeyValuePair.Create(Units.TONCM,Units.TONCM),1.0 },
-            {KeyValuePair.Create(Units.NMM,Units.TONCM), 1/98.07},
-            {KeyValuePair.Create(Units.KIPINCH,Units.TONCM),1/14.223 },
+            {KeyValuePair.Create(UnitSystems.TONCM,UnitSystems.TONCM),1.0 },
+            {KeyValuePair.Create(UnitSystems.NMM,UnitSystems.TONCM), 1/98.07},
+            {KeyValuePair.Create(UnitSystems.KIPINCH,UnitSystems.TONCM),1/14.223 },
         };
 
 
-        private static readonly Dictionary<KeyValuePair<Units, Units>, Tuple<double, string>> _momentUnitFactors = new Dictionary<KeyValuePair<Units, Units>, Tuple<double, string>>()
+        private static readonly Dictionary<KeyValuePair<UnitSystems, UnitSystems>, Tuple<double, string>> _momentUnitFactors = new Dictionary<KeyValuePair<UnitSystems, UnitSystems>, Tuple<double, string>>()
         {
-            {KeyValuePair.Create(Units.KIPINCH,Units.KIPINCH),Tuple.Create( 1.0 ,"Kip.in")},
-            {KeyValuePair.Create(Units.KIPINCH,Units.NMM), Tuple.Create(112900.0, "N.mm") },
-            {KeyValuePair.Create(Units.KIPINCH,Units.TONCM), Tuple.Create(1.152124, "t.cm") },
+            {KeyValuePair.Create(UnitSystems.KIPINCH,UnitSystems.KIPINCH),Tuple.Create( 1.0 ,"Kip.in")},
+            {KeyValuePair.Create(UnitSystems.KIPINCH,UnitSystems.NMM), Tuple.Create(112900.0, "N.mm") },
+            {KeyValuePair.Create(UnitSystems.KIPINCH,UnitSystems.TONCM), Tuple.Create(1.152124, "t.cm") },
 
-            {KeyValuePair.Create(Units.TONCM,Units.TONCM),Tuple.Create( 1.0,"t.cm") },
-            {KeyValuePair.Create(Units.TONCM,Units.KIPINCH),Tuple.Create( 1/1.152124,"Kip.in")},
-            {KeyValuePair.Create(Units.TONCM,Units.NMM),Tuple.Create( 98066.5,"N.mm") },
+            {KeyValuePair.Create(UnitSystems.TONCM,UnitSystems.TONCM),Tuple.Create( 1.0,"t.cm") },
+            {KeyValuePair.Create(UnitSystems.TONCM,UnitSystems.KIPINCH),Tuple.Create( 1/1.152124,"Kip.in")},
+            {KeyValuePair.Create(UnitSystems.TONCM,UnitSystems.NMM),Tuple.Create( 98066.5,"N.mm") },
 
-            {KeyValuePair.Create(Units.NMM,Units.NMM),Tuple.Create( 1.0,"N.mm") },
-            {KeyValuePair.Create(Units.NMM,Units.KIPINCH),Tuple.Create( 1/112900.0,"Kip.in")},
-            {KeyValuePair.Create(Units.NMM,Units.TONCM),Tuple.Create(1/98066.5,"t.cm")},
+            {KeyValuePair.Create(UnitSystems.NMM,UnitSystems.NMM),Tuple.Create( 1.0,"N.mm") },
+            {KeyValuePair.Create(UnitSystems.NMM,UnitSystems.KIPINCH),Tuple.Create( 1/112900.0,"Kip.in")},
+            {KeyValuePair.Create(UnitSystems.NMM,UnitSystems.TONCM),Tuple.Create(1/98066.5,"t.cm")},
         };
 
 
-        private static readonly Dictionary<KeyValuePair<Units, Units>, Tuple<double, string>> _forceUnitFactors = new Dictionary<KeyValuePair<Units, Units>, Tuple<double, string>>()
+        private static readonly Dictionary<KeyValuePair<UnitSystems, UnitSystems>, Tuple<double, string>> _forceUnitFactors = new Dictionary<KeyValuePair<UnitSystems, UnitSystems>, Tuple<double, string>>()
         {
-            {KeyValuePair.Create(Units.KIPINCH,Units.KIPINCH),Tuple.Create( 1.0,"Kip") },
-            {KeyValuePair.Create(Units.KIPINCH,Units.NMM),Tuple.Create( 4444.44,"N") },
-            {KeyValuePair.Create(Units.KIPINCH,Units.TONCM),Tuple.Create(1/2.2046,"ton") },
+            {KeyValuePair.Create(UnitSystems.KIPINCH,UnitSystems.KIPINCH),Tuple.Create( 1.0,"Kip") },
+            {KeyValuePair.Create(UnitSystems.KIPINCH,UnitSystems.NMM),Tuple.Create( 4444.44,"N") },
+            {KeyValuePair.Create(UnitSystems.KIPINCH,UnitSystems.TONCM),Tuple.Create(1/2.2046,"ton") },
 
-            {KeyValuePair.Create(Units.TONCM,Units.TONCM),Tuple.Create( 1.0,"ton") },
-            {KeyValuePair.Create(Units.TONCM,Units.KIPINCH), Tuple.Create(2.2046, "Kip")},
-            {KeyValuePair.Create(Units.TONCM,Units.NMM), Tuple.Create(9806.65, "N") },
+            {KeyValuePair.Create(UnitSystems.TONCM,UnitSystems.TONCM),Tuple.Create( 1.0,"ton") },
+            {KeyValuePair.Create(UnitSystems.TONCM,UnitSystems.KIPINCH), Tuple.Create(2.2046, "Kip")},
+            {KeyValuePair.Create(UnitSystems.TONCM,UnitSystems.NMM), Tuple.Create(9806.65, "N") },
 
-            {KeyValuePair.Create(Units.NMM,Units.NMM), Tuple.Create(1.0, "N") },
-            {KeyValuePair.Create(Units.NMM,Units.KIPINCH), Tuple.Create(1 / 4444.44, "Kip")},
-            {KeyValuePair.Create(Units.NMM,Units.TONCM), Tuple.Create(1 / 9806.65, "ton")},
+            {KeyValuePair.Create(UnitSystems.NMM,UnitSystems.NMM), Tuple.Create(1.0, "N") },
+            {KeyValuePair.Create(UnitSystems.NMM,UnitSystems.KIPINCH), Tuple.Create(1 / 4444.44, "Kip")},
+            {KeyValuePair.Create(UnitSystems.NMM,UnitSystems.TONCM), Tuple.Create(1 / 9806.65, "ton")},
         };
 
-        private static double ConvertLength(this double length, Units sourceUnit, Units targetUnit)
+        private static double ConvertLength(this double length, UnitSystems sourceUnit, UnitSystems targetUnit)
         {
             var key = KeyValuePair.Create(sourceUnit, targetUnit);
             var factor = _lengthUnitFactors[key];
@@ -80,7 +80,7 @@ namespace ColdFormedChannelSection.Core.Helpers
         }
 
 
-        private static double ConvertStress(this double stress, Units sourceUnit, Units targetUnit)
+        private static double ConvertStress(this double stress, UnitSystems sourceUnit, UnitSystems targetUnit)
         {
             var key = KeyValuePair.Create(sourceUnit, targetUnit);
             var factor = _stressUnitFactors[key];
@@ -88,7 +88,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             return newStress;
         }
 
-        public   static Tuple<double, string> ConvertMoment(this double moment, Units sourceUnit, Units targetUnits)
+        public   static Tuple<double, string> ConvertMoment(this double moment, UnitSystems sourceUnit, UnitSystems targetUnits)
         {
             var key = KeyValuePair.Create(sourceUnit, targetUnits);
             (var factor, var unit) = _momentUnitFactors[key];
@@ -96,7 +96,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             return Tuple.Create(newMoment, unit);
         }
 
-        public static Tuple<double, string> ConvertForce(this double force, Units sourceUnit, Units targetUnits)
+        public static Tuple<double, string> ConvertForce(this double force, UnitSystems sourceUnit, UnitSystems targetUnits)
         {
             var key = KeyValuePair.Create(sourceUnit, targetUnits);
             (var factor, var unit) = _forceUnitFactors[key];
@@ -106,7 +106,7 @@ namespace ColdFormedChannelSection.Core.Helpers
 
         
 
-        public static Material Convert(this Material material, Units sourceUnit, Units targetUnits)
+        public static Material Convert(this Material material, UnitSystems sourceUnit, UnitSystems targetUnits)
         {
             var Fy = material.Fy.ConvertStress(sourceUnit, targetUnits);
             var E = material.E.ConvertStress(sourceUnit, targetUnits);
@@ -114,7 +114,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             return newMaterial;
         }
 
-        public static LengthBracingConditions Convert(this LengthBracingConditions bracingConditions, Units sourceUnit, Units targetUnit)
+        public static LengthBracingConditions Convert(this LengthBracingConditions bracingConditions, UnitSystems sourceUnit, UnitSystems targetUnit)
         {
             var Lx = bracingConditions.Lx.ConvertLength(sourceUnit, targetUnit);
             var Ly = bracingConditions.Ly.ConvertLength(sourceUnit, targetUnit);
@@ -131,7 +131,7 @@ namespace ColdFormedChannelSection.Core.Helpers
         }
 
 
-        public static SectionDimension Convert(this SectionDimension section, Units sourceUnit, Units targetUnit)
+        public static SectionDimension Convert(this SectionDimension section, UnitSystems sourceUnit, UnitSystems targetUnit)
         {
             var H = section.TotalHeightH.ConvertLength(sourceUnit, targetUnit);
             var B = section.TotalFlangeWidthB.ConvertLength(sourceUnit, targetUnit);
@@ -142,7 +142,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             return newSection;
         }
 
-        public static ResistanceInteractionOutput Convert(this ResistanceInteractionOutput output, Units sourceUnit, Units targetUnit)
+        public static ResistanceInteractionOutput Convert(this ResistanceInteractionOutput output, UnitSystems sourceUnit, UnitSystems targetUnit)
         {
             (var mu, var mu_unit) = output.Mu.ConvertMoment(sourceUnit, targetUnit);
             (var mn, var mn_unit) = output.Mn.ConvertMoment(sourceUnit, targetUnit);
@@ -154,7 +154,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             return newOutput;
         }
 
-        public static MomentResistanceOutput Convert(this MomentResistanceOutput output, Units sourceUnit, Units targetUnit)
+        public static MomentResistanceOutput Convert(this MomentResistanceOutput output, UnitSystems sourceUnit, UnitSystems targetUnit)
         {
            ( var nominalResistance , var unit) = output.NominalResistance.ConvertMoment(sourceUnit, targetUnit);
             var phi = output.Phi;
@@ -163,7 +163,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             return newOutput;
         }
 
-        public static CompressionResistanceOutput Convert(this CompressionResistanceOutput output, Units sourceUnit, Units targetUnit)
+        public static CompressionResistanceOutput Convert(this CompressionResistanceOutput output, UnitSystems sourceUnit, UnitSystems targetUnit)
         {
             (var nominalResistance , var unit) = output.NominalResistance.ConvertForce(sourceUnit, targetUnit);
             var phi = output.Phi;

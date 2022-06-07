@@ -5,7 +5,6 @@ namespace ColdFormedChannelSection.Core.Entities
     public abstract class ResistanceOutput:IOutput
     {
 
-
         #region properties
 
         public double NominalResistance { get; }

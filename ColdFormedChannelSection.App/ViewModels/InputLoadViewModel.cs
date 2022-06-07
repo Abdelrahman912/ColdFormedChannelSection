@@ -22,13 +22,13 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         private readonly Dictionary<StrainingActions, Action<InputLoadViewModel>> _displayDict;
 
-        private Units _unit;
+        private UnitSystems _unit;
 
         #endregion
 
         #region Properties
 
-        public Units Unit
+        public UnitSystems Unit
         {
             get => _unit;
             set => NotifyPropertyChanged(ref _unit, value);
@@ -71,7 +71,7 @@ namespace ColdFormedChannelSection.App.ViewModels
                 [StrainingActions.MOMENT_COMPRESSION] = DisplayMuPU,
             };
             Mediator.Mediator.Instance.Subscribe<Tuple<Module,StrainingActions>>(this, OnSAChanged, Context.SA_MODULE);
-            Mediator.Mediator.Instance.Subscribe<Units>(this, OnUnitChanged, Context.UNITS);
+            Mediator.Mediator.Instance.Subscribe<UnitSystems>(this, OnUnitChanged, Context.UNITS);
             IsUltimateLoad = false;
             IsUltimateMoment = false;
 
@@ -101,7 +101,7 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         }
 
-        private void OnUnitChanged(Units unit)
+        private void OnUnitChanged(UnitSystems unit)
         {
             Unit = unit;
         }

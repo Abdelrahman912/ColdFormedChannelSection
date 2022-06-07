@@ -82,7 +82,7 @@
                         </Grid.ColumnDefinitions>
                         <TextBlock Text="Units:" VerticalAlignment="Center"/>
                         <ComboBox Grid.Column="1" SelectedItem="{Binding Unit}"
-                                  ItemsSource="{Binding Source={markup:EnumBindingSource {x:Type enums2:Units}}}"/>
+                                  ItemsSource="{Binding Source={markup:EnumBindingSource {x:Type enums2:UnitSystems}}}"/>
                     </Grid>
 
                    

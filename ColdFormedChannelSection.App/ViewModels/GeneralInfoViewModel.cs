@@ -20,7 +20,7 @@ namespace ColdFormedChannelSection.App.ViewModels
         private DesignCode _designCode;
         private SteelSection _steelSection;
         private StrainingActions _strainingAction;
-        private Units _unit;
+        private UnitSystems _unit;
 
         private List<StrainingActions> _availableSa;
         private readonly List<StrainingActions> _resistSa = new List<StrainingActions>() { StrainingActions.COMPRESSION, StrainingActions.MOMENT };
@@ -124,7 +124,7 @@ namespace ColdFormedChannelSection.App.ViewModels
         //    }
         //}
 
-        public Units Unit
+        public UnitSystems Unit
         {
             get => _unit;
             set
@@ -144,7 +144,7 @@ namespace ColdFormedChannelSection.App.ViewModels
             DesignCode = DesignCode.AISI;
             SteelSection = SteelSection.C_UNSTIFFENED;
             StrainingAction = StrainingActions.MOMENT;
-            Unit = Units.TONCM;
+            Unit = UnitSystems.TONCM;
         }
         #endregion
 

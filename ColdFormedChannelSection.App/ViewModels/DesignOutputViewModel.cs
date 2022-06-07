@@ -16,7 +16,7 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         private CheckOutput _checkOutput;
 
-        private Units _unit;
+        private UnitSystems _unit;
 
         private StrainingActions _strainingActions;
 
@@ -39,7 +39,7 @@ namespace ColdFormedChannelSection.App.ViewModels
         }
 
 
-        public Units Unit
+        public UnitSystems Unit
         {
             get => _unit;
             set => NotifyPropertyChanged(ref _unit, value);
@@ -72,7 +72,7 @@ namespace ColdFormedChannelSection.App.ViewModels
             IsDesignOutput = false;
             UltimateLoad = 0;
             CheckOutput = null;
-            Mediator.Mediator.Instance.Subscribe<Units>(this, (unit) => Unit = unit, Context.UNITS);
+            Mediator.Mediator.Instance.Subscribe<UnitSystems>(this, (unit) => Unit = unit, Context.UNITS);
             Mediator.Mediator.Instance.Subscribe<StrainingActions>(this, (sa) => StrainingActions = sa, Context.STRAININGACTIONS);
         }
 
