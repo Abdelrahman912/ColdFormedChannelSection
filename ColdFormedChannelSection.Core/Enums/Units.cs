@@ -41,7 +41,7 @@ namespace ColdFormedChannelSection.Core.Enums
         KSI,
         [Description("N/mm^2")] 
         N_MM_2,
-        [Description("")]
+        [Description("-")]
         NONE
     }
 }

@@ -36,7 +36,9 @@ namespace ColdFormedChannelSection.Core.Helpers
             if (loadRatio <= 0.15)
             {
                 ie = (pu / (phi_c * pn)) + (mu / (phi_b * mn));
-                ieName = "(Pu/(phi)c*Pn) + (Mu/(phi)b*Mn)";
+                //tex:
+                //$$ \frac {P_u}{\phi_c P_n} + \frac {M_u} {\phi_b M_n} $$
+                ieName = "\\frac {P_u}{\\phi_c P_n} + \\frac {M_u} {\\phi_b M_n}";
             }
             else
             {
@@ -47,11 +49,15 @@ namespace ColdFormedChannelSection.Core.Helpers
                 ie = Math.Max(ie_1, ie_2);
                 if (ie_1 > ie_2)
                 {
-                    ieName = "(Pu/(phi)c*Pn) + ((Cm * Mu)/((phi))b*Mn*alpha)";
+                    //tex:
+                    //$$ \frac {P_u} {\phi_c P_n} + \frac {C_m M_u} {\phi_b M_n \alpha_x} $$
+                    ieName = "\\frac {P_u} {\\phi_c P_n} + \\frac {C_m M_u} {\\phi_b M_n \\alpha_x}";
                 }
                 else
                 {
-                    ieName = "(Pu/(phi)c*Pno) + (Mu/(phi)b*Mn";
+                    //tex:
+                    //$$ \frac {P_u} {\phi_c P_{no}} + \frac {M_u} {\phi_b M_n} $$
+                    ieName = "\\frac {P_u} {\\phi_c P_{no}} + \\frac {M_u} {\\phi_b M_n}";
                 }
             }
             var report = new InteractionReport(pn_out.Report, mn_out.Report);

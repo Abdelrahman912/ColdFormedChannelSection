@@ -8,9 +8,9 @@
               xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              d:DesignHeight="450" d:DesignWidth="800">
     <StackPanel>
-        <TextBlock Text="{Binding Title}" HorizontalAlignment="Center"/>
-        <TextBlock Text="{Binding Item1Name}" HorizontalAlignment="Left"/>
-        <DataGrid ItemsSource="{Binding Item1List}" HeadersVisibility="All" 
+        <TextBlock Margin="10" Text="{Binding Title}" HorizontalAlignment="Center"/>
+        <TextBlock Margin="5" Text="{Binding Item1Name}" HorizontalAlignment="Left"/>
+        <DataGrid Margin="5" ItemsSource="{Binding Item1List}" HeadersVisibility="All" 
                   Grid.Row="1"
                   CanUserAddRows="False" CanUserDeleteRows="False" FontSize="10"
                  SelectionMode="Single" AutoGenerateColumns="False">
@@ -23,8 +23,8 @@
                                     Binding="{Binding Unit}" Width="*" MinWidth="100"/>
             </DataGrid.Columns>
         </DataGrid>
-        <TextBlock Text="{Binding Item2Name}" HorizontalAlignment="Left"/>
-        <DataGrid ItemsSource="{Binding Item2List}" HeadersVisibility="All" 
+        <TextBlock Margin="5" Text="{Binding Item2Name}" HorizontalAlignment="Left"/>
+        <DataGrid Margin="5" ItemsSource="{Binding Item2List}" HeadersVisibility="All" 
                   Grid.Row="1"
                   CanUserAddRows="False" CanUserDeleteRows="False" FontSize="10"
                  SelectionMode="Single" AutoGenerateColumns="False">
@@ -37,8 +37,8 @@
                                     Binding="{Binding Unit}" Width="*" MinWidth="100"/>
             </DataGrid.Columns>
         </DataGrid>
-        <TextBlock Text="{Binding Item3Name}" HorizontalAlignment="Left"/>
-        <DataGrid ItemsSource="{Binding Item3List}" HeadersVisibility="All" 
+        <TextBlock Margin="5" Text="{Binding Item3Name}" HorizontalAlignment="Left"/>
+        <DataGrid Margin="5" ItemsSource="{Binding Item3List}" HeadersVisibility="All" 
                   Grid.Row="1"
                   CanUserAddRows="False" CanUserDeleteRows="False" FontSize="10"
                  SelectionMode="Single" AutoGenerateColumns="False">
@@ -51,8 +51,8 @@
                                     Binding="{Binding Unit}" Width="*" MinWidth="100"/>
             </DataGrid.Columns>
         </DataGrid>
-        <TextBlock Text="{Binding DesignName}" HorizontalAlignment="Left"/>
-        <DataGrid ItemsSource="{Binding DesignList}" HeadersVisibility="All" 
+        <TextBlock Margin="5" Text="{Binding DesignName}" HorizontalAlignment="Left"/>
+        <DataGrid Margin="5" ItemsSource="{Binding DesignList}" HeadersVisibility="All" 
                   Grid.Row="1"
                   CanUserAddRows="False" CanUserDeleteRows="False" FontSize="10"
                  SelectionMode="Single" AutoGenerateColumns="False">

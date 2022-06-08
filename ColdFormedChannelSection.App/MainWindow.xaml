@@ -7,7 +7,7 @@
         mc:Ignorable="d" DataContext="{StaticResource mainVM}"
         xmlns:vms="clr-namespace:ColdFormedChannelSection.App.ViewModels"
         xmlns:vs="clr-namespace:ColdFormedChannelSection.App.UI.Views"
-        Title="Cold C" Height="710" Width="1100"
+        Title="Cold C" Height="720" Width="1100"
         Icon="/UI/Resources/Icon.ico">
     <Window.Resources>
         <!--<DataTemplate DataType="{x:Type vms:DirectStrengthResistanceViewModel}">

@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:ColdFormedChannelSection.App.UI.Views"
              mc:Ignorable="d" d:Background="White"
                xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:controls="clr-namespace:WpfMath.Controls;assembly=WpfMath"
              d:DesignHeight="450" d:DesignWidth="800">
     <GroupBox Grid.Row="1" Margin="5" Header="Interaction Check Results" Style="{StaticResource MaterialDesignGroupBox}" 
                                           materialDesign:ColorZoneAssist.Mode="Standard">
@@ -59,7 +60,8 @@
                     </StackPanel>
                 </Grid>
 
-                <TextBlock Margin="5" Grid.Row="3" Text="{Binding CheckResultName}" HorizontalAlignment="Center"/>
+                <controls:FormulaControl Margin="5" HorizontalAlignment="Center"  Grid.Row="3" Formula="{Binding CheckResultName}" />
+                <!--<TextBlock Margin="5" Grid.Row="3" Text="{Binding CheckResultName}" HorizontalAlignment="Center"/>-->
                 <TextBlock Margin="5" Grid.Row="4" Style="{StaticResource checkStatus}" HorizontalAlignment="Center"
                            Text="{Binding Status}" Grid.Column="1"/>
 
