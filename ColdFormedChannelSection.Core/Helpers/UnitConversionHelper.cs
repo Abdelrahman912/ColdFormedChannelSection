@@ -10,8 +10,6 @@ namespace ColdFormedChannelSection.Core.Helpers
     public static class UnitConversionHelper
     {
 
-        
-
         private static readonly Dictionary<Units, Tuple<Units, double>> _kipToTonDict = new Dictionary<Units, Tuple<Units, double>>()
         {
             [Units.IN] = Tuple.Create(Units.CM, 2.54),

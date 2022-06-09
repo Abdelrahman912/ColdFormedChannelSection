@@ -3,7 +3,6 @@ using ColdFormedChannelSection.Core.Enums;
 using ColdFormedChannelSection.Core.Extensions;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 
 namespace ColdFormedChannelSection.Core.Helpers
@@ -13,12 +12,11 @@ namespace ColdFormedChannelSection.Core.Helpers
 
         #region Moment & Compression
 
-        private static ResistanceInteractionOutput AsAISIInteractionResistance(this Section section, Material material, LengthBracingConditions bracingconditions, double pu, double mu, CompressionResistanceOutput pn_out, MomentResistanceOutput mn_out, Func<double> getAe)
+        private static ResistanceInteractionOutput AsAISIInteractionResistance(this Section section, Material material, LengthBracingConditions bracingconditions, double pu, double mu, CompressionResistanceOutput pn_out, MomentResistanceOutput mn_out, Func<double> getAe,double phi_b)
         {
             var pn = pn_out.NominalResistance;
             var mn = mn_out.NominalResistance;
             var phi_c = 0.85;
-            var phi_b = 0.95;
             var E = material.E;
             var Fy = material.Fy;
             var Ix = section.Properties.Ix;
@@ -68,14 +66,14 @@ namespace ColdFormedChannelSection.Core.Helpers
             var Pn = section.AsAISICompressionResistance(material, bracingConditions);
             var Mn = section.AsAISIMomentResistance(material, bracingConditions);
 
-            return section.AsAISIInteractionResistance(material, bracingConditions, pu, mu, Pn, Mn, () => section.GetAISIReducedArea(material).Item1);
+            return section.AsAISIInteractionResistance(material, bracingConditions, pu, mu, Pn, Mn, () => section.GetAISIReducedArea(material).Item1,0.95);
         }
 
         public static ResistanceInteractionOutput AsAISIInteractionResistance(this UnStiffenedSection section, Material material, LengthBracingConditions bracingConditions, double pu, double mu)
         {
             var Pn = section.AsAISICompressionResistance(material, bracingConditions);
             var Mn = section.AsAISIMomentResistance(material, bracingConditions);
-            return section.AsAISIInteractionResistance(material, bracingConditions, pu, mu, Pn, Mn, () => section.GetAISIReducedArea(material).Item1);
+            return section.AsAISIInteractionResistance(material, bracingConditions, pu, mu, Pn, Mn, () => section.GetAISIReducedArea(material).Item1,0.9);
         }
 
         #endregion
@@ -624,7 +622,7 @@ namespace ColdFormedChannelSection.Core.Helpers
         public static MomentResistanceOutput AsAISIMomentResistance(this LippedSection lippedSection, Material material, LengthBracingConditions bracingConditions)
         {
             if (!lippedSection.IsValidForCompression())
-                return new MomentResistanceOutput(0.0, 0.9, FailureMode.UNSAFE, "Kip",null);
+                return new MomentResistanceOutput(0.0, 0.95, FailureMode.UNSAFE, "Kip",null);
             (var Mn_local, var items_local) = lippedSection.GetAISIMomentLBResistance(material);
             var Mn1 = Tuple.Create(Mn_local, FailureMode.LOCALBUCKLING);
             (var Mn_ltb, var items_ltb) = lippedSection.GetAISIMomentLTBRessistance(material, bracingConditions);
@@ -638,8 +636,8 @@ namespace ColdFormedChannelSection.Core.Helpers
             {
                 new ReportItem("Governing Case",Mn.Item2.ToString(),Units.NONE),
                 new ReportItem("Nominal Moment (Mn)",Mn.Item1.ToString("0.###"),Units.KIP_IN),
-                new ReportItem("phi",0.9.ToString("0.###"),Units.NONE),
-                new ReportItem("Design Moment (phi * Mn)",(0.9*Mn.Item1).ToString("0.###"),Units.KIP_IN)
+                new ReportItem("phi",0.95.ToString("0.###"),Units.NONE),
+                new ReportItem("Design Moment (phi * Mn)",(0.95*Mn.Item1).ToString("0.###"),Units.KIP_IN)
             };
             var report = new MomentReport(
                 "AISI Code - Moment",
@@ -650,7 +648,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 items_nominal,
                 UnitSystems.KIPINCH
                 );
-            var result = new MomentResistanceOutput(Mn.Item1, 0.9, Mn.Item2, "Kip",report);
+            var result = new MomentResistanceOutput(Mn.Item1, 0.95, Mn.Item2, "Kip",report);
             return result;
         }
 
