@@ -127,7 +127,7 @@ namespace ColdFormedChannelSection.App.ViewModels
                                  u=>
                                  {
                                      _moduleDict[GeneralInfoVM.RunningModule](this);
-                                     Report = ResistanceOutput.Report;
+                                     Report = ResistanceOutput.Report.Convert(GeneralInfoVM.Unit);
                                      IsDisplayReport = true;
                                      return u;
                                  });

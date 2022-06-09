@@ -60,7 +60,7 @@
                     </StackPanel>
                 </Grid>
 
-                <controls:FormulaControl Margin="5" HorizontalAlignment="Center"  Grid.Row="2" Formula="{Binding CheckResultName}" />
+                <controls:FormulaControl Margin="5" HorizontalAlignment="Center"  Grid.Row="2"  Formula="{Binding CheckResultName}" />
                 <!--<TextBlock Margin="5" Grid.Row="2" Text="{Binding CheckResultName}" HorizontalAlignment="Center"/>-->
                 <TextBlock Margin="5" Grid.Row="3" Style="{StaticResource checkStatus}" HorizontalAlignment="Center"
                            Text="{Binding Status}" Grid.Column="1"/>

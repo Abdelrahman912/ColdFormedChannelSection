@@ -60,7 +60,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                     ieName = "\\frac {P_u} {\\phi_c P_{no}} + \\frac {M_u} {\\phi_b M_n}";
                 }
             }
-            var report = new InteractionReport(pn_out.Report, mn_out.Report);
+            var report = new InteractionReport(pn_out.Report, mn_out.Report,UnitSystems.KIPINCH);
             return new ResistanceInteractionOutput(pu, pn, mu, mn, ieName, ie,"kip.in","kip",report);
         }
 
@@ -167,7 +167,8 @@ namespace ColdFormedChannelSection.Core.Helpers
                 squash_items,
                 "Nominal Axial Strength",
                 strength_items,
-                nominal_items
+                nominal_items,
+                UnitSystems.KIPINCH
                 );
             var result = new CompressionResistanceOutput(nominalLoad.Item1, 0.85, nominalLoad.Item2,"Kip",report);
             return result;
@@ -427,7 +428,8 @@ namespace ColdFormedChannelSection.Core.Helpers
                 items_buckling,
                 "Nominal Flexural Strength",
                 items,
-                items_nominal
+                items_nominal,
+                UnitSystems.KIPINCH
                 );
             var result = new MomentResistanceOutput(nominalLoad.Item1, 0.9, nominalLoad.Item2,"Kip.in",report);
             return result;

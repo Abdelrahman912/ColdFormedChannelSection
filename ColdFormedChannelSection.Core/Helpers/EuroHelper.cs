@@ -52,7 +52,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             //tex:
             //$$ (\frac{P_u}{ P_n})^{0.8} + (\frac{M_u}{M_n})^{0.8}  $$
             var ie = (pu / Pn.NominalResistance).Power(0.8) + (mu / Mn.NominalResistance).Power(0.8);
-            var report = new InteractionReport(Pn.Report, Mn.Report);
+            var report = new InteractionReport(Pn.Report, Mn.Report, UnitSystems.NMM);
             return new ResistanceInteractionOutput(pu, Pn.NominalResistance, mu, Mn.NominalResistance, "(\\frac{P_u}{ P_n})^{0.8} + (\\frac{M_u}{M_n})^{0.8}", ie,"N.mm","N",report);
         }
 
@@ -63,7 +63,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             //tex:
             //$$ (\frac{P_u}{ P_n})^{0.8} + (\frac{M_u}{M_n})^{0.8}  $$
             var ie = (pu / Pn.NominalResistance).Power(0.8) + (mu / Mn.NominalResistance).Power(0.8);
-            var report = new InteractionReport(Pn.Report, Mn.Report);
+            var report = new InteractionReport(Pn.Report, Mn.Report, UnitSystems.NMM);
             return new ResistanceInteractionOutput(pu, Pn.NominalResistance, mu, Mn.NominalResistance, "(\\frac{P_u}{ P_n})^{0.8} + (\\frac{M_u}{M_n})^{0.8}", ie,"N.mm","N",report);
         }
 
@@ -294,7 +294,8 @@ namespace ColdFormedChannelSection.Core.Helpers
                items_FB,
                "Torsional Flexural Buckling",
                items_TFB,
-               items
+               items,
+               UnitSystems.NMM
                );
             var result = new CompressionResistanceOutput(pn.Item1, 1.0, pn.Item2, "N",report);
             return result;
@@ -330,7 +331,8 @@ namespace ColdFormedChannelSection.Core.Helpers
                items_FB,
                "Torsional Flexural Buckling",
                items_TFB,
-               items
+               items,
+               UnitSystems.NMM
                );
             var result = new CompressionResistanceOutput(pn.Item1, 1.0, pn.Item2, "N",report);
             return result;
@@ -435,7 +437,8 @@ namespace ColdFormedChannelSection.Core.Helpers
                 items_local,
                 "Lateral Torsional Buckling",
                 items_LTB,
-                items_nominal
+                items_nominal,
+                UnitSystems.NMM
                 );
             var result = new MomentResistanceOutput(Mn.Item1, 1.0, Mn.Item2, "N.mm",report);
             return result;
@@ -468,7 +471,8 @@ namespace ColdFormedChannelSection.Core.Helpers
                items_local,
                "Lateral Torsional Buckling",
                items_LTB,
-               items_nominal
+               items_nominal,
+               UnitSystems.NMM
                );
             var result = new MomentResistanceOutput(Mn.Item1, 1.0, Mn.Item2, "N.mm", report);
             return result;

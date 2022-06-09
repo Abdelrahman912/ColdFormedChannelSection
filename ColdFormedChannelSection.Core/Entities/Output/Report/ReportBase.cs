@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using ColdFormedChannelSection.Core.Enums;
+using System.Collections.Generic;
 
 namespace ColdFormedChannelSection.Core.Entities
 {
@@ -21,11 +22,13 @@ namespace ColdFormedChannelSection.Core.Entities
 
         public List<ReportItem> DesignList { get; }
 
+        public UnitSystems UnitSystem { get; }
+
         #endregion
 
         #region Constructors
 
-        protected ReportBase(string title, string item1Name, List<ReportItem> item1List, string item2Name, List<ReportItem> item2List, string designName, List<ReportItem> designList)
+        protected ReportBase(string title, string item1Name, List<ReportItem> item1List, string item2Name, List<ReportItem> item2List, string designName, List<ReportItem> designList,UnitSystems unitSystem)
         {
             Title = title;
             Item1Name = item1Name;
@@ -34,10 +37,19 @@ namespace ColdFormedChannelSection.Core.Entities
             Item2List = item2List;
             DesignName = designName;
             DesignList = designList;
+            UnitSystem = unitSystem;
         }
+
+
 
         #endregion
 
+        #region Methods
+
+        public abstract IReport Convert( UnitSystems target);
+        
+
+        #endregion
 
 
     }

@@ -1,12 +1,92 @@
 ﻿using ColdFormedChannelSection.Core.Entities;
 using ColdFormedChannelSection.Core.Enums;
+using ColdFormedChannelSection.Core.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ColdFormedChannelSection.Core.Helpers
 {
     public static class UnitConversionHelper
     {
+
+        
+
+        private static readonly Dictionary<Units, Tuple<Units, double>> _kipToTonDict = new Dictionary<Units, Tuple<Units, double>>()
+        {
+            [Units.IN] = Tuple.Create(Units.CM, 2.54),
+            [Units.IN_2] = Tuple.Create(Units.CM_2, 2.54.Power(2)),
+            [Units.IN_3] = Tuple.Create(Units.CM_3, 2.54.Power(3)),
+            [Units.KIP] = Tuple.Create(Units.TON, 1.0 / 2.2046),
+            [Units.KIP_IN] = Tuple.Create(Units.TON_CM, 1.152124),
+            [Units.KSI] = Tuple.Create(Units.TON_CM_2, 1.0 / 14.223),
+            [Units.NONE] = Tuple.Create(Units.NONE, 1.0),
+        };
+
+        private static readonly Dictionary<Units, Tuple<Units, double>> _kipToNDict = new Dictionary<Units, Tuple<Units, double>>()
+        {
+            [Units.IN] = Tuple.Create(Units.MM, 25.4),
+            [Units.IN_2] = Tuple.Create(Units.MM_2, 25.4.Power(2)),
+            [Units.IN_3] = Tuple.Create(Units.MM_3, 25.4.Power(3)),
+            [Units.KIP] = Tuple.Create(Units.N, 4444.44),
+            [Units.KIP_IN] = Tuple.Create(Units.N_MM, 112.9e03),
+            [Units.KSI] = Tuple.Create(Units.N_MM_2, 6.889),
+            [Units.NONE] = Tuple.Create(Units.NONE, 1.0),
+        };
+
+        private static readonly Dictionary<Units, Tuple<Units, double>> _tonToKip = new Dictionary<Units, Tuple<Units, double>>()
+        {
+            [Units.CM] = Tuple.Create(Units.IN, 1.0 / 2.54),
+            [Units.CM_2] = Tuple.Create(Units.IN_2, (1.0 / 2.54).Power(2)),
+            [Units.CM_3] = Tuple.Create(Units.IN_3, (1.0 / 2.54).Power(3)),
+            [Units.TON] = Tuple.Create(Units.KIP, 2.2046),
+            [Units.TON_CM] = Tuple.Create(Units.KIP_IN, 1.0 / 1.152124),
+            [Units.TON_CM_2] = Tuple.Create(Units.KSI, 14.223),
+            [Units.NONE] = Tuple.Create(Units.NONE, 1.0),
+        };
+
+        private static readonly Dictionary<Units, Tuple<Units, double>> _tonToN = new Dictionary<Units, Tuple<Units, double>>()
+        {
+            [Units.CM] = Tuple.Create(Units.MM, 10.0),
+            [Units.CM_2] = Tuple.Create(Units.MM_2, (10.0).Power(2)),
+            [Units.CM_3] = Tuple.Create(Units.MM_3, (10.0).Power(3)),
+            [Units.TON] = Tuple.Create(Units.N, 9806.65),
+            [Units.TON_CM] = Tuple.Create(Units.N_MM, 98066.5),
+            [Units.TON_CM_2] = Tuple.Create(Units.N_MM_2, 98.07),
+            [Units.NONE] = Tuple.Create(Units.NONE, 1.0),
+        };
+
+        private static readonly Dictionary<Units, Tuple<Units, double>> _nToKip = new Dictionary<Units, Tuple<Units, double>>()
+        {
+            [Units.MM] = Tuple.Create(Units.IN, 1.0 / 25.4),
+            [Units.MM_2] = Tuple.Create(Units.IN_2, (1.0 / 25.4).Power(2)),
+            [Units.MM_3] = Tuple.Create(Units.IN_3, (1.0 / 25.4).Power(3)),
+            [Units.N] = Tuple.Create(Units.KIP, 1.0 / 4444.44),
+            [Units.N_MM] = Tuple.Create(Units.KIP_IN, 1.0 / 112.9e03),
+            [Units.N_MM_2] = Tuple.Create(Units.KSI, 1.0 / 6.889),
+            [Units.NONE] = Tuple.Create(Units.NONE, 1.0),
+        };
+
+        private static readonly Dictionary<Units, Tuple<Units, double>> _nToTon = new Dictionary<Units, Tuple<Units, double>>()
+        {
+            [Units.MM] = Tuple.Create(Units.CM, 1.0 / 10.0),
+            [Units.MM_2] = Tuple.Create(Units.CM_2, (1.0 / 10.0).Power(2)),
+            [Units.MM_3] = Tuple.Create(Units.CM_3, (1.0 / 10.0).Power(3)),
+            [Units.N] = Tuple.Create(Units.TON, 1.0 / 9806.65),
+            [Units.N_MM] = Tuple.Create(Units.TON_CM, 1.0 / 98066.5),
+            [Units.N_MM_2] = Tuple.Create(Units.TON_CM_2, 1.0 / 98.07),
+            [Units.NONE] = Tuple.Create(Units.NONE, 1.0),
+        };
+
+        private static readonly Dictionary<KeyValuePair<UnitSystems, UnitSystems>, Dictionary<Units, Tuple<Units, double>>> _unitDict = new Dictionary<KeyValuePair<UnitSystems, UnitSystems>, Dictionary<Units, Tuple<Units, double>>>()
+        {
+            [KeyValuePair.Create(UnitSystems.KIPINCH, UnitSystems.TONCM)] = _kipToTonDict,
+            [KeyValuePair.Create(UnitSystems.KIPINCH, UnitSystems.NMM)] = _kipToNDict,
+            [KeyValuePair.Create(UnitSystems.TONCM, UnitSystems.KIPINCH)] = _tonToKip,
+            [KeyValuePair.Create(UnitSystems.TONCM, UnitSystems.NMM)] = _tonToN,
+            [KeyValuePair.Create(UnitSystems.NMM, UnitSystems.KIPINCH)] = _nToKip,
+            [KeyValuePair.Create(UnitSystems.NMM, UnitSystems.TONCM)] = _nToTon,
+        };
 
         private static readonly Dictionary<KeyValuePair<UnitSystems, UnitSystems>, double> _lengthUnitFactors = new Dictionary<KeyValuePair<UnitSystems, UnitSystems>, double>()
         {
@@ -88,7 +168,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             return newStress;
         }
 
-        public   static Tuple<double, string> ConvertMoment(this double moment, UnitSystems sourceUnit, UnitSystems targetUnits)
+        public static Tuple<double, string> ConvertMoment(this double moment, UnitSystems sourceUnit, UnitSystems targetUnits)
         {
             var key = KeyValuePair.Create(sourceUnit, targetUnits);
             (var factor, var unit) = _momentUnitFactors[key];
@@ -104,7 +184,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             return Tuple.Create(newForce, unit);
         }
 
-        
+
 
         public static Material Convert(this Material material, UnitSystems sourceUnit, UnitSystems targetUnits)
         {
@@ -126,7 +206,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var C1 = bracingConditions.C1;
             var Cb = bracingConditions.Cb;
             var Cm = bracingConditions.Cm;
-            var newBracingConditions = new LengthBracingConditions(Lx, Ly, Lz, Kx, Ky, Kz, Lu, Cb, C1,Cm);
+            var newBracingConditions = new LengthBracingConditions(Lx, Ly, Lz, Kx, Ky, Kz, Lu, Cb, C1, Cm);
             return newBracingConditions;
         }
 
@@ -150,28 +230,79 @@ namespace ColdFormedChannelSection.Core.Helpers
             (var pu, var pu_unit) = output.Pu.ConvertForce(sourceUnit, targetUnit);
             (var pn, var pn_unit) = output.Pn.ConvertForce(sourceUnit, targetUnit);
 
-            var newOutput = new ResistanceInteractionOutput(pu,pn,mu,mn,output.IE,output.IEValue,mu_unit,pu_unit,output.Report);
+            var newOutput = new ResistanceInteractionOutput(pu, pn, mu, mn, output.IE, output.IEValue, mu_unit, pu_unit, output.Report);
             return newOutput;
         }
 
         public static MomentResistanceOutput Convert(this MomentResistanceOutput output, UnitSystems sourceUnit, UnitSystems targetUnit)
         {
-           ( var nominalResistance , var unit) = output.NominalResistance.ConvertMoment(sourceUnit, targetUnit);
+            (var nominalResistance, var unit) = output.NominalResistance.ConvertMoment(sourceUnit, targetUnit);
             var phi = output.Phi;
             var failureMode = output.GoverningCase;
-            var newOutput = new MomentResistanceOutput(nominalResistance, phi, failureMode ,unit,output.Report);
+            var newOutput = new MomentResistanceOutput(nominalResistance, phi, failureMode, unit, output.Report);
             return newOutput;
         }
 
         public static CompressionResistanceOutput Convert(this CompressionResistanceOutput output, UnitSystems sourceUnit, UnitSystems targetUnit)
         {
-            (var nominalResistance , var unit) = output.NominalResistance.ConvertForce(sourceUnit, targetUnit);
+            (var nominalResistance, var unit) = output.NominalResistance.ConvertForce(sourceUnit, targetUnit);
             var phi = output.Phi;
             var failureMode = output.GoverningCase;
-            var newOutput = new CompressionResistanceOutput(nominalResistance, phi, failureMode ,unit,output.Report);
+            var newOutput = new CompressionResistanceOutput(nominalResistance, phi, failureMode, unit, output.Report);
             return newOutput;
         }
 
+
+        private static ReportItem Convert(this ReportItem item, UnitSystems source, UnitSystems target)
+        {
+            if (item.Unit == Units.NONE)
+                return item;
+            (var newUnit, var factor) = _unitDict[KeyValuePair.Create(source, target)][item.Unit];
+            var newValue = Double.Parse(item.Value) * factor;
+            return new ReportItem(item.Name, newValue.ToString("0.###"), newUnit);
+        }
+
+        private static List<ReportItem> Convert(this List<ReportItem> items , UnitSystems source , UnitSystems target)
+        {
+            
+            return items.Select(item => item.Convert(source, target)).ToList();
+        }
+
+        public static CompressionReport Convert(this CompressionReport report , UnitSystems source , UnitSystems target)
+        {
+            if (source == target)
+                return report;
+            return new CompressionReport(
+                title: report.Title,
+                item1Name:report.Item1Name,
+                item1List: report.Item1List.Convert(source,target),
+                item2Name:report.Item2Name,
+                item2List:report.Item2List.Convert(source,target),
+                item3Name: report.Item3Name,
+                item3List:report.Item3List.Convert(source,target),
+                designCompressionList:report.DesignList.Convert(source,target),
+                target
+                );
+        }
+
+        public static MomentReport Convert(this MomentReport report, UnitSystems source, UnitSystems target)
+        {
+            if (source == target)
+                return report;
+            return new MomentReport(
+                title: report.Title,
+                item1Name: report.Item1Name,
+                item1List: report.Item1List.Convert(source, target),
+                item2Name: report.Item2Name,
+                item2List: report.Item2List.Convert(source, target),
+                designList: report.DesignList.Convert(source, target),
+                target
+                );
+        }
+
+        public static InteractionReport Convert(this InteractionReport report, UnitSystems source, UnitSystems target) =>
+            new InteractionReport(report.CompressionReport.Convert( target), report.MomentReport.Convert( target),target);
+       
 
     }
 }

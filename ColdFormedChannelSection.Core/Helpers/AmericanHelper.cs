@@ -59,7 +59,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                     ieName = "\\frac {P_u} {\\phi_c P_{no}} + \\frac {M_u} {\\phi_b M_n}";
                 }
             }
-            var report = new InteractionReport(pn_out.Report, mn_out.Report);
+            var report = new InteractionReport(pn_out.Report, mn_out.Report,UnitSystems.KIPINCH);
             return new ResistanceInteractionOutput(pu, pn, mu, mn, ieName, ie, "kip.in", "kip",report);
         }
 
@@ -420,7 +420,8 @@ namespace ColdFormedChannelSection.Core.Helpers
              items_FB,
              "Torsional Flexural Buckling",
              items_TFB,
-             items
+             items,
+             UnitSystems.KIPINCH
              );
             var result = new CompressionResistanceOutput(pn.Item1, 0.85, pn.Item2, "Kip",report);
             return result;
@@ -457,7 +458,8 @@ namespace ColdFormedChannelSection.Core.Helpers
             items_FB,
             "Torsional Flexural Buckling",
             items_TFB,
-            items
+            items,
+            UnitSystems.KIPINCH
             );
             var result = new CompressionResistanceOutput(pn.Item1, 0.85, pn.Item2, "Kip",report);
             return result;
@@ -645,7 +647,8 @@ namespace ColdFormedChannelSection.Core.Helpers
                 items_local,
                 "Lateral Torsional Buckling",
                 items_ltb,
-                items_nominal
+                items_nominal,
+                UnitSystems.KIPINCH
                 );
             var result = new MomentResistanceOutput(Mn.Item1, 0.9, Mn.Item2, "Kip",report);
             return result;
@@ -677,7 +680,8 @@ namespace ColdFormedChannelSection.Core.Helpers
                items_local,
                "Lateral Torsional Buckling",
                items_ltb,
-               items_nominal
+               items_nominal,
+               UnitSystems.KIPINCH
                );
             var result = new MomentResistanceOutput(Mn.Item1, 0.9, Mn.Item2, "Kip",report);
             return result;

@@ -37,7 +37,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 ie = (pu / (2 * phi_c * Pn.NominalResistance)) + (mu / (phi_b * Mn.NominalResistance));
                 ieName = "\\frac {P_u} {2 \\phi_c P_n} +  \frac {M_u} {\\phi_b M_n}";
             }
-            var report = new InteractionReport(Pn.Report, Mn.Report);
+            var report = new InteractionReport(Pn.Report, Mn.Report,UnitSystems.TONCM);
             return new ResistanceInteractionOutput(pu, Pn.NominalResistance, mu, Mn.NominalResistance, ieName, ie, "t.cm", "ton",report);
         }
 
@@ -67,7 +67,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 ie = (pu / (2 * phi_c * Pn.NominalResistance)) + (mu / (phi_b * Mn.NominalResistance));
                 ieName = "\\frac {P_u} {2 \\phi_c P_n} +  \frac {M_u} {\\phi_b M_n}";
             }
-            var report = new InteractionReport(Pn.Report, Mn.Report);
+            var report = new InteractionReport(Pn.Report, Mn.Report,UnitSystems.TONCM);
             return new ResistanceInteractionOutput(pu, Pn.NominalResistance, mu, Mn.NominalResistance, ieName, ie, "t.cm", "ton", report);
         }
 
@@ -127,7 +127,8 @@ namespace ColdFormedChannelSection.Core.Helpers
               items,
               "",
               null,
-              nominal_items
+              nominal_items,
+              UnitSystems.TONCM
               );
             var result = new MomentResistanceOutput(Mn, 0.85, failureMode, "t.cm",report);
             return result;
@@ -156,7 +157,8 @@ namespace ColdFormedChannelSection.Core.Helpers
                 items,
                 "",
                 null,
-                nominal_items
+                nominal_items,
+                UnitSystems.TONCM
                 );
             var result = new MomentResistanceOutput(Mn, 0.85, failureMode, "t.cm",report);
             return result;
@@ -756,7 +758,8 @@ namespace ColdFormedChannelSection.Core.Helpers
                  items_FB,
                  "Torsional Flexural Buckling",
                  items_TFB,
-                 resistance_items
+                 resistance_items,
+                 UnitSystems.TONCM
                  );
             var result = new CompressionResistanceOutput(pn.Item1, 0.8, pn.Item2, "ton",report);
             return result;
@@ -793,7 +796,8 @@ namespace ColdFormedChannelSection.Core.Helpers
                items_FB,
                "Torsional Flexural Buckling",
                items_TFB,
-               resistance_items
+               resistance_items,
+               UnitSystems.TONCM
                );
             var result = new CompressionResistanceOutput(pn.Item1, 0.8, pn.Item2, "ton",report);
             return result;
