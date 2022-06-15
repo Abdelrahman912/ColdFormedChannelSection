@@ -144,7 +144,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("Kc",Kc.ToString("0.###"),Units.NONE),
                 new ReportItem("Effective Lip (ce)",Ce.ToString("0.###"),Units.IN),
                 new ReportItem("Effective Area (Ae)",Ae.ToString("0.###"),Units.IN_2),
-                new ReportItem("Yield Stress (Fy)",material.Fy.ToString("0.###"),Units.IN_2),
+                new ReportItem("Yield Stress (Fy)",material.Fy.ToString("0.###"),Units.KSI),
             };
             return Tuple.Create(Ae, items);
         }

@@ -9,8 +9,6 @@ namespace ColdFormedChannelSection.Core.Helpers
 {
     public static class DirectStrengthHelper
     {
-
-
         #region Moment & Compression
 
         private static ResistanceInteractionOutput AsDSInteractionResistance(this Section section, Material material, LengthBracingConditions bracingconditions, double pu, double mu, CompressionResistanceOutput pn_out, MomentResistanceOutput mn_out, Func<double> getAe,double phi_b)
@@ -342,8 +340,6 @@ namespace ColdFormedChannelSection.Core.Helpers
 
         #endregion
 
-
-
         #region Moment
 
         public static MomentResistanceOutput AsDSMomentResistance(this UnStiffenedSection unstiffenedSection, Material material, LengthBracingConditions bracingConditions)
@@ -655,6 +651,5 @@ namespace ColdFormedChannelSection.Core.Helpers
         }
 
         #endregion
-
     }
 }

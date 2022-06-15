@@ -37,8 +37,8 @@
                                     Binding="{Binding Unit}" Width="*" MinWidth="100"/>
             </DataGrid.Columns>
         </DataGrid>
-        <TextBlock Margin="5" Text="{Binding DesignList}" HorizontalAlignment="Left"/>
-        <DataGrid Margin="5" ItemsSource="{Binding DesignName}" HeadersVisibility="All" 
+        <TextBlock Margin="5" Text="{Binding DesignName}" HorizontalAlignment="Left"/>
+        <DataGrid Margin="5" ItemsSource="{Binding DesignList}" HeadersVisibility="All" 
                   Grid.Row="1"
                   CanUserAddRows="False" CanUserDeleteRows="False" FontSize="10"
                  SelectionMode="Single" AutoGenerateColumns="False">

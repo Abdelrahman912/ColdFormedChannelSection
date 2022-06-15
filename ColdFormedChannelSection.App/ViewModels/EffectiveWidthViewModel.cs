@@ -27,6 +27,13 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         private List<Func<List<Error>>> _validateFuncs;
 
+        private static readonly Dictionary<DesignCode, UnitSystems> _unitSystemDict = new Dictionary<DesignCode, UnitSystems>()
+        {
+            [DesignCode.EURO] = UnitSystems.NMM,
+            [DesignCode.EGYPTIAN]=UnitSystems.TONCM,
+            [DesignCode.AISI] = UnitSystems.KIPINCH
+        };
+
         #endregion
 
         #region Properties
@@ -167,8 +174,8 @@ namespace ColdFormedChannelSection.App.ViewModels
         private static void Design(EffectiveWidthViewModel vm)
         {
             vm.IsResistanceOutput = false;
-            var material = (new Material(vm.MaterialVM.Fy, vm.MaterialVM.E, 0.3)).Convert(vm.GeneralInfoVM.Unit, UnitSystems.KIPINCH);
-            var bracingConditions = vm.BracingConditionsVM.AsEntity().Convert(vm.GeneralInfoVM.Unit, UnitSystems.KIPINCH);
+            var material = (new Material(vm.MaterialVM.Fy, vm.MaterialVM.E, 0.3)).Convert(vm.GeneralInfoVM.Unit, _unitSystemDict[vm.GeneralInfoVM.DesignCode]);
+            var bracingConditions = vm.BracingConditionsVM.AsEntity().Convert(vm.GeneralInfoVM.Unit, _unitSystemDict[vm.GeneralInfoVM.DesignCode]);
             var sa = vm.GeneralInfoVM.StrainingAction;
             var section = vm.GeneralInfoVM.SteelSection;
             vm.ResistanceOutput = vm.DesignDict[vm.GeneralInfoVM.DesignCode][KeyValuePair.Create(sa, section)](vm, material, bracingConditions);
@@ -525,8 +532,8 @@ namespace ColdFormedChannelSection.App.ViewModels
         private static void Check(EffectiveWidthViewModel vm)
         {
             vm.IsResistanceOutput = false;
-            var material = (new Material(vm.MaterialVM.Fy, vm.MaterialVM.E, 0.3)).Convert(vm.GeneralInfoVM.Unit, UnitSystems.KIPINCH);
-            var bracingConditions = vm.BracingConditionsVM.AsEntity().Convert(vm.GeneralInfoVM.Unit, UnitSystems.KIPINCH);
+            var material = (new Material(vm.MaterialVM.Fy, vm.MaterialVM.E, 0.3)).Convert(vm.GeneralInfoVM.Unit, _unitSystemDict[vm.GeneralInfoVM.DesignCode]);
+            var bracingConditions = vm.BracingConditionsVM.AsEntity().Convert(vm.GeneralInfoVM.Unit, _unitSystemDict[vm.GeneralInfoVM.DesignCode]);
             var sa = vm.GeneralInfoVM.StrainingAction;
             var section = vm.GeneralInfoVM.SteelSection;
             var resistOutput = vm.ResistDict[vm.GeneralInfoVM.DesignCode][KeyValuePair.Create(sa, section)](vm, material, bracingConditions);
@@ -538,8 +545,8 @@ namespace ColdFormedChannelSection.App.ViewModels
         private static void Resistance(EffectiveWidthViewModel vm)
         {
             vm.IsResistanceOutput = false;
-            var material = (new Material(vm.MaterialVM.Fy, vm.MaterialVM.E, vm.MaterialVM.V)).Convert(vm.GeneralInfoVM.Unit, UnitSystems.KIPINCH);
-            var bracingConditions = vm.BracingConditionsVM.AsEntity().Convert(vm.GeneralInfoVM.Unit, UnitSystems.KIPINCH);
+            var material = (new Material(vm.MaterialVM.Fy, vm.MaterialVM.E, vm.MaterialVM.V)).Convert(vm.GeneralInfoVM.Unit, _unitSystemDict[vm.GeneralInfoVM.DesignCode]);
+            var bracingConditions = vm.BracingConditionsVM.AsEntity().Convert(vm.GeneralInfoVM.Unit, _unitSystemDict[vm.GeneralInfoVM.DesignCode]);
             var sa = vm.GeneralInfoVM.StrainingAction;
             var section = vm.GeneralInfoVM.SteelSection;
             var result = vm.ResistDict[vm.GeneralInfoVM.DesignCode][KeyValuePair.Create(sa, section)](vm, material, bracingConditions);
