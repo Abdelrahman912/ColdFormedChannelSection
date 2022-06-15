@@ -10,9 +10,9 @@
     <StartupObject>ColdFormedChannelSection.App.App</StartupObject>
     <ApplicationIcon>UI\Resources\Icon.ico</ApplicationIcon>
     <Authors>Abdelrahman Fathy</Authors>
-    <Company>IFAT</Company>
+    <Company>Abdelrahman Fathy</Company>
     <Product>Cold C</Product>
-    <Copyright>IFAT</Copyright>
+    <Copyright>Abdelrahman Fathy</Copyright>
     <AssemblyName>ColdFormedChannelSection.App</AssemblyName>
   </PropertyGroup>
     
