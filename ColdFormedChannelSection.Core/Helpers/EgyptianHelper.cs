@@ -279,7 +279,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 var Kf = Math.Min(Kf_1, Kf_2);
                 var lambda_f = ((b_prime / t) / 44) * Math.Sqrt(Fy / Kf);
                 var sai_f = 1.0;
-                var row_f = Math.Min(1, (lambda_f - 0.15 - 0.05 * sai_f) / (lambda_f.Power(2)));
+                var row_f = Math.Min(1,Math.Abs( (lambda_f - 0.15 - 0.05 * sai_f) / (lambda_f.Power(2))));
                 be = row_f * b_prime;
 
             }
@@ -289,7 +289,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 var Kf = Math.Min(3.57 * (Is / Ia).Power(0.5) + 0.43, 4);
                 var lambda_f = ((b_prime / t) / 44) * Math.Sqrt(Fy / Kf);
                 var sai_f = 1.0;
-                var row_f = Math.Min(1, (lambda_f - 0.15 - 0.05 * sai_f) / (lambda_f.Power(2)));
+                var row_f = Math.Min(1,Math.Abs( (lambda_f - 0.15 - 0.05 * sai_f) / (lambda_f.Power(2))));
                 be = row_f * b_prime;
 
             }
@@ -302,18 +302,18 @@ namespace ColdFormedChannelSection.Core.Helpers
                 var Kf = Math.Min(Kf_1, Kf_2);
                 var lambda_f = ((b_prime / t) / 44) * Math.Sqrt(Fy / Kf);
                 var sai_f = 1.0;
-                var row_f = Math.Min(1, (lambda_f - 0.15 - 0.05 * sai_f) / (lambda_f.Power(2)));
+                var row_f = Math.Min(1,Math.Abs( (lambda_f - 0.15 - 0.05 * sai_f) / (lambda_f.Power(2))));
                 be = row_f * b_prime;
 
 
             }
-            else if (b_over_t >= s && c_over_b <= 0.25)
+            else if (b_over_t >= s && c_over_b <= 0.25) 
             {
                 Ia = (((115 * (b / t)) / (s)) + 5) * t.Power(4);
                 var Kf = Math.Min(3.57 * (Is / Ia).Power(1 / 3.0) + 0.43, 4);
                 var lambda_f = ((b_prime / t) / 44) * Math.Sqrt(Fy / Kf);
                 var sai_f = 1.0;
-                var row_f = Math.Min(1, (lambda_f - 0.15 - 0.05 * sai_f) / (lambda_f.Power(2)));
+                var row_f = Math.Min(1,Math.Abs( (lambda_f - 0.15 - 0.05 * sai_f) / (lambda_f.Power(2))));
                 be = row_f * b_prime;
             }
 
@@ -323,7 +323,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var sai_c = F2 / F1;
             var Kc = (0.578) / (sai_c + 0.34);
             var lambda_c = ((c_prime / t) / 59.0) * (Math.Sqrt(Fy / Kc));
-            var row_c = Math.Min(1, (lambda_c - 0.15 - 0.05 * lambda_c) / (lambda_c.Power(2)));
+            var row_c = Math.Min(1, Math.Abs((lambda_c - 0.15 - 0.05 * lambda_c) / (lambda_c.Power(2))));
             var Ri = Math.Min(1, Is / Ia);
             var Ce = row_c * c_prime * Ri;
 
@@ -377,7 +377,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                     kw = 5.98 * (1 - sai_w).Power(2);
                 }
                 var lambda_w = ((a_prime / t) / 44) * (Math.Sqrt(Fy / kw));
-                var row_w = Math.Min(1, (1.1 * lambda_w - 0.16 - 0.1 * sai_w) / (lambda_w.Power(2)));
+                var row_w = Math.Min(1,Math.Abs( (1.1 * lambda_w - 0.16 - 0.1 * sai_w) / (lambda_w.Power(2))));
                 var ae = row_w * (a_prime / (1 - sai_w));
 
 
