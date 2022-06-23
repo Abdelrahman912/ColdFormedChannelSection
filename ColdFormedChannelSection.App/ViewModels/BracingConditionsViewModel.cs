@@ -140,11 +140,11 @@ namespace ColdFormedChannelSection.App.ViewModels
             Lx = 0;
             Ly = 0;
             Lz= 0;
-            Cb = 0;
-            C1 = 0;
-            Kx = 0;
-            Ky = 0;
-            Kz = 0;
+            Cb = 1;
+            C1 = 1;
+            Kx = 1;
+            Ky = 1;
+            Kz = 1;
 
             IsCbUsed = false;
             IsLuUsed = false;
@@ -239,6 +239,7 @@ namespace ColdFormedChannelSection.App.ViewModels
         private void DefaultMoment()
         {
             IsCbUsed = true;
+            Cb = 1;
             IsLuUsed = true;
             IsC1Used = false;
             IsCmUsed = false;
@@ -249,8 +250,10 @@ namespace ColdFormedChannelSection.App.ViewModels
        private void EuroMoment()
         {
             IsC1Used = true;
+            C1 = 1;
             IsLuUsed = true;
             IsCbUsed = true;
+            Cb = 1;
         }
 
         private void OnUnitsChanged(UnitSystems unit)
