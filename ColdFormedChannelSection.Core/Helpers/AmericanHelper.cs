@@ -474,7 +474,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var b_over_t = Tuple.Create(section.Properties.BSmall / section.Dimensions.ThicknessT, 60.0);
 
             var c_over_t = Tuple.Create(section.Properties.CSmall / section.Dimensions.ThicknessT, 14.0);
-            var a_over_t = Tuple.Create(section.Properties.ADimension / section.Dimensions.ThicknessT, 500.0);
+            var a_over_t = Tuple.Create(section.Properties.ASmall / section.Dimensions.ThicknessT, 500.0);
             var C_over_b = Tuple.Create(section.Dimensions.TotalFoldWidthC / section.Properties.BSmall, 0.8);
 
             var allows = new List<Tuple<double, double>>()
@@ -489,7 +489,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var b_over_t = Tuple.Create(section.Properties.BSmall / section.Dimensions.ThicknessT, 60.0);
 
             var c_over_t = Tuple.Create(section.Properties.CSmall / section.Dimensions.ThicknessT, 14.0);
-            var a_over_t = Tuple.Create(section.Properties.ADimension / section.Dimensions.ThicknessT, 200.0);
+            var a_over_t = Tuple.Create(section.Properties.ASmall / section.Dimensions.ThicknessT, 200.0);
             var C_over_b = Tuple.Create(section.Dimensions.TotalFoldWidthC / section.Properties.BSmall, 0.8);
 
             var allows = new List<Tuple<double, double>>()

@@ -79,14 +79,19 @@ namespace ColdFormedChannelSection.Core.Helpers
         #region Compression
 
 
+
         public static CompressionResistanceOutput AsDSCompressionResistance(this LippedSection lippedSection, Material material, LengthBracingConditions bracingConditions)
         {
+            if (!lippedSection.IsValidForCompression())
+                return new CompressionResistanceOutput(0.0, 0.9, FailureMode.UNSAFE, "Kip", null);
             var p_crl = lippedSection.GetCompressionLBResistance(material);
             return lippedSection.AsCompressionResistance(material, bracingConditions, p_crl);
         }
 
         public static CompressionResistanceOutput AsDSCompressionResistance(this UnStiffenedSection unstiffenedSection, Material material, LengthBracingConditions bracingConditions)
         {
+            if (!unstiffenedSection.IsValidForCompression())
+                return new CompressionResistanceOutput(0.0, 0.9, FailureMode.UNSAFE, "Kip", null);
             var p_crl = unstiffenedSection.GetCompressionLBResistance(material);
             return unstiffenedSection.AsCompressionResistance(material, bracingConditions, p_crl);
         }
@@ -342,14 +347,85 @@ namespace ColdFormedChannelSection.Core.Helpers
 
         #region Moment
 
+        private static bool IsValidForMoment(this UnStiffenedSection section)
+        {
+            var a_over_t = Tuple.Create(section.Properties.ADimension / section.Dimensions.ThicknessT, 300.0);
+            var b_over_t = Tuple.Create(section.Properties.BSmall / section.Dimensions.ThicknessT, 60.0);
+
+            var C_over_b = Tuple.Create(section.Dimensions.TotalFoldWidthC / section.Properties.BSmall, 0.8);
+            var c_over_t = Tuple.Create(section.Properties.CSmall / section.Dimensions.ThicknessT, 60.0);
+            var R_over_t = Tuple.Create(section.Dimensions.InternalRadiusR / section.Dimensions.ThicknessT, 20.0);
+
+
+            var allows = new List<Tuple<double, double>>()
+            {
+                b_over_t,c_over_t,a_over_t,C_over_b,R_over_t
+            };
+            return !allows.Any(tuple => tuple.Item1 > tuple.Item2);
+        }
+
+        private static bool IsValidForMoment(this LippedSection section)
+        {
+            var a_over_t = Tuple.Create(section.Properties.ADimension / section.Dimensions.ThicknessT, 300.0);
+            var b_over_t = Tuple.Create(section.Properties.BSmall / section.Dimensions.ThicknessT, 160.0);
+
+            var C_over_b = Tuple.Create(section.Dimensions.TotalFoldWidthC / section.Properties.BSmall, 0.8);
+            var c_over_t = Tuple.Create(section.Properties.CSmall / section.Dimensions.ThicknessT, 60.0);
+            var R_over_t = Tuple.Create(section.Dimensions.InternalRadiusR / section.Dimensions.ThicknessT, 20.0);
+
+
+            var allows = new List<Tuple<double, double>>()
+            {
+                b_over_t,c_over_t,a_over_t,C_over_b,R_over_t
+            };
+            return !allows.Any(tuple => tuple.Item1 > tuple.Item2);
+        }
+
+
+        private static bool IsValidForCompression(this UnStiffenedSection section)
+        {
+            var a_over_t = Tuple.Create(section.Properties.ADimension / section.Dimensions.ThicknessT, 500.0);
+            var b_over_t = Tuple.Create(section.Properties.BSmall / section.Dimensions.ThicknessT, 60.0);
+
+            var C_over_b = Tuple.Create(section.Dimensions.TotalFoldWidthC / section.Properties.BSmall, 0.8);
+            var c_over_t = Tuple.Create(section.Properties.CSmall / section.Dimensions.ThicknessT, 60.0);
+
+
+            var allows = new List<Tuple<double, double>>()
+            {
+                b_over_t,c_over_t,a_over_t,C_over_b
+            };
+            return !allows.Any(tuple => tuple.Item1 > tuple.Item2);
+        }
+
+        private static bool IsValidForCompression(this LippedSection section)
+        {
+            var a_over_t = Tuple.Create(section.Properties.ADimension / section.Dimensions.ThicknessT, 500.0);
+            var b_over_t = Tuple.Create(section.Properties.BSmall / section.Dimensions.ThicknessT, 160.0);
+
+            var C_over_b = Tuple.Create(section.Dimensions.TotalFoldWidthC / section.Properties.BSmall, 0.8);
+            var c_over_t = Tuple.Create(section.Properties.CSmall / section.Dimensions.ThicknessT, 60.0);
+
+
+            var allows = new List<Tuple<double, double>>()
+            {
+                b_over_t,c_over_t,a_over_t,C_over_b
+            };
+            return !allows.Any(tuple => tuple.Item1 > tuple.Item2);
+        }
+
         public static MomentResistanceOutput AsDSMomentResistance(this UnStiffenedSection unstiffenedSection, Material material, LengthBracingConditions bracingConditions)
         {
+            if (!unstiffenedSection.IsValidForMoment())
+                return new MomentResistanceOutput(0.0, 0.9, FailureMode.UNSAFE, "Kip", null);
             (var m_crl , var items_buckling) = unstiffenedSection.GetMomentLBResistance(material);
             return unstiffenedSection.AsMomentResistance(material,bracingConditions,m_crl,items_buckling,0.9);
         }
 
         public static MomentResistanceOutput AsDSMomentResistance(this LippedSection lippedSection, Material material, LengthBracingConditions bracingConditions)
         {
+            if (!lippedSection.IsValidForMoment())
+                return new MomentResistanceOutput(0.0, 0.9, FailureMode.UNSAFE, "Kip", null);
             (var m_crl, var items_buckling) = lippedSection.GetMomentLBResistance(material);
             return lippedSection.AsMomentResistance(material, bracingConditions, m_crl,items_buckling,0.95);
         }
