@@ -110,7 +110,10 @@ namespace ColdFormedChannelSection.Core.Helpers
                 var n = Math.Max(n_1, n_2);
 
                 //Flange.
-                Kf = Math.Min(4.0, (4.82 - ((5 * C) / (b))) * Ri.Power(n) + 0.43);
+                var C_over_b = C / b;
+                Kf = C_over_b <= 0.25 ? (3.57 * (Ri).Power(n) + 0.43).TakeMin(4.0)
+                                   : ((4.82 - ((5 * C) / (b))) * Ri.Power(n) + 0.43).TakeMin(4);
+                
                 var Fcr_f = Kf * e_over_v_term * (t / b).Power(2);
                 var lambda_f = Math.Sqrt(Fy / Fcr_f);
                 var row_f = ((1 - (0.22 / lambda_f)) / (lambda_f)).IfNegativeReturnOne().TakeMinWithOne() ;
@@ -255,7 +258,10 @@ namespace ColdFormedChannelSection.Core.Helpers
                 var n = Math.Max(n_1, n_2);
 
                 //Flange.
-                Kf = Math.Min(4.0, (4.82 - ((5 * C) / (b))) * Ri.Power(n) + 0.43);
+                var C_over_b = C / b;
+                Kf = C_over_b <= 0.25 ? (3.57 *(Ri).Power(n)+0.43).TakeMin(4)
+                                       :  ((4.82 - ((5 * C) / (b))) * Ri.Power(n) + 0.43).TakeMin(4);
+          
                 var Fcr_f = Kf * e_over_v_term * (t / b).Power(2);
                 var lambda_f = Math.Sqrt(Fy / Fcr_f);
                 var row_f = ((1 - (0.22 / lambda_f)) / (lambda_f)).IfNegativeReturnOne().TakeMinWithOne();
