@@ -372,8 +372,13 @@ namespace ColdFormedChannelSection.Core.Helpers
                 {
                     kw = 7.81 - 6.29 * sai_w + 9.78 * sai_w.Power(2);
                 }
-                else if (sai_w < -1 && sai_w > -2)
+                //else if (sai_w < -1 && sai_w > -2)
+                //{
+                //    kw = 5.98 * (1 - sai_w).Power(2);
+                //}
+                else
                 {
+                    //To handle the wrong cases where sai_w < -2
                     kw = 5.98 * (1 - sai_w).Power(2);
                 }
                 var lambda_w = ((a_prime / t) / 44) * (Math.Sqrt(Fy / kw));
