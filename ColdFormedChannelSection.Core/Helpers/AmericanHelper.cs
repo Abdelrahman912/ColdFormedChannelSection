@@ -113,7 +113,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 Kf = Math.Min(4.0, (4.82 - ((5 * C) / (b))) * Ri.Power(n) + 0.43);
                 var Fcr_f = Kf * e_over_v_term * (t / b).Power(2);
                 var lambda_f = Math.Sqrt(Fy / Fcr_f);
-                var row_f = Math.Min(1.0, (1 - (0.22 / lambda_f)) / (lambda_f));
+                var row_f = ((1 - (0.22 / lambda_f)) / (lambda_f)).IfNegativeReturnOne().TakeMinWithOne() ;
                 if (lambda_f > 0.673)
                     be = row_f * b;
 
@@ -121,7 +121,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 Kc = 0.43;
                 var Fcr_c = Kc * e_over_v_term * (t / c).Power(2);
                 var lambda_c = Math.Sqrt(Fy / Fcr_c);
-                var row_c = Math.Min(1.0, (1 - (0.22 / lambda_c)) / (lambda_c));
+                var row_c = ( (1 - (0.22 / lambda_c)) / (lambda_c)).IfNegativeReturnOne().TakeMinWithOne();
                 if (lambda_c <= 0.673)
                     Ce = c * Ri;
                 else
@@ -131,7 +131,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var kw = 4.0;
             var Fcr_w = kw * e_over_v_term * (t / a).Power(2);
             var lambda_w = Math.Sqrt(Fy / Fcr_w);
-            var row_w = Math.Min(1.0, (1 - (0.22 / lambda_w)) / lambda_w);
+            var row_w = ((1 - (0.22 / lambda_w)) / lambda_w).IfNegativeReturnOne().TakeMinWithOne();
             if (lambda_w > 0.673)
                 ae = row_w * a;
             var Ae = t * (2 * Ce + 2 * be + ae + 2 * u * (1 + alpha));
@@ -167,7 +167,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var Kf = 0.43;
             var Fcr_f = Kf * e_over_v_term * (t / b).Power(2);
             var lambda_f = Math.Sqrt(Fy / Fcr_f);
-            var row_f = Math.Min(1.0, ((1 - (0.22 / lambda_f)) / lambda_f));
+            var row_f = ( ((1 - (0.22 / lambda_f)) / lambda_f)).IfNegativeReturnOne().TakeMinWithOne();
             if (lambda_f > 0.673)
                 be = row_f * b;
 
@@ -175,7 +175,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var kw = 4.0;
             var Fcr_w = kw * e_over_v_term * (t / a).Power(2);
             var lambda_w = Math.Sqrt(Fy / Fcr_w);
-            var row_w = Math.Min(1.0, (1 - (0.22 / lambda_w)) / lambda_w);
+            var row_w = ((1 - (0.22 / lambda_w)) / lambda_w).IfNegativeReturnOne().TakeMinWithOne();
             if (lambda_w > 0.673)
                 ae = row_w * a;
             var Ae = t * (2 * be + ae + 2 * u * (1 + alpha));
@@ -207,7 +207,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var kf = 0.43;
             var Fcr_f = kf * e_over_v_term * (t / b).Power(2);
             var lambda_f = Math.Sqrt(Fy / Fcr_f);
-            var row_f = Math.Min(1.0, ((1 - (0.22 / lambda_f)) / lambda_f));
+            var row_f = ( ((1 - (0.22 / lambda_f)) / lambda_f)).IfNegativeReturnOne().TakeMinWithOne();
             if (lambda_f > 0.673)
                 be = row_f * b;
 
@@ -258,7 +258,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 Kf = Math.Min(4.0, (4.82 - ((5 * C) / (b))) * Ri.Power(n) + 0.43);
                 var Fcr_f = Kf * e_over_v_term * (t / b).Power(2);
                 var lambda_f = Math.Sqrt(Fy / Fcr_f);
-                var row_f = Math.Min(1.0, (1 - (0.22 / lambda_f)) / (lambda_f));
+                var row_f = ((1 - (0.22 / lambda_f)) / (lambda_f)).IfNegativeReturnOne().TakeMinWithOne();
                 if (lambda_f > 0.673)
                     be = row_f * b;
 
@@ -269,7 +269,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var Fcr_c = kc * e_over_v_term * (t / c).Power(2);
             var F1 = Fy * ((y_bar - (t / 2) - r) / y_bar);
             var lambda_c = Math.Sqrt(F1 / Fcr_c);
-            var row_c = Math.Min(1.0, ((1 - (0.22 / lambda_c)) / lambda_c));
+            var row_c = (((1 - (0.22 / lambda_c)) / lambda_c)).IfNegativeReturnOne().TakeMinWithOne();
             var ce = c * Ri;
             if (lambda_c > 0.673)
                 ce = row_c * c * Ri;
@@ -324,7 +324,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 Kw = 4 + 2 * (1 + sai).Power(3) + 2 * (1 + sai);
                 var Fcr_w = Kw * e_over_v_term * (t / a).Power(2);
                 var lambda_W = Math.Sqrt(F1 / Fcr_w);
-                var row_w = Math.Min(1, (1 - (0.22 / lambda_W)) / (lambda_W));
+                var row_w = ((1 - (0.22 / lambda_W)) / (lambda_W)).IfNegativeReturnOne().TakeMinWithOne();
                 if (lambda_W > 0.673)
                     ae = row_w * a;
                 var he1 = (ae) / (3 + sai);

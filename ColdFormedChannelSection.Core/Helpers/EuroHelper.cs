@@ -129,7 +129,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var lambda_w_limit = 0.5 + Math.Sqrt(0.085 - 0.055 * sai_w);
             var row_w = 1.0;
             if (lambda_w > lambda_w_limit)
-                row_w = Math.Min(1.0, ((lambda_w - 0.055 * (3 + sai_w)) / (lambda_w.Power(2))));
+                row_w = (((lambda_w - 0.055 * (3 + sai_w)) / (lambda_w.Power(2)))).IfNegativeReturnOne().TakeMinWithOne();
             var ae = row_w * a_prime;
             return ae;
         }
@@ -165,7 +165,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             do
             {
                 if (lambda_f > lambda_f_limit)
-                    row_f = Math.Min(1.0, ((lambda_f - 0.055 * (3 + sai_f)) / (lambda_f.Power(2))));
+                    row_f = (((lambda_f - 0.055 * (3 + sai_f)) / (lambda_f.Power(2)))).IfNegativeReturnOne().TakeMinWithOne();
                 else
                     row_f = 1.0;
                 var be = row_f * b_prime;
@@ -174,7 +174,7 @@ namespace ColdFormedChannelSection.Core.Helpers
 
                 var row_c = 1.0;
                 if (lambda_c > 0.748)
-                    row_c = Math.Min(1.0, (lambda_c - 0.188) / (lambda_c.Power(2)));
+                    row_c = ((lambda_c - 0.188) / (lambda_c.Power(2))).IfNegativeReturnOne().TakeMinWithOne();
                 else
                     row_c = 1.0;
                 ce = row_c * c_prime;
@@ -203,7 +203,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var lambda_f = (b_prime / t) / (28.4 * epslon * Math.Sqrt(kf));
             var row_f = 1.0;
             if (lambda_f > 0.748)
-                row_f = Math.Min(1.0, (lambda_f - 0.188) / (lambda_f.Power(2)));
+                row_f = ((lambda_f - 0.188) / (lambda_f.Power(2))).IfNegativeReturnOne().TakeMinWithOne();
 
             var be = row_f * b_prime;
             var be1 = 0.5 * be;
@@ -541,7 +541,7 @@ namespace ColdFormedChannelSection.Core.Helpers
 
             var row_w = 1.0;
             if (lambda_w > lambda_w_limit)
-                row_w = Math.Min(1.0, ((lambda_w - 0.055 * (3 + sai_w)) / (lambda_w.Power(2))));
+                row_w = (((lambda_w - 0.055 * (3 + sai_w)) / (lambda_w.Power(2)))).IfNegativeReturnOne().TakeMinWithOne();
 
             var ae = row_w * (a_prime / (1 - sai_w));
             var he1 = 0.4 * ae;
