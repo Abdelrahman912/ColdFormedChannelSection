@@ -218,9 +218,11 @@ namespace ColdFormedChannelSection.App.ViewModels
         private void AISIMomentCompression()
         {
             IsCbUsed = true;
+            Cb = 1;
             IsLuUsed = true;
             IsC1Used = false;
             IsCmUsed = true;
+            Cm = 1;
             C1 = 0;
         }
 

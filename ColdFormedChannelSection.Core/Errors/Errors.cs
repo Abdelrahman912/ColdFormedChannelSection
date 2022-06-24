@@ -2,6 +2,8 @@
 {
     public class Errors
     {
+        public static GenericError CantCalculateNominalStrength =>
+          new GenericError($"Cannot calculate section nominal strength due to section dimensions ratio vilation.");
 
         public static GenericError CantFindSafeSection =>
             new GenericError($"Cannot find section to carry these loads.");

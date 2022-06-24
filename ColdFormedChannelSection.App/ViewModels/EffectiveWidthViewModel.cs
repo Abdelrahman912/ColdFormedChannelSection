@@ -13,6 +13,8 @@ using System.Linq;
 using System.Windows.Input;
 using Unit = System.ValueTuple;
 using static CSharp.Functional.Functional;
+using CSharp.Functional.Constructs;
+using static ColdFormedChannelSection.Core.Errors.Errors;
 
 namespace ColdFormedChannelSection.App.ViewModels
 {
@@ -159,16 +161,26 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         private void OnReults()
         {
+            Func<Validation<Unit>> designValid = () =>
+            {
+                _moduleDict[GeneralInfoVM.RunningModule](this);
+                if (ResistanceOutput == null)
+                    return CantFindSafeSection;
+                else if (ResistanceOutput.Report == null)
+                    return CantCalculateNominalStrength;
+                else
+                {
+                    Report = ResistanceOutput.Report.Convert(GeneralInfoVM.Unit);
+                    IsDisplayReport = true;
+                    return Unit();
+                }
+            };
+
             _validateFuncs.SelectMany(f => f())
                           .AsUnitValidation()
+                          .Bind(_ => designValid())
                           .Match(errs => { IsDisplayReport = false; ShowErrorsService(errs.ToList()); return Unit(); },
-                                u =>
-                                {
-                                    _moduleDict[GeneralInfoVM.RunningModule](this);
-                                    Report = ResistanceOutput.Report.Convert(GeneralInfoVM.Unit);
-                                    IsDisplayReport = true;
-                                    return u;
-                                });
+                                 u => u);
         }
 
         private static void Design(EffectiveWidthViewModel vm)

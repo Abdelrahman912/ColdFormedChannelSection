@@ -128,6 +128,8 @@ namespace ColdFormedChannelSection.App.ViewModels
                 _moduleDict[GeneralInfoVM.RunningModule](this);
                 if (ResistanceOutput == null)
                     return CantFindSafeSection;
+                else if (ResistanceOutput.Report == null)
+                    return CantCalculateNominalStrength;
                 else
                 {
                     Report = ResistanceOutput.Report.Convert(GeneralInfoVM.Unit);
