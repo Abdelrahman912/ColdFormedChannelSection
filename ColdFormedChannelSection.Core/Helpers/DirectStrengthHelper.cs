@@ -140,9 +140,9 @@ namespace ColdFormedChannelSection.Core.Helpers
             };
             var strength_items = new List<ReportItem>()
             {
-                new ReportItem("Nominal Local Buckling Load (Pnl)",p_crl.ToString("0.###"),Units.KIP),
-                new ReportItem("Nominal Distortional Buckling Load (Pnd)",p_crd.ToString("0.###"),Units.KIP),
-                new ReportItem("Nominal Global Buckling Load (Pne)",p_cre.ToString("0.###"),Units.KIP),
+                new ReportItem("Nominal Local Buckling Load (Pnl)",Pnl.ToString("0.###"),Units.KIP),
+                new ReportItem("Nominal Distortional Buckling Load (Pnd)",Pnd.ToString("0.###"),Units.KIP),
+                new ReportItem("Nominal Global Buckling Load (Pne)",Pne.ToString("0.###"),Units.KIP),
             };
             var squash_items = new List<ReportItem>()
             {
@@ -151,7 +151,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var nominal_items = new List<ReportItem>()
             {
                 new ReportItem("Governing Case",nominalLoad.Item2.ToString(),Units.NONE),
-                new ReportItem("Nominal Load (Pn)",p_crl.ToString("0.###"),Units.KIP),
+                new ReportItem("Nominal Load (Pn)",nominalLoad.Item1.ToString("0.###"),Units.KIP),
                 new ReportItem("phi",0.85.ToString("0.###"),Units.KIP),
                 new ReportItem("Design Strength (phi*Pn)",(0.85*nominalLoad.Item1).ToString("0.###"),Units.KIP),
             };
