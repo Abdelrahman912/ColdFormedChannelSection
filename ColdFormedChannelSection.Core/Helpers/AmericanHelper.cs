@@ -474,6 +474,21 @@ namespace ColdFormedChannelSection.Core.Helpers
             var b_over_t = Tuple.Create(section.Properties.BSmall / section.Dimensions.ThicknessT, 60.0);
 
             var c_over_t = Tuple.Create(section.Properties.CSmall / section.Dimensions.ThicknessT, 14.0);
+            var a_over_t = Tuple.Create(section.Properties.ADimension / section.Dimensions.ThicknessT, 500.0);
+            var C_over_b = Tuple.Create(section.Dimensions.TotalFoldWidthC / section.Properties.BSmall, 0.8);
+
+            var allows = new List<Tuple<double, double>>()
+            {
+                b_over_t,c_over_t,a_over_t,C_over_b
+            };
+            return !allows.Any(tuple => tuple.Item1 > tuple.Item2);
+        }
+
+        private static bool IsValidForMoment(this Section section)
+        {
+            var b_over_t = Tuple.Create(section.Properties.BSmall / section.Dimensions.ThicknessT, 60.0);
+
+            var c_over_t = Tuple.Create(section.Properties.CSmall / section.Dimensions.ThicknessT, 14.0);
             var a_over_t = Tuple.Create(section.Properties.ADimension / section.Dimensions.ThicknessT, 200.0);
             var C_over_b = Tuple.Create(section.Dimensions.TotalFoldWidthC / section.Properties.BSmall, 0.8);
 
@@ -627,7 +642,7 @@ namespace ColdFormedChannelSection.Core.Helpers
 
         public static MomentResistanceOutput AsAISIMomentResistance(this LippedSection lippedSection, Material material, LengthBracingConditions bracingConditions)
         {
-            if (!lippedSection.IsValidForCompression())
+            if (!lippedSection.IsValidForMoment())
                 return new MomentResistanceOutput(0.0, 0.95, FailureMode.UNSAFE, "Kip",null);
             (var Mn_local, var items_local) = lippedSection.GetAISIMomentLBResistance(material);
             var Mn1 = Tuple.Create(Mn_local, FailureMode.LOCALBUCKLING);
@@ -660,7 +675,7 @@ namespace ColdFormedChannelSection.Core.Helpers
 
         public static MomentResistanceOutput AsAISIMomentResistance(this UnStiffenedSection unstiffenedSection, Material material, LengthBracingConditions bracingConditions)
         {
-            if (!unstiffenedSection.IsValidForCompression())
+            if (!unstiffenedSection.IsValidForMoment())
                 return new MomentResistanceOutput(0.0, 0.9, FailureMode.UNSAFE, "Kip",null);
             (var Mn_local, var items_local) = unstiffenedSection.GetAISIMomentLBResistance(material);
             var Mn1 = Tuple.Create(Mn_local, FailureMode.LOCALBUCKLING);
