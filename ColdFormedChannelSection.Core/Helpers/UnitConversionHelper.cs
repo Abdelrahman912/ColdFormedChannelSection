@@ -260,46 +260,46 @@ namespace ColdFormedChannelSection.Core.Helpers
             return new ReportItem(item.Name, newValue.ToString("0.###"), newUnit);
         }
 
-        private static List<ReportItem> Convert(this List<ReportItem> items , UnitSystems source , UnitSystems target)
+        public static List<ReportItem> Convert(this List<ReportItem> items , UnitSystems source , UnitSystems target)
         {
             
-            return items.Select(item => item.Convert(source, target)).ToList();
+            return items?.Select(item => item.Convert(source, target)).ToList();
         }
 
-        public static CompressionReport Convert(this CompressionReport report , UnitSystems source , UnitSystems target)
-        {
-            if (source == target)
-                return report;
-            return new CompressionReport(
-                title: report.Title,
-                item1Name:report.Item1Name,
-                item1List: report.Item1List.Convert(source,target),
-                item2Name:report.Item2Name,
-                item2List:report.Item2List.Convert(source,target),
-                item3Name: report.Item3Name,
-                item3List:report.Item3List.Convert(source,target),
-                designCompressionList:report.DesignList.Convert(source,target),
-                target
-                );
-        }
+        //public static CompressionReport Convert(this CompressionReport report , UnitSystems source , UnitSystems target)
+        //{
+        //    if (source == target)
+        //        return report;
+        //    return new CompressionReport(
+        //        title: report.Title,
+        //        item1Name:report.Item1Name,
+        //        item1List: report.Item1List.Convert(source,target),
+        //        item2Name:report.Item2Name,
+        //        item2List:report.Item2List.Convert(source,target),
+        //        item3Name: report.Item3Name,
+        //        item3List:report.Item3List.Convert(source,target),
+        //        designCompressionList:report.DesignList.Convert(source,target),
+        //        target
+        //        );
+        //}
 
-        public static MomentReport Convert(this MomentReport report, UnitSystems source, UnitSystems target)
-        {
-            if (source == target)
-                return report;
-            return new MomentReport(
-                title: report.Title,
-                item1Name: report.Item1Name,
-                item1List: report.Item1List.Convert(source, target),
-                item2Name: report.Item2Name,
-                item2List: report.Item2List.Convert(source, target),
-                designList: report.DesignList.Convert(source, target),
-                target
-                );
-        }
+        //public static MomentReport Convert(this MomentReport report, UnitSystems source, UnitSystems target)
+        //{
+        //    if (source == target)
+        //        return report;
+        //    return new MomentReport(
+        //        title: report.Title,
+        //        item1Name: report.Item1Name,
+        //        item1List: report.Item1List.Convert(source, target),
+        //        item2Name: report.Item2Name,
+        //        item2List: report.Item2List.Convert(source, target),
+        //        designList: report.DesignList.Convert(source, target),
+        //        target
+        //        );
+        //}
 
-        public static InteractionReport Convert(this InteractionReport report, UnitSystems source, UnitSystems target) =>
-            new InteractionReport(report.CompressionReport.Convert( target), report.MomentReport.Convert( target),target);
+        //public static InteractionReport Convert(this InteractionReport report, UnitSystems source, UnitSystems target) =>
+        //    new InteractionReport(report.CompressionReport.Convert( target), report.MomentReport.Convert( target),target);
        
 
     }

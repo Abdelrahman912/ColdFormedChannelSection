@@ -43,8 +43,12 @@ namespace ColdFormedChannelSection.Core.Helpers
                 ie = (pu / (2 * PHI_C * Pn.NominalResistance)) + (mu / (PHI_B * Mn.NominalResistance));
                 ieName = "\\frac {P_u} {2 \\phi_c P_n} +  \frac {M_u} {\\phi_b M_n}";
             }
-            var report = new InteractionReport(Pn.Report, Mn.Report,UnitSystems.TONCM);
-            return new ResistanceInteractionOutput(pu, Pn.NominalResistance, mu, Mn.NominalResistance, ieName, ie, "t.cm", "ton",report);
+            var sections = Pn.Report.Sections.Select(sec => sec.AppendToName("Compression"))
+                                                .Concat(Mn.Report.Sections.Select(sec => sec.AppendToName("Moment")))
+                                                .ToList();
+
+            var report = new Report(UnitSystems.TONCM, "Egyptian Code - Interaction", sections);
+            return new ResistanceInteractionOutput(pu, Pn.NominalResistance, mu, Mn.NominalResistance, ieName, ie, "t.cm", "ton", report);
         }
 
 
@@ -71,7 +75,13 @@ namespace ColdFormedChannelSection.Core.Helpers
                 ie = (pu / (2 * PHI_C * Pn.NominalResistance)) + (mu / (PHI_B * Mn.NominalResistance));
                 ieName = "\\frac {P_u} {2 \\phi_c P_n} +  \frac {M_u} {\\phi_b M_n}";
             }
-            var report = new InteractionReport(Pn.Report, Mn.Report,UnitSystems.TONCM);
+
+            var sections = Pn.Report.Sections.Select(sec => sec.AppendToName("Compression"))
+                                                .Concat(Mn.Report.Sections.Select(sec => sec.AppendToName("Moment")))
+                                                .ToList();
+
+            var report = new Report(UnitSystems.TONCM, "Egyptian Code - Interaction", sections);
+            
             return new ResistanceInteractionOutput(pu, Pn.NominalResistance, mu, Mn.NominalResistance, ieName, ie, "t.cm", "ton", report);
         }
 
@@ -111,64 +121,56 @@ namespace ColdFormedChannelSection.Core.Helpers
         public static MomentResistanceOutput AsEgyptMomentResistance(this LippedSection section, Material material, LengthBracingConditions bracingConditions)
         {
             if (!section.IsValidMoment())
-                return new MomentResistanceOutput(0.0, PHI_B, FailureMode.UNSAFE, "t.cm",null);
+                return new MomentResistanceOutput(0.0, PHI_B, FailureMode.UNSAFE, "t.cm", null);
 
-            (var Ze ,var Z_items)= section.GetEgyptReducedZe(material);
+            (var Ze, var Z_items) = section.GetEgyptReducedZe(material);
 
-            (var Mn, var failureMode,var items_stress) = section.GetEgyptMomentResistance(material, bracingConditions, Ze);
+            (var Mn, var failureMode, var items_stress) = section.GetEgyptMomentResistance(material, bracingConditions, Ze);
 
-            var items = Z_items.Concat(items_stress).ToList();
-            var nominal_items = new List<ReportItem>()
+            var nominalItems = Z_items.Concat(items_stress).ToList();
+            var designItems = new List<ReportItem>()
             {
                 new ReportItem("Governing Case",failureMode.ToString(),Units.NONE),
                 new ReportItem("Nominal Moment (Mn)",Mn.ToString("0.###"),Units.TON_CM),
                 new ReportItem("phi",PHI_B.ToString("0.###"),Units.NONE),
                 new ReportItem("Design Moment",(PHI_B*Mn).ToString("0.###"),Units.TON_CM)
             };
-            var report = new MomentReport(
-              "Egytian Code - Moment",
-              "Nominal Moment",
-              items,
-              "",
-              null,
-              nominal_items,
-              UnitSystems.TONCM
-              );
-            var result = new MomentResistanceOutput(Mn, PHI_B, failureMode, "t.cm",report);
+            var report = new Report(UnitSystems.TONCM, "Egytian Code - Moment", null);
+            var nominalSection = new ListReportSection("Nominal Moment", nominalItems);
+            var designSection = new ListReportSection("Design Moment", designItems);
+            var result = new MomentResistanceOutput(Mn, PHI_B, failureMode, "t.cm", report);
             return result;
         }
 
         public static MomentResistanceOutput AsEgyptMomentResistance(this UnStiffenedSection section, Material material, LengthBracingConditions bracingConditions)
         {
             if (!section.IsValidMoment())
-                return new MomentResistanceOutput(0.0, PHI_B, FailureMode.UNSAFE, "t.cm",null);
+                return new MomentResistanceOutput(0.0, PHI_B, FailureMode.UNSAFE, "t.cm", null);
 
-            (var Ze,var Z_items) = section.GetEgyptReducedZe(material);
-            (var Mn, var failureMode,var items_stress) = section.GetEgyptMomentResistance(material, bracingConditions, Ze);
+            (var Ze, var Z_items) = section.GetEgyptReducedZe(material);
+            (var Mn, var failureMode, var items_stress) = section.GetEgyptMomentResistance(material, bracingConditions, Ze);
 
-            var items = Z_items.Concat(items_stress).ToList();
+            var nominalItems = Z_items.Concat(items_stress).ToList();
 
-            var nominal_items = new List<ReportItem>()
+            var designItems = new List<ReportItem>()
             {
                 new ReportItem("Governing Case",failureMode.ToString(),Units.NONE),
                 new ReportItem("Nominal Moment (Mn)",Mn.ToString("0.###"),Units.TON_CM),
                 new ReportItem("phi",PHI_B.ToString("0.###"),Units.NONE),
                 new ReportItem("Design Moment",(PHI_B*Mn).ToString("0.###"),Units.TON_CM)
             };
-            var report = new MomentReport(
-                "Egyptian Code - Moment",
-                "Nominal Moment",
-                items,
-                "",
-                null,
-                nominal_items,
-                UnitSystems.TONCM
-                );
-            var result = new MomentResistanceOutput(Mn, PHI_B, failureMode, "t.cm",report);
+
+            var nominalSection = new ListReportSection("Nominal Moment", nominalItems);
+            var designSection = new ListReportSection("Design Moment", designItems);
+            var sections = new List<IReportSection>() { nominalSection, designSection };
+
+            var report = new Report(UnitSystems.TONCM, "Egyptian Code - Moment", sections);
+
+            var result = new MomentResistanceOutput(Mn, PHI_B, failureMode, "t.cm", report);
             return result;
         }
 
-        private static Tuple<double, FailureMode,List<ReportItem>> GetEgyptMomentResistance(this Section section, Material material, LengthBracingConditions bracingConditions, double Ze)
+        private static Tuple<double, FailureMode, List<ReportItem>> GetEgyptMomentResistance(this Section section, Material material, LengthBracingConditions bracingConditions, double Ze)
         {
             var Fy = material.Fy;
             var b = section.Properties.BSmall;
@@ -188,7 +190,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 var Mn2 = Math.Min(Ze * Fy, Zg * Math.Sqrt(((1380 * b * t) / (H * Lu)).Power(2) + ((20700) / (Lu / rt).Power(2)).Power(2)));
                 var Ze_report = 0.0;
                 var F_report = 0.0;
-                if(Mn2< Ze * Fy)
+                if (Mn2 < Ze * Fy)
                 {
                     Ze_report = Zg;
                     F_report = Mn2 / Zg;
@@ -198,7 +200,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                     Ze_report = Ze;
                     F_report = Fy;
                 }
-                 
+
                 var items = new List<ReportItem>()
                 {
                     new ReportItem("Local Section Modulus",Zg.ToString("0.###"),Units.CM_3),
@@ -209,7 +211,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                     new ReportItem("Lateral Torsional Nominal Moment (Mn)",Mn2.ToString("0.###"),Units.TON_CM)
                 };
                 if (Mn1 < Mn2)
-                    return Tuple.Create(Mn1, FailureMode.LOCALBUCKLING,items);
+                    return Tuple.Create(Mn1, FailureMode.LOCALBUCKLING, items);
                 else
                     return Tuple.Create(Mn2, FailureMode.LATERALTORSIONALBUCKLING, items);
             }
@@ -219,14 +221,14 @@ namespace ColdFormedChannelSection.Core.Helpers
                 var items = new List<ReportItem>()
                 {
                     new ReportItem("Flange Slenderness Ratio (lambadaF)",lambda_f.ToString("0.###"),Units.NONE),
-                    new ReportItem("Nominal Moment (Mn)",Mn.ToString("0.###"),Units.TON_CM) 
+                    new ReportItem("Nominal Moment (Mn)",Mn.ToString("0.###"),Units.TON_CM)
                 };
                 return Tuple.Create(Mn, FailureMode.LOCALBUCKLING, items);
             }
 
         }
 
-        private static Tuple<double,List<ReportItem>> GetEgyptReducedZe(this UnStiffenedSection section, Material material)
+        private static Tuple<double, List<ReportItem>> GetEgyptReducedZe(this UnStiffenedSection section, Material material)
         {
             var E = material.E;
             var Fy = material.Fy;
@@ -244,13 +246,13 @@ namespace ColdFormedChannelSection.Core.Helpers
             var row_f = Math.Min(1, (lambda_f - 0.15 - 0.05 * sai_f) / (lambda_f.Power(2)));
             var be = row_f * b_prime;
             var Ce = 0.0;
-            (var Ze,var items) = section.GetEgyptReducedZe(material, be, Ce);
+            (var Ze, var items) = section.GetEgyptReducedZe(material, be, Ce);
             items.Add(new ReportItem("Effective Section Modulus (Ze)", Ze.ToString("0.###"), Units.CM_3));
             items.Add(new ReportItem("Yield Stress (Fy)", material.Fy.ToString("0.###"), Units.TON_CM_2));
             return Tuple.Create(Ze, items);
         }
 
-        private static Tuple<double,List<ReportItem>> GetEgyptReducedZe(this LippedSection section, Material material)
+        private static Tuple<double, List<ReportItem>> GetEgyptReducedZe(this LippedSection section, Material material)
         {
             var E = material.E;
             var Fy = material.Fy;
@@ -283,7 +285,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 var Kf = Math.Min(Kf_1, Kf_2);
                 var lambda_f = ((b_prime / t) / 44) * Math.Sqrt(Fy / Kf);
                 var sai_f = 1.0;
-                var row_f = Math.Min(1,Math.Abs( (lambda_f - 0.15 - 0.05 * sai_f) / (lambda_f.Power(2))));
+                var row_f = Math.Min(1, Math.Abs((lambda_f - 0.15 - 0.05 * sai_f) / (lambda_f.Power(2))));
                 be = row_f * b_prime;
 
             }
@@ -293,7 +295,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 var Kf = Math.Min(3.57 * (Is / Ia).Power(0.5) + 0.43, 4);
                 var lambda_f = ((b_prime / t) / 44) * Math.Sqrt(Fy / Kf);
                 var sai_f = 1.0;
-                var row_f = Math.Min(1,Math.Abs( (lambda_f - 0.15 - 0.05 * sai_f) / (lambda_f.Power(2))));
+                var row_f = Math.Min(1, Math.Abs((lambda_f - 0.15 - 0.05 * sai_f) / (lambda_f.Power(2))));
                 be = row_f * b_prime;
 
             }
@@ -306,18 +308,18 @@ namespace ColdFormedChannelSection.Core.Helpers
                 var Kf = Math.Min(Kf_1, Kf_2);
                 var lambda_f = ((b_prime / t) / 44) * Math.Sqrt(Fy / Kf);
                 var sai_f = 1.0;
-                var row_f = Math.Min(1,Math.Abs( (lambda_f - 0.15 - 0.05 * sai_f) / (lambda_f.Power(2))));
+                var row_f = Math.Min(1, Math.Abs((lambda_f - 0.15 - 0.05 * sai_f) / (lambda_f.Power(2))));
                 be = row_f * b_prime;
 
 
             }
-            else if (b_over_t >= s && c_over_b <= 0.25) 
+            else if (b_over_t >= s && c_over_b <= 0.25)
             {
                 Ia = (((115 * (b / t)) / (s)) + 5) * t.Power(4);
                 var Kf = Math.Min(3.57 * (Is / Ia).Power(1 / 3.0) + 0.43, 4);
                 var lambda_f = ((b_prime / t) / 44) * Math.Sqrt(Fy / Kf);
                 var sai_f = 1.0;
-                var row_f = Math.Min(1,Math.Abs( (lambda_f - 0.15 - 0.05 * sai_f) / (lambda_f.Power(2))));
+                var row_f = Math.Min(1, Math.Abs((lambda_f - 0.15 - 0.05 * sai_f) / (lambda_f.Power(2))));
                 be = row_f * b_prime;
             }
 
@@ -331,14 +333,14 @@ namespace ColdFormedChannelSection.Core.Helpers
             var Ri = Math.Min(1, Is / Ia);
             var Ce = row_c * c_prime * Ri;
 
-            (var Ze,var items) = section.GetEgyptReducedZe(material, be, Ce);
-            items.Add(new ReportItem("Effective Lip (ce)",Ce.ToString("0.###"),Units.CM));
+            (var Ze, var items) = section.GetEgyptReducedZe(material, be, Ce);
+            items.Add(new ReportItem("Effective Lip (ce)", Ce.ToString("0.###"), Units.CM));
             items.Add(new ReportItem("Effective Section Modulus (Ze)", Ze.ToString("0.###"), Units.CM_3));
             items.Add(new ReportItem("Yield Stress (Fy)", material.Fy.ToString("0.###"), Units.TON_CM_2));
-            return Tuple.Create(Ze,items);
+            return Tuple.Create(Ze, items);
         }
 
-        private static Tuple<double,List<ReportItem>> GetEgyptReducedZe(this Section section, Material material, double be, double ce)
+        private static Tuple<double, List<ReportItem>> GetEgyptReducedZe(this Section section, Material material, double be, double ce)
         {
             var E = material.E;
             var Fy = material.Fy;
@@ -386,7 +388,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                     kw = 5.98 * (1 - sai_w).Power(2);
                 }
                 var lambda_w = ((a_prime / t) / 44) * (Math.Sqrt(Fy / kw));
-                var row_w = ((1.1 * lambda_w - 0.16 - 0.1 * sai_w) / (lambda_w.Power(2))).IfNegativeReturnOne().TakeMinWithOne() ;
+                var row_w = ((1.1 * lambda_w - 0.16 - 0.1 * sai_w) / (lambda_w.Power(2))).IfNegativeReturnOne().TakeMinWithOne();
                 var ae = row_w * (a_prime / (1 - sai_w));
 
 
@@ -415,7 +417,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("Effective Height (ae)",(h1+h2).ToString("0.###"),Units.CM),
                 new ReportItem("Effective Flange Width (be)",(be).ToString("0.###"),Units.CM),
             };
-            return Tuple.Create(Ze,items);
+            return Tuple.Create(Ze, items);
         }
 
         #endregion
@@ -502,7 +504,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 Kf = Math.Min(3.57 * (Is / Ia).Power(0.5) + 0.43, 4);
                 var lambda_f = ((b_prime / t) / 44) * Math.Sqrt(Fy / Kf);
                 var sai_f = 1.0;
-                var row_f = ( (lambda_f - 0.15 - 0.05 * sai_f) / (lambda_f.Power(2))).IfNegativeReturnOne().TakeMinWithOne();
+                var row_f = ((lambda_f - 0.15 - 0.05 * sai_f) / (lambda_f.Power(2))).IfNegativeReturnOne().TakeMinWithOne();
                 be = row_f * b_prime;
                 Kc = 0.43;
                 var lambda_c = ((c_prime / t) / 59) * Math.Sqrt(Fy / Kc);
@@ -612,15 +614,15 @@ namespace ColdFormedChannelSection.Core.Helpers
             //Web
             var E_over_Fy_sqrt = Math.Sqrt(E / Fy);
             var a_over_t = a_prime / t;
-            var a_ee = ( 1.92 * t * E_over_Fy_sqrt * (1 - 0.385 * (E_over_Fy_sqrt / a_over_t))).IfNegativeReturn(a_prime).TakeMin( a_prime);
+            var a_ee = (1.92 * t * E_over_Fy_sqrt * (1 - 0.385 * (E_over_Fy_sqrt / a_over_t))).IfNegativeReturn(a_prime).TakeMin(a_prime);
 
             //Flange 
             var b_over_t = b_prime / t;
-            var b_ee = ( 1.92 * t * E_over_Fy_sqrt * (1 - 0.385 * (E_over_Fy_sqrt / b_over_t))).IfNegativeReturn(b_prime).TakeMin( b_prime);
+            var b_ee = (1.92 * t * E_over_Fy_sqrt * (1 - 0.385 * (E_over_Fy_sqrt / b_over_t))).IfNegativeReturn(b_prime).TakeMin(b_prime);
 
             //Lip
             var c_over_t = c_prime / t;
-            var c_ee = ( 0.78 * t * E_over_Fy_sqrt * (1 - (0.13 / c_over_t) * (E_over_Fy_sqrt))).IfNegativeReturn(c_prime).TakeMin( c_prime);
+            var c_ee = (0.78 * t * E_over_Fy_sqrt * (1 - (0.13 / c_over_t) * (E_over_Fy_sqrt))).IfNegativeReturn(c_prime).TakeMin(c_prime);
 
             var A_ee = t * (a_ee + 2 * b_ee + 2 * c_ee);
             return A_ee;
@@ -637,10 +639,10 @@ namespace ColdFormedChannelSection.Core.Helpers
             //Web
             var E_over_Fy_sqrt = Math.Sqrt(E / Fy);
             var a_over_t = a_prime / t;
-            var a_ee = (1.92 * t * E_over_Fy_sqrt * (1 - 0.385 * (E_over_Fy_sqrt / a_over_t))).IfNegativeReturn(a_prime).TakeMin( a_prime);
+            var a_ee = (1.92 * t * E_over_Fy_sqrt * (1 - 0.385 * (E_over_Fy_sqrt / a_over_t))).IfNegativeReturn(a_prime).TakeMin(a_prime);
 
             //Flange
-            var b_ee = ( 0.78 * t * E_over_Fy_sqrt * (1 - (0.13 / (b_prime / t)) * E_over_Fy_sqrt)).IfNegativeReturn(b_prime).TakeMin(b_prime);
+            var b_ee = (0.78 * t * E_over_Fy_sqrt * (1 - (0.13 / (b_prime / t)) * E_over_Fy_sqrt)).IfNegativeReturn(b_prime).TakeMin(b_prime);
 
 
             var A_ee = t * (a_ee + 2 * b_ee);
@@ -662,10 +664,10 @@ namespace ColdFormedChannelSection.Core.Helpers
             var Pn = Ae * material.Fy;
             items.Add(new ReportItem("Yield Stress (Fy)", material.Fy.ToString("0.###"), Units.TON_CM_2));
             items.Add(new ReportItem("Nominal Load (Pn)", Pn.ToString("0.###"), Units.TON));
-            return Tuple.Create(Pn,items);
+            return Tuple.Create(Pn, items);
         }
 
-        private static Tuple<double,List<ReportItem>> GetEgyptCompressionFBResistance(this Section section, Material material, LengthBracingConditions bracingConditions, double Aee)
+        private static Tuple<double, List<ReportItem>> GetEgyptCompressionFBResistance(this Section section, Material material, LengthBracingConditions bracingConditions, double Aee)
         {
             var A = section.Properties.A;
             var ix = section.Properties.Rx;
@@ -694,11 +696,11 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("Nominal Load (Pn)",Fcr.ToString("0.###"),Units.TON),
 
             };
-            return Tuple.Create(pn,items);
+            return Tuple.Create(pn, items);
         }
 
 
-        private static Tuple<double,List<ReportItem>> GetEgyptCompressionTFBResistance(this Section section, Material material, LengthBracingConditions bracingConditions, double Aee)
+        private static Tuple<double, List<ReportItem>> GetEgyptCompressionTFBResistance(this Section section, Material material, LengthBracingConditions bracingConditions, double Aee)
         {
             var Xo = section.Properties.Xo;
             var ix = section.Properties.Rx;
@@ -727,16 +729,16 @@ namespace ColdFormedChannelSection.Core.Helpers
             if (lambda_c * Math.Sqrt(Q) <= 1.1)
                 Fcr = Fy * Q * (1 - 0.384 * Q * lambda_c.Power(2));
             var pn = Fcr * A;
-            var items = new List<ReportItem>() 
+            var items = new List<ReportItem>()
             {
                 new ReportItem("Torsional Flexural Stress (Fcr)",Fcr.ToString("0.###"),Units.TON_CM_2),
                 new ReportItem("Torsional Flexural Area (A)",A.ToString("0.###"),Units.CM_2),
                 new ReportItem("Nominal Load (Pn)",pn.ToString("0.###"),Units.TON),
             };
-            return Tuple.Create(pn,items);
+            return Tuple.Create(pn, items);
         }
 
-        private static Tuple<double,List<ReportItem>> GetEgyptCompressionTBResistance(this Section section, Material material, LengthBracingConditions bracingConditions, double Aee)
+        private static Tuple<double, List<ReportItem>> GetEgyptCompressionTBResistance(this Section section, Material material, LengthBracingConditions bracingConditions, double Aee)
         {
             var Xo = section.Properties.Xo;
             var ix = section.Properties.Rx;
@@ -775,58 +777,18 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("Torsional  Area (A)",A.ToString("0.###"),Units.CM_2),
                 new ReportItem("Nominal Load (Pn)",pn.ToString("0.###"),Units.TON),
             };
-            return  Tuple.Create(pn,items);
+            return Tuple.Create(pn, items);
         }
 
         public static CompressionResistanceOutput AsEgyptCompressionResistance(this LippedSection section, Material material, LengthBracingConditions bracingConditions)
         {
             if (!section.IsValidCompression())
-                return new CompressionResistanceOutput(0.0, PHI_C, FailureMode.UNSAFE, "ton",null);
-            (var pn_local, var items_local) = section.GetEgyptCompressionLBResistance(material);
-            var Aee = section.GetEgyptReducedAreaEE(material);
-            (var pn_FB, var items_FB) = section.GetEgyptCompressionFBResistance(material, bracingConditions, Aee);
-            (var pn_TFB , var items_TFB) = section.GetEgyptCompressionTFBResistance(material, bracingConditions, Aee);
-            (var pn_TB, var items_TB) = section.GetEgyptCompressionTBResistance(material, bracingConditions, Aee); //TODO: Complete Report.
-            var pn1 = Tuple.Create(pn_local, FailureMode.LOCALBUCKLING);
-            var pn2 = Tuple.Create(pn_FB, FailureMode.FLEXURALBUCKLING);
-            var pn3 = Tuple.Create(pn_TFB, FailureMode.FLEXURAL_TORSIONAL_BUCKLING);
-            var pn4 = Tuple.Create(pn_TB,FailureMode.TORSIONALBUCKLING);
-            var pns = new List<Tuple<double, FailureMode>>()
-            {
-                pn1, pn2, pn3,pn4
-            };
-            var pn = pns.OrderBy(tuple => tuple.Item1).First();
-            var resistance_items = new List<ReportItem>()
-            {
-                new ReportItem("Governing Case",$"{pn.Item2}",Units.TON),
-                new ReportItem("Nomial Load (Pn)",$"{pn.Item1.ToString("0.###")}",Units.TON),
-                new ReportItem("phi",$"{PHI_C}",Units.TON),
-                new ReportItem("Design Load (phi*Pn)",$"{(PHI_C*pn.Item1).ToString("0.###")}",Units.TON),
-            };
-            var report = new CompressionReport(
-                "Egyptian Code - Compression",
-                "Local Buckling",
-                 items_local,
-                 "Flexural Buckling",
-                 items_FB,
-                 "Torsional Flexural Buckling",
-                 items_TFB,
-                 resistance_items,
-                 UnitSystems.TONCM
-                 );
-            var result = new CompressionResistanceOutput(pn.Item1, PHI_C, pn.Item2, "ton",report);
-            return result;
-        }
-
-        public static CompressionResistanceOutput AsEgyptCompressionResistance(this UnStiffenedSection section, Material material, LengthBracingConditions bracingConditions)
-        {
-            if (!section.IsValidCompression())
                 return new CompressionResistanceOutput(0.0, PHI_C, FailureMode.UNSAFE, "ton", null);
-            (var pn_local , var items_local) = section.GetEgyptCompressionLBResistance(material);
+            (var pn_local, var localItems) = section.GetEgyptCompressionLBResistance(material);
             var Aee = section.GetEgyptReducedAreaEE(material);
-            (var pn_FB , var items_FB) = section.GetEgyptCompressionFBResistance(material, bracingConditions, Aee);
-            (var pn_TFB , var items_TFB) = section.GetEgyptCompressionTFBResistance(material, bracingConditions, Aee);
-            (var pn_TB, var items_TB) = section.GetEgyptCompressionTBResistance(material, bracingConditions, Aee); //TODO: Complete Report.
+            (var pn_FB, var fbItems) = section.GetEgyptCompressionFBResistance(material, bracingConditions, Aee);
+            (var pn_TFB, var tfbItems) = section.GetEgyptCompressionTFBResistance(material, bracingConditions, Aee);
+            (var pn_TB, var tbItems) = section.GetEgyptCompressionTBResistance(material, bracingConditions, Aee); 
             var pn1 = Tuple.Create(pn_local, FailureMode.LOCALBUCKLING);
             var pn2 = Tuple.Create(pn_FB, FailureMode.FLEXURALBUCKLING);
             var pn3 = Tuple.Create(pn_TFB, FailureMode.FLEXURAL_TORSIONAL_BUCKLING);
@@ -836,25 +798,62 @@ namespace ColdFormedChannelSection.Core.Helpers
                 pn1, pn2, pn3,pn4
             };
             var pn = pns.OrderBy(tuple => tuple.Item1).First();
-            var resistance_items = new List<ReportItem>()
+            var designItems = new List<ReportItem>()
             {
                 new ReportItem("Governing Case",$"{pn.Item2}",Units.TON),
                 new ReportItem("Nomial Load (Pn)",$"{pn.Item1.ToString("0.###")}",Units.TON),
                 new ReportItem("phi",$"{PHI_C}",Units.TON),
                 new ReportItem("Design Load (phi*Pn)",$"{(PHI_C*pn.Item1).ToString("0.###")}",Units.TON),
             };
-            var report = new CompressionReport(
-              "Egyptian Code - Compression",
-              "Local Buckling",
-               items_local,
-               "Flexural Buckling",
-               items_FB,
-               "Torsional Flexural Buckling",
-               items_TFB,
-               resistance_items,
-               UnitSystems.TONCM
-               );
-            var result = new CompressionResistanceOutput(pn.Item1, PHI_C, pn.Item2, "ton",report);
+            var localSection = new ListReportSection("Local Buckling",localItems);
+            var fbSection = new ListReportSection("Flexural Buckling", fbItems);
+            var tfbSection = new ListReportSection("Torsional Flexural Buckling", tfbItems);
+            var tbSection = new ListReportSection("Torsional Buckling",tbItems);
+            var designSection = new ListReportSection("Design Compression Load", designItems);
+            var sections = new List<IReportSection> {localSection,fbSection,tfbSection,tbSection };
+            var report = new Report(UnitSystems.TONCM, "Egyptian Code - Compression", sections);
+
+            var result = new CompressionResistanceOutput(pn.Item1, PHI_C, pn.Item2, "ton", report);
+            return result;
+        }
+
+        public static CompressionResistanceOutput AsEgyptCompressionResistance(this UnStiffenedSection section, Material material, LengthBracingConditions bracingConditions)
+        {
+            if (!section.IsValidCompression())
+                return new CompressionResistanceOutput(0.0, PHI_C, FailureMode.UNSAFE, "ton", null);
+            (var pn_local, var localItems) = section.GetEgyptCompressionLBResistance(material);
+            var Aee = section.GetEgyptReducedAreaEE(material);
+            (var pn_FB, var fbItems) = section.GetEgyptCompressionFBResistance(material, bracingConditions, Aee);
+            (var pn_TFB, var tfbItems) = section.GetEgyptCompressionTFBResistance(material, bracingConditions, Aee);
+            (var pn_TB, var tbItems) = section.GetEgyptCompressionTBResistance(material, bracingConditions, Aee); //TODO: Complete Report.
+            var pn1 = Tuple.Create(pn_local, FailureMode.LOCALBUCKLING);
+            var pn2 = Tuple.Create(pn_FB, FailureMode.FLEXURALBUCKLING);
+            var pn3 = Tuple.Create(pn_TFB, FailureMode.FLEXURAL_TORSIONAL_BUCKLING);
+            var pn4 = Tuple.Create(pn_TB, FailureMode.TORSIONALBUCKLING);
+            var pns = new List<Tuple<double, FailureMode>>()
+            {
+                pn1, pn2, pn3,pn4
+            };
+            var pn = pns.OrderBy(tuple => tuple.Item1).First();
+            var designItems = new List<ReportItem>()
+            {
+                new ReportItem("Governing Case",$"{pn.Item2}",Units.TON),
+                new ReportItem("Nomial Load (Pn)",$"{pn.Item1.ToString("0.###")}",Units.TON),
+                new ReportItem("phi",$"{PHI_C}",Units.TON),
+                new ReportItem("Design Load (phi*Pn)",$"{(PHI_C*pn.Item1).ToString("0.###")}",Units.TON),
+            };
+            var localSection = new ListReportSection("Local Buckling", localItems);
+            var fbSection = new ListReportSection("Flexural Buckling", fbItems);
+            var tfbSection = new ListReportSection("Torsional Flexural Buckling", tfbItems);
+            var tbSection = new ListReportSection("Torsional Buckling",tbItems);
+            var designSection = new ListReportSection("Design Compression Load",designItems);
+
+            var sections = new List<IReportSection>() { localSection,fbSection,tfbSection,tbSection,designSection};
+
+            var report = new Report(UnitSystems.TONCM, "Egyptian Code - Compression",sections);
+
+             
+            var result = new CompressionResistanceOutput(pn.Item1, PHI_C, pn.Item2, "ton", report);
             return result;
         }
 

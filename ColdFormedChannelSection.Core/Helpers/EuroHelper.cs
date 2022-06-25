@@ -50,7 +50,13 @@ namespace ColdFormedChannelSection.Core.Helpers
             //tex:
             //$$ (\frac{P_u}{ P_n})^{0.8} + (\frac{M_u}{M_n})^{0.8}  $$
             var ie = (pu / Pn.NominalResistance).Power(0.8) + (mu / Mn.NominalResistance).Power(0.8);
-            var report = new InteractionReport(Pn.Report, Mn.Report, UnitSystems.NMM);
+
+            var sections = Pn.Report.Sections.Select(sec => sec.AppendToName("Compression"))
+                                                .Concat(Mn.Report.Sections.Select(sec => sec.AppendToName("Moment")))
+                                                .ToList();
+
+            var report = new Report(UnitSystems.NMM, "Euro Code - Interaction", sections);
+
             return new ResistanceInteractionOutput(pu, Pn.NominalResistance, mu, Mn.NominalResistance, "(\\frac{P_u}{ P_n})^{0.8} + (\\frac{M_u}{M_n})^{0.8}", ie, "N.mm", "N", report);
         }
 
@@ -61,7 +67,13 @@ namespace ColdFormedChannelSection.Core.Helpers
             //tex:
             //$$ (\frac{P_u}{ P_n})^{0.8} + (\frac{M_u}{M_n})^{0.8}  $$
             var ie = (pu / Pn.NominalResistance).Power(0.8) + (mu / Mn.NominalResistance).Power(0.8);
-            var report = new InteractionReport(Pn.Report, Mn.Report, UnitSystems.NMM);
+
+            var sections = Pn.Report.Sections.Select(sec => sec.AppendToName("Compression"))
+                                                .Concat(Mn.Report.Sections.Select(sec => sec.AppendToName("Moment")))
+                                                .ToList();
+
+            var report = new Report(UnitSystems.NMM, "Euro - Interaction", sections);
+
             return new ResistanceInteractionOutput(pu, Pn.NominalResistance, mu, Mn.NominalResistance, "(\\frac{P_u}{ P_n})^{0.8} + (\\frac{M_u}{M_n})^{0.8}", ie, "N.mm", "N", report);
         }
 
@@ -265,11 +277,11 @@ namespace ColdFormedChannelSection.Core.Helpers
         {
             if (!section.IsValid())
                 return new CompressionResistanceOutput(0.0, 1.0,"gamma", FailureMode.UNSAFE, "N", null);
-            (var Ae, var items_local) = section.GetEuroReducedArea(material);
+            (var Ae, var localItems) = section.GetEuroReducedArea(material);
             var pn1 = Tuple.Create(section.GetEuroCompressionLBResistance(material, Ae), FailureMode.LOCALBUCKLING);
-            (var pn_FB, var items_FB) = section.GetEuroCompressionFBResistance(material, bracingConditions, Ae, 0.34);
-            (var pn_TB, var items_TB) = section.GetEuroCompressionTBResistance(material, bracingConditions, Ae, 0.34);
-            (var pn_TFB, var items_TFB) = section.GetEuroCompressionTFBResistance(material, bracingConditions, Ae, 0.34);//TODO: Reports
+            (var pn_FB, var fbItems) = section.GetEuroCompressionFBResistance(material, bracingConditions, Ae, 0.34);
+            (var pn_TB, var tbItems) = section.GetEuroCompressionTBResistance(material, bracingConditions, Ae, 0.34);
+            (var pn_TFB, var tfbItems) = section.GetEuroCompressionTFBResistance(material, bracingConditions, Ae, 0.34);
             var pn2 = Tuple.Create(pn_FB, FailureMode.FLEXURALBUCKLING);
             var pn3 = Tuple.Create(pn_TB, FailureMode.TORSIONALBUCKLING);
             var pn4 = Tuple.Create(pn_TFB, FailureMode.FLEXURAL_TORSIONAL_BUCKLING);
@@ -278,24 +290,24 @@ namespace ColdFormedChannelSection.Core.Helpers
                 pn1, pn2, pn3,pn4
             };
             var pn = pns.OrderBy(tuple => tuple.Item1).First();
-            var items = new List<ReportItem>()
+            var designItems = new List<ReportItem>()
             {
                 new ReportItem("Governing Case",pn.Item2.ToString(),Units.NONE),
                 new ReportItem("Nominal Load (Pn)",pn.Item1.ToString("0.###"),Units.N),
                 new ReportItem("Gamma",1.0.ToString(),Units.N),
                 new ReportItem("Design Load (Pn)",pn.Item1.ToString("0.###"),Units.N),
             };
-            var report = new CompressionReport(
-              "Euro Code - Compression",
-              "Local Buckling",
-               items_local,
-               "Flexural Buckling",
-               items_FB,
-               "Torsional Flexural Buckling",
-               items_TB,
-               items,
-               UnitSystems.NMM
-               );
+
+            var localSection = new ListReportSection("Local Buckling", localItems);
+            var flexuralSection = new ListReportSection("Flexural Buckling",fbItems);
+            var tbSection = new ListReportSection("Torsional Buckling", tbItems);
+            var tfbSection = new ListReportSection("Torsional Flexural Buckling", tfbItems);
+            var designSection = new ListReportSection("Design Compression Load", designItems);
+
+            var sections = new List<IReportSection>() { localSection, flexuralSection, tbSection, tfbSection, designSection };
+
+            var report = new Report(UnitSystems.NMM, "Euro Code - Compression", sections);
+
             var result = new CompressionResistanceOutput(pn.Item1, 1.0,"gamma", pn.Item2, "N", report);
             return result;
         }
@@ -304,11 +316,11 @@ namespace ColdFormedChannelSection.Core.Helpers
         {
             if (!section.IsValid())
                 return new CompressionResistanceOutput(0.0, 1.0,"gamma", FailureMode.UNSAFE, "N", null);
-            (var Ae, var items_local) = section.GetEuroReducedArea(material);
+            (var Ae, var localItems) = section.GetEuroReducedArea(material);
             var pn1 = Tuple.Create(section.GetEuroCompressionLBResistance(material, Ae), FailureMode.LOCALBUCKLING);
-            (var pn_FB, var items_FB) = section.GetEuroCompressionFBResistance(material, bracingConditions, Ae, 0.49);
-            (var pn_TB, var items_TB) = section.GetEuroCompressionTBResistance(material, bracingConditions, Ae, 0.49);
-            (var pn_TFB, var items_TFB) = section.GetEuroCompressionTFBResistance(material, bracingConditions, Ae, 0.49);//TODO: Reports
+            (var pn_FB, var fbItems) = section.GetEuroCompressionFBResistance(material, bracingConditions, Ae, 0.49);
+            (var pn_TB, var tbItems) = section.GetEuroCompressionTBResistance(material, bracingConditions, Ae, 0.49);
+            (var pn_TFB, var tfbItems) = section.GetEuroCompressionTFBResistance(material, bracingConditions, Ae, 0.49);
             var pn2 = Tuple.Create(pn_FB, FailureMode.FLEXURALBUCKLING);
             var pn3 = Tuple.Create(pn_TB, FailureMode.TORSIONALBUCKLING);
             var pn4 = Tuple.Create(pn_TFB, FailureMode.FLEXURAL_TORSIONAL_BUCKLING);
@@ -317,24 +329,22 @@ namespace ColdFormedChannelSection.Core.Helpers
                 pn1, pn2, pn3,pn4
             };
             var pn = pns.OrderBy(tuple => tuple.Item1).First();
-            var items = new List<ReportItem>()
+            var designItems = new List<ReportItem>()
             {
                 new ReportItem("Governing Case",pn.Item2.ToString(),Units.NONE),
                 new ReportItem("Nominal Load (Pn)",pn.Item1.ToString("0.###"),Units.N),
                 new ReportItem("Gamma",1.0.ToString(),Units.N),
                 new ReportItem("Design Load (Pn)",pn.Item1.ToString("0.###"),Units.N),
             };
-            var report = new CompressionReport(
-              "Euro Code - Compression",
-              "Local Buckling",
-               items_local,
-               "Flexural Buckling",
-               items_FB,
-               "Torsional Flexural Buckling",
-               items_TB,
-               items,
-               UnitSystems.NMM
-               );
+            var localSection = new ListReportSection("Local Buckling",localItems);
+            var fbSection = new ListReportSection("Flexural Buckling",fbItems);
+            var tbSection = new ListReportSection("Torsional Buckling",tbItems);
+            var tfbSection = new ListReportSection("Torsional Flexural Buckling", tfbItems);
+            var designSection = new ListReportSection("Design Compression Load", designItems);
+            var sections = new List<IReportSection>() { localSection, fbSection, tbSection, tfbSection, designSection };
+
+            var report = new Report(UnitSystems.NMM, "Euro Code - Compression",sections);
+
             var result = new CompressionResistanceOutput(pn.Item1, 1.0,"gamma", pn.Item2, "N", report);
             return result;
         }
@@ -450,16 +460,16 @@ namespace ColdFormedChannelSection.Core.Helpers
         {
             if (!section.IsValid())
                 return new MomentResistanceOutput(0.0, 1.0,"gamma", FailureMode.UNSAFE, "N.mm", null);
-            (var Ze, var items_local) = section.GetZe(material);
+            (var Ze, var localItems) = section.GetZe(material);
             var Mn1 = Tuple.Create(section.GetEuroMomentLBResistance(material, Ze), FailureMode.LOCALBUCKLING);
-            (var Mn_LTB, var items_LTB) = section.GetEuroMomentLTBResistance(material, bracingConditions, Ze);
+            (var Mn_LTB, var ltbItems) = section.GetEuroMomentLTBResistance(material, bracingConditions, Ze);
             var Mn2 = Tuple.Create(Mn_LTB, FailureMode.LATERALTORSIONALBUCKLING);
             var Mns = new List<Tuple<double, FailureMode>>()
             {
                 Mn1,Mn2
             };
             var Mn = Mns.OrderBy(tuple => tuple.Item1).First();
-            var items_nominal = new List<ReportItem>()
+            var designItems = new List<ReportItem>()
             {
                 new ReportItem("Governing Case",Mn.Item2.ToString(),Units.NONE),
                 new ReportItem("Nominal Moment",Mn.Item1.ToString("0.###"),Units.N_MM),
@@ -467,15 +477,13 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("Design Moment (Mn/gamma)",Mn.Item1.ToString("0.###"),Units.N_MM)
 
             };
-            var report = new MomentReport(
-                "Euro Code - Moment",
-                "Local Buckling",
-                items_local,
-                "Lateral Torsional Buckling",
-                items_LTB,
-                items_nominal,
-                UnitSystems.NMM
-                );
+            var localSection = new ListReportSection("Local Buckling", localItems);
+            var ltbSection = new ListReportSection("Lateral Torsional Buckling",ltbItems);
+            var designSection = new ListReportSection("Design Moment",designItems);
+            var sections = new List<IReportSection>() { localSection, ltbSection, designSection };
+
+            var report = new Report(UnitSystems.NMM, "Euro Code - Moment", sections);
+
             var result = new MomentResistanceOutput(Mn.Item1, 1.0,"gamma", Mn.Item2, "N.mm", report);
             return result;
         }
@@ -484,16 +492,16 @@ namespace ColdFormedChannelSection.Core.Helpers
         {
             if (!section.IsValid())
                 return new MomentResistanceOutput(0.0, 1.0,"gammma", FailureMode.UNSAFE, "N.mm", null);
-            (var Ze, var items_local) = section.GetZe(material);
+            (var Ze, var localItems) = section.GetZe(material);
             var Mn1 = Tuple.Create(section.GetEuroMomentLBResistance(material, Ze), FailureMode.LOCALBUCKLING);
-            (var Mn_LTB, var items_LTB) = section.GetEuroMomentLTBResistance(material, bracingConditions, Ze);
+            (var Mn_LTB, var ltbItems) = section.GetEuroMomentLTBResistance(material, bracingConditions, Ze);
             var Mn2 = Tuple.Create(Mn_LTB, FailureMode.LATERALTORSIONALBUCKLING);
             var Mns = new List<Tuple<double, FailureMode>>()
             {
                 Mn1,Mn2
             };
             var Mn = Mns.OrderBy(tuple => tuple.Item1).First();
-            var items_nominal = new List<ReportItem>()
+            var designItems = new List<ReportItem>()
             {
                 new ReportItem("Governing Case",Mn.Item2.ToString(),Units.NONE),
                 new ReportItem("Nominal Moment",Mn.Item1.ToString("0.###"),Units.N_MM),
@@ -501,15 +509,11 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("Design Moment (Mn/gamma)",Mn.Item1.ToString("0.###"),Units.N_MM)
 
             };
-            var report = new MomentReport(
-               "Euro Code - Moment",
-               "Local Buckling",
-               items_local,
-               "Lateral Torsional Buckling",
-               items_LTB,
-               items_nominal,
-               UnitSystems.NMM
-               );
+            var localSection = new ListReportSection("Local Buckling", localItems);
+            var ltbSection = new ListReportSection("Lateral Tosional Buckling",ltbItems);
+            var designSection = new ListReportSection("Design Moment", designItems);
+            var sections = new List<IReportSection>() { localSection, ltbSection, designSection };
+            var report = new Report(UnitSystems.NMM, "Euro Code - Moment", sections);
             var result = new MomentResistanceOutput(Mn.Item1, 1.0,"gamma", Mn.Item2, "N.mm", report);
             return result;
         }

@@ -64,7 +64,11 @@ namespace ColdFormedChannelSection.Core.Helpers
                     ieName = "\\frac {P_u} {\\phi_c P_{no}} + \\frac {M_u} {\\phi_b M_n}";
                 }
             }
-            var report = new InteractionReport(pn_out.Report, mn_out.Report,UnitSystems.KIPINCH);
+            var sections = pn_out.Report.Sections.Select(sec => sec.AppendToName("Compression"))
+                                                 .Concat(mn_out.Report.Sections.Select(sec => sec.AppendToName("Moment")))
+                                                 .ToList();
+                                                 
+            var report = new Report(UnitSystems.KIPINCH,"Direct Strength - Interaction",sections);
             return new ResistanceInteractionOutput(pu, pn, mu, mn, ieName, ie,"kip.in","kip",report);
         }
 
@@ -142,41 +146,37 @@ namespace ColdFormedChannelSection.Core.Helpers
                 Tuple.Create(Pnd,FailureMode.DISTRORTIONALBUCKLING)
             };
             var nominalLoad = nominalLoads.OrderBy(tup => tup.Item1).First();
-            var elastic_items = new List<ReportItem>()
+            var elasticItems = new List<ReportItem>()
             {
                 new ReportItem("Local Buckling Load (Pcrl)",p_crl.ToString("0.###"),Units.KIP),
                 new ReportItem("Distortional Buckling Load (Pcrd)",p_crd.ToString("0.###"),Units.KIP),
                 new ReportItem("Global Buckling Load (Pcre)",p_cre.ToString("0.###"),Units.KIP),
 
             };
-            var strength_items = new List<ReportItem>()
+            var strengthItems = new List<ReportItem>()
             {
                 new ReportItem("Nominal Local Buckling Load (Pnl)",Pnl.ToString("0.###"),Units.KIP),
                 new ReportItem("Nominal Distortional Buckling Load (Pnd)",Pnd.ToString("0.###"),Units.KIP),
                 new ReportItem("Nominal Global Buckling Load (Pne)",Pne.ToString("0.###"),Units.KIP),
             };
-            var squash_items = new List<ReportItem>()
+            var squashItems = new List<ReportItem>()
             {
                 new ReportItem("Squash Load (Py)",Py.ToString("0.###"),Units.KIP)
             };
-            var nominal_items = new List<ReportItem>()
+            var designItems = new List<ReportItem>()
             {
                 new ReportItem("Governing Case",nominalLoad.Item2.ToString(),Units.NONE),
                 new ReportItem("Nominal Load (Pn)",nominalLoad.Item1.ToString("0.###"),Units.KIP),
                 new ReportItem("phi",PHI_C.ToString("0.###"),Units.KIP),
                 new ReportItem("Design Strength (phi*Pn)",(PHI_C*nominalLoad.Item1).ToString("0.###"),Units.KIP),
             };
-            var report = new CompressionReport(
-                "Direct Strength - Compression",
-                "Elastic Buckling Loads",
-                elastic_items,
-                "Yielding Load",
-                squash_items,
-                "Nominal Axial Strength",
-                strength_items,
-                nominal_items,
-                UnitSystems.KIPINCH
-                );
+            var elasticSection = new ListReportSection("Elastic Buckling Load", elasticItems);
+            var squashSection = new ListReportSection("Yielding Load", squashItems);
+            var strengthSection = new ListReportSection("Nominal Axial Strength",strengthItems);
+            var designSection = new ListReportSection("Design Compression Load", designItems);
+            var sections = new List<IReportSection>() { elasticSection,squashSection, strengthSection, designSection };
+            var report = new Report(UnitSystems.KIPINCH, "Direct Strength - Compression", sections);
+                
             var result = new CompressionResistanceOutput(nominalLoad.Item1, PHI_C, nominalLoad.Item2,"Kip",report);
             return result;
         }
@@ -436,7 +436,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             return lippedSection.AsMomentResistance(material, bracingConditions, m_crl,items_buckling);
         }
 
-        private static MomentResistanceOutput AsMomentResistance(this Section section, Material material, LengthBracingConditions bracingConditions,double m_crl,List<ReportItem> items_buckling)
+        private static MomentResistanceOutput AsMomentResistance(this Section section, Material material, LengthBracingConditions bracingConditions,double m_crl,List<ReportItem> bucklingItems)
         {
             var Zg = section.Properties.Zg;
             var Fy = material.Fy;
@@ -477,10 +477,10 @@ namespace ColdFormedChannelSection.Core.Helpers
                 Tuple.Create(Mnd,FailureMode.DISTRORTIONALBUCKLING)
             };
             var nominalLoad = nominalLoads.OrderBy(tup => tup.Item1).First();
-            items_buckling.Add(new ReportItem("Distortional Buckling Moment (Mcrd)", M_crd.ToString("0.###"), Units.KIP_IN));
-            items_buckling.Add(new ReportItem("Global Buckling Moment (Mcre)", M_cre.ToString("0.###"), Units.KIP_IN));
+            bucklingItems.Add(new ReportItem("Distortional Buckling Moment (Mcrd)", M_crd.ToString("0.###"), Units.KIP_IN));
+            bucklingItems.Add(new ReportItem("Global Buckling Moment (Mcre)", M_cre.ToString("0.###"), Units.KIP_IN));
 
-            var items = new List<ReportItem>()
+            var nominalItems = new List<ReportItem>()
             {
                 new ReportItem("Nominal Local Buckling Moment (Mnl)" , Mnl.ToString("0.###"),Units.KIP_IN),
                 new ReportItem("Nominal Distortional Buckling Moment (Mnd)" , Mnd.ToString("0.###"),Units.KIP_IN),
@@ -491,22 +491,19 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("Squash Moment (My)",My.ToString("0.###"),Units.KIP_IN)
             };
 
-            var items_nominal = new List<ReportItem>()
+            var designItems = new List<ReportItem>()
             {
                 new ReportItem("Governing Case",nominalLoad.Item2.ToString(),Units.NONE),
                 new ReportItem("Nominal Moment",nominalLoad.Item1.ToString("0.###"),Units.KIP_IN),
                 new ReportItem("phi",PHI_B.ToString("0.###"),Units.NONE),
                 new ReportItem("Design Moment",(PHI_B*nominalLoad.Item1).ToString("0.###"),Units.KIP_IN)
             };
-            var report = new MomentReport(
-                "Direct Strength - Moment",
-                "Elastic Buckling Moment",
-                items_buckling,
-                "Nominal Flexural Strength",
-                items,
-                items_nominal,
-                UnitSystems.KIPINCH
-                );
+            var elasticSection = new ListReportSection("Elstic Buckling Moment", bucklingItems);
+            var nominalSection = new ListReportSection("Nominal Flexural Strength", nominalItems);
+            var designSection = new ListReportSection("Design Moment", designItems);
+            var sections = new List<IReportSection>() {elasticSection,nominalSection,designSection };
+            var report = new Report(UnitSystems.KIPINCH, "Direct Strength - Moment",sections);
+
             var result = new MomentResistanceOutput(nominalLoad.Item1, PHI_B, nominalLoad.Item2,"Kip.in",report);
             return result;
         }

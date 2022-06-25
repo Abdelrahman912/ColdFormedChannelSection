@@ -14,11 +14,11 @@ using System.Windows.Shapes;
 namespace ColdFormedChannelSection.App.UI.Views
 {
     /// <summary>
-    /// Interaction logic for CompressionReportView.xaml
+    /// Interaction logic for ReportView.xaml
     /// </summary>
-    public partial class CompressionReportView : UserControl
+    public partial class ReportView : UserControl
     {
-        public CompressionReportView()
+        public ReportView()
         {
             InitializeComponent();
         }

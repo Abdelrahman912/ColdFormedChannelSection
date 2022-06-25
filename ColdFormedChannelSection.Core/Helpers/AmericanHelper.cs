@@ -65,7 +65,10 @@ namespace ColdFormedChannelSection.Core.Helpers
                     ieName = "\\frac {P_u} {\\phi_c P_{no}} + \\frac {M_u} {\\phi_b M_n}";
                 }
             }
-            var report = new InteractionReport(pn_out.Report, mn_out.Report, UnitSystems.KIPINCH);
+            var sections = pn_out.Report.Sections.Select(sec => sec.AppendToName("Compression"))
+                                                 .Concat(mn_out.Report.Sections.Select(sec => sec.AppendToName("Moment")))
+                                                 .ToList();
+            var report = new Report(UnitSystems.KIPINCH,"AISI Code - Interaction",sections );
             return new ResistanceInteractionOutput(pu, pn, mu, mn, ieName, ie, "kip.in", "kip", report);
         }
 
@@ -197,7 +200,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("Kf",Kf.ToString("0.###"),Units.NONE),
                 new ReportItem("Effective Flange Width (be)",be.ToString("0.###"),Units.IN),
                 new ReportItem("Effective Area (Ae)",Ae.ToString("0.###"),Units.IN_2),
-                new ReportItem("Yield Stress (Fy)",material.Fy.ToString("0.###"),Units.IN_2),
+                new ReportItem("Yield Stress (Fy)",material.Fy.ToString("0.###"),Units.KSI),
             };
             return Tuple.Create(Ae, items);
         }
@@ -227,7 +230,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             items.Add(new ReportItem("Kf", kf.ToString("0.###"), Units.NONE));
             items.Add(new ReportItem("Effective Flange Width (be)", be.ToString("0.###"), Units.IN));
             items.Add(new ReportItem("Effective Section Modulus (Ze)", Ze.ToString("0.###"), Units.IN_3));
-            items.Add(new ReportItem("Yield stress (F)", Fy.ToString("0.###"), Units.KSI));
+            items.Add(new ReportItem("Yield stress (Fy)", Fy.ToString("0.###"), Units.KSI));
             items.Add(new ReportItem("Local Nominal Moment (Mn)", (Fy * Ze).ToString("0.###"), Units.KIP_IN));
 
             return Tuple.Create(Ze, items);
@@ -293,7 +296,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             items.Add(new ReportItem("Kc", kc.ToString("0.###"), Units.NONE));
             items.Add(new ReportItem("Effective Lip (ce)", ce.ToString("0.###"), Units.IN));
             items.Add(new ReportItem("Effective Section Modulus (Ze)", Ze.ToString("0.###"), Units.IN_3));
-            items.Add(new ReportItem("Yield stress (F)", Fy.ToString("0.###"), Units.KSI));
+            items.Add(new ReportItem("Yield stress (Fy)", Fy.ToString("0.###"), Units.KSI));
             items.Add(new ReportItem("Local Nominal Moment (Mn)", (Fy * Ze).ToString("0.###"), Units.KIP_IN));
 
             return Tuple.Create(Ze, items);
@@ -405,50 +408,10 @@ namespace ColdFormedChannelSection.Core.Helpers
         {
             if (!lippedSection.IsValidForCompression())
                 return new CompressionResistanceOutput(0.0, PHI_C, FailureMode.UNSAFE, "Kip", null);
-            (var pn_local, var items_local) = lippedSection.GetAISICompressionLBResistance(material);
-            (var pn_FB, var items_FB) = lippedSection.GetAISICompressionFBRessistance(material, bracingConditions);
-            (var pn_TFB, var items_TFB) = lippedSection.GetAISICompressionFTBRessistance(material, bracingConditions);
-            (var pn_Tb,var items_TB) = lippedSection.GetAISICompressionTBRessistance(material, bracingConditions); //TODO: Reports
-            var pn1 = Tuple.Create(pn_local, FailureMode.LOCALBUCKLING);
-            var pn2 = Tuple.Create(pn_FB, FailureMode.FLEXURALBUCKLING);
-            var pn3 = Tuple.Create(pn_TFB, FailureMode.FLEXURAL_TORSIONAL_BUCKLING);
-            var pn4 = Tuple.Create(pn_Tb,FailureMode.TORSIONALBUCKLING); 
-            var pns = new List<Tuple<double, FailureMode>>()
-            {
-                pn1, pn2, pn3,pn4
-            };
-            var pn = pns.OrderBy(tuple => tuple.Item1).First();
-            var items = new List<ReportItem>()
-            {
-                new ReportItem("Governing Case",pn.Item2.ToString(),Units.NONE),
-                new ReportItem("Nominal Load",pn.Item1.ToString("0.###"),Units.KIP),
-                new ReportItem("phi",PHI_C.ToString("0.###"),Units.NONE),
-                new ReportItem("Design Resistance",(PHI_C*pn.Item1).ToString("0.###"),Units.KIP),
-
-            };
-            var report = new CompressionReport(
-            "AISI Code - Compression",
-            "Local Buckling",
-             items_local,
-             "Flexural Buckling",
-             items_FB,
-             "Torsional Flexural Buckling",
-             items_TFB,
-             items,
-             UnitSystems.KIPINCH
-             );
-            var result = new CompressionResistanceOutput(pn.Item1, PHI_C, pn.Item2, "Kip", report);
-            return result;
-        }
-
-        public static CompressionResistanceOutput AsAISICompressionResistance(this UnStiffenedSection unstiffenedSection, Material material, LengthBracingConditions bracingConditions)
-        {
-            if (!unstiffenedSection.IsValidForCompression())
-                return new CompressionResistanceOutput(0.0, PHI_C, FailureMode.UNSAFE, "Kip", null);
-            (var pn_local, var items_local) = unstiffenedSection.GetAISICompressionLBResistance(material);
-            (var pn_FB, var items_FB) = unstiffenedSection.GetAISICompressionFBRessistance(material, bracingConditions);
-            (var pn_TFB, var items_TFB) = unstiffenedSection.GetAISICompressionFTBRessistance(material, bracingConditions);
-            (var pn_Tb, var items_TB) = unstiffenedSection.GetAISICompressionTBRessistance(material, bracingConditions); //TODO: Reports
+            (var pn_local, var localItems) = lippedSection.GetAISICompressionLBResistance(material);
+            (var pn_FB, var flexuralItems) = lippedSection.GetAISICompressionFBRessistance(material, bracingConditions);
+            (var pn_TFB, var tfbItems) = lippedSection.GetAISICompressionFTBRessistance(material, bracingConditions);
+            (var pn_Tb, var tbItems) = lippedSection.GetAISICompressionTBRessistance(material, bracingConditions); //TODO: Reports
             var pn1 = Tuple.Create(pn_local, FailureMode.LOCALBUCKLING);
             var pn2 = Tuple.Create(pn_FB, FailureMode.FLEXURALBUCKLING);
             var pn3 = Tuple.Create(pn_TFB, FailureMode.FLEXURAL_TORSIONAL_BUCKLING);
@@ -466,17 +429,52 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("Design Resistance",(PHI_C*pn.Item1).ToString("0.###"),Units.KIP),
 
             };
-            var report = new CompressionReport(
-           "AISI Code - Compression",
-           "Local Buckling",
-            items_local,
-            "Flexural Buckling",
-            items_FB,
-            "Torsional Flexural Buckling",
-            items_TFB,
-            items,
-            UnitSystems.KIPINCH
-            );
+            var localSection = new ListReportSection("Local Buckling", localItems);
+            var flexuralSection = new ListReportSection("Flexural Buckling", flexuralItems);
+            var tfbSection = new ListReportSection("Torsional Flexural Buckling", tfbItems);
+            var tbSection = new ListReportSection("Torsional Buckling", tbItems);
+            var designSections = new ListReportSection("Design Compression Load", items);
+            var sections = new List<IReportSection>() { localSection, flexuralSection, tfbSection, tbSection, designSections };
+            var report = new Report(UnitSystems.KIPINCH, "AISI Code - Compression", sections);
+
+
+            var result = new CompressionResistanceOutput(pn.Item1, PHI_C, pn.Item2, "Kip", report);
+            return result;
+        }
+
+        public static CompressionResistanceOutput AsAISICompressionResistance(this UnStiffenedSection unstiffenedSection, Material material, LengthBracingConditions bracingConditions)
+        {
+            if (!unstiffenedSection.IsValidForCompression())
+                return new CompressionResistanceOutput(0.0, PHI_C, FailureMode.UNSAFE, "Kip", null);
+            (var pn_local, var localItems) = unstiffenedSection.GetAISICompressionLBResistance(material);
+            (var pn_FB, var flexuralItems) = unstiffenedSection.GetAISICompressionFBRessistance(material, bracingConditions);
+            (var pn_TFB, var tfbItems) = unstiffenedSection.GetAISICompressionFTBRessistance(material, bracingConditions);
+            (var pn_Tb, var tbItems) = unstiffenedSection.GetAISICompressionTBRessistance(material, bracingConditions); //TODO: Reports
+            var pn1 = Tuple.Create(pn_local, FailureMode.LOCALBUCKLING);
+            var pn2 = Tuple.Create(pn_FB, FailureMode.FLEXURALBUCKLING);
+            var pn3 = Tuple.Create(pn_TFB, FailureMode.FLEXURAL_TORSIONAL_BUCKLING);
+            var pn4 = Tuple.Create(pn_Tb, FailureMode.TORSIONALBUCKLING);
+            var pns = new List<Tuple<double, FailureMode>>()
+            {
+                pn1, pn2, pn3,pn4
+            };
+            var pn = pns.OrderBy(tuple => tuple.Item1).First();
+            var designItems = new List<ReportItem>()
+            {
+                new ReportItem("Governing Case",pn.Item2.ToString(),Units.NONE),
+                new ReportItem("Nominal Load",pn.Item1.ToString("0.###"),Units.KIP),
+                new ReportItem("phi",PHI_C.ToString("0.###"),Units.NONE),
+                new ReportItem("Design Resistance",(PHI_C*pn.Item1).ToString("0.###"),Units.KIP),
+
+            };
+            var localSection = new ListReportSection("Local Buckling", localItems);
+            var flexuralSection = new ListReportSection("Flexural Buckling", flexuralItems);
+            var tfbSection = new ListReportSection("Torsional Flexural Buckling", tfbItems);
+            var tbSection = new ListReportSection("Torsional Buckling", tbItems);
+            var designSection = new ListReportSection("Design Compression Load", designItems);
+            var sections = new List<IReportSection>() { localSection, flexuralSection, tfbSection, tbSection, designSection };
+            var report = new Report(UnitSystems.KIPINCH, "AISI Code - Compression", sections);
+
             var result = new CompressionResistanceOutput(pn.Item1, PHI_C, pn.Item2, "Kip", report);
             return result;
         }
@@ -717,31 +715,29 @@ namespace ColdFormedChannelSection.Core.Helpers
         {
             if (!lippedSection.IsValidForMoment())
                 return new MomentResistanceOutput(0.0, PHI_B, FailureMode.UNSAFE, "Kip", null);
-            (var Mn_local, var items_local) = lippedSection.GetAISIMomentLBResistance(material);
+            (var Mn_local, var localItems) = lippedSection.GetAISIMomentLBResistance(material);
+            (var Mn_ltb, var ltbItems) = lippedSection.GetAISIMomentLTBRessistance(material, bracingConditions);
             var Mn1 = Tuple.Create(Mn_local, FailureMode.LOCALBUCKLING);
-            (var Mn_ltb, var items_ltb) = lippedSection.GetAISIMomentLTBRessistance(material, bracingConditions);
             var Mn2 = Tuple.Create(Mn_ltb, FailureMode.LATERALTORSIONALBUCKLING);
             var Mns = new List<Tuple<double, FailureMode>>()
             {
                 Mn1,Mn2
             };
             var Mn = Mns.OrderBy(tuple => tuple.Item1).First();
-            var items_nominal = new List<ReportItem>()
+            var designItems = new List<ReportItem>()
             {
                 new ReportItem("Governing Case",Mn.Item2.ToString(),Units.NONE),
                 new ReportItem("Nominal Moment (Mn)",Mn.Item1.ToString("0.###"),Units.KIP_IN),
                 new ReportItem("phi",PHI_B.ToString("0.###"),Units.NONE),
                 new ReportItem("Design Moment (phi * Mn)",(PHI_B*Mn.Item1).ToString("0.###"),Units.KIP_IN)
             };
-            var report = new MomentReport(
-                "AISI Code - Moment",
-                "Local Buckling",
-                items_local,
-                "Lateral Torsional Buckling",
-                items_ltb,
-                items_nominal,
-                UnitSystems.KIPINCH
-                );
+            var localSection = new ListReportSection("Local Buckling", localItems);
+            var ltbSection = new ListReportSection("Lateral Torsional Buckling", ltbItems);
+            var designSection = new ListReportSection("Design Moment", designItems);
+            var sections = new List<IReportSection>() { localSection, ltbSection, designSection };
+            var report = new Report(UnitSystems.KIPINCH, "AISI Code - Moment", sections);
+
+
             var result = new MomentResistanceOutput(Mn.Item1, PHI_B, Mn.Item2, "Kip", report);
             return result;
         }
@@ -750,31 +746,28 @@ namespace ColdFormedChannelSection.Core.Helpers
         {
             if (!unstiffenedSection.IsValidForMoment())
                 return new MomentResistanceOutput(0.0, PHI_B, FailureMode.UNSAFE, "Kip", null);
-            (var Mn_local, var items_local) = unstiffenedSection.GetAISIMomentLBResistance(material);
+            (var Mn_local, var localItems) = unstiffenedSection.GetAISIMomentLBResistance(material);
             var Mn1 = Tuple.Create(Mn_local, FailureMode.LOCALBUCKLING);
-            (var Mn_ltb, var items_ltb) = unstiffenedSection.GetAISIMomentLTBRessistance(material, bracingConditions);
+            (var Mn_ltb, var ltbItems) = unstiffenedSection.GetAISIMomentLTBRessistance(material, bracingConditions);
             var Mn2 = Tuple.Create(Mn_ltb, FailureMode.LATERALTORSIONALBUCKLING);
             var Mns = new List<Tuple<double, FailureMode>>()
             {
                 Mn1,Mn2
             };
             var Mn = Mns.OrderBy(tuple => tuple.Item1).First();
-            var items_nominal = new List<ReportItem>()
+            var designItems = new List<ReportItem>()
             {
                 new ReportItem("Governing Case",Mn.Item2.ToString(),Units.NONE),
                 new ReportItem("Nominal Moment (Mn)",Mn.Item1.ToString("0.###"),Units.KIP_IN),
                 new ReportItem("phi",PHI_B.ToString("0.###"),Units.NONE),
                 new ReportItem("Design Moment (phi * Mn)",(PHI_B*Mn.Item1).ToString("0.###"),Units.KIP_IN)
             };
-            var report = new MomentReport(
-               "AISI Code - Moment",
-               "Local Buckling",
-               items_local,
-               "Lateral Torsional Buckling",
-               items_ltb,
-               items_nominal,
-               UnitSystems.KIPINCH
-               );
+            var localSection = new ListReportSection("Local Buckling", localItems);
+            var ltbSection = new ListReportSection("Lateral Torsional Buckling", ltbItems);
+            var designSection = new ListReportSection("Design Moment", designItems);
+            var sections = new List<IReportSection>() { localSection, ltbSection, designSection };
+            var report = new Report(UnitSystems.KIPINCH, "AISI Code - Moment", sections);
+
             var result = new MomentResistanceOutput(Mn.Item1, PHI_B, Mn.Item2, "Kip", report);
             return result;
         }
