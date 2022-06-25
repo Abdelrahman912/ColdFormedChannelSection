@@ -64,12 +64,12 @@ namespace ColdFormedChannelSection.Core.Helpers
                     ieName = "\\frac {P_u} {\\phi_c P_{no}} + \\frac {M_u} {\\phi_b M_n}";
                 }
             }
-            var sections = pn_out.Report.Sections.Select(sec => sec.AppendToName("Compression"))
-                                                 .Concat(mn_out.Report.Sections.Select(sec => sec.AppendToName("Moment")))
+            var sections = pn_out.Report.Sections.Take(1).Concat(pn_out.Report.Sections.Skip(1).Select(sec => sec.AppendToName("Compression")))
+                                                 .Concat(mn_out.Report.Sections.Skip(1).Select(sec => sec.AppendToName("Moment")))
                                                  .ToList();
-                                                 
-            var report = new Report(UnitSystems.KIPINCH,"Direct Strength - Interaction",sections);
-            return new ResistanceInteractionOutput(pu, pn, mu, mn, ieName, ie,"kip.in","kip",report);
+
+            var report = new Report(UnitSystems.KIPINCH, "Direct Strength - Interaction", sections);
+            return new ResistanceInteractionOutput(pu, pn, mu, mn, ieName, ie, "kip.in", "kip", report);
         }
 
         public static ResistanceInteractionOutput AsDSInteractionResistance(this LippedSection section, Material material, LengthBracingConditions bracingConditions, double pu, double mu)
@@ -95,7 +95,16 @@ namespace ColdFormedChannelSection.Core.Helpers
             if (!lippedSection.IsValidForCompression())
                 return new CompressionResistanceOutput(0.0, PHI_C, FailureMode.UNSAFE, "Kip", null);
             var p_crl = lippedSection.GetCompressionLBResistance(material);
-            return lippedSection.AsCompressionResistance(material, bracingConditions, p_crl);
+            var secDimsItems = new List<ReportItem>()
+            {
+                new ReportItem("H",lippedSection.Dimensions.TotalHeightH.ToString("0.###"),Units.IN),
+                new ReportItem("B",lippedSection.Dimensions.TotalFlangeWidthB.ToString("0.###"),Units.IN),
+                new ReportItem("R",lippedSection.Dimensions.InternalRadiusR.ToString("0.###"),Units.IN),
+                new ReportItem("T",lippedSection.Dimensions.ThicknessT.ToString("0.###"),Units.IN),
+                new ReportItem("C",lippedSection.Dimensions.TotalFoldWidthC.ToString("0.###"),Units.IN)
+            };
+            var secDimSection = new ListReportSection("Section Dimensions", secDimsItems);
+            return lippedSection.AsCompressionResistance(material, bracingConditions, p_crl, secDimSection);
         }
 
         public static CompressionResistanceOutput AsDSCompressionResistance(this UnStiffenedSection unstiffenedSection, Material material, LengthBracingConditions bracingConditions)
@@ -103,11 +112,19 @@ namespace ColdFormedChannelSection.Core.Helpers
             if (!unstiffenedSection.IsValidForCompression())
                 return new CompressionResistanceOutput(0.0, PHI_C, FailureMode.UNSAFE, "Kip", null);
             var p_crl = unstiffenedSection.GetCompressionLBResistance(material);
-            return unstiffenedSection.AsCompressionResistance(material, bracingConditions, p_crl);
+            var secDimsItems = new List<ReportItem>()
+            {
+                new ReportItem("H",unstiffenedSection.Dimensions.TotalHeightH.ToString("0.###"),Units.IN),
+                new ReportItem("B",unstiffenedSection.Dimensions.TotalFlangeWidthB.ToString("0.###"),Units.IN),
+                new ReportItem("R",unstiffenedSection.Dimensions.InternalRadiusR.ToString("0.###"),Units.IN),
+                new ReportItem("T",unstiffenedSection.Dimensions.ThicknessT.ToString("0.###"),Units.IN),
+            };
+            var secDimSection = new ListReportSection("Section Dimensions", secDimsItems);
+            return unstiffenedSection.AsCompressionResistance(material, bracingConditions, p_crl, secDimSection);
         }
 
 
-        private static CompressionResistanceOutput AsCompressionResistance(this Section section, Material material, LengthBracingConditions bracingConditions, double p_crl)
+        private static CompressionResistanceOutput AsCompressionResistance(this Section section, Material material, LengthBracingConditions bracingConditions, double p_crl, ListReportSection secDimSection)
         {
             var Fy = material.Fy;
             var aPrime = section.Properties.APrime;
@@ -170,14 +187,15 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("phi",PHI_C.ToString("0.###"),Units.KIP),
                 new ReportItem("Design Strength (phi*Pn)",(PHI_C*nominalLoad.Item1).ToString("0.###"),Units.KIP),
             };
+
             var elasticSection = new ListReportSection("Elastic Buckling Load", elasticItems);
             var squashSection = new ListReportSection("Yielding Load", squashItems);
-            var strengthSection = new ListReportSection("Nominal Axial Strength",strengthItems);
+            var strengthSection = new ListReportSection("Nominal Axial Strength", strengthItems);
             var designSection = new ListReportSection("Design Compression Load", designItems);
-            var sections = new List<IReportSection>() { elasticSection,squashSection, strengthSection, designSection };
+            var sections = new List<IReportSection>() { secDimSection, elasticSection, squashSection, strengthSection, designSection };
             var report = new Report(UnitSystems.KIPINCH, "Direct Strength - Compression", sections);
-                
-            var result = new CompressionResistanceOutput(nominalLoad.Item1, PHI_C, nominalLoad.Item2,"Kip",report);
+
+            var result = new CompressionResistanceOutput(nominalLoad.Item1, PHI_C, nominalLoad.Item2, "Kip", report);
             return result;
         }
 
@@ -263,7 +281,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var E = material.E;
             var G = material.G;
             var kxLx = bracingConditions.Kx * bracingConditions.Lx;
-            var kyLy = bracingConditions.Ky * bracingConditions.Ly; 
+            var kyLy = bracingConditions.Ky * bracingConditions.Ly;
             var minK_L_ = Math.Min(kxLx, kyLy);
 
             var Af = (bPrime + cPrime) * t;
@@ -424,8 +442,16 @@ namespace ColdFormedChannelSection.Core.Helpers
         {
             if (!unstiffenedSection.IsValidForMoment())
                 return new MomentResistanceOutput(0.0, PHI_B, FailureMode.UNSAFE, "Kip", null);
-            (var m_crl , var items_buckling) = unstiffenedSection.GetMomentLBResistance(material);
-            return unstiffenedSection.AsMomentResistance(material,bracingConditions,m_crl,items_buckling);
+            (var m_crl, var items_buckling) = unstiffenedSection.GetMomentLBResistance(material);
+            var secDimsItems = new List<ReportItem>()
+            {
+                new ReportItem("H",unstiffenedSection.Dimensions.TotalHeightH.ToString("0.###"),Units.IN),
+                new ReportItem("B",unstiffenedSection.Dimensions.TotalFlangeWidthB.ToString("0.###"),Units.IN),
+                new ReportItem("R",unstiffenedSection.Dimensions.InternalRadiusR.ToString("0.###"),Units.IN),
+                new ReportItem("T",unstiffenedSection.Dimensions.ThicknessT.ToString("0.###"),Units.IN),
+            };
+            var secDimSection = new ListReportSection("Section Dimensions", secDimsItems);
+            return unstiffenedSection.AsMomentResistance(material, bracingConditions, m_crl, items_buckling, secDimSection);
         }
 
         public static MomentResistanceOutput AsDSMomentResistance(this LippedSection lippedSection, Material material, LengthBracingConditions bracingConditions)
@@ -433,43 +459,53 @@ namespace ColdFormedChannelSection.Core.Helpers
             if (!lippedSection.IsValidForMoment())
                 return new MomentResistanceOutput(0.0, PHI_B, FailureMode.UNSAFE, "Kip", null);
             (var m_crl, var items_buckling) = lippedSection.GetMomentLBResistance(material);
-            return lippedSection.AsMomentResistance(material, bracingConditions, m_crl,items_buckling);
+            var secDimsItems = new List<ReportItem>()
+            {
+                new ReportItem("H",lippedSection.Dimensions.TotalHeightH.ToString("0.###"),Units.IN),
+                new ReportItem("B",lippedSection.Dimensions.TotalFlangeWidthB.ToString("0.###"),Units.IN),
+                new ReportItem("R",lippedSection.Dimensions.InternalRadiusR.ToString("0.###"),Units.IN),
+                new ReportItem("T",lippedSection.Dimensions.ThicknessT.ToString("0.###"),Units.IN),
+                new ReportItem("C",lippedSection.Dimensions.TotalFoldWidthC.ToString("0.###"),Units.IN)
+            };
+            var secDimSection = new ListReportSection("Section Dimensions", secDimsItems);
+            return lippedSection.AsMomentResistance(material, bracingConditions, m_crl, items_buckling, secDimSection);
         }
 
-        private static MomentResistanceOutput AsMomentResistance(this Section section, Material material, LengthBracingConditions bracingConditions,double m_crl,List<ReportItem> bucklingItems)
+        private static MomentResistanceOutput AsMomentResistance(this Section section, Material material, LengthBracingConditions bracingConditions, double m_crl, List<ReportItem> bucklingItems, ListReportSection secDimSection)
         {
             var Zg = section.Properties.Zg;
             var Fy = material.Fy;
 
             var My = Zg * Fy;
 
-            var M_cre = section.GetMomentGBResistance(material,bracingConditions);
-            var M_crd = section.GetMomentDBResistance(material,bracingConditions);
+            var M_cre = section.GetMomentGBResistance(material, bracingConditions);
+            var M_crd = section.GetMomentDBResistance(material, bracingConditions);
 
             //Nominal Flexural strength (Mne) for LTB.
             var Mne = 0.0;
-            if(M_cre < 0.56 * My)
+            if (M_cre < 0.56 * My)
             {
                 Mne = M_cre;
-            }else if( M_cre > 2.78 * My)
+            }
+            else if (M_cre > 2.78 * My)
             {
                 Mne = My;
             }
             else
             {
-                Mne = (10 / 9.0) * My * (1 - ((10*My)/(36*M_cre)));
+                Mne = (10 / 9.0) * My * (1 - ((10 * My) / (36 * M_cre)));
             }
 
             //Nominal Flexural strength (Mnl) for local buckling.
             var lambda_L = Math.Sqrt(Mne / m_crl);
             var Mnl = lambda_L <= 0.776
                 ? Mne
-                :(1-0.15*(m_crl/Mne).Power(0.4))*(m_crl/Mne).Power(0.4)*Mne;
+                : (1 - 0.15 * (m_crl / Mne).Power(0.4)) * (m_crl / Mne).Power(0.4) * Mne;
 
             var lambda_d = Math.Sqrt(My / M_crd);
             var Mnd = lambda_d <= 0.673
                 ? My
-                : (1-0.22*(M_crd/My).Power(0.5))*(M_crd/My).Power(0.5)*My;
+                : (1 - 0.22 * (M_crd / My).Power(0.5)) * (M_crd / My).Power(0.5) * My;
             var nominalLoads = new List<Tuple<double, FailureMode>>()
             {
                 Tuple.Create(Mne,FailureMode.GLOBALBUCKLING),
@@ -498,17 +534,18 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("phi",PHI_B.ToString("0.###"),Units.NONE),
                 new ReportItem("Design Moment",(PHI_B*nominalLoad.Item1).ToString("0.###"),Units.KIP_IN)
             };
+
             var elasticSection = new ListReportSection("Elstic Buckling Moment", bucklingItems);
             var nominalSection = new ListReportSection("Nominal Flexural Strength", nominalItems);
             var designSection = new ListReportSection("Design Moment", designItems);
-            var sections = new List<IReportSection>() {elasticSection,nominalSection,designSection };
-            var report = new Report(UnitSystems.KIPINCH, "Direct Strength - Moment",sections);
+            var sections = new List<IReportSection>() { secDimSection, elasticSection, nominalSection, designSection };
+            var report = new Report(UnitSystems.KIPINCH, "Direct Strength - Moment", sections);
 
-            var result = new MomentResistanceOutput(nominalLoad.Item1, PHI_B, nominalLoad.Item2,"Kip.in",report);
+            var result = new MomentResistanceOutput(nominalLoad.Item1, PHI_B, nominalLoad.Item2, "Kip.in", report);
             return result;
         }
 
-        public static Tuple<double,List<ReportItem>> GetMomentLBResistance(this LippedSection lippedSection, Material material)
+        public static Tuple<double, List<ReportItem>> GetMomentLBResistance(this LippedSection lippedSection, Material material)
         {
             var H = lippedSection.Dimensions.TotalHeightH;
             var cPrime = lippedSection.Properties.CPrime;
@@ -534,7 +571,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             throw new NotImplementedException();
         }
 
-        private static Tuple<double,List<ReportItem>> GetMomentLBResistance(this UnStiffenedSection unstiffenedSection, Material material)
+        private static Tuple<double, List<ReportItem>> GetMomentLBResistance(this UnStiffenedSection unstiffenedSection, Material material)
         {
 
             var EOverVTerm = ((Math.PI.Power(2) * material.E) / (12 * (1 - material.V.Power(2))));
@@ -557,10 +594,10 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("Kf" , kFlange.ToString("0.###"),Units.NONE),
                 new ReportItem("Mcrl" , m_crl.ToString("0.###"),Units.KIP_IN)
             };
-            return Tuple.Create(m_crl,items);
+            return Tuple.Create(m_crl, items);
         }
 
-        private static Tuple<double,List<ReportItem>> GetMomentLBResistanceFromInteractionMethod(this LippedSection lippedSection, Material material)
+        private static Tuple<double, List<ReportItem>> GetMomentLBResistanceFromInteractionMethod(this LippedSection lippedSection, Material material)
         {
             var H = lippedSection.Dimensions.TotalHeightH;
             var t = lippedSection.Dimensions.ThicknessT;
@@ -575,29 +612,29 @@ namespace ColdFormedChannelSection.Core.Helpers
 
             //Flange - lip local buckling.
             var f1 = 1.0;
-            var f2 = (0.5*H-cPrime) / (0.5*H);
-            var epslon = (f1-f2) / (f1);
+            var f2 = (0.5 * H - cPrime) / (0.5 * H);
+            var epslon = (f1 - f2) / (f1);
             var k_flange_lip = (8.55 * epslon - 11.07) * (cPrimeOverbPrime.Power(2)) + ((3.95 - 1.59 * epslon) * (cPrimeOverbPrime)) + 4;
             var Fcr_flange_lip = k_flange_lip * EOverVTerm * tOverbPrime.Power(2);
 
             //Flange - web local buckling
-             f1 = 1;
+            f1 = 1;
             f2 = -1;
-            epslon = (f1-f2) / (f1);
+            epslon = (f1 - f2) / (f1);
 
-            var k_flange_web = 1.125 * Math.Min(4,(0.5*epslon.Power(3)+4*epslon.Power(2)+4)*(bPrimeOveraPrime.Power(2)));
+            var k_flange_web = 1.125 * Math.Min(4, (0.5 * epslon.Power(3) + 4 * epslon.Power(2) + 4) * (bPrimeOveraPrime.Power(2)));
             var Fcr_flange_web = k_flange_web * EOverVTerm * tOverbPrime.Power(2);
-            
+
             var F_crl = Math.Min(Fcr_flange_lip, Fcr_flange_web);
             var M_crl = Zg * F_crl;
-             var items = new List<ReportItem>()
+            var items = new List<ReportItem>()
             {
                 new ReportItem("Mcrl" , M_crl.ToString("0.###"),Units.KIP_IN)
             };
-            return Tuple.Create(M_crl,items);
+            return Tuple.Create(M_crl, items);
         }
 
-        private static Tuple<double,List<ReportItem>> GetMomentLBResistanceFromElementMethod(this LippedSection lippedSection, Material material)
+        private static Tuple<double, List<ReportItem>> GetMomentLBResistanceFromElementMethod(this LippedSection lippedSection, Material material)
         {
             var EOverVTerm = ((Math.PI.Power(2) * material.E) / (12 * (1 - material.V.Power(2))));
             var H = lippedSection.Dimensions.TotalHeightH;
@@ -616,7 +653,7 @@ namespace ColdFormedChannelSection.Core.Helpers
 
             //Lip Local buckling.
             var f1 = 1;
-            var f2 =  (0.5 * H - cPrime) / (0.5 * H);
+            var f2 = (0.5 * H - cPrime) / (0.5 * H);
             var epslon = (f1 - f2) / f1;
             var k_lip = 1.4 * epslon.Power(2) - 0.25 * epslon + 0.425;
             var Fcr_lip = k_lip * EOverVTerm * (t / cPrime).Power(2);
@@ -669,23 +706,23 @@ namespace ColdFormedChannelSection.Core.Helpers
             var hyf = -(cPrime.Power(2)) / (2 * (bPrime + cPrime));
             var Cwf = 0.0;
 
-            var Lcr_vTerm = (4*Math.PI.Power(4)*aPrime*(1-v.Power(2))) / (t.Power(3));
-            var Lcr_ITerm = Ixf * (Xof - hxf).Power(2) + Cwf - (Ixyf.Power(2)/Iyf) * (Xof - hxf).Power(2);
+            var Lcr_vTerm = (4 * Math.PI.Power(4) * aPrime * (1 - v.Power(2))) / (t.Power(3));
+            var Lcr_ITerm = Ixf * (Xof - hxf).Power(2) + Cwf - (Ixyf.Power(2) / Iyf) * (Xof - hxf).Power(2);
             var Lcr = (Lcr_vTerm * Lcr_ITerm + ((Math.PI.Power(4) * aPrime.Power(4)) / (720.0))).Power(0.25);
-            Lcr = Math.Min(Lcr,Lu);
+            Lcr = Math.Min(Lcr, Lu);
 
             var piOverLCr = Math.PI / Lcr;
             var K_phi_fe = (piOverLCr).Power(4) * (E * Ixf * (Xof - hxf).Power(2) + E * Cwf - E * (Ixyf.Power(2) / Iyf) * (Xof - hxf).Power(2)) + piOverLCr.Power(2) * G * Jf;
 
             var K_phi_fg = piOverLCr.Power(2) * (Af * ((Xof - hxf).Power(2) * (Ixyf / Iyf).Power(2) - 2 * Yof * (Xof - hxf) * (Ixyf / Iyf) + hxf.Power(2) + Yof.Power(2)) + Ixf + Iyf);
 
-            var k_phi_we = ((E * t.Power(3)) / (12 * (1 - v.Power(2)))) * ((3/aPrime) + piOverLCr.Power(2)*((19*aPrime)/(60.0)) + piOverLCr.Power(4)*(aPrime.Power(3)/240));
+            var k_phi_we = ((E * t.Power(3)) / (12 * (1 - v.Power(2)))) * ((3 / aPrime) + piOverLCr.Power(2) * ((19 * aPrime) / (60.0)) + piOverLCr.Power(4) * (aPrime.Power(3) / 240));
 
             var sai = -1;
-            var k_phi_wg_term1 = ((aPrime*t*Math.PI.Power(2)) / (13440));
+            var k_phi_wg_term1 = ((aPrime * t * Math.PI.Power(2)) / (13440));
             var LcrOveraPrime = Lcr / aPrime;
             var aPrimeOverLcr = aPrime / Lcr;
-            var k_phi_wg_term2_Numen = (45360*sai+62160) * LcrOveraPrime.Power(2) +448*Math.PI.Power(2) + aPrimeOverLcr.Power(2)*(53+3*sai)*Math.PI.Power(4);
+            var k_phi_wg_term2_Numen = (45360 * sai + 62160) * LcrOveraPrime.Power(2) + 448 * Math.PI.Power(2) + aPrimeOverLcr.Power(2) * (53 + 3 * sai) * Math.PI.Power(4);
             var k_phi_wg_term2_Dunem = Math.PI.Power(4) + 28 * Math.PI.Power(2) * LcrOveraPrime.Power(2) + 420 * LcrOveraPrime.Power(4);
             var k_phi_wg = k_phi_wg_term1 * (k_phi_wg_term2_Numen / k_phi_wg_term2_Dunem);
             var F_crd = (K_phi_fe + k_phi_we) / (K_phi_fg + k_phi_wg);
@@ -723,9 +760,9 @@ namespace ColdFormedChannelSection.Core.Helpers
 
             var sigma_t = ((1.0) / (A * ro.Power(2))) * (G * J + ((Math.PI.Power(2) * E * Cw) / (Kz * Lz).Power(2)));
 
-            var Fe = ((Cb*ro*A)/(Zg)) * (Math.Sqrt(sigma_ey*sigma_t));
+            var Fe = ((Cb * ro * A) / (Zg)) * (Math.Sqrt(sigma_ey * sigma_t));
             var F_cre = Fe;
-            var M_cre = Zg* F_cre;
+            var M_cre = Zg * F_cre;
             return M_cre;
         }
 

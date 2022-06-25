@@ -43,8 +43,8 @@ namespace ColdFormedChannelSection.Core.Helpers
                 ie = (pu / (2 * PHI_C * Pn.NominalResistance)) + (mu / (PHI_B * Mn.NominalResistance));
                 ieName = "\\frac {P_u} {2 \\phi_c P_n} +  \frac {M_u} {\\phi_b M_n}";
             }
-            var sections = Pn.Report.Sections.Select(sec => sec.AppendToName("Compression"))
-                                                .Concat(Mn.Report.Sections.Select(sec => sec.AppendToName("Moment")))
+            var sections =Pn.Report.Sections.Take(1).Concat( Pn.Report.Sections.Skip(1).Select(sec => sec.AppendToName("Compression")))
+                                                .Concat(Mn.Report.Sections.Skip(1).Select(sec => sec.AppendToName("Moment")))
                                                 .ToList();
 
             var report = new Report(UnitSystems.TONCM, "Egyptian Code - Interaction", sections);
@@ -76,8 +76,8 @@ namespace ColdFormedChannelSection.Core.Helpers
                 ieName = "\\frac {P_u} {2 \\phi_c P_n} +  \frac {M_u} {\\phi_b M_n}";
             }
 
-            var sections = Pn.Report.Sections.Select(sec => sec.AppendToName("Compression"))
-                                                .Concat(Mn.Report.Sections.Select(sec => sec.AppendToName("Moment")))
+            var sections =Pn.Report.Sections.Take(1).Concat( Pn.Report.Sections.Skip(1).Select(sec => sec.AppendToName("Compression")))
+                                                .Concat(Mn.Report.Sections.Skip(1).Select(sec => sec.AppendToName("Moment")))
                                                 .ToList();
 
             var report = new Report(UnitSystems.TONCM, "Egyptian Code - Interaction", sections);
@@ -135,9 +135,19 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("phi",PHI_B.ToString("0.###"),Units.NONE),
                 new ReportItem("Design Moment",(PHI_B*Mn).ToString("0.###"),Units.TON_CM)
             };
-            var report = new Report(UnitSystems.TONCM, "Egytian Code - Moment", null);
+            var secDimsItems = new List<ReportItem>()
+            {
+                new ReportItem("H",section.Dimensions.TotalHeightH.ToString("0.###"),Units.CM),
+                new ReportItem("B",section.Dimensions.TotalFlangeWidthB.ToString("0.###"),Units.CM),
+                new ReportItem("R",section.Dimensions.InternalRadiusR.ToString("0.###"),Units.CM),
+                new ReportItem("T",section.Dimensions.ThicknessT.ToString("0.###"),Units.CM),
+                new ReportItem("C",section.Dimensions.TotalFoldWidthC.ToString("0.###"),Units.CM)
+            };
+            var secDimSection = new ListReportSection("Section Dimensions", secDimsItems);
             var nominalSection = new ListReportSection("Nominal Moment", nominalItems);
             var designSection = new ListReportSection("Design Moment", designItems);
+            var sections = new List<IReportSection>() { secDimSection,nominalSection,designSection};
+            var report = new Report(UnitSystems.TONCM, "Egytian Code - Moment", sections);
             var result = new MomentResistanceOutput(Mn, PHI_B, failureMode, "t.cm", report);
             return result;
         }
@@ -159,10 +169,17 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("phi",PHI_B.ToString("0.###"),Units.NONE),
                 new ReportItem("Design Moment",(PHI_B*Mn).ToString("0.###"),Units.TON_CM)
             };
-
+            var secDimsItems = new List<ReportItem>()
+            {
+                new ReportItem("H",section.Dimensions.TotalHeightH.ToString("0.###"),Units.CM),
+                new ReportItem("B",section.Dimensions.TotalFlangeWidthB.ToString("0.###"),Units.CM),
+                new ReportItem("R",section.Dimensions.InternalRadiusR.ToString("0.###"),Units.CM),
+                new ReportItem("T",section.Dimensions.ThicknessT.ToString("0.###"),Units.CM),
+            };
+            var secDimSection = new ListReportSection("Section Dimensions", secDimsItems);
             var nominalSection = new ListReportSection("Nominal Moment", nominalItems);
             var designSection = new ListReportSection("Design Moment", designItems);
-            var sections = new List<IReportSection>() { nominalSection, designSection };
+            var sections = new List<IReportSection>() {secDimSection, nominalSection, designSection };
 
             var report = new Report(UnitSystems.TONCM, "Egyptian Code - Moment", sections);
 
@@ -805,12 +822,21 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("phi",$"{PHI_C}",Units.TON),
                 new ReportItem("Design Load (phi*Pn)",$"{(PHI_C*pn.Item1).ToString("0.###")}",Units.TON),
             };
+            var secDimsItems = new List<ReportItem>()
+            {
+                new ReportItem("H",section.Dimensions.TotalHeightH.ToString("0.###"),Units.CM),
+                new ReportItem("B",section.Dimensions.TotalFlangeWidthB.ToString("0.###"),Units.CM),
+                new ReportItem("R",section.Dimensions.InternalRadiusR.ToString("0.###"),Units.CM),
+                new ReportItem("T",section.Dimensions.ThicknessT.ToString("0.###"),Units.CM),
+                new ReportItem("C",section.Dimensions.TotalFoldWidthC.ToString("0.###"),Units.CM)
+            };
+            var secDimSection = new ListReportSection("Section Dimensions", secDimsItems);
             var localSection = new ListReportSection("Local Buckling",localItems);
             var fbSection = new ListReportSection("Flexural Buckling", fbItems);
             var tfbSection = new ListReportSection("Torsional Flexural Buckling", tfbItems);
             var tbSection = new ListReportSection("Torsional Buckling",tbItems);
             var designSection = new ListReportSection("Design Compression Load", designItems);
-            var sections = new List<IReportSection> {localSection,fbSection,tfbSection,tbSection };
+            var sections = new List<IReportSection> {secDimSection,localSection,fbSection,tfbSection,tbSection };
             var report = new Report(UnitSystems.TONCM, "Egyptian Code - Compression", sections);
 
             var result = new CompressionResistanceOutput(pn.Item1, PHI_C, pn.Item2, "ton", report);
@@ -842,13 +868,21 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("phi",$"{PHI_C}",Units.TON),
                 new ReportItem("Design Load (phi*Pn)",$"{(PHI_C*pn.Item1).ToString("0.###")}",Units.TON),
             };
+            var secDimsItems = new List<ReportItem>()
+            {
+                new ReportItem("H",section.Dimensions.TotalHeightH.ToString("0.###"),Units.CM),
+                new ReportItem("B",section.Dimensions.TotalFlangeWidthB.ToString("0.###"),Units.CM),
+                new ReportItem("R",section.Dimensions.InternalRadiusR.ToString("0.###"),Units.CM),
+                new ReportItem("T",section.Dimensions.ThicknessT.ToString("0.###"),Units.CM),
+            };
+            var secDimSection = new ListReportSection("Section Dimensions", secDimsItems);
             var localSection = new ListReportSection("Local Buckling", localItems);
             var fbSection = new ListReportSection("Flexural Buckling", fbItems);
             var tfbSection = new ListReportSection("Torsional Flexural Buckling", tfbItems);
             var tbSection = new ListReportSection("Torsional Buckling",tbItems);
             var designSection = new ListReportSection("Design Compression Load",designItems);
 
-            var sections = new List<IReportSection>() { localSection,fbSection,tfbSection,tbSection,designSection};
+            var sections = new List<IReportSection>() {secDimSection, localSection,fbSection,tfbSection,tbSection,designSection};
 
             var report = new Report(UnitSystems.TONCM, "Egyptian Code - Compression",sections);
 

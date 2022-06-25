@@ -65,10 +65,10 @@ namespace ColdFormedChannelSection.Core.Helpers
                     ieName = "\\frac {P_u} {\\phi_c P_{no}} + \\frac {M_u} {\\phi_b M_n}";
                 }
             }
-            var sections = pn_out.Report.Sections.Select(sec => sec.AppendToName("Compression"))
-                                                 .Concat(mn_out.Report.Sections.Select(sec => sec.AppendToName("Moment")))
+            var sections = pn_out.Report.Sections.Take(1).Concat(pn_out.Report.Sections.Skip(1).Select(sec => sec.AppendToName("Compression")))
+                                                 .Concat(mn_out.Report.Sections.Skip(1).Select(sec => sec.AppendToName("Moment")))
                                                  .ToList();
-            var report = new Report(UnitSystems.KIPINCH,"AISI Code - Interaction",sections );
+            var report = new Report(UnitSystems.KIPINCH, "AISI Code - Interaction", sections);
             return new ResistanceInteractionOutput(pu, pn, mu, mn, ieName, ie, "kip.in", "kip", report);
         }
 
@@ -429,12 +429,21 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("Design Resistance",(PHI_C*pn.Item1).ToString("0.###"),Units.KIP),
 
             };
+            var secDimsItems = new List<ReportItem>()
+            {
+                new ReportItem("H",lippedSection.Dimensions.TotalHeightH.ToString("0.###"),Units.IN),
+                new ReportItem("B",lippedSection.Dimensions.TotalFlangeWidthB.ToString("0.###"),Units.IN),
+                new ReportItem("R",lippedSection.Dimensions.InternalRadiusR.ToString("0.###"),Units.IN),
+                new ReportItem("T",lippedSection.Dimensions.ThicknessT.ToString("0.###"),Units.IN),
+                new ReportItem("C",lippedSection.Dimensions.TotalFoldWidthC.ToString("0.###"),Units.IN)
+            };
+            var secDimSection = new ListReportSection("Section Dimensions", secDimsItems);
             var localSection = new ListReportSection("Local Buckling", localItems);
             var flexuralSection = new ListReportSection("Flexural Buckling", flexuralItems);
             var tfbSection = new ListReportSection("Torsional Flexural Buckling", tfbItems);
             var tbSection = new ListReportSection("Torsional Buckling", tbItems);
             var designSections = new ListReportSection("Design Compression Load", items);
-            var sections = new List<IReportSection>() { localSection, flexuralSection, tfbSection, tbSection, designSections };
+            var sections = new List<IReportSection>() { secDimSection, localSection, flexuralSection, tfbSection, tbSection, designSections };
             var report = new Report(UnitSystems.KIPINCH, "AISI Code - Compression", sections);
 
 
@@ -467,12 +476,20 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("Design Resistance",(PHI_C*pn.Item1).ToString("0.###"),Units.KIP),
 
             };
+            var secDimsItems = new List<ReportItem>()
+            {
+                new ReportItem("H",unstiffenedSection.Dimensions.TotalHeightH.ToString("0.###"),Units.IN),
+                new ReportItem("B",unstiffenedSection.Dimensions.TotalFlangeWidthB.ToString("0.###"),Units.IN),
+                new ReportItem("R",unstiffenedSection.Dimensions.InternalRadiusR.ToString("0.###"),Units.IN),
+                new ReportItem("T",unstiffenedSection.Dimensions.ThicknessT.ToString("0.###"),Units.IN),
+            };
+            var secDimSection = new ListReportSection("Section Dimensions", secDimsItems);
             var localSection = new ListReportSection("Local Buckling", localItems);
             var flexuralSection = new ListReportSection("Flexural Buckling", flexuralItems);
             var tfbSection = new ListReportSection("Torsional Flexural Buckling", tfbItems);
             var tbSection = new ListReportSection("Torsional Buckling", tbItems);
             var designSection = new ListReportSection("Design Compression Load", designItems);
-            var sections = new List<IReportSection>() { localSection, flexuralSection, tfbSection, tbSection, designSection };
+            var sections = new List<IReportSection>() { secDimSection, localSection, flexuralSection, tfbSection, tbSection, designSection };
             var report = new Report(UnitSystems.KIPINCH, "AISI Code - Compression", sections);
 
             var result = new CompressionResistanceOutput(pn.Item1, PHI_C, pn.Item2, "Kip", report);
@@ -731,10 +748,19 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("phi",PHI_B.ToString("0.###"),Units.NONE),
                 new ReportItem("Design Moment (phi * Mn)",(PHI_B*Mn.Item1).ToString("0.###"),Units.KIP_IN)
             };
+            var secDimsItems = new List<ReportItem>()
+            {
+                new ReportItem("H",lippedSection.Dimensions.TotalHeightH.ToString("0.###"),Units.IN),
+                new ReportItem("B",lippedSection.Dimensions.TotalFlangeWidthB.ToString("0.###"),Units.IN),
+                new ReportItem("R",lippedSection.Dimensions.InternalRadiusR.ToString("0.###"),Units.IN),
+                new ReportItem("T",lippedSection.Dimensions.ThicknessT.ToString("0.###"),Units.IN),
+                new ReportItem("C",lippedSection.Dimensions.TotalFoldWidthC.ToString("0.###"),Units.IN)
+            };
+            var secDimSection = new ListReportSection("Section Dimensions", secDimsItems);
             var localSection = new ListReportSection("Local Buckling", localItems);
             var ltbSection = new ListReportSection("Lateral Torsional Buckling", ltbItems);
             var designSection = new ListReportSection("Design Moment", designItems);
-            var sections = new List<IReportSection>() { localSection, ltbSection, designSection };
+            var sections = new List<IReportSection>() { secDimSection, localSection, ltbSection, designSection };
             var report = new Report(UnitSystems.KIPINCH, "AISI Code - Moment", sections);
 
 
@@ -762,10 +788,18 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("phi",PHI_B.ToString("0.###"),Units.NONE),
                 new ReportItem("Design Moment (phi * Mn)",(PHI_B*Mn.Item1).ToString("0.###"),Units.KIP_IN)
             };
+            var secDimsItems = new List<ReportItem>()
+            {
+                new ReportItem("H",unstiffenedSection.Dimensions.TotalHeightH.ToString("0.###"),Units.IN),
+                new ReportItem("B",unstiffenedSection.Dimensions.TotalFlangeWidthB.ToString("0.###"),Units.IN),
+                new ReportItem("R",unstiffenedSection.Dimensions.InternalRadiusR.ToString("0.###"),Units.IN),
+                new ReportItem("T",unstiffenedSection.Dimensions.ThicknessT.ToString("0.###"),Units.IN),
+            };
+            var secDimSection = new ListReportSection("Section Dimensions", secDimsItems);
             var localSection = new ListReportSection("Local Buckling", localItems);
             var ltbSection = new ListReportSection("Lateral Torsional Buckling", ltbItems);
             var designSection = new ListReportSection("Design Moment", designItems);
-            var sections = new List<IReportSection>() { localSection, ltbSection, designSection };
+            var sections = new List<IReportSection>() { secDimSection, localSection, ltbSection, designSection };
             var report = new Report(UnitSystems.KIPINCH, "AISI Code - Moment", sections);
 
             var result = new MomentResistanceOutput(Mn.Item1, PHI_B, Mn.Item2, "Kip", report);
