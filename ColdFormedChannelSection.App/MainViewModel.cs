@@ -74,7 +74,7 @@ namespace ColdFormedChannelSection.App
             _effectiveWidthVM.Value.GeneralInfoVM.IsDesignCode = true;
             Mediator.Instance.NotifyColleagues(KeyValuePair.Create(_generalInfoVM.Value.DesignCode, _generalInfoVM.Value.StrainingAction), Context.BRACING);
 
-            MenuVM.Name = "Effective Wide Width";
+            MenuVM.Name = "Effective Width";
         }
 
         private  void Init()

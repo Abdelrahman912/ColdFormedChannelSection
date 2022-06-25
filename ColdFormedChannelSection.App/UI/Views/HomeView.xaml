@@ -147,7 +147,7 @@
                             <TextBlock Grid.Row="0" Grid.ColumnSpan="2"
                                     Margin="8 4 8 4" HorizontalAlignment="Center"
                                     Style="{StaticResource MaterialDesignHeadline5TextBlock}"
-                                    Text="Effective Wide Width Method" />
+                                    Text="Effective Width Method" />
                             <StackPanel Grid.Column="0" Grid.Row="1" Margin="10">
                                 <TextBlock 
                                     Margin="8 4 8 4" TextWrapping="Wrap" 
