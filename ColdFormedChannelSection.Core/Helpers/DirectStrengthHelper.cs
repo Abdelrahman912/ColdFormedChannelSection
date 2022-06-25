@@ -9,13 +9,21 @@ namespace ColdFormedChannelSection.Core.Helpers
 {
     public static class DirectStrengthHelper
     {
+        #region Constants
+
+        private const double PHI_C = 0.85;
+
+        private const double PHI_B = 0.9;
+
+        #endregion
+
+
         #region Moment & Compression
 
-        private static ResistanceInteractionOutput AsDSInteractionResistance(this Section section, Material material, LengthBracingConditions bracingconditions, double pu, double mu, CompressionResistanceOutput pn_out, MomentResistanceOutput mn_out, Func<double> getAe,double phi_b)
+        private static ResistanceInteractionOutput AsDSInteractionResistance(this Section section, Material material, LengthBracingConditions bracingconditions, double pu, double mu, CompressionResistanceOutput pn_out, MomentResistanceOutput mn_out, Func<double> getAe)
         {
             var pn = pn_out.NominalResistance;
             var mn = mn_out.NominalResistance;
-            var phi_c = 0.85;
             var E = material.E;
             var Fy = material.Fy;
             var Ix = section.Properties.Ix;
@@ -26,22 +34,22 @@ namespace ColdFormedChannelSection.Core.Helpers
             var Pex = (Math.PI.Power(2) * E * Ix) / (Kx * Lx).Power(2);
             var alpha_x = 1 - (pu / Pex);
 
-            var loadRatio = (pu / (phi_c * pn));
+            var loadRatio = (pu / (PHI_C * pn));
             var ieName = "";
             var ie = 0.0;
             if (loadRatio <= 0.15)
             {
-                ie = (pu / (phi_c * pn)) + (mu / (phi_b * mn));
+                ie = (pu / (PHI_C * pn)) + (mu / (PHI_B * mn));
                 //tex:
                 //$$ \frac {P_u}{\phi_c P_n} + \frac {M_u} {\phi_b M_n} $$
                 ieName = "\\frac {P_u}{\\phi_c P_n} + \\frac {M_u} {\\phi_b M_n}";
             }
             else
             {
-                var ie_1 = (pu / (phi_c * pn)) + ((Cm * mu) / (phi_b * mn * alpha_x));
+                var ie_1 = (pu / (PHI_C * pn)) + ((Cm * mu) / (PHI_B * mn * alpha_x));
                 var Ae = getAe();
                 var Pno = Ae * Fy;
-                var ie_2 = (pu / (phi_c * Pno)) + (mu / (phi_b * mn));
+                var ie_2 = (pu / (PHI_C * Pno)) + (mu / (PHI_B * mn));
                 ie = Math.Max(ie_1, ie_2);
                 if (ie_1 > ie_2)
                 {
@@ -64,26 +72,24 @@ namespace ColdFormedChannelSection.Core.Helpers
         {
             var Pn = section.AsDSCompressionResistance(material, bracingConditions);
             var Mn = section.AsDSMomentResistance(material, bracingConditions);
-            return section.AsDSInteractionResistance(material, bracingConditions, pu, mu, Pn, Mn, () => section.GetAISIReducedArea(material).Item1,0.95);
+            return section.AsDSInteractionResistance(material, bracingConditions, pu, mu, Pn, Mn, () => section.GetAISIReducedArea(material).Item1);
         }
 
         public static ResistanceInteractionOutput AsDSInteractionResistance(this UnStiffenedSection section, Material material, LengthBracingConditions bracingConditions, double pu, double mu)
         {
             var Pn = section.AsDSCompressionResistance(material, bracingConditions);
             var Mn = section.AsDSMomentResistance(material, bracingConditions);
-            return section.AsDSInteractionResistance(material, bracingConditions, pu, mu, Pn, Mn, () => section.GetAISIReducedArea(material).Item1,0.9);
+            return section.AsDSInteractionResistance(material, bracingConditions, pu, mu, Pn, Mn, () => section.GetAISIReducedArea(material).Item1);
         }
 
         #endregion
 
         #region Compression
 
-
-
         public static CompressionResistanceOutput AsDSCompressionResistance(this LippedSection lippedSection, Material material, LengthBracingConditions bracingConditions)
         {
             if (!lippedSection.IsValidForCompression())
-                return new CompressionResistanceOutput(0.0, 0.9, FailureMode.UNSAFE, "Kip", null);
+                return new CompressionResistanceOutput(0.0, PHI_C, FailureMode.UNSAFE, "Kip", null);
             var p_crl = lippedSection.GetCompressionLBResistance(material);
             return lippedSection.AsCompressionResistance(material, bracingConditions, p_crl);
         }
@@ -91,7 +97,7 @@ namespace ColdFormedChannelSection.Core.Helpers
         public static CompressionResistanceOutput AsDSCompressionResistance(this UnStiffenedSection unstiffenedSection, Material material, LengthBracingConditions bracingConditions)
         {
             if (!unstiffenedSection.IsValidForCompression())
-                return new CompressionResistanceOutput(0.0, 0.9, FailureMode.UNSAFE, "Kip", null);
+                return new CompressionResistanceOutput(0.0, PHI_C, FailureMode.UNSAFE, "Kip", null);
             var p_crl = unstiffenedSection.GetCompressionLBResistance(material);
             return unstiffenedSection.AsCompressionResistance(material, bracingConditions, p_crl);
         }
@@ -157,8 +163,8 @@ namespace ColdFormedChannelSection.Core.Helpers
             {
                 new ReportItem("Governing Case",nominalLoad.Item2.ToString(),Units.NONE),
                 new ReportItem("Nominal Load (Pn)",nominalLoad.Item1.ToString("0.###"),Units.KIP),
-                new ReportItem("phi",0.85.ToString("0.###"),Units.KIP),
-                new ReportItem("Design Strength (phi*Pn)",(0.85*nominalLoad.Item1).ToString("0.###"),Units.KIP),
+                new ReportItem("phi",PHI_C.ToString("0.###"),Units.KIP),
+                new ReportItem("Design Strength (phi*Pn)",(PHI_C*nominalLoad.Item1).ToString("0.###"),Units.KIP),
             };
             var report = new CompressionReport(
                 "Direct Strength - Compression",
@@ -171,7 +177,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 nominal_items,
                 UnitSystems.KIPINCH
                 );
-            var result = new CompressionResistanceOutput(nominalLoad.Item1, 0.85, nominalLoad.Item2,"Kip",report);
+            var result = new CompressionResistanceOutput(nominalLoad.Item1, PHI_C, nominalLoad.Item2,"Kip",report);
             return result;
         }
 
@@ -417,20 +423,20 @@ namespace ColdFormedChannelSection.Core.Helpers
         public static MomentResistanceOutput AsDSMomentResistance(this UnStiffenedSection unstiffenedSection, Material material, LengthBracingConditions bracingConditions)
         {
             if (!unstiffenedSection.IsValidForMoment())
-                return new MomentResistanceOutput(0.0, 0.9, FailureMode.UNSAFE, "Kip", null);
+                return new MomentResistanceOutput(0.0, PHI_B, FailureMode.UNSAFE, "Kip", null);
             (var m_crl , var items_buckling) = unstiffenedSection.GetMomentLBResistance(material);
-            return unstiffenedSection.AsMomentResistance(material,bracingConditions,m_crl,items_buckling,0.9);
+            return unstiffenedSection.AsMomentResistance(material,bracingConditions,m_crl,items_buckling);
         }
 
         public static MomentResistanceOutput AsDSMomentResistance(this LippedSection lippedSection, Material material, LengthBracingConditions bracingConditions)
         {
             if (!lippedSection.IsValidForMoment())
-                return new MomentResistanceOutput(0.0, 0.9, FailureMode.UNSAFE, "Kip", null);
+                return new MomentResistanceOutput(0.0, PHI_B, FailureMode.UNSAFE, "Kip", null);
             (var m_crl, var items_buckling) = lippedSection.GetMomentLBResistance(material);
-            return lippedSection.AsMomentResistance(material, bracingConditions, m_crl,items_buckling,0.95);
+            return lippedSection.AsMomentResistance(material, bracingConditions, m_crl,items_buckling);
         }
 
-        private static MomentResistanceOutput AsMomentResistance(this Section section, Material material, LengthBracingConditions bracingConditions,double m_crl,List<ReportItem> items_buckling,double phi_b)
+        private static MomentResistanceOutput AsMomentResistance(this Section section, Material material, LengthBracingConditions bracingConditions,double m_crl,List<ReportItem> items_buckling)
         {
             var Zg = section.Properties.Zg;
             var Fy = material.Fy;
@@ -489,8 +495,8 @@ namespace ColdFormedChannelSection.Core.Helpers
             {
                 new ReportItem("Governing Case",nominalLoad.Item2.ToString(),Units.NONE),
                 new ReportItem("Nominal Moment",nominalLoad.Item1.ToString("0.###"),Units.KIP_IN),
-                new ReportItem("phi",phi_b.ToString("0.###"),Units.NONE),
-                new ReportItem("Design Moment",(phi_b*nominalLoad.Item1).ToString("0.###"),Units.KIP_IN)
+                new ReportItem("phi",PHI_B.ToString("0.###"),Units.NONE),
+                new ReportItem("Design Moment",(PHI_B*nominalLoad.Item1).ToString("0.###"),Units.KIP_IN)
             };
             var report = new MomentReport(
                 "Direct Strength - Moment",
@@ -501,7 +507,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 items_nominal,
                 UnitSystems.KIPINCH
                 );
-            var result = new MomentResistanceOutput(nominalLoad.Item1, phi_b, nominalLoad.Item2,"Kip.in",report);
+            var result = new MomentResistanceOutput(nominalLoad.Item1, PHI_B, nominalLoad.Item2,"Kip.in",report);
             return result;
         }
 

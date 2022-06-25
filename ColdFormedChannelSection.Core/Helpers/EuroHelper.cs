@@ -4,8 +4,6 @@ using ColdFormedChannelSection.Core.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ColdFormedChannelSection.Core.Helpers
 {
@@ -45,7 +43,7 @@ namespace ColdFormedChannelSection.Core.Helpers
 
         #region Moment & Compression
 
-        public static ResistanceInteractionOutput AsEuroInteractionResistance(this LippedSection section, Material material, LengthBracingConditions bracingConditions,double pu, double mu)
+        public static ResistanceInteractionOutput AsEuroInteractionResistance(this LippedSection section, Material material, LengthBracingConditions bracingConditions, double pu, double mu)
         {
             var Pn = section.AsEuroCompressionResistance(material, bracingConditions);
             var Mn = section.AsEuroMomentResistance(material, bracingConditions);
@@ -53,7 +51,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             //$$ (\frac{P_u}{ P_n})^{0.8} + (\frac{M_u}{M_n})^{0.8}  $$
             var ie = (pu / Pn.NominalResistance).Power(0.8) + (mu / Mn.NominalResistance).Power(0.8);
             var report = new InteractionReport(Pn.Report, Mn.Report, UnitSystems.NMM);
-            return new ResistanceInteractionOutput(pu, Pn.NominalResistance, mu, Mn.NominalResistance, "(\\frac{P_u}{ P_n})^{0.8} + (\\frac{M_u}{M_n})^{0.8}", ie,"N.mm","N",report);
+            return new ResistanceInteractionOutput(pu, Pn.NominalResistance, mu, Mn.NominalResistance, "(\\frac{P_u}{ P_n})^{0.8} + (\\frac{M_u}{M_n})^{0.8}", ie, "N.mm", "N", report);
         }
 
         public static ResistanceInteractionOutput AsEuroInteractionResistance(this UnStiffenedSection section, Material material, LengthBracingConditions bracingConditions, double pu, double mu)
@@ -64,7 +62,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             //$$ (\frac{P_u}{ P_n})^{0.8} + (\frac{M_u}{M_n})^{0.8}  $$
             var ie = (pu / Pn.NominalResistance).Power(0.8) + (mu / Mn.NominalResistance).Power(0.8);
             var report = new InteractionReport(Pn.Report, Mn.Report, UnitSystems.NMM);
-            return new ResistanceInteractionOutput(pu, Pn.NominalResistance, mu, Mn.NominalResistance, "(\\frac{P_u}{ P_n})^{0.8} + (\\frac{M_u}{M_n})^{0.8}", ie,"N.mm","N",report);
+            return new ResistanceInteractionOutput(pu, Pn.NominalResistance, mu, Mn.NominalResistance, "(\\frac{P_u}{ P_n})^{0.8} + (\\frac{M_u}{M_n})^{0.8}", ie, "N.mm", "N", report);
         }
 
         #endregion
@@ -134,7 +132,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             return ae;
         }
 
-        private static (double be1, double be2, double ce, double Xd,double Kf , double Kc) GetEuroReducedFlange(this LippedSection section, Material material, double kw)
+        private static (double be1, double be2, double ce, double Xd, double Kf, double Kc) GetEuroReducedFlange(this LippedSection section, Material material, double kw)
         {
             var Fy = material.Fy;
             var b_prime = section.Properties.BPrime;
@@ -169,7 +167,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 else
                     row_f = 1.0;
                 var be = row_f * b_prime;
-                be1_lst.Add( 0.5 * be);
+                be1_lst.Add(0.5 * be);
                 be2 = 0.5 * be;
 
                 var row_c = 1.0;
@@ -189,7 +187,7 @@ namespace ColdFormedChannelSection.Core.Helpers
 
             } while (!isEqual);
 
-            return (be1: be1_lst.First(), be2: be2, ce: ce, Xd: Xd,Kf: kf,Kc:kc);
+            return (be1: be1_lst.First(), be2: be2, ce: ce, Xd: Xd, Kf: kf, Kc: kc);
         }
 
         private static (double be1, double be2) GetEuroReducedFlange(this UnStiffenedSection section, Material material)
@@ -211,10 +209,10 @@ namespace ColdFormedChannelSection.Core.Helpers
             return (be1, be2);
         }
 
-        private static Tuple<double,List<ReportItem>> GetEuroReducedArea(this LippedSection section, Material material)
+        private static Tuple<double, List<ReportItem>> GetEuroReducedArea(this LippedSection section, Material material)
         {
             var t = section.Dimensions.ThicknessT;
-            (var be1, var be2, var ce, var Xd, var Kf , var Kc) = section.GetEuroReducedFlange(material, 1);
+            (var be1, var be2, var ce, var Xd, var Kf, var Kc) = section.GetEuroReducedFlange(material, 1);
 
             //Web.
             var Kw = 4.0;
@@ -222,8 +220,8 @@ namespace ColdFormedChannelSection.Core.Helpers
 
             var Ae = t * (2 * be1 + ae + 2 * Xd * (be2 + ce));
 
-            var items = new List<ReportItem>() 
-            { 
+            var items = new List<ReportItem>()
+            {
                 new ReportItem("Kw",Kw.ToString("0.###"),Units.NONE),
                 new ReportItem("Effective Height (ae)",ae.ToString("0.###"),Units.MM),
                 new ReportItem("Kf",Kf.ToString("0.###"),Units.NONE),
@@ -236,10 +234,10 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("Nominal Load (Pn)",(material.Fy*Ae).ToString("0.###"),Units.N),
             };
 
-            return Tuple.Create(Ae,items);
+            return Tuple.Create(Ae, items);
         }
 
-        private static Tuple<double,List<ReportItem>> GetEuroReducedArea(this UnStiffenedSection section, Material material)
+        private static Tuple<double, List<ReportItem>> GetEuroReducedArea(this UnStiffenedSection section, Material material)
         {
             var t = section.Dimensions.ThicknessT;
             var Kf = 0.43;
@@ -260,23 +258,24 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("Yield Stress (Fy)",material.Fy.ToString("0.###"),Units.N_MM_2),
                 new ReportItem("Nominal Load (Pn)",(material.Fy*Ae).ToString("0.###"),Units.N),
             };
-            return Tuple.Create(Ae, items) ;
+            return Tuple.Create(Ae, items);
         }
-
 
         public static CompressionResistanceOutput AsEuroCompressionResistance(this LippedSection section, Material material, LengthBracingConditions bracingConditions)
         {
             if (!section.IsValid())
-                return new CompressionResistanceOutput(0.0, 1.0, FailureMode.UNSAFE, "N",null);
-            (var Ae,var items_local )= section.GetEuroReducedArea(material);
+                return new CompressionResistanceOutput(0.0, 1.0,"gamma", FailureMode.UNSAFE, "N", null);
+            (var Ae, var items_local) = section.GetEuroReducedArea(material);
             var pn1 = Tuple.Create(section.GetEuroCompressionLBResistance(material, Ae), FailureMode.LOCALBUCKLING);
             (var pn_FB, var items_FB) = section.GetEuroCompressionFBResistance(material, bracingConditions, Ae, 0.34);
+            (var pn_TB, var items_TB) = section.GetEuroCompressionTBResistance(material, bracingConditions, Ae, 0.34);
+            (var pn_TFB, var items_TFB) = section.GetEuroCompressionTFBResistance(material, bracingConditions, Ae, 0.34);//TODO: Reports
             var pn2 = Tuple.Create(pn_FB, FailureMode.FLEXURALBUCKLING);
-            (var pn_TFB, var items_TFB) = section.GetEuroCompressionTFBResistance(material, bracingConditions, Ae, 0.34);
-            var pn3 = Tuple.Create(pn_TFB, FailureMode.TORSIONALBUCKLING);
+            var pn3 = Tuple.Create(pn_TB, FailureMode.TORSIONALBUCKLING);
+            var pn4 = Tuple.Create(pn_TFB, FailureMode.FLEXURAL_TORSIONAL_BUCKLING);
             var pns = new List<Tuple<double, FailureMode>>()
             {
-                pn1, pn2, pn3
+                pn1, pn2, pn3,pn4
             };
             var pn = pns.OrderBy(tuple => tuple.Item1).First();
             var items = new List<ReportItem>()
@@ -293,27 +292,29 @@ namespace ColdFormedChannelSection.Core.Helpers
                "Flexural Buckling",
                items_FB,
                "Torsional Flexural Buckling",
-               items_TFB,
+               items_TB,
                items,
                UnitSystems.NMM
                );
-            var result = new CompressionResistanceOutput(pn.Item1, 1.0, pn.Item2, "N",report);
+            var result = new CompressionResistanceOutput(pn.Item1, 1.0,"gamma", pn.Item2, "N", report);
             return result;
         }
 
         public static CompressionResistanceOutput AsEuroCompressionResistance(this UnStiffenedSection section, Material material, LengthBracingConditions bracingConditions)
         {
             if (!section.IsValid())
-                return new CompressionResistanceOutput(0.0, 1.0, FailureMode.UNSAFE, "N", null);
-            (var Ae,var items_local) = section.GetEuroReducedArea(material);
-             var pn1 = Tuple.Create(section.GetEuroCompressionLBResistance(material, Ae), FailureMode.LOCALBUCKLING);
+                return new CompressionResistanceOutput(0.0, 1.0,"gamma", FailureMode.UNSAFE, "N", null);
+            (var Ae, var items_local) = section.GetEuroReducedArea(material);
+            var pn1 = Tuple.Create(section.GetEuroCompressionLBResistance(material, Ae), FailureMode.LOCALBUCKLING);
             (var pn_FB, var items_FB) = section.GetEuroCompressionFBResistance(material, bracingConditions, Ae, 0.49);
+            (var pn_TB, var items_TB) = section.GetEuroCompressionTBResistance(material, bracingConditions, Ae, 0.49);
+            (var pn_TFB, var items_TFB) = section.GetEuroCompressionTFBResistance(material, bracingConditions, Ae, 0.49);//TODO: Reports
             var pn2 = Tuple.Create(pn_FB, FailureMode.FLEXURALBUCKLING);
-            (var pn_TFB, var items_TFB) = section.GetEuroCompressionTFBResistance(material, bracingConditions, Ae, 0.49);
-            var pn3 = Tuple.Create(pn_TFB, FailureMode.TORSIONALBUCKLING);
+            var pn3 = Tuple.Create(pn_TB, FailureMode.TORSIONALBUCKLING);
+            var pn4 = Tuple.Create(pn_TFB, FailureMode.FLEXURAL_TORSIONAL_BUCKLING);
             var pns = new List<Tuple<double, FailureMode>>()
             {
-                pn1, pn2, pn3
+                pn1, pn2, pn3,pn4
             };
             var pn = pns.OrderBy(tuple => tuple.Item1).First();
             var items = new List<ReportItem>()
@@ -330,19 +331,18 @@ namespace ColdFormedChannelSection.Core.Helpers
                "Flexural Buckling",
                items_FB,
                "Torsional Flexural Buckling",
-               items_TFB,
+               items_TB,
                items,
                UnitSystems.NMM
                );
-            var result = new CompressionResistanceOutput(pn.Item1, 1.0, pn.Item2, "N",report);
+            var result = new CompressionResistanceOutput(pn.Item1, 1.0,"gamma", pn.Item2, "N", report);
             return result;
         }
-
 
         private static double GetEuroCompressionLBResistance(this Section section, Material material, double Ae) =>
             Ae * material.Fy;
 
-        private static Tuple<double,List<ReportItem>> GetEuroCompressionFBResistance(this Section section, Material material, LengthBracingConditions lengthBracingConditions, double Ae, double alpa_w)
+        private static Tuple<double, List<ReportItem>> GetEuroCompressionFBResistance(this Section section, Material material, LengthBracingConditions lengthBracingConditions, double Ae, double alpa_w)
         {
             var E = material.E;
             var Fy = material.Fy;
@@ -372,11 +372,11 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("Flexural Area (A)",Ae.ToString("0.###"),Units.MM_2),
                 new ReportItem("Nominal Load (Pn)",Pn.ToString("0.###"),Units.N)
             };
-            return Tuple.Create(Pn,items);
+            return Tuple.Create(Pn, items);
         }
 
 
-        private static Tuple<double,List<ReportItem>> GetEuroCompressionTFBResistance(this Section section, Material material, LengthBracingConditions lengthBracingConditions, double Ae, double alpha_w)
+        private static Tuple<double, List<ReportItem>> GetEuroCompressionTBResistance(this Section section, Material material, LengthBracingConditions lengthBracingConditions, double Ae, double alpha_w)
         {
             var E = material.E;
             var G = material.G;
@@ -398,12 +398,48 @@ namespace ColdFormedChannelSection.Core.Helpers
             var Pn = Xt * Ae * Fy;
             var items = new List<ReportItem>()
             {
-                new ReportItem("Torsional Flexural Stress (Xt.Fy)",(Xt*material.Fy).ToString("0.###"),Units.N_MM_2),
+                new ReportItem("Torsional Stress (Xt.Fy)",(Xt*material.Fy).ToString("0.###"),Units.N_MM_2),
+                new ReportItem("Torsional Area (Ae)",Ae.ToString("0.###"),Units.MM_2),
+                new ReportItem("Nominal Load (Pn)",Pn.ToString("0.###"),Units.N)
+            };
+            return Tuple.Create(Pn, items);
+        }
+
+        private static Tuple<double, List<ReportItem>> GetEuroCompressionTFBResistance(this Section section, Material material, LengthBracingConditions lengthBracingConditions, double Ae, double alpha_w)
+        {
+            var E = material.E;
+            var G = material.G;
+            var v = material.V;
+            var Fy = material.Fy;
+            var ix = section.Properties.Rx;
+            var iy = section.Properties.Ry;
+            var Xo = section.Properties.Xo;
+            var J = section.Properties.J;
+            var Cw = section.Properties.Cw;
+            var Kx = lengthBracingConditions.Kx;
+            var Lx = lengthBracingConditions.Lx;
+            var Kz = lengthBracingConditions.Kz;
+            var Lz = lengthBracingConditions.Lz;
+
+
+            var io_squared = ix.Power(2) + iy.Power(2) + Xo.Power(2);
+            var beta = 1 - (Xo.Power(2) / io_squared);
+            var Ncr = (1 / io_squared) * (G * J + ((Math.PI.Power(2) * Cw * E) / (Kz * Lz).Power(2)));
+            var Ncr_x = (Math.PI.Power(2) * E) / ((Kx * Lx) / ix).Power(2);
+            var Ncr_ft = (Ncr_x / (2 * beta)) * (1 + (Ncr / Ncr_x) - Math.Sqrt((1 + (Ncr / Ncr_x)).Power(2) - 4 * beta * (Ncr / Ncr_x)));
+            var lambda_ft = Math.Sqrt((Ae * Fy) / (Ncr_ft));
+            var phi_ft = 0.5 * (1 + alpha_w * (lambda_ft - 0.2) + lambda_ft.Power(2));
+            var X_ft = (1.0) / (phi_ft + Math.Sqrt(phi_ft.Power(2) - lambda_ft.Power(2))).TakeMinWithOne();
+            var Pn = X_ft * Ae * Fy;
+            var items = new List<ReportItem>()
+            {
+                new ReportItem("Torsional Flexural Stress (Xft.Fy)",(X_ft*material.Fy).ToString("0.###"),Units.N_MM_2),
                 new ReportItem("Torsional Flexural Area (Ae)",Ae.ToString("0.###"),Units.MM_2),
                 new ReportItem("Nominal Load (Pn)",Pn.ToString("0.###"),Units.N)
             };
-            return Tuple.Create(Pn,items);
+            return Tuple.Create(Pn, items);
         }
+
 
         #endregion
 
@@ -413,10 +449,10 @@ namespace ColdFormedChannelSection.Core.Helpers
         public static MomentResistanceOutput AsEuroMomentResistance(this LippedSection section, Material material, LengthBracingConditions bracingConditions)
         {
             if (!section.IsValid())
-                return new MomentResistanceOutput(0.0, 1.0, FailureMode.UNSAFE, "N.mm",null);
-            (var Ze,var items_local) = section.GetZe(material);
+                return new MomentResistanceOutput(0.0, 1.0,"gamma", FailureMode.UNSAFE, "N.mm", null);
+            (var Ze, var items_local) = section.GetZe(material);
             var Mn1 = Tuple.Create(section.GetEuroMomentLBResistance(material, Ze), FailureMode.LOCALBUCKLING);
-            (var Mn_LTB , var items_LTB) = section.GetEuroMomentLTBResistance(material, bracingConditions, Ze);
+            (var Mn_LTB, var items_LTB) = section.GetEuroMomentLTBResistance(material, bracingConditions, Ze);
             var Mn2 = Tuple.Create(Mn_LTB, FailureMode.LATERALTORSIONALBUCKLING);
             var Mns = new List<Tuple<double, FailureMode>>()
             {
@@ -440,15 +476,15 @@ namespace ColdFormedChannelSection.Core.Helpers
                 items_nominal,
                 UnitSystems.NMM
                 );
-            var result = new MomentResistanceOutput(Mn.Item1, 1.0, Mn.Item2, "N.mm",report);
+            var result = new MomentResistanceOutput(Mn.Item1, 1.0,"gamma", Mn.Item2, "N.mm", report);
             return result;
         }
 
         public static MomentResistanceOutput AsEuroMomentResistance(this UnStiffenedSection section, Material material, LengthBracingConditions bracingConditions)
         {
             if (!section.IsValid())
-                return new MomentResistanceOutput(0.0, 1.0, FailureMode.UNSAFE, "N.mm", null);
-            (var Ze , var items_local) = section.GetZe(material);
+                return new MomentResistanceOutput(0.0, 1.0,"gammma", FailureMode.UNSAFE, "N.mm", null);
+            (var Ze, var items_local) = section.GetZe(material);
             var Mn1 = Tuple.Create(section.GetEuroMomentLBResistance(material, Ze), FailureMode.LOCALBUCKLING);
             (var Mn_LTB, var items_LTB) = section.GetEuroMomentLTBResistance(material, bracingConditions, Ze);
             var Mn2 = Tuple.Create(Mn_LTB, FailureMode.LATERALTORSIONALBUCKLING);
@@ -474,14 +510,14 @@ namespace ColdFormedChannelSection.Core.Helpers
                items_nominal,
                UnitSystems.NMM
                );
-            var result = new MomentResistanceOutput(Mn.Item1, 1.0, Mn.Item2, "N.mm", report);
+            var result = new MomentResistanceOutput(Mn.Item1, 1.0,"gamma", Mn.Item2, "N.mm", report);
             return result;
         }
 
         private static double GetEuroMomentLBResistance(this Section section, Material material, double Ze) =>
             Ze * material.Fy;
 
-        private static Tuple<double,List<ReportItem>> GetEuroMomentLTBResistance(this Section section, Material material, LengthBracingConditions bracingConditions, double Ze)
+        private static Tuple<double, List<ReportItem>> GetEuroMomentLTBResistance(this Section section, Material material, LengthBracingConditions bracingConditions, double Ze)
         {
             var Fy = material.Fy;
             var E = material.E;
@@ -508,12 +544,12 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("Lateral Torsional Nominal Moment (Mn)",Mn.ToString("0.###"),Units.N_MM),
 
             };
-            return Tuple.Create(Mn,items);
+            return Tuple.Create(Mn, items);
         }
 
 
 
-        private static Tuple<double,List<ReportItem>> GetZe(this Section section, Material material, double be1, double be2, double ce, double Xd)
+        private static Tuple<double, List<ReportItem>> GetZe(this Section section, Material material, double be1, double be2, double ce, double Xd)
         {
             var c_prime = section.Properties.CPrime;
             var b_prime = section.Properties.BPrime;
@@ -563,27 +599,27 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("Effective Heigh (ae)",(h1+h2).ToString("0.###"),Units.MM),
                 new ReportItem("Effective Flange Width (be)",(be1+be2).ToString("0.###"),Units.MM)
             };
-            return Tuple.Create(Ze,items);
+            return Tuple.Create(Ze, items);
 
         }
 
-        private static Tuple<double,List<ReportItem>> GetZe(this LippedSection section, Material material)
+        private static Tuple<double, List<ReportItem>> GetZe(this LippedSection section, Material material)
         {
             var t = section.Dimensions.ThicknessT;
-            (var be1, var be2, var ce, var Xd,var Kf,var Kc) = section.GetEuroReducedFlange(material, 0);
+            (var be1, var be2, var ce, var Xd, var Kf, var Kc) = section.GetEuroReducedFlange(material, 0);
 
-           ( var Ze , var local_items) = section.GetZe(material, be1, be2, ce, Xd);
+            (var Ze, var local_items) = section.GetZe(material, be1, be2, ce, Xd);
             local_items.Add(new ReportItem("Effective Lip (Ce)", ce.ToString("0.###"), Units.MM));
             local_items.Add(new ReportItem("Reduction Factor (Xd)", Xd.ToString("0.###"), Units.NONE));
             local_items.Add(new ReportItem("Effective Section Modulus (Ze)", Ze.ToString("0.###"), Units.MM_3));
             local_items.Add(new ReportItem("Yield Stress (Fy)", material.Fy.ToString("0.###"), Units.N_MM_2));
-            local_items.Add(new ReportItem("Local Nominal Moment (Mn)", (Ze*material.Fy).ToString("0.###"), Units.N_MM));
+            local_items.Add(new ReportItem("Local Nominal Moment (Mn)", (Ze * material.Fy).ToString("0.###"), Units.N_MM));
 
-            return Tuple.Create(Ze,local_items);
+            return Tuple.Create(Ze, local_items);
         }
 
 
-        private static Tuple<double,List<ReportItem>> GetZe(this UnStiffenedSection section, Material material)
+        private static Tuple<double, List<ReportItem>> GetZe(this UnStiffenedSection section, Material material)
         {
             var t = section.Dimensions.ThicknessT;
             (var be1, var be2) = section.GetEuroReducedFlange(material);

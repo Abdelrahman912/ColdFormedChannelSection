@@ -7,8 +7,10 @@ namespace ColdFormedChannelSection.Core.Enums
     {
         [Description("Local Buckling governs")]
         LOCALBUCKLING,
-        [Description("Flexural Torsional Buckling governs")]
+        [Description("Torsional Buckling governs")]
         TORSIONALBUCKLING,
+        [Description("Flexural Torsional Buckling governs")]
+        FLEXURAL_TORSIONAL_BUCKLING,
         [Description("Flexural Buckling governs")]
         FLEXURALBUCKLING,
         [Description("Lateral Torsional Buckling governs")]
