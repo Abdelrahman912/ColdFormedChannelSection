@@ -159,15 +159,31 @@ namespace ColdFormedChannelSection.App.ViewModels
             SelectedTableName = TablesName.EGYPT_EURO;
             Mediator.Mediator.Instance.Subscribe<SteelSection>(this, OnStiffChanged, Context.STIFF_UNSTIFF);
             Mediator.Mediator.Instance.Subscribe<UnitSystems>(this, OnUnitsChanged, Context.UNITS);
+            Mediator.Mediator.Instance.Subscribe<Tuple<Core.Enums.Module, StrainingActions>>(this, OnModuleChanged, Context.SA_MODULE);
             IsDesign = false;
            
         }
 
 
 
+
+
         #endregion
 
         #region Methods
+
+        private void OnModuleChanged(Tuple<Core.Enums.Module, StrainingActions> tuple)
+        {
+            (var module, var _) = tuple;
+            if(module == Core.Enums.Module.DESIGN)
+            {
+                IsDesign = true;
+            }
+            else
+            {
+                IsDesign = false;
+            }
+        }
 
         private async void UpdateTable()
         {
