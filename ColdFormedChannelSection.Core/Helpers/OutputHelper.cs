@@ -5,7 +5,7 @@ namespace ColdFormedChannelSection.Core.Helpers
 {
     public static class OutputHelper
     {
-        public static CheckInteractionOutput AsCheck(this ResistanceInteractionOutput resist)
+        public static CheckInteractionOutput AsCheck(this ResistanceInteractionOutput resist,Units momentUnit , Units forceUnit)
         {
             return new CheckInteractionOutput(
                 pu: resist.Pu,
@@ -14,13 +14,13 @@ namespace ColdFormedChannelSection.Core.Helpers
                 mn: resist.Mn,
                 iE:resist.IE,
                 iEValue:resist.IEValue,
-                momentUnitName: resist.MomentUnitName,
-                forceUnitName: resist.ForceUnitName,
+                momentUnit: momentUnit,
+                forceUnit: forceUnit,
                 resist.Report
                 );
         }
 
-        public static DesignInteractionOutput AsDesign(this ResistanceInteractionOutput resist,string sectionName)
+        public static DesignInteractionOutput AsDesign(this ResistanceInteractionOutput resist,string sectionName, Units momentUnit, Units forceUnit)
         {
             return new DesignInteractionOutput(
                 pu: resist.Pu,
@@ -30,8 +30,8 @@ namespace ColdFormedChannelSection.Core.Helpers
                 iE: resist.IE,
                 iEValue: resist.IEValue,
                 sectionName: sectionName,
-                momentUnitName: resist.MomentUnitName,
-                forceUnitName: resist.ForceUnitName,
+                momentUnit: momentUnit,
+                forceUnit: forceUnit,
                 resist.Report
                 );
         }

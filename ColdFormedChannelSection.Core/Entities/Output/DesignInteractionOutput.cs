@@ -1,4 +1,6 @@
-﻿namespace ColdFormedChannelSection.Core.Entities
+﻿using ColdFormedChannelSection.Core.Enums;
+
+namespace ColdFormedChannelSection.Core.Entities
 {
     public class DesignInteractionOutput:CheckInteractionOutput
     {
@@ -10,8 +12,8 @@
 
         #region Constructors
 
-        public DesignInteractionOutput(double pu, double pn, double mu, double mn, string iE, double iEValue,string sectionName,string momentUnitName, string forceUnitName,IReport report)
-            :base(pu, pn, mu, mn, iE, iEValue,momentUnitName,forceUnitName,report)
+        public DesignInteractionOutput(double pu, double pn, double mu, double mn, string iE, double iEValue,string sectionName,Units momentUnit, Units forceUnit,IReport report)
+            :base(pu, pn, mu, mn, iE, iEValue,momentUnit,forceUnit,report)
         {
            SectionName = sectionName;
         }

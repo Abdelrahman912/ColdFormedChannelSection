@@ -97,7 +97,7 @@ namespace ColdFormedChannelSection.App.ViewModels
                                        .AsDSInteractionResistance(material, bracingConditions, vm.InputLoadVM.UltimateLoad.ConvertForce(vm.GeneralInfoVM.Unit, UnitSystems.KIPINCH).Item1, vm.InputLoadVM.UltimateMoment.ConvertMoment(vm.GeneralInfoVM.Unit, UnitSystems.KIPINCH).Item1)
                                        .Convert(UnitSystems.KIPINCH, vm.GeneralInfoVM.Unit);
 
-            Func<OutputBase> fun = () => result.AsCheck();
+            Func<OutputBase> fun = () => result.AsCheck(_momentDict[vm.GeneralInfoVM.Unit], _compDict[vm.GeneralInfoVM.Unit]);
 
             return Tuple.Create(fun, result as OutputBase);
         }
@@ -110,7 +110,7 @@ namespace ColdFormedChannelSection.App.ViewModels
                                         .AsDSInteractionResistance(material, bracingConditions, vm.InputLoadVM.UltimateLoad.ConvertForce(vm.GeneralInfoVM.Unit, UnitSystems.KIPINCH).Item1, vm.InputLoadVM.UltimateMoment.ConvertMoment(vm.GeneralInfoVM.Unit, UnitSystems.KIPINCH).Item1)
                                         .Convert(UnitSystems.KIPINCH, vm.GeneralInfoVM.Unit);
 
-            Func<OutputBase> fun = () => result.AsCheck();
+            Func<OutputBase> fun = () => result.AsCheck(_momentDict[vm.GeneralInfoVM.Unit], _compDict[vm.GeneralInfoVM.Unit]);
 
             return Tuple.Create(fun, result as OutputBase);
         }
@@ -169,7 +169,7 @@ namespace ColdFormedChannelSection.App.ViewModels
             {
                 (var secDto, var ressistance) = outTuple;
                 vm.GeometryVM.SelectedSection = secDto;
-                return ressistance.AsDesign(secDto.ID);
+                return ressistance.AsDesign(secDto.ID, _momentDict[vm.GeneralInfoVM.Unit], _compDict[vm.GeneralInfoVM.Unit]);
             }
             else
             {
@@ -190,7 +190,7 @@ namespace ColdFormedChannelSection.App.ViewModels
             {
                 (var secDto, var ressistance) = outTuple;
                 vm.GeometryVM.SelectedSection = secDto;
-                return ressistance.AsDesign(secDto.ID);
+                return ressistance.AsDesign(secDto.ID, _momentDict[vm.GeneralInfoVM.Unit], _compDict[vm.GeneralInfoVM.Unit]);
             }
             else
             {

@@ -43,8 +43,8 @@ namespace ColdFormedChannelSection.Core.Entities
             {
                 new ReportItem(ultimateLoadName,ultimateLoad.ToString("0.###"),Unit),
                 new ReportItem(DesignResistanceName,DesignResistance.ToString("0.###"),Unit),
-                new ReportItem("Status",Status.ToString(),Units.NONE),
-                new ReportItem("Governing Case",governingCase.ToString(),Units.NONE),
+                new ReportItem("Status",Status.GetDescription(),Units.NONE),
+                new ReportItem("Governing Case",governingCase.GetDescription(),Units.NONE),
             };
             var section = new ListReportSection("Check Results",checkItems,false);
             Report.Sections.Add(section);

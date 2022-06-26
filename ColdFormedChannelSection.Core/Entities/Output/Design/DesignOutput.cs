@@ -32,7 +32,7 @@ namespace ColdFormedChannelSection.Core.Entities
                 new ReportItem("Governing Case",governingCase.ToString(),Units.NONE),
                 new ReportItem("Section",DesignSection,Units.NONE)
             };
-            var section = new ListReportSection("Check Results", designItems, false);
+            var section = new ListReportSection("Design Results", designItems, false);
             Report.Sections.Add(section);
         }
 
