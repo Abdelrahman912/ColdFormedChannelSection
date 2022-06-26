@@ -594,7 +594,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var J = section.Properties.J;
             var Cw = section.Properties.Cw;
 
-            var Mcr = C1 * ((Math.PI.Power(2) * E * Iy) / (Lu.Power(2))) * ((Cw / Iy) - ((Lu.Power(2) * G * J) / (Math.PI.Power(2) * E * Iy))).Power(0.5);
+            var Mcr = C1 * ((Math.PI.Power(2) * E * Iy) / (Lu.Power(2))) * ((Cw / Iy) + ((Lu.Power(2) * G * J) / (Math.PI.Power(2) * E * Iy))).Power(0.5);
 
             var alpha_lt = 0.34;
             var lambda_lt = Math.Sqrt((Ze * Fy) / (Mcr));

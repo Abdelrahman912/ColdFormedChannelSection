@@ -147,6 +147,7 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         public GeometryViewModel()
         {
+            IsDesign = false;
             Sections = new List<SectionDimensionDto>();
             IsUserDefined = true;
             TotalFoldWidthC = 0.0;
@@ -160,8 +161,6 @@ namespace ColdFormedChannelSection.App.ViewModels
             Mediator.Mediator.Instance.Subscribe<SteelSection>(this, OnStiffChanged, Context.STIFF_UNSTIFF);
             Mediator.Mediator.Instance.Subscribe<UnitSystems>(this, OnUnitsChanged, Context.UNITS);
             Mediator.Mediator.Instance.Subscribe<Tuple<Core.Enums.Module, StrainingActions>>(this, OnModuleChanged, Context.SA_MODULE);
-            IsDesign = false;
-           
         }
 
 
@@ -193,6 +192,7 @@ namespace ColdFormedChannelSection.App.ViewModels
                 TableUnit = tuple.Item1;
                 Sections = await tuple.Item2.Value;
                 SelectedSection = Sections.FirstOrDefault();
+                
             }
         }
         private void UpdateSection()

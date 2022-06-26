@@ -141,6 +141,7 @@ namespace ColdFormedChannelSection.App.ViewModels
         #region Constructors
         public GeneralInfoViewModel()
         {
+            RunningModule = Module.RESISTANCE;
             DesignCode = DesignCode.AISI;
             SteelSection = SteelSection.C_UNSTIFFENED;
             StrainingAction = StrainingActions.MOMENT;
