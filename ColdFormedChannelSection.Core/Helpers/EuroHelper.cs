@@ -46,7 +46,7 @@ namespace ColdFormedChannelSection.Core.Helpers
         public static ResistanceInteractionOutput AsEuroInteractionResistance(this LippedSection section, Material material, LengthBracingConditions bracingConditions, double pu, double mu)
         {
             var Pn = section.AsEuroCompressionResistance(material, bracingConditions);
-            var Mn = section.AsEuroMomentResistance(material, bracingConditions);
+            var Mn = section.AsEuroMomentResistance(material, bracingConditions,mu);
             //tex:
             //$$ (\frac{P_u}{ P_n})^{0.8} + (\frac{M_u}{M_n})^{0.8}  $$
             var ie = (pu / Pn.NominalResistance).Power(0.8) + (mu / Mn.NominalResistance).Power(0.8);
@@ -63,7 +63,7 @@ namespace ColdFormedChannelSection.Core.Helpers
         public static ResistanceInteractionOutput AsEuroInteractionResistance(this UnStiffenedSection section, Material material, LengthBracingConditions bracingConditions, double pu, double mu)
         {
             var Pn = section.AsEuroCompressionResistance(material, bracingConditions);
-            var Mn = section.AsEuroMomentResistance(material, bracingConditions);
+            var Mn = section.AsEuroMomentResistance(material, bracingConditions,mu);
             //tex:
             //$$ (\frac{P_u}{ P_n})^{0.8} + (\frac{M_u}{M_n})^{0.8}  $$
             var ie = (pu / Pn.NominalResistance).Power(0.8) + (mu / Mn.NominalResistance).Power(0.8);
@@ -472,13 +472,13 @@ namespace ColdFormedChannelSection.Core.Helpers
 
         #region Moment
 
-        public static MomentResistanceOutput AsEuroMomentResistance(this LippedSection section, Material material, LengthBracingConditions bracingConditions)
+        public static MomentResistanceOutput AsEuroMomentResistance(this LippedSection section, Material material, LengthBracingConditions bracingConditions,double mu)
         {
             if (!section.IsValid())
                 return new MomentResistanceOutput(0.0, 1.0, "gamma", FailureMode.UNSAFE, "N.mm", null);
             (var Ze, var localItems) = section.GetZe(material);
             var Mn1 = Tuple.Create(section.GetEuroMomentLBResistance(material, Ze), FailureMode.LOCALBUCKLING);
-            (var Mn_LTB, var ltbItems) = section.GetEuroMomentLTBResistance(material, bracingConditions, Ze);
+            (var Mn_LTB, var ltbItems) = section.GetEuroMomentLTBResistance(material, bracingConditions, Ze,mu);
             var Mn2 = Tuple.Create(Mn_LTB, FailureMode.LATERALTORSIONALBUCKLING);
             var Mns = new List<Tuple<double, FailureMode>>()
             {
@@ -513,13 +513,13 @@ namespace ColdFormedChannelSection.Core.Helpers
             return result;
         }
 
-        public static MomentResistanceOutput AsEuroMomentResistance(this UnStiffenedSection section, Material material, LengthBracingConditions bracingConditions)
+        public static MomentResistanceOutput AsEuroMomentResistance(this UnStiffenedSection section, Material material, LengthBracingConditions bracingConditions,double mu)
         {
             if (!section.IsValid())
                 return new MomentResistanceOutput(0.0, 1.0, "gammma", FailureMode.UNSAFE, "N.mm", null);
             (var Ze, var localItems) = section.GetZe(material);
             var Mn1 = Tuple.Create(section.GetEuroMomentLBResistance(material, Ze), FailureMode.LOCALBUCKLING);
-            (var Mn_LTB, var ltbItems) = section.GetEuroMomentLTBResistance(material, bracingConditions, Ze);
+            (var Mn_LTB, var ltbItems) = section.GetEuroMomentLTBResistance(material, bracingConditions, Ze,mu);
             var Mn2 = Tuple.Create(Mn_LTB, FailureMode.LATERALTORSIONALBUCKLING);
             var Mns = new List<Tuple<double, FailureMode>>()
             {
@@ -554,7 +554,7 @@ namespace ColdFormedChannelSection.Core.Helpers
         private static double GetEuroMomentLBResistance(this Section section, Material material, double Ze) =>
             Ze * material.Fy;
 
-        private static Tuple<double, List<ReportItem>> GetEuroMomentLTBResistance(this Section section, Material material, LengthBracingConditions bracingConditions, double Ze)
+        private static Tuple<double, List<ReportItem>> GetEuroMomentLTBResistance(this Section section, Material material, LengthBracingConditions bracingConditions, double Ze,double mu)
         {
             var Fy = material.Fy;
             var E = material.E;
@@ -572,7 +572,10 @@ namespace ColdFormedChannelSection.Core.Helpers
             var lambda_lt = Math.Sqrt((Ze * Fy) / (Mcr));
             var phi_lt = 0.5 * (1 + alpha_lt * (lambda_lt - 0.2) + lambda_lt.Power(2));
             var x_lt = Math.Min(1.0, (1 / (phi_lt + Math.Sqrt(phi_lt.Power(2) - lambda_lt.Power(2)))));
-
+            if (mu == 0 && lambda_lt <= 0.2)
+                x_lt = 1;
+            else if (mu != 0 && (lambda_lt <= 0.2 || mu / Mcr <= 0.16))
+                x_lt = 1;
             var Mn = x_lt * Ze * Fy;
             var items = new List<ReportItem>()
             {
