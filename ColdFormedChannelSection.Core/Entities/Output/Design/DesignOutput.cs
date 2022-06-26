@@ -1,4 +1,6 @@
 ﻿using ColdFormedChannelSection.Core.Enums;
+using ColdFormedChannelSection.Core.Extensions;
+using System.Collections.Generic;
 
 namespace ColdFormedChannelSection.Core.Entities
 {
@@ -17,12 +19,21 @@ namespace ColdFormedChannelSection.Core.Entities
 
         #region Constructors
 
-        protected DesignOutput(double ultimateLoad , string ultimateLoadName , string designSection,double nominalResistance, double phi, FailureMode governingCase, string nominalResistanceName, string phiName, string unitName,IReport report) 
-            : base(nominalResistance, phi, governingCase, nominalResistanceName, phiName, unitName,report)
+        protected DesignOutput(double ultimateLoad , string ultimateLoadName , string designSection,double nominalResistance, double phi, FailureMode governingCase, string nominalResistanceName, string phiName, Units unit,IReport report) 
+            : base(nominalResistance, phi, governingCase, nominalResistanceName, phiName, unit.GetDescription(),report)
         {
             UltimateLoad = ultimateLoad;
             UltimateLoadName = ultimateLoadName;
             DesignSection = designSection;
+            var designItems = new List<ReportItem>()
+            {
+                new ReportItem(ultimateLoadName,ultimateLoad.ToString("0.###"),unit),
+                new ReportItem(DesignResistanceName,DesignResistance.ToString("0.###"),unit),
+                new ReportItem("Governing Case",governingCase.ToString(),Units.NONE),
+                new ReportItem("Section",DesignSection,Units.NONE)
+            };
+            var section = new ListReportSection("Check Results", designItems, false);
+            Report.Sections.Add(section);
         }
 
         #endregion

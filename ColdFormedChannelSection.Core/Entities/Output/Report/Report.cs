@@ -33,6 +33,8 @@ namespace ColdFormedChannelSection.Core.Entities
 
         public  IReport Convert( UnitSystems target)
         {
+            if (UnitSystem == target)
+                return this;
             var newSections = Sections.Select(sec => sec.Convert(UnitSystem, target)).ToList();
             return new Report(target, Name, newSections);
         }

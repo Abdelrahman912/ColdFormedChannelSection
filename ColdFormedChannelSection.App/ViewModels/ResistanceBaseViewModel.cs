@@ -41,6 +41,20 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         #region Properties
 
+        protected static Dictionary<UnitSystems, Units> _compDict = new Dictionary<UnitSystems, Units>()
+        {
+            [UnitSystems.KIPINCH] = Units.KIP,
+            [UnitSystems.TONCM] = Units.TON,
+            [UnitSystems.NMM] = Units.N
+        };
+
+        protected static Dictionary<UnitSystems, Units> _momentDict = new Dictionary<UnitSystems, Units>()
+        {
+            [UnitSystems.KIPINCH] = Units.KIP_IN,
+            [UnitSystems.TONCM] = Units.TON_CM,
+            [UnitSystems.NMM] = Units.N_MM
+        };
+
         public IReport Report
         {
             get => _report;

@@ -36,30 +36,30 @@ namespace ColdFormedChannelSection.Core.Helpers
                 );
         }
 
-        public static CompressionCheckOutput AsCheck(this CompressionResistanceOutput resist , double ultimateLoad)
+        public static CompressionCheckOutput AsCheck(this CompressionResistanceOutput resist , double ultimateLoad,Units unit)
         {
             return new CompressionCheckOutput(
                 ultimateLoad: ultimateLoad,
                 nominalResistance: resist.NominalResistance,
                 phi: resist.Phi,
                 governingCase: resist.GoverningCase,
-                unitName: resist.UnitName,
+                unit: unit,
                 report: resist.Report
                 );
         }
-        public static MomentCheckOutput AsCheck(this MomentResistanceOutput resist, double ultimateLoad)
+        public static MomentCheckOutput AsCheck(this MomentResistanceOutput resist, double ultimateLoad, Units unit)
         {
             return new MomentCheckOutput(
                 ultimateLoad: ultimateLoad,
                 nominalResistance: resist.NominalResistance,
                 phi: resist.Phi,
                 governingCase: resist.GoverningCase,
-                unitName: resist.UnitName,
+                unit: unit,
                 report: resist.Report
                 );
         }
 
-        public static CompressionDesignOutput AsDesign(this CompressionResistanceOutput resist, double ultimateLoad,string sectionName)
+        public static CompressionDesignOutput AsDesign(this CompressionResistanceOutput resist, double ultimateLoad,string sectionName, Units unit)
         {
             return new CompressionDesignOutput(
                 ultimateLoad: ultimateLoad,
@@ -67,11 +67,11 @@ namespace ColdFormedChannelSection.Core.Helpers
                 nominalResistance: resist.NominalResistance,
                 phi: resist.Phi,
                 governingCase: resist.GoverningCase,
-                unitName: resist.UnitName,
+                unit: unit,
                 report:resist.Report
                 );
         }
-        public static MomentDesignOutput AsDesign(this MomentResistanceOutput resist, double ultimateLoad,string sectionName)
+        public static MomentDesignOutput AsDesign(this MomentResistanceOutput resist, double ultimateLoad,string sectionName,Units unit)
         {
             return new MomentDesignOutput(
                 ultimateLoad: ultimateLoad,
@@ -79,7 +79,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 nominalResistance: resist.NominalResistance,
                 phi: resist.Phi,
                 governingCase: resist.GoverningCase,
-                unitName: resist.UnitName,
+                unit: unit,
                 report:resist.Report
                 );
         }

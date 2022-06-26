@@ -6,8 +6,10 @@ namespace ColdFormedChannelSection.Core.Entities
 {
     public class ListReportSection : IReportSection
     {
-       
+
         #region Properties
+
+        public bool IsConvertable { get;  }
 
         public string SectionName { get; }
 
@@ -17,10 +19,11 @@ namespace ColdFormedChannelSection.Core.Entities
 
         #region Constructors
 
-        public ListReportSection(string sectionName,List<ReportItem> items)
+        public ListReportSection(string sectionName,List<ReportItem> items, bool isConvertable=true)
         {
             SectionName = sectionName;
             Items = items;
+            IsConvertable = isConvertable;
         }
 
         #endregion
@@ -29,6 +32,8 @@ namespace ColdFormedChannelSection.Core.Entities
 
         public IReportSection Convert(UnitSystems source, UnitSystems target)
         {
+            if (!IsConvertable)
+                return this;
             var newItems = Items.Convert(source,target);
             return new ListReportSection(SectionName,newItems);
         }

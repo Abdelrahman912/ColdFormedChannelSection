@@ -23,7 +23,6 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         #region Private Fields
 
-        public override ICommand ResultsCommand { get; }
 
         private readonly Dictionary<Module, Action<EffectiveWidthViewModel>> _moduleDict;
 
@@ -39,6 +38,9 @@ namespace ColdFormedChannelSection.App.ViewModels
         #endregion
 
         #region Properties
+
+        public override ICommand ResultsCommand { get; }
+
 
         public Dictionary<DesignCode, Dictionary<KeyValuePair<StrainingActions, SteelSection>, Func<EffectiveWidthViewModel, Material, LengthBracingConditions, OutputBase>>> DesignDict { get; }
 
@@ -248,7 +250,7 @@ namespace ColdFormedChannelSection.App.ViewModels
             {
                 (var secDto, var ressistance) = outTuple;
                 vm.GeometryVM.SelectedSection = secDto;
-                return ressistance.AsDesign(vm.InputLoadVM.UltimateLoad, secDto.ID);
+                return ressistance.AsDesign(vm.InputLoadVM.UltimateLoad, secDto.ID, _compDict[vm.GeneralInfoVM.Unit]);
             }
             else
             {
@@ -268,7 +270,7 @@ namespace ColdFormedChannelSection.App.ViewModels
             {
                 (var secDto, var ressistance) = outTuple;
                 vm.GeometryVM.SelectedSection = secDto;
-                return ressistance.AsDesign(vm.InputLoadVM.UltimateLoad, secDto.ID);
+                return ressistance.AsDesign(vm.InputLoadVM.UltimateLoad, secDto.ID, _compDict[vm.GeneralInfoVM.Unit]);
             }
             else
             {
@@ -288,7 +290,7 @@ namespace ColdFormedChannelSection.App.ViewModels
             {
                 (var secDto, var ressistance) = outTuple;
                 vm.GeometryVM.SelectedSection = secDto;
-                return ressistance.AsDesign(vm.InputLoadVM.UltimateMoment, secDto.ID);
+                return ressistance.AsDesign(vm.InputLoadVM.UltimateMoment, secDto.ID, _momentDict[vm.GeneralInfoVM.Unit]);
             }
             else
             {
@@ -308,7 +310,7 @@ namespace ColdFormedChannelSection.App.ViewModels
             {
                 (var secDto, var ressistance) = outTuple;
                 vm.GeometryVM.SelectedSection = secDto;
-                return ressistance.AsDesign(vm.InputLoadVM.UltimateMoment, secDto.ID);
+                return ressistance.AsDesign(vm.InputLoadVM.UltimateMoment, secDto.ID, _momentDict[vm.GeneralInfoVM.Unit]);
             }
             else
             {
@@ -369,7 +371,7 @@ namespace ColdFormedChannelSection.App.ViewModels
             {
                 (var secDto, var ressistance) = outTuple;
                 vm.GeometryVM.SelectedSection = secDto;
-                return ressistance.AsDesign(vm.InputLoadVM.UltimateLoad, secDto.ID);
+                return ressistance.AsDesign(vm.InputLoadVM.UltimateLoad, secDto.ID, _compDict[vm.GeneralInfoVM.Unit]);
             }
             else
             {
@@ -389,7 +391,7 @@ namespace ColdFormedChannelSection.App.ViewModels
             {
                 (var secDto, var ressistance) = outTuple;
                 vm.GeometryVM.SelectedSection = secDto;
-                return ressistance.AsDesign(vm.InputLoadVM.UltimateLoad, secDto.ID);
+                return ressistance.AsDesign(vm.InputLoadVM.UltimateLoad, secDto.ID, _compDict[vm.GeneralInfoVM.Unit]);
             }
             else
             {
@@ -409,7 +411,7 @@ namespace ColdFormedChannelSection.App.ViewModels
             {
                 (var secDto, var ressistance) = outTuple;
                 vm.GeometryVM.SelectedSection = secDto;
-                return ressistance.AsDesign(vm.InputLoadVM.UltimateMoment, secDto.ID);
+                return ressistance.AsDesign(vm.InputLoadVM.UltimateMoment, secDto.ID, _momentDict[vm.GeneralInfoVM.Unit]);
             }
             else
             {
@@ -429,7 +431,7 @@ namespace ColdFormedChannelSection.App.ViewModels
             {
                 (var secDto, var ressistance) = outTuple;
                 vm.GeometryVM.SelectedSection = secDto;
-                return ressistance.AsDesign(vm.InputLoadVM.UltimateMoment, secDto.ID);
+                return ressistance.AsDesign(vm.InputLoadVM.UltimateMoment, secDto.ID, _momentDict[vm.GeneralInfoVM.Unit]);
             }
             else
             {
@@ -490,7 +492,7 @@ namespace ColdFormedChannelSection.App.ViewModels
             {
                 (var secDto, var ressistance) = outTuple;
                 vm.GeometryVM.SelectedSection = secDto;
-                return ressistance.AsDesign(vm.InputLoadVM.UltimateLoad, secDto.ID);
+                return ressistance.AsDesign(vm.InputLoadVM.UltimateLoad, secDto.ID, _compDict[vm.GeneralInfoVM.Unit]);
             }
             else
             {
@@ -510,7 +512,7 @@ namespace ColdFormedChannelSection.App.ViewModels
             {
                 (var secDto, var ressistance) = outTuple;
                 vm.GeometryVM.SelectedSection = secDto;
-                return ressistance.AsDesign(vm.InputLoadVM.UltimateLoad, secDto.ID);
+                return ressistance.AsDesign(vm.InputLoadVM.UltimateLoad, secDto.ID, _compDict[vm.GeneralInfoVM.Unit]);
             }
             else
             {
@@ -530,7 +532,7 @@ namespace ColdFormedChannelSection.App.ViewModels
             {
                 (var secDto, var ressistance) = outTuple;
                 vm.GeometryVM.SelectedSection = secDto;
-                return ressistance.AsDesign(vm.InputLoadVM.UltimateMoment, secDto.ID);
+                return ressistance.AsDesign(vm.InputLoadVM.UltimateMoment, secDto.ID, _momentDict[vm.GeneralInfoVM.Unit]);
             }
             else
             {
@@ -550,7 +552,7 @@ namespace ColdFormedChannelSection.App.ViewModels
             {
                 (var secDto, var ressistance) = outTuple;
                 vm.GeometryVM.SelectedSection = secDto;
-                return ressistance.AsDesign(vm.InputLoadVM.UltimateMoment, secDto.ID);
+                return ressistance.AsDesign(vm.InputLoadVM.UltimateMoment, secDto.ID, _momentDict[vm.GeneralInfoVM.Unit]);
             }
             else
             {
@@ -618,7 +620,7 @@ namespace ColdFormedChannelSection.App.ViewModels
                                        .AsEgyptCompressionResistance(material, bracingConditions)
                                        .Convert(UnitSystems.TONCM, vm.GeneralInfoVM.Unit);
 
-            Func<OutputBase> fun = () => result.AsCheck(vm.InputLoadVM.UltimateLoad);
+            Func<OutputBase> fun = () => result.AsCheck(vm.InputLoadVM.UltimateLoad, _compDict[vm.GeneralInfoVM.Unit]);
 
             return Tuple.Create(fun, result as OutputBase);
 
@@ -630,7 +632,7 @@ namespace ColdFormedChannelSection.App.ViewModels
                                        .AsUnStiffenedSection()
                                        .AsEgyptMomentResistance(material, bracingConditions)
                                        .Convert(UnitSystems.TONCM, vm.GeneralInfoVM.Unit);
-            Func<OutputBase> fun = () => result.AsCheck(vm.InputLoadVM.UltimateMoment);
+            Func<OutputBase> fun = () => result.AsCheck(vm.InputLoadVM.UltimateMoment, _momentDict[vm.GeneralInfoVM.Unit]);
 
             return Tuple.Create(fun, result as OutputBase);
         }
@@ -642,7 +644,7 @@ namespace ColdFormedChannelSection.App.ViewModels
                                       .AsEgyptCompressionResistance(material, bracingConditions)
                                       .Convert(UnitSystems.TONCM, vm.GeneralInfoVM.Unit);
 
-            Func<OutputBase> fun = () => result.AsCheck(vm.InputLoadVM.UltimateLoad);
+            Func<OutputBase> fun = () => result.AsCheck(vm.InputLoadVM.UltimateLoad, _compDict[vm.GeneralInfoVM.Unit]);
 
             return Tuple.Create(fun, result as OutputBase);
         }
@@ -652,7 +654,7 @@ namespace ColdFormedChannelSection.App.ViewModels
                                       .Convert(vm.GeneralInfoVM.Unit, UnitSystems.TONCM)
                                       .AsLippedSection()
                                       .AsEgyptMomentResistance(material, bracingConditions).Convert(UnitSystems.TONCM, vm.GeneralInfoVM.Unit);
-            Func<OutputBase> fun = () => result.AsCheck(vm.InputLoadVM.UltimateMoment);
+            Func<OutputBase> fun = () => result.AsCheck(vm.InputLoadVM.UltimateMoment, _momentDict[vm.GeneralInfoVM.Unit]);
             return Tuple.Create(fun, result as OutputBase);
         }
 
@@ -692,11 +694,12 @@ namespace ColdFormedChannelSection.App.ViewModels
                                        .AsEuroCompressionResistance(material, bracingConditions)
                                        .Convert(UnitSystems.NMM, vm.GeneralInfoVM.Unit);
 
-            Func<OutputBase> fun = () => result.AsCheck(vm.InputLoadVM.UltimateLoad);
+            Func<OutputBase> fun = () => result.AsCheck(vm.InputLoadVM.UltimateLoad, _compDict[vm.GeneralInfoVM.Unit]);
 
             return Tuple.Create(fun, result as OutputBase);
 
         }
+
         private static Tuple<Func<OutputBase>, OutputBase> EuroResistanceCUnstiffMoment(EffectiveWidthViewModel vm, Material material, LengthBracingConditions bracingConditions)
         {
             var result = vm.GeometryVM.AsEntity()
@@ -704,10 +707,11 @@ namespace ColdFormedChannelSection.App.ViewModels
                                        .AsUnStiffenedSection()
                                        .AsEuroMomentResistance(material, bracingConditions)
                                        .Convert(UnitSystems.NMM, vm.GeneralInfoVM.Unit);
-            Func<OutputBase> fun = () => result.AsCheck(vm.InputLoadVM.UltimateMoment);
+            Func<OutputBase> fun = () => result.AsCheck(vm.InputLoadVM.UltimateMoment, _momentDict[vm.GeneralInfoVM.Unit]);
 
             return Tuple.Create(fun, result as OutputBase);
         }
+
         private static Tuple<Func<OutputBase>, OutputBase> EuroResistanceCLippedComp(EffectiveWidthViewModel vm, Material material, LengthBracingConditions bracingConditions)
         {
             var result = vm.GeometryVM.AsEntity()
@@ -716,7 +720,7 @@ namespace ColdFormedChannelSection.App.ViewModels
                                       .AsEuroCompressionResistance(material, bracingConditions)
                                       .Convert(UnitSystems.NMM, vm.GeneralInfoVM.Unit);
 
-            Func<OutputBase> fun = () => result.AsCheck(vm.InputLoadVM.UltimateLoad);
+            Func<OutputBase> fun = () => result.AsCheck(vm.InputLoadVM.UltimateLoad, _compDict[vm.GeneralInfoVM.Unit]);
 
             return Tuple.Create(fun, result as OutputBase);
         }
@@ -726,7 +730,7 @@ namespace ColdFormedChannelSection.App.ViewModels
                                       .Convert(vm.GeneralInfoVM.Unit, UnitSystems.NMM)
                                       .AsLippedSection()
                                       .AsEuroMomentResistance(material, bracingConditions).Convert(UnitSystems.NMM, vm.GeneralInfoVM.Unit);
-            Func<OutputBase> fun = () => result.AsCheck(vm.InputLoadVM.UltimateMoment);
+            Func<OutputBase> fun = () => result.AsCheck(vm.InputLoadVM.UltimateMoment, _momentDict[vm.GeneralInfoVM.Unit]);
             return Tuple.Create(fun, result as OutputBase);
         }
 
@@ -765,7 +769,7 @@ namespace ColdFormedChannelSection.App.ViewModels
                                        .AsAISICompressionResistance(material, bracingConditions)
                                        .Convert(UnitSystems.KIPINCH, vm.GeneralInfoVM.Unit);
 
-            Func<OutputBase> fun = () => result.AsCheck(vm.InputLoadVM.UltimateLoad);
+            Func<OutputBase> fun = () => result.AsCheck(vm.InputLoadVM.UltimateLoad, _compDict[vm.GeneralInfoVM.Unit]);
 
             return Tuple.Create(fun, result as OutputBase);
 
@@ -777,10 +781,11 @@ namespace ColdFormedChannelSection.App.ViewModels
                                        .AsUnStiffenedSection()
                                        .AsAISIMomentResistance(material, bracingConditions)
                                        .Convert(UnitSystems.KIPINCH, vm.GeneralInfoVM.Unit);
-            Func<OutputBase> fun = () => result.AsCheck(vm.InputLoadVM.UltimateMoment);
+            Func<OutputBase> fun = () => result.AsCheck(vm.InputLoadVM.UltimateMoment, _momentDict[vm.GeneralInfoVM.Unit]);
 
             return Tuple.Create(fun, result as OutputBase);
         }
+
         private static Tuple<Func<OutputBase>, OutputBase> AISIResistanceCLippedComp(EffectiveWidthViewModel vm, Material material, LengthBracingConditions bracingConditions)
         {
             var result = vm.GeometryVM.AsEntity()
@@ -789,17 +794,18 @@ namespace ColdFormedChannelSection.App.ViewModels
                                       .AsAISICompressionResistance(material, bracingConditions)
                                       .Convert(UnitSystems.KIPINCH, vm.GeneralInfoVM.Unit);
 
-            Func<OutputBase> fun = () => result.AsCheck(vm.InputLoadVM.UltimateLoad);
+            Func<OutputBase> fun = () => result.AsCheck(vm.InputLoadVM.UltimateLoad, _compDict[vm.GeneralInfoVM.Unit]);
 
             return Tuple.Create(fun, result as OutputBase);
         }
+
         private static Tuple<Func<OutputBase>, OutputBase> AISIResistanceCLippedMoment(EffectiveWidthViewModel vm, Material material, LengthBracingConditions bracingConditions)
         {
             var result = vm.GeometryVM.AsEntity()
                                       .Convert(vm.GeneralInfoVM.Unit, UnitSystems.KIPINCH)
                                       .AsLippedSection()
                                       .AsAISIMomentResistance(material, bracingConditions).Convert(UnitSystems.KIPINCH, vm.GeneralInfoVM.Unit);
-            Func<OutputBase> fun = () => result.AsCheck(vm.InputLoadVM.UltimateMoment);
+            Func<OutputBase> fun = () => result.AsCheck(vm.InputLoadVM.UltimateMoment, _momentDict[vm.GeneralInfoVM.Unit]);
             return Tuple.Create(fun, result as OutputBase);
         }
 

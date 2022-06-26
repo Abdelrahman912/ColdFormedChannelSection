@@ -1,4 +1,6 @@
 ﻿using ColdFormedChannelSection.Core.Enums;
+using ColdFormedChannelSection.Core.Extensions;
+using System.Collections.Generic;
 
 namespace ColdFormedChannelSection.Core.Entities
 {
@@ -6,6 +8,8 @@ namespace ColdFormedChannelSection.Core.Entities
     {
 
         #region Properties
+
+        public Units Unit { get;  }
 
         public double UltimateLoad { get; }
 
@@ -19,9 +23,10 @@ namespace ColdFormedChannelSection.Core.Entities
 
         #region Constructors
 
-        protected CheckOutput(double ultimateLoad , string ultimateLoadName ,double nominalResistance, double phi, FailureMode governingCase, string nominalResistanceName, string phiName, string unitName,IReport report)
-           : base(nominalResistance, phi, governingCase, nominalResistanceName, phiName, unitName,report)
+        protected CheckOutput(double ultimateLoad , string ultimateLoadName ,double nominalResistance, double phi, FailureMode governingCase, string nominalResistanceName, string phiName, Units unit, IReport report)
+           : base(nominalResistance, phi, governingCase, nominalResistanceName, phiName, unit.GetDescription(),report)
         {
+            Unit = unit;
             UltimateLoad = ultimateLoad;
             UltimateLoadName = ultimateLoadName;
             if( UltimateLoad > DesignResistance)
@@ -34,6 +39,15 @@ namespace ColdFormedChannelSection.Core.Entities
                 Status = CheckResultStatus.SAFE;
                 CheckResultName = $"{UltimateLoadName} < {DesignResistanceName}";
             }
+            var checkItems = new List<ReportItem>()
+            {
+                new ReportItem(ultimateLoadName,ultimateLoad.ToString("0.###"),Unit),
+                new ReportItem(DesignResistanceName,DesignResistance.ToString("0.###"),Unit),
+                new ReportItem("Status",Status.ToString(),Units.NONE),
+                new ReportItem("Governing Case",governingCase.ToString(),Units.NONE),
+            };
+            var section = new ListReportSection("Check Results",checkItems,false);
+            Report.Sections.Add(section);
         }
 
         #endregion

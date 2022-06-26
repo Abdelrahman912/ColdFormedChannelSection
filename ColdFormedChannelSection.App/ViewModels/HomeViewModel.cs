@@ -30,11 +30,6 @@ namespace ColdFormedChannelSection.App.ViewModels
             EffectiveWidthCommand = new RelayCommand(OnEffectiveWidth);
         }
 
-
-
-
-
-
         #endregion
 
         #region Methods
