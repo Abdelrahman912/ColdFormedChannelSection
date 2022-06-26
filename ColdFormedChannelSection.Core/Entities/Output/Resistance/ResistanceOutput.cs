@@ -27,14 +27,15 @@ namespace ColdFormedChannelSection.Core.Entities
 
         #region Constructors
 
-        protected ResistanceOutput(double nominalResistance, double phi, FailureMode governingCase, string nominalResistanceName, string phiName, string unitName, IReport report)
+        protected ResistanceOutput(double nominalResistance, double phi, FailureMode governingCase, string nominalResistanceName, string phiName,string designResistanceName, string unitName, IReport report)
             :base(report)
         {
-            DesignResistanceName = $"{phiName} * {nominalResistanceName} =";
+            DesignResistanceName = designResistanceName;
+            //DesignResistanceName = $"{phiName} * {nominalResistanceName} =";
             NominalResistance = nominalResistance;
             Phi = phi;
-            NominalResistanceName = $"{nominalResistanceName} =";
-            PhiName = $"{phiName} =";
+            NominalResistanceName = nominalResistanceName;
+            PhiName = phiName;
             GoverningCase = governingCase;
             UnitName = unitName;
         }

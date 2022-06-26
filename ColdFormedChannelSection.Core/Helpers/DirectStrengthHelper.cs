@@ -15,6 +15,14 @@ namespace ColdFormedChannelSection.Core.Helpers
 
         private const double PHI_B = 0.9;
 
+        private const string PHI_C_NAME = "(phi)c";
+
+        private const string COMP_DESIGN_RESIST = "(phi)c * Pn";
+
+        private const string PHI_B_NAME = "(phi)b";
+
+        private const string MOM_DESIGN_RESIST = "(phi)b * Mn";
+
         #endregion
 
 
@@ -93,7 +101,7 @@ namespace ColdFormedChannelSection.Core.Helpers
         public static CompressionResistanceOutput AsDSCompressionResistance(this LippedSection lippedSection, Material material, LengthBracingConditions bracingConditions)
         {
             if (!lippedSection.IsValidForCompression())
-                return new CompressionResistanceOutput(0.0, PHI_C, FailureMode.UNSAFE, "Kip", null);
+                return new CompressionResistanceOutput(0.0, PHI_C,PHI_C_NAME,COMP_DESIGN_RESIST, FailureMode.UNSAFE, "Kip", null);
             var p_crl = lippedSection.GetCompressionLBResistance(material);
             var secDimsItems = new List<ReportItem>()
             {
@@ -110,7 +118,7 @@ namespace ColdFormedChannelSection.Core.Helpers
         public static CompressionResistanceOutput AsDSCompressionResistance(this UnStiffenedSection unstiffenedSection, Material material, LengthBracingConditions bracingConditions)
         {
             if (!unstiffenedSection.IsValidForCompression())
-                return new CompressionResistanceOutput(0.0, PHI_C, FailureMode.UNSAFE, "Kip", null);
+                return new CompressionResistanceOutput(0.0, PHI_C,PHI_C_NAME,COMP_DESIGN_RESIST, FailureMode.UNSAFE, "Kip", null);
             var p_crl = unstiffenedSection.GetCompressionLBResistance(material);
             var secDimsItems = new List<ReportItem>()
             {
@@ -195,7 +203,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var sections = new List<IReportSection>() { secDimSection, elasticSection, squashSection, strengthSection, designSection };
             var report = new Report(UnitSystems.KIPINCH, "Direct Strength - Compression", sections);
 
-            var result = new CompressionResistanceOutput(nominalLoad.Item1, PHI_C, nominalLoad.Item2, "Kip", report);
+            var result = new CompressionResistanceOutput(nominalLoad.Item1, PHI_C,PHI_C_NAME,COMP_DESIGN_RESIST, nominalLoad.Item2, "Kip", report);
             return result;
         }
 
@@ -441,7 +449,7 @@ namespace ColdFormedChannelSection.Core.Helpers
         public static MomentResistanceOutput AsDSMomentResistance(this UnStiffenedSection unstiffenedSection, Material material, LengthBracingConditions bracingConditions)
         {
             if (!unstiffenedSection.IsValidForMoment())
-                return new MomentResistanceOutput(0.0, PHI_B, FailureMode.UNSAFE, "Kip", null);
+                return new MomentResistanceOutput(0.0, PHI_B,PHI_B_NAME,MOM_DESIGN_RESIST, FailureMode.UNSAFE, "Kip", null);
             (var m_crl, var items_buckling) = unstiffenedSection.GetMomentLBResistance(material);
             var secDimsItems = new List<ReportItem>()
             {
@@ -457,7 +465,7 @@ namespace ColdFormedChannelSection.Core.Helpers
         public static MomentResistanceOutput AsDSMomentResistance(this LippedSection lippedSection, Material material, LengthBracingConditions bracingConditions)
         {
             if (!lippedSection.IsValidForMoment())
-                return new MomentResistanceOutput(0.0, PHI_B, FailureMode.UNSAFE, "Kip", null);
+                return new MomentResistanceOutput(0.0, PHI_B,PHI_B_NAME,MOM_DESIGN_RESIST, FailureMode.UNSAFE, "Kip", null);
             (var m_crl, var items_buckling) = lippedSection.GetMomentLBResistance(material);
             var secDimsItems = new List<ReportItem>()
             {
@@ -541,7 +549,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var sections = new List<IReportSection>() { secDimSection, elasticSection, nominalSection, designSection };
             var report = new Report(UnitSystems.KIPINCH, "Direct Strength - Moment", sections);
 
-            var result = new MomentResistanceOutput(nominalLoad.Item1, PHI_B, nominalLoad.Item2, "Kip.in", report);
+            var result = new MomentResistanceOutput(nominalLoad.Item1, PHI_B,PHI_B_NAME,MOM_DESIGN_RESIST, nominalLoad.Item2, "Kip.in", report);
             return result;
         }
 

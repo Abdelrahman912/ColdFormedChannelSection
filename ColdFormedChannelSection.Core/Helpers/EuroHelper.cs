@@ -10,6 +10,14 @@ namespace ColdFormedChannelSection.Core.Helpers
     public static class EuroHelper
     {
 
+        private const double PHI = 1.0;
+
+        private const string PHI_NAME = "gamma";
+
+        private const string COMP_DESIGN_RESIST = "Pn/gamma";
+
+        private const string MOM_DESIGN_RESIST = "Mn/gamma";
+
         private static bool IsValid(this LippedSection section)
         {
             var b_over_t = Tuple.Create(section.Properties.BPrime / section.Dimensions.ThicknessT, 60.0);
@@ -276,7 +284,7 @@ namespace ColdFormedChannelSection.Core.Helpers
         public static CompressionResistanceOutput AsEuroCompressionResistance(this LippedSection section, Material material, LengthBracingConditions bracingConditions , double pu)
         {
             if (!section.IsValid())
-                return new CompressionResistanceOutput(0.0, 1.0, "gamma", FailureMode.UNSAFE, "N", null);
+                return new CompressionResistanceOutput(0.0, PHI, PHI_NAME,COMP_DESIGN_RESIST, FailureMode.UNSAFE, "N", null);
             (var Ae, var localItems) = section.GetEuroReducedArea(material);
             var pn1 = Tuple.Create(section.GetEuroCompressionLBResistance(material, Ae), FailureMode.LOCALBUCKLING);
             (var pn_FB, var fbItems) = section.GetEuroCompressionFBResistance(material, bracingConditions, Ae, 0.34,pu);
@@ -295,7 +303,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("Governing Case",pn.Item2.GetDescription(),Units.NONE),
                 new ReportItem("Nominal Load (Pn)",pn.Item1.ToString("0.###"),Units.N),
                 new ReportItem("Gamma",(1.0).ToString("0.###"),Units.N),
-                new ReportItem("Design Load (gamma*Pn)",pn.Item1.ToString("0.###"),Units.N),
+                new ReportItem("Design Load (Pn/gamma)",pn.Item1.ToString("0.###"),Units.N),
             };
             var secDimsItems = new List<ReportItem>()
             {
@@ -316,14 +324,14 @@ namespace ColdFormedChannelSection.Core.Helpers
 
             var report = new Report(UnitSystems.NMM, "Euro Code - Compression", sections);
 
-            var result = new CompressionResistanceOutput(pn.Item1, 1.0, "gamma", pn.Item2, "N", report);
+            var result = new CompressionResistanceOutput(pn.Item1, PHI, PHI_NAME,COMP_DESIGN_RESIST, pn.Item2, "N", report);
             return result;
         }
 
         public static CompressionResistanceOutput AsEuroCompressionResistance(this UnStiffenedSection section, Material material, LengthBracingConditions bracingConditions,double pu)
         {
             if (!section.IsValid())
-                return new CompressionResistanceOutput(0.0, 1.0, "gamma", FailureMode.UNSAFE, "N", null);
+                return new CompressionResistanceOutput(0.0, PHI, PHI_NAME, COMP_DESIGN_RESIST, FailureMode.UNSAFE, "N", null);
             (var Ae, var localItems) = section.GetEuroReducedArea(material);
             var pn1 = Tuple.Create(section.GetEuroCompressionLBResistance(material, Ae), FailureMode.LOCALBUCKLING);
             (var pn_FB, var fbItems) = section.GetEuroCompressionFBResistance(material, bracingConditions, Ae, 0.49,pu);
@@ -342,7 +350,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("Governing Case",pn.Item2.GetDescription(),Units.NONE),
                 new ReportItem("Nominal Load (Pn)",pn.Item1.ToString("0.###"),Units.N),
                 new ReportItem("Gamma",(1.0).ToString("0.###"),Units.N),
-                new ReportItem("Design Load (gamma*Pn)",pn.Item1.ToString("0.###"),Units.N),
+                new ReportItem("Design Load (Pn/gamma)",pn.Item1.ToString("0.###"),Units.N),
             };
             var secDimsItems = new List<ReportItem>()
             {
@@ -361,7 +369,7 @@ namespace ColdFormedChannelSection.Core.Helpers
 
             var report = new Report(UnitSystems.NMM, "Euro Code - Compression", sections);
 
-            var result = new CompressionResistanceOutput(pn.Item1, 1.0, "gamma", pn.Item2, "N", report);
+            var result = new CompressionResistanceOutput(pn.Item1, PHI, PHI_NAME, COMP_DESIGN_RESIST, pn.Item2, "N", report);
             return result;
         }
 
@@ -495,7 +503,7 @@ namespace ColdFormedChannelSection.Core.Helpers
         public static MomentResistanceOutput AsEuroMomentResistance(this LippedSection section, Material material, LengthBracingConditions bracingConditions,double mu)
         {
             if (!section.IsValid())
-                return new MomentResistanceOutput(0.0, 1.0, "gamma", FailureMode.UNSAFE, "N.mm", null);
+                return new MomentResistanceOutput(0.0, PHI, PHI_NAME,MOM_DESIGN_RESIST, FailureMode.UNSAFE, "N.mm", null);
             (var Ze, var localItems) = section.GetZe(material);
             var Mn1 = Tuple.Create(section.GetEuroMomentLBResistance(material, Ze), FailureMode.LOCALBUCKLING);
             (var Mn_LTB, var ltbItems) = section.GetEuroMomentLTBResistance(material, bracingConditions, Ze,mu);
@@ -529,14 +537,14 @@ namespace ColdFormedChannelSection.Core.Helpers
 
             var report = new Report(UnitSystems.NMM, "Euro Code - Moment", sections);
 
-            var result = new MomentResistanceOutput(Mn.Item1, 1.0, "gamma", Mn.Item2, "N.mm", report);
+            var result = new MomentResistanceOutput(Mn.Item1, PHI, PHI_NAME,MOM_DESIGN_RESIST, Mn.Item2, "N.mm", report);
             return result;
         }
 
         public static MomentResistanceOutput AsEuroMomentResistance(this UnStiffenedSection section, Material material, LengthBracingConditions bracingConditions,double mu)
         {
             if (!section.IsValid())
-                return new MomentResistanceOutput(0.0, 1.0, "gammma", FailureMode.UNSAFE, "N.mm", null);
+                return new MomentResistanceOutput(0.0, PHI, PHI_NAME,MOM_DESIGN_RESIST, FailureMode.UNSAFE, "N.mm", null);
             (var Ze, var localItems) = section.GetZe(material);
             var Mn1 = Tuple.Create(section.GetEuroMomentLBResistance(material, Ze), FailureMode.LOCALBUCKLING);
             (var Mn_LTB, var ltbItems) = section.GetEuroMomentLTBResistance(material, bracingConditions, Ze,mu);
@@ -550,7 +558,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             {
                 new ReportItem("Governing Case",Mn.Item2.GetDescription(),Units.NONE),
                 new ReportItem("Nominal Moment",Mn.Item1.ToString("0.###"),Units.N_MM),
-                new ReportItem("gamma",1.0.ToString(),Units.NONE),
+                new ReportItem("gamma",(1.0).ToString("0.###"),Units.NONE),
                 new ReportItem("Design Moment (Mn/gamma)",Mn.Item1.ToString("0.###"),Units.N_MM)
 
             };
@@ -567,7 +575,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var designSection = new ListReportSection("Design Moment", designItems);
             var sections = new List<IReportSection>() { secDimSection, localSection, ltbSection, designSection };
             var report = new Report(UnitSystems.NMM, "Euro Code - Moment", sections);
-            var result = new MomentResistanceOutput(Mn.Item1, 1.0, "gamma", Mn.Item2, "N.mm", report);
+            var result = new MomentResistanceOutput(Mn.Item1, PHI, PHI_NAME,MOM_DESIGN_RESIST, Mn.Item2, "N.mm", report);
             return result;
         }
 

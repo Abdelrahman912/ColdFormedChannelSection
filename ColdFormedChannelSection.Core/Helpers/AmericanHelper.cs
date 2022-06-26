@@ -16,6 +16,14 @@ namespace ColdFormedChannelSection.Core.Helpers
 
         private const double PHI_B = 0.9;
 
+        private const string PHI_C_NAME = "(phi)c";
+
+        private const string COMP_DESIGN_RESIST = "(phi)c * Pn";
+
+        private const string PHI_B_NAME = "(phi)b";
+
+        private const string MOM_DESIGN_RESIST = "(phi)b * Mn";
+
         #endregion
 
 
@@ -407,7 +415,7 @@ namespace ColdFormedChannelSection.Core.Helpers
         public static CompressionResistanceOutput AsAISICompressionResistance(this LippedSection lippedSection, Material material, LengthBracingConditions bracingConditions)
         {
             if (!lippedSection.IsValidForCompression())
-                return new CompressionResistanceOutput(0.0, PHI_C, FailureMode.UNSAFE, "Kip", null);
+                return new CompressionResistanceOutput(0.0, PHI_C,PHI_C_NAME,COMP_DESIGN_RESIST, FailureMode.UNSAFE, "Kip", null);
             (var pn_local, var localItems) = lippedSection.GetAISICompressionLBResistance(material);
             (var pn_FB, var flexuralItems) = lippedSection.GetAISICompressionFBRessistance(material, bracingConditions);
             (var pn_TFB, var tfbItems) = lippedSection.GetAISICompressionFTBRessistance(material, bracingConditions);
@@ -447,14 +455,14 @@ namespace ColdFormedChannelSection.Core.Helpers
             var report = new Report(UnitSystems.KIPINCH, "AISI Code - Compression", sections);
 
 
-            var result = new CompressionResistanceOutput(pn.Item1, PHI_C, pn.Item2, "Kip", report);
+            var result = new CompressionResistanceOutput(pn.Item1, PHI_C,PHI_C_NAME,COMP_DESIGN_RESIST, pn.Item2, "Kip", report);
             return result;
         }
 
         public static CompressionResistanceOutput AsAISICompressionResistance(this UnStiffenedSection unstiffenedSection, Material material, LengthBracingConditions bracingConditions)
         {
             if (!unstiffenedSection.IsValidForCompression())
-                return new CompressionResistanceOutput(0.0, PHI_C, FailureMode.UNSAFE, "Kip", null);
+                return new CompressionResistanceOutput(0.0, PHI_C,PHI_C_NAME,COMP_DESIGN_RESIST, FailureMode.UNSAFE, "Kip", null);
             (var pn_local, var localItems) = unstiffenedSection.GetAISICompressionLBResistance(material);
             (var pn_FB, var flexuralItems) = unstiffenedSection.GetAISICompressionFBRessistance(material, bracingConditions);
             (var pn_TFB, var tfbItems) = unstiffenedSection.GetAISICompressionFTBRessistance(material, bracingConditions);
@@ -492,7 +500,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var sections = new List<IReportSection>() { secDimSection, localSection, flexuralSection, tfbSection, tbSection, designSection };
             var report = new Report(UnitSystems.KIPINCH, "AISI Code - Compression", sections);
 
-            var result = new CompressionResistanceOutput(pn.Item1, PHI_C, pn.Item2, "Kip", report);
+            var result = new CompressionResistanceOutput(pn.Item1, PHI_C,PHI_C_NAME,COMP_DESIGN_RESIST, pn.Item2, "Kip", report);
             return result;
         }
 
@@ -731,7 +739,7 @@ namespace ColdFormedChannelSection.Core.Helpers
         public static MomentResistanceOutput AsAISIMomentResistance(this LippedSection lippedSection, Material material, LengthBracingConditions bracingConditions)
         {
             if (!lippedSection.IsValidForMoment())
-                return new MomentResistanceOutput(0.0, PHI_B, FailureMode.UNSAFE, "Kip", null);
+                return new MomentResistanceOutput(0.0, PHI_B,PHI_B_NAME,MOM_DESIGN_RESIST, FailureMode.UNSAFE, "Kip", null);
             (var Mn_local, var localItems) = lippedSection.GetAISIMomentLBResistance(material);
             (var Mn_ltb, var ltbItems) = lippedSection.GetAISIMomentLTBRessistance(material, bracingConditions);
             var Mn1 = Tuple.Create(Mn_local, FailureMode.LOCALBUCKLING);
@@ -764,14 +772,14 @@ namespace ColdFormedChannelSection.Core.Helpers
             var report = new Report(UnitSystems.KIPINCH, "AISI Code - Moment", sections);
 
 
-            var result = new MomentResistanceOutput(Mn.Item1, PHI_B, Mn.Item2, "Kip", report);
+            var result = new MomentResistanceOutput(Mn.Item1, PHI_B,PHI_B_NAME,MOM_DESIGN_RESIST, Mn.Item2, "Kip", report);
             return result;
         }
 
         public static MomentResistanceOutput AsAISIMomentResistance(this UnStiffenedSection unstiffenedSection, Material material, LengthBracingConditions bracingConditions)
         {
             if (!unstiffenedSection.IsValidForMoment())
-                return new MomentResistanceOutput(0.0, PHI_B, FailureMode.UNSAFE, "Kip", null);
+                return new MomentResistanceOutput(0.0, PHI_B,PHI_B_NAME,MOM_DESIGN_RESIST, FailureMode.UNSAFE, "Kip", null);
             (var Mn_local, var localItems) = unstiffenedSection.GetAISIMomentLBResistance(material);
             var Mn1 = Tuple.Create(Mn_local, FailureMode.LOCALBUCKLING);
             (var Mn_ltb, var ltbItems) = unstiffenedSection.GetAISIMomentLTBRessistance(material, bracingConditions);
@@ -802,7 +810,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var sections = new List<IReportSection>() { secDimSection, localSection, ltbSection, designSection };
             var report = new Report(UnitSystems.KIPINCH, "AISI Code - Moment", sections);
 
-            var result = new MomentResistanceOutput(Mn.Item1, PHI_B, Mn.Item2, "Kip", report);
+            var result = new MomentResistanceOutput(Mn.Item1, PHI_B,PHI_B_NAME,MOM_DESIGN_RESIST, Mn.Item2, "Kip", report);
             return result;
         }
 

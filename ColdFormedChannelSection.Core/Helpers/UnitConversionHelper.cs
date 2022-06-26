@@ -237,7 +237,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             (var nominalResistance, var unit) = output.NominalResistance.ConvertMoment(sourceUnit, targetUnit);
             var phi = output.Phi;
             var failureMode = output.GoverningCase;
-            var newOutput = new MomentResistanceOutput(nominalResistance, phi, failureMode, unit, output.Report);
+            var newOutput = new MomentResistanceOutput(nominalResistance, phi,output.PhiName,output.DesignResistanceName, failureMode, unit, output.Report);
             return newOutput;
         }
 
@@ -246,7 +246,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             (var nominalResistance, var unit) = output.NominalResistance.ConvertForce(sourceUnit, targetUnit);
             var phi = output.Phi;
             var failureMode = output.GoverningCase;
-            var newOutput = new CompressionResistanceOutput(nominalResistance, phi, failureMode, unit, output.Report);
+            var newOutput = new CompressionResistanceOutput(nominalResistance, phi,output.PhiName,output.DesignResistanceName, failureMode, unit, output.Report);
             return newOutput;
         }
 
