@@ -182,7 +182,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             };
             var designItems = new List<ReportItem>()
             {
-                new ReportItem("Governing Case",nominalLoad.Item2.ToString(),Units.NONE),
+                new ReportItem("Governing Case",nominalLoad.Item2.GetDescription(),Units.NONE),
                 new ReportItem("Nominal Load (Pn)",nominalLoad.Item1.ToString("0.###"),Units.KIP),
                 new ReportItem("phi",PHI_C.ToString("0.###"),Units.KIP),
                 new ReportItem("Design Strength (phi*Pn)",(PHI_C*nominalLoad.Item1).ToString("0.###"),Units.KIP),
@@ -529,7 +529,7 @@ namespace ColdFormedChannelSection.Core.Helpers
 
             var designItems = new List<ReportItem>()
             {
-                new ReportItem("Governing Case",nominalLoad.Item2.ToString(),Units.NONE),
+                new ReportItem("Governing Case",nominalLoad.Item2.GetDescription(),Units.NONE),
                 new ReportItem("Nominal Moment",nominalLoad.Item1.ToString("0.###"),Units.KIP_IN),
                 new ReportItem("phi",PHI_B.ToString("0.###"),Units.NONE),
                 new ReportItem("Design Moment",(PHI_B*nominalLoad.Item1).ToString("0.###"),Units.KIP_IN)

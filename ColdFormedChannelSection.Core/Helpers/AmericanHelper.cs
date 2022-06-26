@@ -423,7 +423,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var pn = pns.OrderBy(tuple => tuple.Item1).First();
             var items = new List<ReportItem>()
             {
-                new ReportItem("Governing Case",pn.Item2.ToString(),Units.NONE),
+                new ReportItem("Governing Case",pn.Item2.GetDescription(),Units.NONE),
                 new ReportItem("Nominal Load",pn.Item1.ToString("0.###"),Units.KIP),
                 new ReportItem("phi",PHI_C.ToString("0.###"),Units.NONE),
                 new ReportItem("Design Resistance",(PHI_C*pn.Item1).ToString("0.###"),Units.KIP),
@@ -470,7 +470,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var pn = pns.OrderBy(tuple => tuple.Item1).First();
             var designItems = new List<ReportItem>()
             {
-                new ReportItem("Governing Case",pn.Item2.ToString(),Units.NONE),
+                new ReportItem("Governing Case",pn.Item2.GetDescription(),Units.NONE),
                 new ReportItem("Nominal Load",pn.Item1.ToString("0.###"),Units.KIP),
                 new ReportItem("phi",PHI_C.ToString("0.###"),Units.NONE),
                 new ReportItem("Design Resistance",(PHI_C*pn.Item1).ToString("0.###"),Units.KIP),
@@ -743,7 +743,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var Mn = Mns.OrderBy(tuple => tuple.Item1).First();
             var designItems = new List<ReportItem>()
             {
-                new ReportItem("Governing Case",Mn.Item2.ToString(),Units.NONE),
+                new ReportItem("Governing Case",Mn.Item2.GetDescription(),Units.NONE),
                 new ReportItem("Nominal Moment (Mn)",Mn.Item1.ToString("0.###"),Units.KIP_IN),
                 new ReportItem("phi",PHI_B.ToString("0.###"),Units.NONE),
                 new ReportItem("Design Moment (phi * Mn)",(PHI_B*Mn.Item1).ToString("0.###"),Units.KIP_IN)
@@ -783,7 +783,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var Mn = Mns.OrderBy(tuple => tuple.Item1).First();
             var designItems = new List<ReportItem>()
             {
-                new ReportItem("Governing Case",Mn.Item2.ToString(),Units.NONE),
+                new ReportItem("Governing Case",Mn.Item2.GetDescription(),Units.NONE),
                 new ReportItem("Nominal Moment (Mn)",Mn.Item1.ToString("0.###"),Units.KIP_IN),
                 new ReportItem("phi",PHI_B.ToString("0.###"),Units.NONE),
                 new ReportItem("Design Moment (phi * Mn)",(PHI_B*Mn.Item1).ToString("0.###"),Units.KIP_IN)

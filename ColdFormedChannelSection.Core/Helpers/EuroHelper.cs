@@ -292,7 +292,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var pn = pns.OrderBy(tuple => tuple.Item1).First();
             var designItems = new List<ReportItem>()
             {
-                new ReportItem("Governing Case",pn.Item2.ToString(),Units.NONE),
+                new ReportItem("Governing Case",pn.Item2.GetDescription(),Units.NONE),
                 new ReportItem("Nominal Load (Pn)",pn.Item1.ToString("0.###"),Units.N),
                 new ReportItem("Gamma",1.0.ToString(),Units.N),
                 new ReportItem("Design Load (Pn)",pn.Item1.ToString("0.###"),Units.N),
@@ -339,7 +339,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var pn = pns.OrderBy(tuple => tuple.Item1).First();
             var designItems = new List<ReportItem>()
             {
-                new ReportItem("Governing Case",pn.Item2.ToString(),Units.NONE),
+                new ReportItem("Governing Case",pn.Item2.GetDescription(),Units.NONE),
                 new ReportItem("Nominal Load (Pn)",pn.Item1.ToString("0.###"),Units.N),
                 new ReportItem("Gamma",1.0.ToString(),Units.N),
                 new ReportItem("Design Load (Pn)",pn.Item1.ToString("0.###"),Units.N),
@@ -487,7 +487,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var Mn = Mns.OrderBy(tuple => tuple.Item1).First();
             var designItems = new List<ReportItem>()
             {
-                new ReportItem("Governing Case",Mn.Item2.ToString(),Units.NONE),
+                new ReportItem("Governing Case",Mn.Item2.GetDescription(),Units.NONE),
                 new ReportItem("Nominal Moment",Mn.Item1.ToString("0.###"),Units.N_MM),
                 new ReportItem("gamma",1.0.ToString(),Units.NONE),
                 new ReportItem("Design Moment (Mn/gamma)",Mn.Item1.ToString("0.###"),Units.N_MM)
@@ -528,7 +528,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var Mn = Mns.OrderBy(tuple => tuple.Item1).First();
             var designItems = new List<ReportItem>()
             {
-                new ReportItem("Governing Case",Mn.Item2.ToString(),Units.NONE),
+                new ReportItem("Governing Case",Mn.Item2.GetDescription(),Units.NONE),
                 new ReportItem("Nominal Moment",Mn.Item1.ToString("0.###"),Units.N_MM),
                 new ReportItem("gamma",1.0.ToString(),Units.NONE),
                 new ReportItem("Design Moment (Mn/gamma)",Mn.Item1.ToString("0.###"),Units.N_MM)

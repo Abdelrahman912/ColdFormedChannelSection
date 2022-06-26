@@ -130,7 +130,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var nominalItems = Z_items.Concat(items_stress).ToList();
             var designItems = new List<ReportItem>()
             {
-                new ReportItem("Governing Case",failureMode.ToString(),Units.NONE),
+                new ReportItem("Governing Case",failureMode.GetDescription(),Units.NONE),
                 new ReportItem("Nominal Moment (Mn)",Mn.ToString("0.###"),Units.TON_CM),
                 new ReportItem("phi",PHI_B.ToString("0.###"),Units.NONE),
                 new ReportItem("Design Moment",(PHI_B*Mn).ToString("0.###"),Units.TON_CM)
@@ -164,7 +164,7 @@ namespace ColdFormedChannelSection.Core.Helpers
 
             var designItems = new List<ReportItem>()
             {
-                new ReportItem("Governing Case",failureMode.ToString(),Units.NONE),
+                new ReportItem("Governing Case",failureMode.GetDescription(),Units.NONE),
                 new ReportItem("Nominal Moment (Mn)",Mn.ToString("0.###"),Units.TON_CM),
                 new ReportItem("phi",PHI_B.ToString("0.###"),Units.NONE),
                 new ReportItem("Design Moment",(PHI_B*Mn).ToString("0.###"),Units.TON_CM)
@@ -817,7 +817,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var pn = pns.OrderBy(tuple => tuple.Item1).First();
             var designItems = new List<ReportItem>()
             {
-                new ReportItem("Governing Case",$"{pn.Item2}",Units.TON),
+                new ReportItem("Governing Case",pn.Item2.GetDescription(),Units.TON),
                 new ReportItem("Nomial Load (Pn)",$"{pn.Item1.ToString("0.###")}",Units.TON),
                 new ReportItem("phi",$"{PHI_C}",Units.TON),
                 new ReportItem("Design Load (phi*Pn)",$"{(PHI_C*pn.Item1).ToString("0.###")}",Units.TON),
@@ -863,7 +863,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var pn = pns.OrderBy(tuple => tuple.Item1).First();
             var designItems = new List<ReportItem>()
             {
-                new ReportItem("Governing Case",$"{pn.Item2}",Units.TON),
+                new ReportItem("Governing Case",pn.Item2.GetDescription(),Units.TON),
                 new ReportItem("Nomial Load (Pn)",$"{pn.Item1.ToString("0.###")}",Units.TON),
                 new ReportItem("phi",$"{PHI_C}",Units.TON),
                 new ReportItem("Design Load (phi*Pn)",$"{(PHI_C*pn.Item1).ToString("0.###")}",Units.TON),
