@@ -58,6 +58,30 @@ namespace ColdFormedChannelSection.Core.Helpers
                 report: resist.Report
                 );
         }
+        public static CompressionCheckOutput AsCheck(this CompressionResistanceOutput resist, double ultimateLoad, Units unit,string factorName)
+        {
+            return new CompressionCheckOutput(
+                ultimateLoad: ultimateLoad,
+                nominalResistance: resist.NominalResistance,
+                phi: resist.Phi,
+                factorName: factorName,
+                governingCase: resist.GoverningCase,
+                unit: unit,
+                report: resist.Report
+                );
+        }
+        public static MomentCheckOutput AsCheck(this MomentResistanceOutput resist, double ultimateLoad, Units unit,string factorName)
+        {
+            return new MomentCheckOutput(
+                ultimateLoad: ultimateLoad,
+                nominalResistance: resist.NominalResistance,
+                phi: resist.Phi,
+                factorName:factorName,
+                governingCase: resist.GoverningCase,
+                unit: unit,
+                report: resist.Report
+                );
+        }
 
         public static CompressionDesignOutput AsDesign(this CompressionResistanceOutput resist, double ultimateLoad,string sectionName, Units unit)
         {
@@ -81,6 +105,33 @@ namespace ColdFormedChannelSection.Core.Helpers
                 governingCase: resist.GoverningCase,
                 unit: unit,
                 report:resist.Report
+                );
+        }
+
+        public static CompressionDesignOutput AsDesign(this CompressionResistanceOutput resist, double ultimateLoad, string sectionName, Units unit,string factorName)
+        {
+            return new CompressionDesignOutput(
+                ultimateLoad: ultimateLoad,
+                designSection: sectionName,
+                nominalResistance: resist.NominalResistance,
+                phi: resist.Phi,
+                factorName: factorName,
+                governingCase: resist.GoverningCase,
+                unit: unit,
+                report: resist.Report
+                );
+        }
+        public static MomentDesignOutput AsDesign(this MomentResistanceOutput resist, double ultimateLoad, string sectionName, Units unit, string factorName)
+        {
+            return new MomentDesignOutput(
+                ultimateLoad: ultimateLoad,
+                designSection: sectionName,
+                nominalResistance: resist.NominalResistance,
+                phi: resist.Phi,
+                factorName:factorName,
+                governingCase: resist.GoverningCase,
+                unit: unit,
+                report: resist.Report
                 );
         }
 
