@@ -50,7 +50,10 @@ namespace ColdFormedChannelSection.Core.Entities
             {
                return fileName.WritePdf((pdf, doc) =>
                 {
-                    Sections.ForEach(section => section.AddToPdf(doc));
+                    Name.AsTitle().AddToDocument(doc);
+                    doc.AddNewLine();
+                    doc.AddNewLine();
+                    Sections.ForEach(section => { section.AddToPdf(doc);doc.AddNewLine();doc.AddNewLine(); });
                     pdf.AddPageNumberAsFooter(doc);
                     return Unit();
                 });

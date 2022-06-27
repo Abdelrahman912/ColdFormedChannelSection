@@ -17,7 +17,7 @@ namespace ColdFormedChannelSection.Core.Helpers
         {
             listSection.SectionName.AsText().AddToDocument(doc);
             var headers = new List<string>() { "Name", "Value", "Unit" };
-            var table = new Table(3, true);
+            var table = new Table(3, false);
             headers.AsHeaderRow().AddToTable(table);
             listSection.Items.ForEach(item =>
             {
