@@ -92,8 +92,8 @@ namespace ColdFormedChannelSection.App
                 _bracingConditionsVM =new Lazy<BracingConditionsViewModel>(()=> new BracingConditionsViewModel());
                 _materialVM =new Lazy<MaterialViewModel>(()=> new MaterialViewModel());
                 var geometryVM =new Lazy<GeometryViewModel>( new GeometryViewModel());
-                _directStrengthVM = new Lazy<DirectStrengthViewModel>(() => new DirectStrengthViewModel(_generalInfoVM.Value, _bracingConditionsVM.Value, geometryVM.Value,_materialVM.Value,_inputLoadVM.Value,ShowErrorService(),(rep)=>Services.ReportService(rep)));
-                _effectiveWidthVM = new Lazy<EffectiveWidthViewModel>(() => new EffectiveWidthViewModel(_generalInfoVM.Value, _bracingConditionsVM.Value, geometryVM.Value,_materialVM.Value,_inputLoadVM.Value,ShowErrorService(), (rep) => Services.ReportService(rep)));
+                _directStrengthVM = new Lazy<DirectStrengthViewModel>(() => new DirectStrengthViewModel(_generalInfoVM.Value, _bracingConditionsVM.Value, geometryVM.Value,_materialVM.Value,_inputLoadVM.Value,ShowErrorService(),(rep)=>Services.ReportService(rep),FolderDialogService));
+                _effectiveWidthVM = new Lazy<EffectiveWidthViewModel>(() => new EffectiveWidthViewModel(_generalInfoVM.Value, _bracingConditionsVM.Value, geometryVM.Value,_materialVM.Value,_inputLoadVM.Value,ShowErrorService(), (rep) => Services.ReportService(rep), FolderDialogService));
             });
         }
 

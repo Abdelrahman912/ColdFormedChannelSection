@@ -28,6 +28,9 @@
                     </DataTrigger>
                 </Style.Triggers>
             </Style>
+            <DataTemplate DataType="{x:Type vms:ReportViewModel}">
+                <vs:ReportView/>
+            </DataTemplate>
             <DataTemplate DataType="{x:Type core:ListReportSection}">
                 <vs:ListReportSectionView/>
             </DataTemplate>

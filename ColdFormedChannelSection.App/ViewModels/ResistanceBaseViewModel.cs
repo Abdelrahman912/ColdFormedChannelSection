@@ -2,6 +2,7 @@
 using ColdFormedChannelSection.App.ViewModels.Enums;
 using ColdFormedChannelSection.Core.Entities;
 using ColdFormedChannelSection.Core.Enums;
+using CSharp.Functional.Constructs;
 using CSharp.Functional.Errors;
 using System;
 using System.Collections.Generic;
@@ -33,9 +34,11 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         private bool _isInputLoad;
 
-        private Action<IReport> _reportService;
+        private Action<ReportViewModel> _reportService;
 
         private IReport _report;
+
+        private readonly Func<Func<string, bool>, Option<bool>> _folderDialogService;
 
         #endregion
 
@@ -134,8 +137,10 @@ namespace ColdFormedChannelSection.App.ViewModels
                                        MaterialViewModel materialVM,
                                        InputLoadViewModel inputLoadVM,
                                        Func<List<Error>,Unit> showErrorsService,
-                                       Action<IReport> reportService)
+                                       Action<ReportViewModel> reportService,
+                                       Func<Func<string,bool>,Option<bool>> folderDialogService)
         {
+            _folderDialogService = folderDialogService;
             _reportService = reportService;
             ShowErrorsService = showErrorsService;
             InputLoadVM = inputLoadVM;
@@ -171,7 +176,8 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         private void OnPrintReport()
         {
-            _reportService(Report);
+            var report = new ReportViewModel(Report,_folderDialogService);
+            _reportService(report);
         }
 
         private bool CanPrintReport()
