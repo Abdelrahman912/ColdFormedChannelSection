@@ -59,6 +59,7 @@ namespace ColdFormedChannelSection.App.ViewModels
                 }
                 else
                 {
+                    Mediator.Mediator.Instance.NotifyColleagues(Tuple.Create(RunningModule, StrainingAction), Context.SA_MODULE);
                     AvailabeSa = _resistSa;
                     //StrainingAction = AvailabeSa.First();
                 }
