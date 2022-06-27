@@ -873,7 +873,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             {
                 new ReportItem("Governing Case",pn.Item2.GetDescription(),Units.TON),
                 new ReportItem("Nomial Load (Pn)",$"{pn.Item1.ToString("0.###")}",Units.TON),
-                new ReportItem("phi",$"{PHI_C}",Units.TON),
+                new ReportItem("phi",$"{PHI_C}",Units.NONE),
                 new ReportItem("Design Load (phi*Pn)",$"{(PHI_C*pn.Item1).ToString("0.###")}",Units.TON),
             };
             var secDimsItems = new List<ReportItem>()

@@ -176,6 +176,7 @@ namespace ColdFormedChannelSection.App.ViewModels
             (var module, var _) = tuple;
             if(module == Core.Enums.Module.DESIGN)
             {
+                IsUserDefined = false;
                 IsDesign = true;
             }
             else

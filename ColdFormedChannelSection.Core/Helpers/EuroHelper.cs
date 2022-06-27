@@ -286,13 +286,13 @@ namespace ColdFormedChannelSection.Core.Helpers
             if (!section.IsValid())
                 return new CompressionResistanceOutput(0.0, PHI, PHI_NAME,COMP_DESIGN_RESIST, FailureMode.UNSAFE, "N", null);
             (var Ae, var localItems) = section.GetEuroReducedArea(material);
-            var pn1 = Tuple.Create(section.GetEuroCompressionLBResistance(material, Ae), FailureMode.LOCALBUCKLING);
+            var pn1 = Tuple.Create(section.GetEuroCompressionLBResistance(material, Ae).Round(4), FailureMode.LOCALBUCKLING);
             (var pn_FB, var fbItems) = section.GetEuroCompressionFBResistance(material, bracingConditions, Ae, 0.34,pu);
             (var pn_TB, var tbItems) = section.GetEuroCompressionTBResistance(material, bracingConditions, Ae, 0.34,pu);
             (var pn_TFB, var tfbItems) = section.GetEuroCompressionTFBResistance(material, bracingConditions, Ae, 0.34,pu);
-            var pn2 = Tuple.Create(pn_FB, FailureMode.FLEXURALBUCKLING);
-            var pn3 = Tuple.Create(pn_TB, FailureMode.TORSIONALBUCKLING);
-            var pn4 = Tuple.Create(pn_TFB, FailureMode.FLEXURAL_TORSIONAL_BUCKLING);
+            var pn2 = Tuple.Create(pn_FB.Round(4), FailureMode.FLEXURALBUCKLING);
+            var pn3 = Tuple.Create(pn_TB.Round(4), FailureMode.TORSIONALBUCKLING);
+            var pn4 = Tuple.Create(pn_TFB.Round(4), FailureMode.FLEXURAL_TORSIONAL_BUCKLING);
             var pns = new List<Tuple<double, FailureMode>>()
             {
                 pn1, pn2, pn3,pn4
@@ -333,13 +333,13 @@ namespace ColdFormedChannelSection.Core.Helpers
             if (!section.IsValid())
                 return new CompressionResistanceOutput(0.0, PHI, PHI_NAME, COMP_DESIGN_RESIST, FailureMode.UNSAFE, "N", null);
             (var Ae, var localItems) = section.GetEuroReducedArea(material);
-            var pn1 = Tuple.Create(section.GetEuroCompressionLBResistance(material, Ae), FailureMode.LOCALBUCKLING);
+            var pn1 = Tuple.Create(section.GetEuroCompressionLBResistance(material, Ae).Round(4), FailureMode.LOCALBUCKLING);
             (var pn_FB, var fbItems) = section.GetEuroCompressionFBResistance(material, bracingConditions, Ae, 0.49,pu);
             (var pn_TB, var tbItems) = section.GetEuroCompressionTBResistance(material, bracingConditions, Ae, 0.49, pu);
             (var pn_TFB, var tfbItems) = section.GetEuroCompressionTFBResistance(material, bracingConditions, Ae, 0.49, pu);
-            var pn2 = Tuple.Create(pn_FB, FailureMode.FLEXURALBUCKLING);
-            var pn3 = Tuple.Create(pn_TB, FailureMode.TORSIONALBUCKLING);
-            var pn4 = Tuple.Create(pn_TFB, FailureMode.FLEXURAL_TORSIONAL_BUCKLING);
+            var pn2 = Tuple.Create(pn_FB.Round(4), FailureMode.FLEXURALBUCKLING);
+            var pn3 = Tuple.Create(pn_TB.Round(4), FailureMode.TORSIONALBUCKLING);
+            var pn4 = Tuple.Create(pn_TFB.Round(4), FailureMode.FLEXURAL_TORSIONAL_BUCKLING);
             var pns = new List<Tuple<double, FailureMode>>()
             {
                 pn1, pn2, pn3,pn4
@@ -505,9 +505,9 @@ namespace ColdFormedChannelSection.Core.Helpers
             if (!section.IsValid())
                 return new MomentResistanceOutput(0.0, PHI, PHI_NAME,MOM_DESIGN_RESIST, FailureMode.UNSAFE, "N.mm", null);
             (var Ze, var localItems) = section.GetZe(material);
-            var Mn1 = Tuple.Create(section.GetEuroMomentLBResistance(material, Ze), FailureMode.LOCALBUCKLING);
+            var Mn1 = Tuple.Create(section.GetEuroMomentLBResistance(material, Ze).Round(4), FailureMode.LOCALBUCKLING);
             (var Mn_LTB, var ltbItems) = section.GetEuroMomentLTBResistance(material, bracingConditions, Ze,mu);
-            var Mn2 = Tuple.Create(Mn_LTB, FailureMode.LATERALTORSIONALBUCKLING);
+            var Mn2 = Tuple.Create(Mn_LTB.Round(4), FailureMode.LATERALTORSIONALBUCKLING);
             var Mns = new List<Tuple<double, FailureMode>>()
             {
                 Mn1,Mn2
@@ -546,9 +546,9 @@ namespace ColdFormedChannelSection.Core.Helpers
             if (!section.IsValid())
                 return new MomentResistanceOutput(0.0, PHI, PHI_NAME,MOM_DESIGN_RESIST, FailureMode.UNSAFE, "N.mm", null);
             (var Ze, var localItems) = section.GetZe(material);
-            var Mn1 = Tuple.Create(section.GetEuroMomentLBResistance(material, Ze), FailureMode.LOCALBUCKLING);
+            var Mn1 = Tuple.Create(section.GetEuroMomentLBResistance(material, Ze).Round(4), FailureMode.LOCALBUCKLING);
             (var Mn_LTB, var ltbItems) = section.GetEuroMomentLTBResistance(material, bracingConditions, Ze,mu);
-            var Mn2 = Tuple.Create(Mn_LTB, FailureMode.LATERALTORSIONALBUCKLING);
+            var Mn2 = Tuple.Create(Mn_LTB.Round(4), FailureMode.LATERALTORSIONALBUCKLING);
             var Mns = new List<Tuple<double, FailureMode>>()
             {
                 Mn1,Mn2

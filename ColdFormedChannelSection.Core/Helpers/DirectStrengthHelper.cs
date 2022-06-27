@@ -166,9 +166,9 @@ namespace ColdFormedChannelSection.Core.Helpers
                 : (1 - 0.25 * (p_crd / Py).Power(0.6)) * ((p_crd / Py).Power(0.6)) * Py;
             var nominalLoads = new List<Tuple<double, FailureMode>>()
             {
-                Tuple.Create(Pne,FailureMode.GLOBALBUCKLING),
-                Tuple.Create(Pnl,FailureMode.LOCALBUCKLING),
-                Tuple.Create(Pnd,FailureMode.DISTRORTIONALBUCKLING)
+                Tuple.Create(Pnl.Round(4),FailureMode.LOCALBUCKLING),
+                Tuple.Create(Pne.Round(4),FailureMode.GLOBALBUCKLING),
+                Tuple.Create(Pnd.Round(4),FailureMode.DISTRORTIONALBUCKLING)
             };
             var nominalLoad = nominalLoads.OrderBy(tup => tup.Item1).First();
             var elasticItems = new List<ReportItem>()
@@ -516,9 +516,9 @@ namespace ColdFormedChannelSection.Core.Helpers
                 : (1 - 0.22 * (M_crd / My).Power(0.5)) * (M_crd / My).Power(0.5) * My;
             var nominalLoads = new List<Tuple<double, FailureMode>>()
             {
-                Tuple.Create(Mne,FailureMode.GLOBALBUCKLING),
-                Tuple.Create(Mnl,FailureMode.LOCALBUCKLING),
-                Tuple.Create(Mnd,FailureMode.DISTRORTIONALBUCKLING)
+                Tuple.Create(Mne.Round(4),FailureMode.GLOBALBUCKLING),
+                Tuple.Create(Mnl.Round(4),FailureMode.LOCALBUCKLING),
+                Tuple.Create(Mnd.Round(4),FailureMode.DISTRORTIONALBUCKLING)
             };
             var nominalLoad = nominalLoads.OrderBy(tup => tup.Item1).First();
             bucklingItems.Add(new ReportItem("Distortional Buckling Moment (Mcrd)", M_crd.ToString("0.###"), Units.KIP_IN));

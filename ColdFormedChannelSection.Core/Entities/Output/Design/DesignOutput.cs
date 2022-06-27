@@ -33,7 +33,7 @@ namespace ColdFormedChannelSection.Core.Entities
                 new ReportItem("Section",DesignSection,Units.NONE)
             };
             var section = new ListReportSection("Design Results", designItems, false);
-            Report.Sections.Add(section);
+            Report?.Sections.Add(section);
         }
 
         #endregion

@@ -47,7 +47,7 @@ namespace ColdFormedChannelSection.Core.Entities
                 new ReportItem("Governing Case",governingCase.GetDescription(),Units.NONE),
             };
             var section = new ListReportSection("Check Results",checkItems,false);
-            Report.Sections.Add(section);
+            Report?.Sections.Add(section);
         }
 
         #endregion
