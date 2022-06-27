@@ -108,7 +108,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("H",lippedSection.Dimensions.TotalHeightH.ToString("0.###"),Units.IN),
                 new ReportItem("B",lippedSection.Dimensions.TotalFlangeWidthB.ToString("0.###"),Units.IN),
                 new ReportItem("R",lippedSection.Dimensions.InternalRadiusR.ToString("0.###"),Units.IN),
-                new ReportItem("T",lippedSection.Dimensions.ThicknessT.ToString("0.###"),Units.IN),
+                new ReportItem("t",lippedSection.Dimensions.ThicknessT.ToString("0.###"),Units.IN),
                 new ReportItem("C",lippedSection.Dimensions.TotalFoldWidthC.ToString("0.###"),Units.IN)
             };
             var secDimSection = new ListReportSection("Section Dimensions", secDimsItems);
@@ -125,7 +125,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("H",unstiffenedSection.Dimensions.TotalHeightH.ToString("0.###"),Units.IN),
                 new ReportItem("B",unstiffenedSection.Dimensions.TotalFlangeWidthB.ToString("0.###"),Units.IN),
                 new ReportItem("R",unstiffenedSection.Dimensions.InternalRadiusR.ToString("0.###"),Units.IN),
-                new ReportItem("T",unstiffenedSection.Dimensions.ThicknessT.ToString("0.###"),Units.IN),
+                new ReportItem("t",unstiffenedSection.Dimensions.ThicknessT.ToString("0.###"),Units.IN),
             };
             var secDimSection = new ListReportSection("Section Dimensions", secDimsItems);
             return unstiffenedSection.AsCompressionResistance(material, bracingConditions, p_crl, secDimSection);
@@ -192,7 +192,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             {
                 new ReportItem("Governing Case",nominalLoad.Item2.GetDescription(),Units.NONE),
                 new ReportItem("Nominal Load (Pn)",nominalLoad.Item1.ToString("0.###"),Units.KIP),
-                new ReportItem("phi",PHI_C.ToString("0.###"),Units.KIP),
+                new ReportItem("phi",PHI_C.ToString("0.###"),Units.NONE),
                 new ReportItem("Design Strength (phi*Pn)",(PHI_C*nominalLoad.Item1).ToString("0.###"),Units.KIP),
             };
 
@@ -456,7 +456,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("H",unstiffenedSection.Dimensions.TotalHeightH.ToString("0.###"),Units.IN),
                 new ReportItem("B",unstiffenedSection.Dimensions.TotalFlangeWidthB.ToString("0.###"),Units.IN),
                 new ReportItem("R",unstiffenedSection.Dimensions.InternalRadiusR.ToString("0.###"),Units.IN),
-                new ReportItem("T",unstiffenedSection.Dimensions.ThicknessT.ToString("0.###"),Units.IN),
+                new ReportItem("t",unstiffenedSection.Dimensions.ThicknessT.ToString("0.###"),Units.IN),
             };
             var secDimSection = new ListReportSection("Section Dimensions", secDimsItems);
             return unstiffenedSection.AsMomentResistance(material, bracingConditions, m_crl, items_buckling, secDimSection);
@@ -472,7 +472,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("H",lippedSection.Dimensions.TotalHeightH.ToString("0.###"),Units.IN),
                 new ReportItem("B",lippedSection.Dimensions.TotalFlangeWidthB.ToString("0.###"),Units.IN),
                 new ReportItem("R",lippedSection.Dimensions.InternalRadiusR.ToString("0.###"),Units.IN),
-                new ReportItem("T",lippedSection.Dimensions.ThicknessT.ToString("0.###"),Units.IN),
+                new ReportItem("t",lippedSection.Dimensions.ThicknessT.ToString("0.###"),Units.IN),
                 new ReportItem("C",lippedSection.Dimensions.TotalFoldWidthC.ToString("0.###"),Units.IN)
             };
             var secDimSection = new ListReportSection("Section Dimensions", secDimsItems);

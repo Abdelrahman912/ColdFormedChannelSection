@@ -148,7 +148,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("H",section.Dimensions.TotalHeightH.ToString("0.###"),Units.CM),
                 new ReportItem("B",section.Dimensions.TotalFlangeWidthB.ToString("0.###"),Units.CM),
                 new ReportItem("R",section.Dimensions.InternalRadiusR.ToString("0.###"),Units.CM),
-                new ReportItem("T",section.Dimensions.ThicknessT.ToString("0.###"),Units.CM),
+                new ReportItem("t",section.Dimensions.ThicknessT.ToString("0.###"),Units.CM),
                 new ReportItem("C",section.Dimensions.TotalFoldWidthC.ToString("0.###"),Units.CM)
             };
             var secDimSection = new ListReportSection("Section Dimensions", secDimsItems);
@@ -182,7 +182,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("H",section.Dimensions.TotalHeightH.ToString("0.###"),Units.CM),
                 new ReportItem("B",section.Dimensions.TotalFlangeWidthB.ToString("0.###"),Units.CM),
                 new ReportItem("R",section.Dimensions.InternalRadiusR.ToString("0.###"),Units.CM),
-                new ReportItem("T",section.Dimensions.ThicknessT.ToString("0.###"),Units.CM),
+                new ReportItem("t",section.Dimensions.ThicknessT.ToString("0.###"),Units.CM),
             };
             var secDimSection = new ListReportSection("Section Dimensions", secDimsItems);
             var nominalSection = new ListReportSection("Nominal Moment", nominalItems);
@@ -835,7 +835,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("H",section.Dimensions.TotalHeightH.ToString("0.###"),Units.CM),
                 new ReportItem("B",section.Dimensions.TotalFlangeWidthB.ToString("0.###"),Units.CM),
                 new ReportItem("R",section.Dimensions.InternalRadiusR.ToString("0.###"),Units.CM),
-                new ReportItem("T",section.Dimensions.ThicknessT.ToString("0.###"),Units.CM),
+                new ReportItem("t",section.Dimensions.ThicknessT.ToString("0.###"),Units.CM),
                 new ReportItem("C",section.Dimensions.TotalFoldWidthC.ToString("0.###"),Units.CM)
             };
             var secDimSection = new ListReportSection("Section Dimensions", secDimsItems);
@@ -881,7 +881,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("H",section.Dimensions.TotalHeightH.ToString("0.###"),Units.CM),
                 new ReportItem("B",section.Dimensions.TotalFlangeWidthB.ToString("0.###"),Units.CM),
                 new ReportItem("R",section.Dimensions.InternalRadiusR.ToString("0.###"),Units.CM),
-                new ReportItem("T",section.Dimensions.ThicknessT.ToString("0.###"),Units.CM),
+                new ReportItem("t",section.Dimensions.ThicknessT.ToString("0.###"),Units.CM),
             };
             var secDimSection = new ListReportSection("Section Dimensions", secDimsItems);
             var localSection = new ListReportSection("Local Buckling", localItems);

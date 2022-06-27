@@ -442,7 +442,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("H",lippedSection.Dimensions.TotalHeightH.ToString("0.###"),Units.IN),
                 new ReportItem("B",lippedSection.Dimensions.TotalFlangeWidthB.ToString("0.###"),Units.IN),
                 new ReportItem("R",lippedSection.Dimensions.InternalRadiusR.ToString("0.###"),Units.IN),
-                new ReportItem("T",lippedSection.Dimensions.ThicknessT.ToString("0.###"),Units.IN),
+                new ReportItem("t",lippedSection.Dimensions.ThicknessT.ToString("0.###"),Units.IN),
                 new ReportItem("C",lippedSection.Dimensions.TotalFoldWidthC.ToString("0.###"),Units.IN)
             };
             var secDimSection = new ListReportSection("Section Dimensions", secDimsItems);
@@ -489,7 +489,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("H",unstiffenedSection.Dimensions.TotalHeightH.ToString("0.###"),Units.IN),
                 new ReportItem("B",unstiffenedSection.Dimensions.TotalFlangeWidthB.ToString("0.###"),Units.IN),
                 new ReportItem("R",unstiffenedSection.Dimensions.InternalRadiusR.ToString("0.###"),Units.IN),
-                new ReportItem("T",unstiffenedSection.Dimensions.ThicknessT.ToString("0.###"),Units.IN),
+                new ReportItem("t",unstiffenedSection.Dimensions.ThicknessT.ToString("0.###"),Units.IN),
             };
             var secDimSection = new ListReportSection("Section Dimensions", secDimsItems);
             var localSection = new ListReportSection("Local Buckling", localItems);
@@ -761,7 +761,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("H",lippedSection.Dimensions.TotalHeightH.ToString("0.###"),Units.IN),
                 new ReportItem("B",lippedSection.Dimensions.TotalFlangeWidthB.ToString("0.###"),Units.IN),
                 new ReportItem("R",lippedSection.Dimensions.InternalRadiusR.ToString("0.###"),Units.IN),
-                new ReportItem("T",lippedSection.Dimensions.ThicknessT.ToString("0.###"),Units.IN),
+                new ReportItem("t",lippedSection.Dimensions.ThicknessT.ToString("0.###"),Units.IN),
                 new ReportItem("C",lippedSection.Dimensions.TotalFoldWidthC.ToString("0.###"),Units.IN)
             };
             var secDimSection = new ListReportSection("Section Dimensions", secDimsItems);
@@ -801,7 +801,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("H",unstiffenedSection.Dimensions.TotalHeightH.ToString("0.###"),Units.IN),
                 new ReportItem("B",unstiffenedSection.Dimensions.TotalFlangeWidthB.ToString("0.###"),Units.IN),
                 new ReportItem("R",unstiffenedSection.Dimensions.InternalRadiusR.ToString("0.###"),Units.IN),
-                new ReportItem("T",unstiffenedSection.Dimensions.ThicknessT.ToString("0.###"),Units.IN),
+                new ReportItem("t",unstiffenedSection.Dimensions.ThicknessT.ToString("0.###"),Units.IN),
             };
             var secDimSection = new ListReportSection("Section Dimensions", secDimsItems);
             var localSection = new ListReportSection("Local Buckling", localItems);
