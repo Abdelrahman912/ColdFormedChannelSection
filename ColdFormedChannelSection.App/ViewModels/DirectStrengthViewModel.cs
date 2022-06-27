@@ -43,7 +43,7 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         #region Constructors
 
-        public DirectStrengthViewModel(GeneralInfoViewModel generalInfoVM, BracingConditionsViewModel bracingConditionsVM, GeometryViewModel geometryVM, MaterialViewModel materialVM, InputLoadViewModel inputLoadVM, Func<List<Error>, Unit> showErrorsService, Action<ReportViewModel> reportService, Func<Func<string, bool>, Option<bool>> folderDialogService)
+        public DirectStrengthViewModel(GeneralInfoViewModel generalInfoVM, BracingConditionsViewModel bracingConditionsVM, GeometryViewModel geometryVM, MaterialViewModel materialVM, InputLoadViewModel inputLoadVM, Func<List<Error>, Unit> showErrorsService, Action<ReportViewModel> reportService, Func<Func<string, Exceptional<Unit>>, Option<Exceptional<Unit>>> folderDialogService)
             : base(generalInfoVM, bracingConditionsVM, geometryVM, materialVM, inputLoadVM, showErrorsService, reportService, folderDialogService)
         {
             ResultsCommand = new RelayCommand(OnReults, CanResults);

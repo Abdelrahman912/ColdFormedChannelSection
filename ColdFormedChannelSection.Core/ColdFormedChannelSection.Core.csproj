@@ -20,6 +20,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Programming\Projects\EasyPDF\EasyPDF\EasyPDF.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="Database\AISI - Stiffened.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

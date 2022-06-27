@@ -1,5 +1,6 @@
 ﻿using ColdFormedChannelSection.Core.Enums;
 using ColdFormedChannelSection.Core.Helpers;
+using iText.Layout;
 using System.Collections.Generic;
 
 namespace ColdFormedChannelSection.Core.Entities
@@ -41,6 +42,11 @@ namespace ColdFormedChannelSection.Core.Entities
         public IReportSection AppendToName(string saName)
         {
             return new ListReportSection($"{SectionName} - {saName}",Items);
+        }
+
+        public void AddToPdf(Document doc)
+        {
+            PdfHelper.AddToPdf(this, doc);
         }
 
         #endregion

@@ -38,7 +38,7 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         private IReport _report;
 
-        private readonly Func<Func<string, bool>, Option<bool>> _folderDialogService;
+        private readonly Func<Func<string, Exceptional<Unit>>, Option<Exceptional<Unit>>> _folderDialogService;
 
         #endregion
 
@@ -138,7 +138,7 @@ namespace ColdFormedChannelSection.App.ViewModels
                                        InputLoadViewModel inputLoadVM,
                                        Func<List<Error>,Unit> showErrorsService,
                                        Action<ReportViewModel> reportService,
-                                       Func<Func<string,bool>,Option<bool>> folderDialogService)
+                                       Func<Func<string, Exceptional<Unit>>, Option<Exceptional<Unit>>> folderDialogService)
         {
             _folderDialogService = folderDialogService;
             _reportService = reportService;

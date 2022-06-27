@@ -9,6 +9,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using static CSharp.Functional.Extensions.OptionExtension;
+using static CSharp.Functional.Extensions.ExceptionalExtension;
+using Unit = System.ValueTuple;
+using static CSharp.Functional.Functional;
 
 namespace ColdFormedChannelSection.App.ViewModels
 {
@@ -17,7 +21,7 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         #region Private Fields
 
-        private readonly Func<Func<string, bool>, Option<bool>> _folderDialogService;
+        private readonly Func<Func<string, Exceptional<Unit>>, Option<Exceptional<Unit>>> _folderDialogService;
 
         #endregion
 
@@ -30,7 +34,7 @@ namespace ColdFormedChannelSection.App.ViewModels
         #endregion
 
         #region Constuctors
-        public ReportViewModel(IReport report,Func<Func<string,bool>,Option<bool>> folderDialogService)
+        public ReportViewModel(IReport report,Func<Func<string, Exceptional<Unit>>, Option<Exceptional<Unit>>> folderDialogService)
         {
             _folderDialogService = folderDialogService;
             Report = report;
@@ -43,13 +47,16 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         private void OnPrintReport()
         {
-            _folderDialogService(Print).Map(b=>MessageBox.Show("done"));
+            _folderDialogService(fileName =>
+            {
+            var x = from exp in Report.CreatePdf(fileName)
+                    select exp;
+            var result = x.Match(e => MessageBox.Show(e.Message), _ => MessageBox.Show("Pdf created successfully!"));
+                return Exceptional(Unit());
+           
+            });
         }
-
-        private bool Print(string fileName)
-        {
-            return true;
-        }
+       
 
         #endregion
 

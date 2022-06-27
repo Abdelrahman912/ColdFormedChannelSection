@@ -13,6 +13,7 @@ using static CSharp.Functional.Functional;
 using System.Linq;
 using ColdFormedChannelSection.App.Models;
 using ColdFormedChannelSection.App.UI.Services;
+using CSharp.Functional.Constructs;
 
 namespace ColdFormedChannelSection.App
 {
