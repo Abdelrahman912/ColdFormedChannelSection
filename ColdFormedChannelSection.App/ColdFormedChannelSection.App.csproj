@@ -32,17 +32,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Programming\Projects\CSharp.Functional\CSharp.Functional\CSharp.Functional.csproj" />
     <ProjectReference Include="..\ColdFormedChannelSection.Core\ColdFormedChannelSection.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Resources\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="CSharp.Functional">
-      <HintPath>..\Libraries\CSharp.Functional.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
   <ItemGroup>

@@ -5,12 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="CSharp.Functional">
-      <HintPath>..\Libraries\CSharp.Functional.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
     <Folder Include="Database\" />
     <Folder Include="Entities\Input\" />
   </ItemGroup>
@@ -20,6 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Programming\Projects\CSharp.Functional\CSharp.Functional\CSharp.Functional.csproj" />
     <ProjectReference Include="..\..\..\..\Programming\Projects\CSharpHelper\CSharpHelper\CSharpHelper.csproj" />
     <ProjectReference Include="..\..\..\..\Programming\Projects\EasyPDF\EasyPDF\EasyPDF.csproj" />
   </ItemGroup>
