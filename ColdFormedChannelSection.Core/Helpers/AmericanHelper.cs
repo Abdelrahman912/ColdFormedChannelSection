@@ -420,11 +420,11 @@ namespace ColdFormedChannelSection.Core.Helpers
             (var pn_local, var localItems) = lippedSection.GetAISICompressionLBResistance(material);
             (var pn_FB, var flexuralItems) = lippedSection.GetAISICompressionFBRessistance(material, bracingConditions);
             (var pn_TFB, var tfbItems) = lippedSection.GetAISICompressionFTBRessistance(material, bracingConditions);
-            (var pn_Tb, var tbItems) = lippedSection.GetAISICompressionTBRessistance(material, bracingConditions); //TODO: Reports
-            var pn1 = Tuple.Create(pn_local.Round(4), FailureMode.LOCALBUCKLING);
-            var pn2 = Tuple.Create(pn_FB.Round(4), FailureMode.FLEXURALBUCKLING);
-            var pn3 = Tuple.Create(pn_TFB.Round(4), FailureMode.FLEXURAL_TORSIONAL_BUCKLING);
-            var pn4 = Tuple.Create(pn_Tb.Round(4), FailureMode.TORSIONALBUCKLING);
+            (var pn_Tb, var tbItems) = lippedSection.GetAISICompressionTBRessistance(material, bracingConditions); 
+            var pn1 = Tuple.Create(pn_local, FailureMode.LOCALBUCKLING);
+            var pn2 = Tuple.Create(pn_FB, FailureMode.FLEXURALBUCKLING);
+            var pn3 = Tuple.Create(pn_TFB, FailureMode.FLEXURAL_TORSIONAL_BUCKLING);
+            var pn4 = Tuple.Create(pn_Tb, FailureMode.TORSIONALBUCKLING);
             var pns = new List<Tuple<double, FailureMode>>()
             {
                 pn1, pn2, pn3,pn4
@@ -468,15 +468,15 @@ namespace ColdFormedChannelSection.Core.Helpers
             (var pn_FB, var flexuralItems) = unstiffenedSection.GetAISICompressionFBRessistance(material, bracingConditions);
             (var pn_TFB, var tfbItems) = unstiffenedSection.GetAISICompressionFTBRessistance(material, bracingConditions);
             (var pn_Tb, var tbItems) = unstiffenedSection.GetAISICompressionTBRessistance(material, bracingConditions); //TODO: Reports
-            var pn1 = Tuple.Create(pn_local.Round(4), FailureMode.LOCALBUCKLING);
-            var pn2 = Tuple.Create(pn_FB.Round(4), FailureMode.FLEXURALBUCKLING);
-            var pn3 = Tuple.Create(pn_TFB.Round(4), FailureMode.FLEXURAL_TORSIONAL_BUCKLING);
-            var pn4 = Tuple.Create(pn_Tb.Round(4), FailureMode.TORSIONALBUCKLING);
+            var pn1 = Tuple.Create(pn_local, FailureMode.LOCALBUCKLING);
+            var pn2 = Tuple.Create(pn_FB, FailureMode.FLEXURALBUCKLING);
+            var pn3 = Tuple.Create(pn_TFB, FailureMode.FLEXURAL_TORSIONAL_BUCKLING);
+            var pn4 = Tuple.Create(pn_Tb, FailureMode.TORSIONALBUCKLING);
             var pns = new List<Tuple<double, FailureMode>>()
             {
                 pn1, pn2, pn3,pn4
             };
-            var pn = pns.OrderBy(tuple => tuple.Item1).First();
+            var pn = pns.Distinct(NominalStrengthEqualComparer).OrderBy(tuple => tuple.Item1).First();
             var designItems = new List<ReportItem>()
             {
                 new ReportItem("Governing Case",pn.Item2.GetDescription(),Units.NONE),
@@ -743,13 +743,13 @@ namespace ColdFormedChannelSection.Core.Helpers
                 return new MomentResistanceOutput(0.0, PHI_B,PHI_B_NAME,MOM_DESIGN_RESIST, FailureMode.UNSAFE, "Kip", null);
             (var Mn_local, var localItems) = lippedSection.GetAISIMomentLBResistance(material);
             (var Mn_ltb, var ltbItems) = lippedSection.GetAISIMomentLTBRessistance(material, bracingConditions);
-            var Mn1 = Tuple.Create(Mn_local.Round(4), FailureMode.LOCALBUCKLING);
-            var Mn2 = Tuple.Create(Mn_ltb.Round(4), FailureMode.LATERALTORSIONALBUCKLING);
+            var Mn1 = Tuple.Create(Mn_local, FailureMode.LOCALBUCKLING);
+            var Mn2 = Tuple.Create(Mn_ltb, FailureMode.LATERALTORSIONALBUCKLING);
             var Mns = new List<Tuple<double, FailureMode>>()
             {
                 Mn1,Mn2
             };
-            var Mn = Mns.OrderBy(tuple => tuple.Item1).First();
+            var Mn = Mns.Distinct(NominalStrengthEqualComparer).OrderBy(tuple => tuple.Item1).First();
             var designItems = new List<ReportItem>()
             {
                 new ReportItem("Governing Case",Mn.Item2.GetDescription(),Units.NONE),
@@ -782,14 +782,14 @@ namespace ColdFormedChannelSection.Core.Helpers
             if (!unstiffenedSection.IsValidForMoment())
                 return new MomentResistanceOutput(0.0, PHI_B,PHI_B_NAME,MOM_DESIGN_RESIST, FailureMode.UNSAFE, "Kip", null);
             (var Mn_local, var localItems) = unstiffenedSection.GetAISIMomentLBResistance(material);
-            var Mn1 = Tuple.Create(Mn_local.Round(4), FailureMode.LOCALBUCKLING);
+            var Mn1 = Tuple.Create(Mn_local, FailureMode.LOCALBUCKLING);
             (var Mn_ltb, var ltbItems) = unstiffenedSection.GetAISIMomentLTBRessistance(material, bracingConditions);
-            var Mn2 = Tuple.Create(Mn_ltb.Round(4), FailureMode.LATERALTORSIONALBUCKLING);
+            var Mn2 = Tuple.Create(Mn_ltb, FailureMode.LATERALTORSIONALBUCKLING);
             var Mns = new List<Tuple<double, FailureMode>>()
             {
                 Mn1,Mn2
             };
-            var Mn = Mns.OrderBy(tuple => tuple.Item1).First();
+            var Mn = Mns.Distinct(NominalStrengthEqualComparer).OrderBy(tuple => tuple.Item1).First();
             var designItems = new List<ReportItem>()
             {
                 new ReportItem("Governing Case",Mn.Item2.GetDescription(),Units.NONE),

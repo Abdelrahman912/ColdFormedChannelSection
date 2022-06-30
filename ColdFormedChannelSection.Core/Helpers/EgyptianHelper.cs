@@ -4,6 +4,7 @@ using ColdFormedChannelSection.Core.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using static ColdFormedChannelSection.Core.Comparers.Comparers;
 
 namespace ColdFormedChannelSection.Core.Helpers
 {
@@ -822,7 +823,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             {
                 pn1, pn2, pn3,pn4
             };
-            var pn = pns.OrderBy(tuple => tuple.Item1).First();
+            var pn = pns.Distinct(NominalStrengthEqualComparer).OrderBy(tuple => tuple.Item1).First();
             var designItems = new List<ReportItem>()
             {
                 new ReportItem("Governing Case",pn.Item2.GetDescription(),Units.TON),
@@ -868,7 +869,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             {
                 pn1, pn2, pn3,pn4
             };
-            var pn = pns.OrderBy(tuple => tuple.Item1).First();
+            var pn = pns.Distinct(NominalStrengthEqualComparer).OrderBy(tuple => tuple.Item1).First();
             var designItems = new List<ReportItem>()
             {
                 new ReportItem("Governing Case",pn.Item2.GetDescription(),Units.TON),

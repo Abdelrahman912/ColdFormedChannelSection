@@ -15,7 +15,7 @@ namespace ColdFormedChannelSection.Core.Comparers
                 var prime2 = 23;
                 unchecked
                 {
-                    var hash = prime1 * prime2 * (((int)t.Item1).GetHashCode());
+                    var hash = prime1 * prime2 * t.Item1.GetIntHash();
                     return hash;
                 }
             });
