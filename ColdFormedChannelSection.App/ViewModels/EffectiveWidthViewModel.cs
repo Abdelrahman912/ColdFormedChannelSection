@@ -13,8 +13,10 @@ using System.Linq;
 using System.Windows.Input;
 using Unit = System.ValueTuple;
 using static CSharp.Functional.Functional;
+using static CSharp.Functional.Extensions.ValidationExtension;
 using CSharp.Functional.Constructs;
 using static ColdFormedChannelSection.Core.Errors.Errors;
+using ColdFormedChannelSection.Core.Dtos;
 
 namespace ColdFormedChannelSection.App.ViewModels
 {
@@ -24,14 +26,14 @@ namespace ColdFormedChannelSection.App.ViewModels
         #region Private Fields
 
 
-        private readonly Dictionary<Module, Action<EffectiveWidthViewModel>> _moduleDict;
+        private readonly Dictionary<Module, Func<EffectiveWidthViewModel, Validation<Unit>>> _moduleDict;
 
         private List<Func<List<Error>>> _validateFuncs;
 
         private static readonly Dictionary<DesignCode, UnitSystems> _unitSystemDict = new Dictionary<DesignCode, UnitSystems>()
         {
             [DesignCode.EURO] = UnitSystems.NMM,
-            [DesignCode.EGYPTIAN]=UnitSystems.TONCM,
+            [DesignCode.EGYPTIAN] = UnitSystems.TONCM,
             [DesignCode.AISI] = UnitSystems.KIPINCH
         };
 
@@ -49,28 +51,28 @@ namespace ColdFormedChannelSection.App.ViewModels
         public Dictionary<KeyValuePair<StrainingActions, SteelSection>, Func<EffectiveWidthViewModel, Material, LengthBracingConditions, OutputBase>> DesignAISIDict { get; }
 
 
-        public Dictionary<DesignCode, Dictionary<KeyValuePair<StrainingActions, SteelSection>, Func<EffectiveWidthViewModel, Material, LengthBracingConditions, Tuple<Func<OutputBase>, OutputBase>>>> ResistDict { get; }
+        public Dictionary<DesignCode, Dictionary<KeyValuePair<StrainingActions, SteelSection>, Func<EffectiveWidthViewModel, Material, LengthBracingConditions, Validation<Tuple<Func<OutputBase>, OutputBase>>>>> ResistDict { get; }
 
-        public Dictionary<KeyValuePair<StrainingActions, SteelSection>, Func<EffectiveWidthViewModel, Material, LengthBracingConditions, Tuple<Func<OutputBase>, OutputBase>>> ResistEgyptDict { get; }
-        public Dictionary<KeyValuePair<StrainingActions, SteelSection>, Func<EffectiveWidthViewModel, Material, LengthBracingConditions, Tuple<Func<OutputBase>, OutputBase>>> ResistEuroDict { get; }
-        public Dictionary<KeyValuePair<StrainingActions, SteelSection>, Func<EffectiveWidthViewModel, Material, LengthBracingConditions, Tuple<Func<OutputBase>, OutputBase>>> ResistAISIDict { get; }
+        public Dictionary<KeyValuePair<StrainingActions, SteelSection>, Func<EffectiveWidthViewModel, Material, LengthBracingConditions, Validation<Tuple<Func<OutputBase>, OutputBase>>>> ResistEgyptDict { get; }
+        public Dictionary<KeyValuePair<StrainingActions, SteelSection>, Func<EffectiveWidthViewModel, Material, LengthBracingConditions, Validation<Tuple<Func<OutputBase>, OutputBase>>>> ResistEuroDict { get; }
+        public Dictionary<KeyValuePair<StrainingActions, SteelSection>, Func<EffectiveWidthViewModel, Material, LengthBracingConditions, Validation<Tuple<Func<OutputBase>, OutputBase>>>> ResistAISIDict { get; }
 
 
         #endregion
 
         #region Constructors
 
-        public EffectiveWidthViewModel(GeneralInfoViewModel generalInfoVM, BracingConditionsViewModel bracingConditionsVM, GeometryViewModel geometryVM, MaterialViewModel materialVM, InputLoadViewModel inputLoadVM,Func<List<Error>,Unit> showErrorsService , Action<ReportViewModel> reportService, Func<Func<string, Exceptional<Unit>>, Option<Exceptional<Unit>>> folderDialogService)
-          : base(generalInfoVM, bracingConditionsVM, geometryVM, materialVM, inputLoadVM, showErrorsService,reportService,folderDialogService)
+        public EffectiveWidthViewModel(GeneralInfoViewModel generalInfoVM, BracingConditionsViewModel bracingConditionsVM, GeometryViewModel geometryVM, MaterialViewModel materialVM, InputLoadViewModel inputLoadVM, Func<List<Error>, Unit> showErrorsService, Action<ReportViewModel> reportService, Func<Func<string, Exceptional<Unit>>, Option<Exceptional<Unit>>> folderDialogService)
+          : base(generalInfoVM, bracingConditionsVM, geometryVM, materialVM, inputLoadVM, showErrorsService, reportService, folderDialogService)
         {
             ResultsCommand = new RelayCommand(OnReults, CanResults);
-            _moduleDict = new Dictionary<Module, Action<EffectiveWidthViewModel>>()
+            _moduleDict = new Dictionary<Module, Func<EffectiveWidthViewModel, Validation<Unit>>>()
             {
                 [Module.RESISTANCE] = Resistance,
                 [Module.DESIGN] = Design,
                 [Module.CHECK] = Check
             };
-            ResistEgyptDict = new Dictionary<KeyValuePair<StrainingActions, SteelSection>, Func<EffectiveWidthViewModel, Material, LengthBracingConditions, Tuple<Func<OutputBase>, OutputBase>>>()
+            ResistEgyptDict = new Dictionary<KeyValuePair<StrainingActions, SteelSection>, Func<EffectiveWidthViewModel, Material, LengthBracingConditions, Validation<Tuple<Func<OutputBase>, OutputBase>>>>()
             {
                 [KeyValuePair.Create(StrainingActions.COMPRESSION, SteelSection.C_UNSTIFFENED)] = EgyptResistanceCUnstiffComp,
                 [KeyValuePair.Create(StrainingActions.MOMENT, SteelSection.C_UNSTIFFENED)] = EgyptResistanceCUnstiffMoment,
@@ -80,7 +82,7 @@ namespace ColdFormedChannelSection.App.ViewModels
                 [KeyValuePair.Create(StrainingActions.MOMENT_COMPRESSION, SteelSection.C_LIPPED)] = EgyptResistanceCLippedMomentCompression,
             };
 
-            ResistEuroDict = new Dictionary<KeyValuePair<StrainingActions, SteelSection>, Func<EffectiveWidthViewModel, Material, LengthBracingConditions, Tuple<Func<OutputBase>, OutputBase>>>()
+            ResistEuroDict = new Dictionary<KeyValuePair<StrainingActions, SteelSection>, Func<EffectiveWidthViewModel, Material, LengthBracingConditions, Validation<Tuple<Func<OutputBase>, OutputBase>>>>()
             {
                 [KeyValuePair.Create(StrainingActions.COMPRESSION, SteelSection.C_UNSTIFFENED)] = EuroResistanceCUnstiffComp,
                 [KeyValuePair.Create(StrainingActions.MOMENT, SteelSection.C_UNSTIFFENED)] = EuroResistanceCUnstiffMoment,
@@ -90,7 +92,7 @@ namespace ColdFormedChannelSection.App.ViewModels
                 [KeyValuePair.Create(StrainingActions.MOMENT_COMPRESSION, SteelSection.C_LIPPED)] = EuroResistanceCLippedMomentCompression,
             };
 
-            ResistAISIDict = new Dictionary<KeyValuePair<StrainingActions, SteelSection>, Func<EffectiveWidthViewModel, Material, LengthBracingConditions, Tuple<Func<OutputBase>, OutputBase>>>()
+            ResistAISIDict = new Dictionary<KeyValuePair<StrainingActions, SteelSection>, Func<EffectiveWidthViewModel, Material, LengthBracingConditions, Validation<Tuple<Func<OutputBase>, OutputBase>>>>()
             {
                 [KeyValuePair.Create(StrainingActions.COMPRESSION, SteelSection.C_UNSTIFFENED)] = AISIResistanceCUnstiffComp,
                 [KeyValuePair.Create(StrainingActions.MOMENT, SteelSection.C_UNSTIFFENED)] = AISIResistanceCUnstiffMoment,
@@ -99,7 +101,7 @@ namespace ColdFormedChannelSection.App.ViewModels
                 [KeyValuePair.Create(StrainingActions.MOMENT, SteelSection.C_LIPPED)] = AISIResistanceCLippedMoment,
                 [KeyValuePair.Create(StrainingActions.MOMENT_COMPRESSION, SteelSection.C_LIPPED)] = AISIResistanceCLippedMomentCompression
             };
-            ResistDict = new Dictionary<DesignCode, Dictionary<KeyValuePair<StrainingActions, SteelSection>, Func<EffectiveWidthViewModel, Material, LengthBracingConditions, Tuple<Func<OutputBase>, OutputBase>>>>()
+            ResistDict = new Dictionary<DesignCode, Dictionary<KeyValuePair<StrainingActions, SteelSection>, Func<EffectiveWidthViewModel, Material, LengthBracingConditions, Validation<Tuple<Func<OutputBase>, OutputBase>>>>>()
             {
                 [DesignCode.EGYPTIAN] = ResistEgyptDict,
                 [DesignCode.EURO] = ResistEuroDict,
@@ -147,7 +149,7 @@ namespace ColdFormedChannelSection.App.ViewModels
             };
         }
 
-      
+
 
 
 
@@ -165,17 +167,19 @@ namespace ColdFormedChannelSection.App.ViewModels
         {
             Func<Validation<Unit>> designValid = () =>
             {
-                _moduleDict[GeneralInfoVM.RunningModule](this);
-                if (ResistanceOutput == null)
-                    return CantFindSafeSection;
-                else if (ResistanceOutput.Report == null)
-                    return CantCalculateNominalStrength;
-                else
-                {
-                    Report = ResistanceOutput.Report.Convert(GeneralInfoVM.Unit);
-                    IsDisplayReport = true;
-                    return Unit();
-                }
+                return   _moduleDict[GeneralInfoVM.RunningModule](this).Bind<Unit, Unit>(val =>
+                  {
+                      if (ResistanceOutput == null)
+                          return CantFindSafeSection;
+                      else if (ResistanceOutput.Report == null)
+                          return CantCalculateNominalStrength;
+                      else
+                      {
+                          Report = ResistanceOutput.Report.Convert(GeneralInfoVM.Unit);
+                          IsDisplayReport = true;
+                          return Unit();
+                      }
+                  });
             };
 
             _validateFuncs.SelectMany(f => f())
@@ -185,7 +189,7 @@ namespace ColdFormedChannelSection.App.ViewModels
                                  u => u);
         }
 
-        private static void Design(EffectiveWidthViewModel vm)
+        private static Validation<Unit> Design(EffectiveWidthViewModel vm)
         {
             vm.IsResistanceOutput = false;
             var material = (new Material(vm.MaterialVM.Fy, vm.MaterialVM.E, 0.3)).Convert(vm.GeneralInfoVM.Unit, _unitSystemDict[vm.GeneralInfoVM.DesignCode]);
@@ -193,14 +197,24 @@ namespace ColdFormedChannelSection.App.ViewModels
             var sa = vm.GeneralInfoVM.StrainingAction;
             var section = vm.GeneralInfoVM.SteelSection;
             vm.ResistanceOutput = vm.DesignDict[vm.GeneralInfoVM.DesignCode][KeyValuePair.Create(sa, section)](vm, material, bracingConditions);
+            return Unit();
         }
 
 
 
         private OutputBase EgyptDesignCLippedMomentCompression(EffectiveWidthViewModel vm, Material material, LengthBracingConditions bracingConditions)
         {
-            var outTuple = vm.GeometryVM.Sections.Select(dto => Tuple.Create(dto, dto.AsEntity().Convert(vm.GeometryVM.TableUnit, UnitSystems.TONCM).AsLippedSection().AsEgyptInteractionResistance(material, bracingConditions,vm.InputLoadVM.UltimateLoad.ConvertForce(vm.GeneralInfoVM.Unit,UnitSystems.TONCM).Item1,vm.InputLoadVM.UltimateMoment.ConvertMoment(vm.GeneralInfoVM.Unit, UnitSystems.TONCM).Item1).Convert(UnitSystems.TONCM, vm.GeneralInfoVM.Unit)))
-                                                                  .Where(tuple => tuple.Item2.IEValue  < 1)
+            var outTuple = vm.GeometryVM.Sections.Select(dto => Tuple.Create(dto, dto.AsEntity().Convert(vm.GeometryVM.TableUnit, UnitSystems.TONCM).AsLippedSection().Map(c => c.AsEgyptInteractionResistance(material, bracingConditions, vm.InputLoadVM.UltimateLoad.ConvertForce(vm.GeneralInfoVM.Unit, UnitSystems.TONCM).Item1, vm.InputLoadVM.UltimateMoment.ConvertMoment(vm.GeneralInfoVM.Unit, UnitSystems.TONCM).Item1).Convert(UnitSystems.TONCM, vm.GeneralInfoVM.Unit))))
+                                                                   .Aggregate(new List<Tuple<SectionDimensionDto, ResistanceInteractionOutput>>(), (soFar, current) =>
+                                                                   {
+                                                                       current.Item2.Match(errs => false, val =>
+                                                                       {
+                                                                           Tuple.Create(current.Item1, val);
+                                                                           return true;
+                                                                       });
+                                                                       return soFar;
+                                                                   })
+                                                                  .Where(tuple => tuple.Item2.IEValue < 1)
                                                                    .OrderByDescending(tuple => tuple.Item2.IEValue)
                                                                    .FirstOrDefault();
             vm.IsResistanceOutput = true;
@@ -219,7 +233,16 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         private OutputBase EgyptDesignCUnstiffMomentCompression(EffectiveWidthViewModel vm, Material material, LengthBracingConditions bracingConditions)
         {
-            var outTuple = vm.GeometryVM.Sections.Select(dto => Tuple.Create(dto, dto.AsEntity().Convert(vm.GeometryVM.TableUnit, UnitSystems.TONCM).AsUnStiffenedSection().AsEgyptInteractionResistance(material, bracingConditions, vm.InputLoadVM.UltimateLoad.ConvertForce(vm.GeneralInfoVM.Unit,UnitSystems.TONCM).Item1, vm.InputLoadVM.UltimateMoment.ConvertMoment(vm.GeneralInfoVM.Unit, UnitSystems.TONCM).Item1).Convert(UnitSystems.TONCM, vm.GeneralInfoVM.Unit)))
+            var outTuple = vm.GeometryVM.Sections.Select(dto => Tuple.Create(dto, dto.AsEntity().Convert(vm.GeometryVM.TableUnit, UnitSystems.TONCM).AsUnStiffenedSection().Map(c => c.AsEgyptInteractionResistance(material, bracingConditions, vm.InputLoadVM.UltimateLoad.ConvertForce(vm.GeneralInfoVM.Unit, UnitSystems.TONCM).Item1, vm.InputLoadVM.UltimateMoment.ConvertMoment(vm.GeneralInfoVM.Unit, UnitSystems.TONCM).Item1).Convert(UnitSystems.TONCM, vm.GeneralInfoVM.Unit))))
+                                                                    .Aggregate(new List<Tuple<SectionDimensionDto, ResistanceInteractionOutput>>(), (soFar, current) =>
+                                                                    {
+                                                                        current.Item2.Match(errs => false, val =>
+                                                                        {
+                                                                            Tuple.Create(current.Item1, val);
+                                                                            return true;
+                                                                        });
+                                                                        return soFar;
+                                                                    })
                                                                   .Where(tuple => tuple.Item2.IEValue < 1)
                                                                    .OrderByDescending(tuple => tuple.Item2.IEValue)
                                                                    .FirstOrDefault();
@@ -237,11 +260,20 @@ namespace ColdFormedChannelSection.App.ViewModels
             }
         }
 
-       
+
 
         private static DesignOutput EgyptDesignCUnstiffComp(EffectiveWidthViewModel vm, Material material, LengthBracingConditions bracingConditions)
         {
-            var outTuple = vm.GeometryVM.Sections.Select(dto => Tuple.Create(dto, dto.AsEntity().Convert(vm.GeometryVM.TableUnit, UnitSystems.TONCM).AsUnStiffenedSection().AsEgyptCompressionResistance(material, bracingConditions).Convert(UnitSystems.TONCM, vm.GeneralInfoVM.Unit)))
+            var outTuple = vm.GeometryVM.Sections.Select(dto => Tuple.Create(dto, dto.AsEntity().Convert(vm.GeometryVM.TableUnit, UnitSystems.TONCM).AsUnStiffenedSection().Map(c => c.AsEgyptCompressionResistance(material, bracingConditions).Convert(UnitSystems.TONCM, vm.GeneralInfoVM.Unit))))
+                                                                     .Aggregate(new List<Tuple<SectionDimensionDto, CompressionResistanceOutput>>(), (soFar, current) =>
+                                                                     {
+                                                                         current.Item2.Match(errs => false, val =>
+                                                                         {
+                                                                             Tuple.Create(current.Item1, val);
+                                                                             return true;
+                                                                         });
+                                                                         return soFar;
+                                                                     })
                                                                    .Where(tuple => tuple.Item2.DesignResistance > vm.InputLoadVM.UltimateLoad)
                                                                     .OrderBy(tuple => tuple.Item2.DesignResistance)
                                                                      .FirstOrDefault();
@@ -261,7 +293,16 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         private static DesignOutput EgyptDesignCLippedComp(EffectiveWidthViewModel vm, Material material, LengthBracingConditions bracingConditions)
         {
-            var outTuple = vm.GeometryVM.Sections.Select(dto => Tuple.Create(dto, dto.AsEntity().Convert(vm.GeometryVM.TableUnit, UnitSystems.TONCM).AsLippedSection().AsEgyptCompressionResistance(material, bracingConditions).Convert(UnitSystems.TONCM, vm.GeneralInfoVM.Unit)))
+            var outTuple = vm.GeometryVM.Sections.Select(dto => Tuple.Create(dto, dto.AsEntity().Convert(vm.GeometryVM.TableUnit, UnitSystems.TONCM).AsLippedSection().Map(c => c.AsEgyptCompressionResistance(material, bracingConditions).Convert(UnitSystems.TONCM, vm.GeneralInfoVM.Unit))))
+                                                                    .Aggregate(new List<Tuple<SectionDimensionDto, CompressionResistanceOutput>>(), (soFar, current) =>
+                                                                    {
+                                                                        current.Item2.Match(errs => false, val =>
+                                                                        {
+                                                                            Tuple.Create(current.Item1, val);
+                                                                            return true;
+                                                                        });
+                                                                        return soFar;
+                                                                    })
                                                                   .Where(tuple => tuple.Item2.DesignResistance > vm.InputLoadVM.UltimateLoad)
                                                                    .OrderBy(tuple => tuple.Item2.DesignResistance)
                                                                     .FirstOrDefault();
@@ -281,7 +322,16 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         private static DesignOutput EgyptDesignCUnstiffMoment(EffectiveWidthViewModel vm, Material material, LengthBracingConditions bracingConditions)
         {
-            var outTuple = vm.GeometryVM.Sections.Select(dto => Tuple.Create(dto, dto.AsEntity().Convert(vm.GeometryVM.TableUnit, UnitSystems.TONCM).AsUnStiffenedSection().AsEgyptMomentResistance(material, bracingConditions).Convert(UnitSystems.TONCM, vm.GeneralInfoVM.Unit)))
+            var outTuple = vm.GeometryVM.Sections.Select(dto => Tuple.Create(dto, dto.AsEntity().Convert(vm.GeometryVM.TableUnit, UnitSystems.TONCM).AsUnStiffenedSection().Map(c => c.AsEgyptMomentResistance(material, bracingConditions).Convert(UnitSystems.TONCM, vm.GeneralInfoVM.Unit))))
+                                                                    .Aggregate(new List<Tuple<SectionDimensionDto, MomentResistanceOutput>>(), (soFar, current) =>
+                                                                    {
+                                                                        current.Item2.Match(errs => false, val =>
+                                                                        {
+                                                                            Tuple.Create(current.Item1, val);
+                                                                            return true;
+                                                                        });
+                                                                        return soFar;
+                                                                    })
                                                                   .Where(tuple => tuple.Item2.DesignResistance > vm.InputLoadVM.UltimateMoment)
                                                                    .OrderBy(tuple => tuple.Item2.DesignResistance)
                                                                     .FirstOrDefault();
@@ -301,7 +351,16 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         private static DesignOutput EgyptDesignCLippedMoment(EffectiveWidthViewModel vm, Material material, LengthBracingConditions bracingConditions)
         {
-            var outTuple = vm.GeometryVM.Sections.Select(dto => Tuple.Create(dto, dto.AsEntity().Convert(vm.GeometryVM.TableUnit, UnitSystems.TONCM).AsLippedSection().AsEgyptMomentResistance(material, bracingConditions).Convert(UnitSystems.TONCM, vm.GeneralInfoVM.Unit)))
+            var outTuple = vm.GeometryVM.Sections.Select(dto => Tuple.Create(dto, dto.AsEntity().Convert(vm.GeometryVM.TableUnit, UnitSystems.TONCM).AsLippedSection().Map(c => c.AsEgyptMomentResistance(material, bracingConditions).Convert(UnitSystems.TONCM, vm.GeneralInfoVM.Unit))))
+                                                                    .Aggregate(new List<Tuple<SectionDimensionDto, MomentResistanceOutput>>(), (soFar, current) =>
+                                                                    {
+                                                                        current.Item2.Match(errs => false, val =>
+                                                                        {
+                                                                            Tuple.Create(current.Item1, val);
+                                                                            return true;
+                                                                        });
+                                                                        return soFar;
+                                                                    })
                                                                   .Where(tuple => tuple.Item2.DesignResistance > vm.InputLoadVM.UltimateMoment)
                                                                    .OrderBy(tuple => tuple.Item2.DesignResistance)
                                                                     .FirstOrDefault();
@@ -322,7 +381,16 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         private OutputBase EuroDesignCLippedMomentCompression(EffectiveWidthViewModel vm, Material material, LengthBracingConditions bracingConditions)
         {
-            var outTuple = vm.GeometryVM.Sections.Select(dto => Tuple.Create(dto, dto.AsEntity().Convert(vm.GeometryVM.TableUnit, UnitSystems.NMM).AsLippedSection().AsEuroInteractionResistance(material, bracingConditions, vm.InputLoadVM.UltimateLoad.ConvertForce(vm.GeneralInfoVM.Unit,UnitSystems.NMM).Item1, vm.InputLoadVM.UltimateMoment.ConvertMoment(vm.GeneralInfoVM.Unit, UnitSystems.NMM).Item1).Convert(UnitSystems.NMM, vm.GeneralInfoVM.Unit)))
+            var outTuple = vm.GeometryVM.Sections.Select(dto => Tuple.Create(dto, dto.AsEntity().Convert(vm.GeometryVM.TableUnit, UnitSystems.NMM).AsLippedSection().Map(c => c.AsEuroInteractionResistance(material, bracingConditions, vm.InputLoadVM.UltimateLoad.ConvertForce(vm.GeneralInfoVM.Unit, UnitSystems.NMM).Item1, vm.InputLoadVM.UltimateMoment.ConvertMoment(vm.GeneralInfoVM.Unit, UnitSystems.NMM).Item1).Convert(UnitSystems.NMM, vm.GeneralInfoVM.Unit))))
+                                                                    .Aggregate(new List<Tuple<SectionDimensionDto, ResistanceInteractionOutput>>(), (soFar, current) =>
+                                                                    {
+                                                                        current.Item2.Match(errs => false, val =>
+                                                                        {
+                                                                            Tuple.Create(current.Item1, val);
+                                                                            return true;
+                                                                        });
+                                                                        return soFar;
+                                                                    })
                                                                   .Where(tuple => tuple.Item2.IEValue < 1)
                                                                    .OrderByDescending(tuple => tuple.Item2.IEValue)
                                                                    .FirstOrDefault();
@@ -342,7 +410,16 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         private OutputBase EuroDesignCUnstiffMomentCompression(EffectiveWidthViewModel vm, Material material, LengthBracingConditions bracingConditions)
         {
-            var outTuple = vm.GeometryVM.Sections.Select(dto => Tuple.Create(dto, dto.AsEntity().Convert(vm.GeometryVM.TableUnit, UnitSystems.NMM).AsUnStiffenedSection().AsEuroInteractionResistance(material, bracingConditions, vm.InputLoadVM.UltimateLoad.ConvertForce(vm.GeneralInfoVM.Unit,UnitSystems.NMM).Item1, vm.InputLoadVM.UltimateMoment.ConvertMoment(vm.GeneralInfoVM.Unit, UnitSystems.NMM).Item1).Convert(UnitSystems.NMM, vm.GeneralInfoVM.Unit)))
+            var outTuple = vm.GeometryVM.Sections.Select(dto => Tuple.Create(dto, dto.AsEntity().Convert(vm.GeometryVM.TableUnit, UnitSystems.NMM).AsUnStiffenedSection().Map(c => c.AsEuroInteractionResistance(material, bracingConditions, vm.InputLoadVM.UltimateLoad.ConvertForce(vm.GeneralInfoVM.Unit, UnitSystems.NMM).Item1, vm.InputLoadVM.UltimateMoment.ConvertMoment(vm.GeneralInfoVM.Unit, UnitSystems.NMM).Item1).Convert(UnitSystems.NMM, vm.GeneralInfoVM.Unit))))
+                                                                     .Aggregate(new List<Tuple<SectionDimensionDto, ResistanceInteractionOutput>>(), (soFar, current) =>
+                                                                     {
+                                                                         current.Item2.Match(errs => false, val =>
+                                                                         {
+                                                                             Tuple.Create(current.Item1, val);
+                                                                             return true;
+                                                                         });
+                                                                         return soFar;
+                                                                     })
                                                                    .Where(tuple => tuple.Item2.IEValue < 1)
                                                                     .OrderByDescending(tuple => tuple.Item2.IEValue)
                                                                     .FirstOrDefault();
@@ -362,7 +439,16 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         private static DesignOutput EuroDesignCUnstiffComp(EffectiveWidthViewModel vm, Material material, LengthBracingConditions bracingConditions)
         {
-            var outTuple = vm.GeometryVM.Sections.Select(dto => Tuple.Create(dto, dto.AsEntity().Convert(vm.GeometryVM.TableUnit, UnitSystems.NMM).AsUnStiffenedSection().AsEuroCompressionResistance(material, bracingConditions, vm.InputLoadVM.UltimateLoad.ConvertForce(vm.GeneralInfoVM.Unit, UnitSystems.NMM).Item1).Convert(UnitSystems.NMM, vm.GeneralInfoVM.Unit)))
+            var outTuple = vm.GeometryVM.Sections.Select(dto => Tuple.Create(dto, dto.AsEntity().Convert(vm.GeometryVM.TableUnit, UnitSystems.NMM).AsUnStiffenedSection().Map(c => c.AsEuroCompressionResistance(material, bracingConditions, vm.InputLoadVM.UltimateLoad.ConvertForce(vm.GeneralInfoVM.Unit, UnitSystems.NMM).Item1).Convert(UnitSystems.NMM, vm.GeneralInfoVM.Unit))))
+                                                                     .Aggregate(new List<Tuple<SectionDimensionDto, CompressionResistanceOutput>>(), (soFar, current) =>
+                                                                     {
+                                                                         current.Item2.Match(errs => false, val =>
+                                                                         {
+                                                                             Tuple.Create(current.Item1, val);
+                                                                             return true;
+                                                                         });
+                                                                         return soFar;
+                                                                     })
                                                                    .Where(tuple => tuple.Item2.DesignResistance > vm.InputLoadVM.UltimateLoad)
                                                                     .OrderBy(tuple => tuple.Item2.DesignResistance)
                                                                      .FirstOrDefault();
@@ -382,7 +468,16 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         private static DesignOutput EuroDesignCLippedComp(EffectiveWidthViewModel vm, Material material, LengthBracingConditions bracingConditions)
         {
-            var outTuple = vm.GeometryVM.Sections.Select(dto => Tuple.Create(dto, dto.AsEntity().Convert(vm.GeometryVM.TableUnit, UnitSystems.NMM).AsLippedSection().AsEuroCompressionResistance(material, bracingConditions, vm.InputLoadVM.UltimateLoad.ConvertForce(vm.GeneralInfoVM.Unit, UnitSystems.NMM).Item1).Convert(UnitSystems.NMM, vm.GeneralInfoVM.Unit)))
+            var outTuple = vm.GeometryVM.Sections.Select(dto => Tuple.Create(dto, dto.AsEntity().Convert(vm.GeometryVM.TableUnit, UnitSystems.NMM).AsLippedSection().Map(c => c.AsEuroCompressionResistance(material, bracingConditions, vm.InputLoadVM.UltimateLoad.ConvertForce(vm.GeneralInfoVM.Unit, UnitSystems.NMM).Item1).Convert(UnitSystems.NMM, vm.GeneralInfoVM.Unit))))
+                                                                    .Aggregate(new List<Tuple<SectionDimensionDto, CompressionResistanceOutput>>(), (soFar, current) =>
+                                                                    {
+                                                                        current.Item2.Match(errs => false, val =>
+                                                                        {
+                                                                            Tuple.Create(current.Item1, val);
+                                                                            return true;
+                                                                        });
+                                                                        return soFar;
+                                                                    })
                                                                   .Where(tuple => tuple.Item2.DesignResistance > vm.InputLoadVM.UltimateLoad)
                                                                    .OrderBy(tuple => tuple.Item2.DesignResistance)
                                                                     .FirstOrDefault();
@@ -402,7 +497,16 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         private static DesignOutput EuroDesignCUnstiffMoment(EffectiveWidthViewModel vm, Material material, LengthBracingConditions bracingConditions)
         {
-            var outTuple = vm.GeometryVM.Sections.Select(dto => Tuple.Create(dto, dto.AsEntity().Convert(vm.GeometryVM.TableUnit, UnitSystems.NMM).AsUnStiffenedSection().AsEuroMomentResistance(material, bracingConditions, vm.InputLoadVM.UltimateMoment.ConvertMoment(vm.GeneralInfoVM.Unit, UnitSystems.NMM).Item1).Convert(UnitSystems.NMM, vm.GeneralInfoVM.Unit)))
+            var outTuple = vm.GeometryVM.Sections.Select(dto => Tuple.Create(dto, dto.AsEntity().Convert(vm.GeometryVM.TableUnit, UnitSystems.NMM).AsUnStiffenedSection().Map(c => c.AsEuroMomentResistance(material, bracingConditions, vm.InputLoadVM.UltimateMoment.ConvertMoment(vm.GeneralInfoVM.Unit, UnitSystems.NMM).Item1).Convert(UnitSystems.NMM, vm.GeneralInfoVM.Unit))))
+                                                                   .Aggregate(new List<Tuple<SectionDimensionDto, MomentResistanceOutput>>(), (soFar, current) =>
+                                                                   {
+                                                                       current.Item2.Match(errs => false, val =>
+                                                                       {
+                                                                           Tuple.Create(current.Item1, val);
+                                                                           return true;
+                                                                       });
+                                                                       return soFar;
+                                                                   })
                                                                   .Where(tuple => tuple.Item2.DesignResistance > vm.InputLoadVM.UltimateMoment)
                                                                    .OrderBy(tuple => tuple.Item2.DesignResistance)
                                                                     .FirstOrDefault();
@@ -422,7 +526,16 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         private static DesignOutput EuroDesignCLippedMoment(EffectiveWidthViewModel vm, Material material, LengthBracingConditions bracingConditions)
         {
-            var outTuple = vm.GeometryVM.Sections.Select(dto => Tuple.Create(dto, dto.AsEntity().Convert(vm.GeometryVM.TableUnit, UnitSystems.NMM).AsLippedSection().AsEuroMomentResistance(material, bracingConditions, vm.InputLoadVM.UltimateMoment.ConvertMoment(vm.GeneralInfoVM.Unit, UnitSystems.NMM).Item1).Convert(UnitSystems.NMM, vm.GeneralInfoVM.Unit)))
+            var outTuple = vm.GeometryVM.Sections.Select(dto => Tuple.Create(dto, dto.AsEntity().Convert(vm.GeometryVM.TableUnit, UnitSystems.NMM).AsLippedSection().Map(c => c.AsEuroMomentResistance(material, bracingConditions, vm.InputLoadVM.UltimateMoment.ConvertMoment(vm.GeneralInfoVM.Unit, UnitSystems.NMM).Item1).Convert(UnitSystems.NMM, vm.GeneralInfoVM.Unit))))
+                                                                    .Aggregate(new List<Tuple<SectionDimensionDto, MomentResistanceOutput>>(), (soFar, current) =>
+                                                                    {
+                                                                        current.Item2.Match(errs => false, val =>
+                                                                        {
+                                                                            Tuple.Create(current.Item1, val);
+                                                                            return true;
+                                                                        });
+                                                                        return soFar;
+                                                                    })
                                                                   .Where(tuple => tuple.Item2.DesignResistance > vm.InputLoadVM.UltimateMoment)
                                                                    .OrderBy(tuple => tuple.Item2.DesignResistance)
                                                                     .FirstOrDefault();
@@ -443,7 +556,16 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         private OutputBase AISIDesignCLippedMomentCompression(EffectiveWidthViewModel vm, Material material, LengthBracingConditions bracingConditions)
         {
-            var outTuple = vm.GeometryVM.Sections.Select(dto => Tuple.Create(dto, dto.AsEntity().Convert(vm.GeometryVM.TableUnit, UnitSystems.KIPINCH).AsLippedSection().AsAISIInteractionResistance(material, bracingConditions, vm.InputLoadVM.UltimateLoad.ConvertForce(vm.GeneralInfoVM.Unit,UnitSystems.KIPINCH).Item1, vm.InputLoadVM.UltimateMoment.ConvertMoment(vm.GeneralInfoVM.Unit, UnitSystems.KIPINCH).Item1).Convert(UnitSystems.KIPINCH, vm.GeneralInfoVM.Unit)))
+            var outTuple = vm.GeometryVM.Sections.Select(dto => Tuple.Create(dto, dto.AsEntity().Convert(vm.GeometryVM.TableUnit, UnitSystems.KIPINCH).AsLippedSection().Map(c => c.AsAISIInteractionResistance(material, bracingConditions, vm.InputLoadVM.UltimateLoad.ConvertForce(vm.GeneralInfoVM.Unit, UnitSystems.KIPINCH).Item1, vm.InputLoadVM.UltimateMoment.ConvertMoment(vm.GeneralInfoVM.Unit, UnitSystems.KIPINCH).Item1).Convert(UnitSystems.KIPINCH, vm.GeneralInfoVM.Unit))))
+                                                                     .Aggregate(new List<Tuple<SectionDimensionDto, ResistanceInteractionOutput>>(), (soFar, current) =>
+                                                                     {
+                                                                         current.Item2.Match(errs => false, val =>
+                                                                         {
+                                                                             Tuple.Create(current.Item1, val);
+                                                                             return true;
+                                                                         });
+                                                                         return soFar;
+                                                                     })
                                                                   .Where(tuple => tuple.Item2.IEValue < 1)
                                                                    .OrderByDescending(tuple => tuple.Item2.IEValue)
                                                                    .FirstOrDefault();
@@ -463,7 +585,16 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         private OutputBase AISIDesignCUnstiffMomentCompression(EffectiveWidthViewModel vm, Material material, LengthBracingConditions bracingConditions)
         {
-            var outTuple = vm.GeometryVM.Sections.Select(dto => Tuple.Create(dto, dto.AsEntity().Convert(vm.GeometryVM.TableUnit, UnitSystems.KIPINCH).AsUnStiffenedSection().AsAISIInteractionResistance(material, bracingConditions, vm.InputLoadVM.UltimateLoad.ConvertForce(vm.GeneralInfoVM.Unit,UnitSystems.KIPINCH).Item1, vm.InputLoadVM.UltimateMoment.ConvertMoment(vm.GeneralInfoVM.Unit, UnitSystems.KIPINCH).Item1).Convert(UnitSystems.KIPINCH, vm.GeneralInfoVM.Unit)))
+            var outTuple = vm.GeometryVM.Sections.Select(dto => Tuple.Create(dto, dto.AsEntity().Convert(vm.GeometryVM.TableUnit, UnitSystems.KIPINCH).AsUnStiffenedSection().Map(c => c.AsAISIInteractionResistance(material, bracingConditions, vm.InputLoadVM.UltimateLoad.ConvertForce(vm.GeneralInfoVM.Unit, UnitSystems.KIPINCH).Item1, vm.InputLoadVM.UltimateMoment.ConvertMoment(vm.GeneralInfoVM.Unit, UnitSystems.KIPINCH).Item1).Convert(UnitSystems.KIPINCH, vm.GeneralInfoVM.Unit))))
+                                                                    .Aggregate(new List<Tuple<SectionDimensionDto, ResistanceInteractionOutput>>(), (soFar, current) =>
+                                                                    {
+                                                                        current.Item2.Match(errs => false, val =>
+                                                                        {
+                                                                            Tuple.Create(current.Item1, val);
+                                                                            return true;
+                                                                        });
+                                                                        return soFar;
+                                                                    })
                                                                  .Where(tuple => tuple.Item2.IEValue < 1)
                                                                   .OrderByDescending(tuple => tuple.Item2.IEValue)
                                                                   .FirstOrDefault();
@@ -483,7 +614,16 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         private static DesignOutput AISIDesignCUnstiffComp(EffectiveWidthViewModel vm, Material material, LengthBracingConditions bracingConditions)
         {
-            var outTuple = vm.GeometryVM.Sections.Select(dto => Tuple.Create(dto, dto.AsEntity().Convert(vm.GeometryVM.TableUnit, UnitSystems.KIPINCH).AsUnStiffenedSection().AsAISICompressionResistance(material, bracingConditions).Convert(UnitSystems.KIPINCH, vm.GeneralInfoVM.Unit)))
+            var outTuple = vm.GeometryVM.Sections.Select(dto => Tuple.Create(dto, dto.AsEntity().Convert(vm.GeometryVM.TableUnit, UnitSystems.KIPINCH).AsUnStiffenedSection().Map(c => c.AsAISICompressionResistance(material, bracingConditions).Convert(UnitSystems.KIPINCH, vm.GeneralInfoVM.Unit))))
+                                                                     .Aggregate(new List<Tuple<SectionDimensionDto, CompressionResistanceOutput>>(), (soFar, current) =>
+                                                                     {
+                                                                         current.Item2.Match(errs => false, val =>
+                                                                         {
+                                                                             Tuple.Create(current.Item1, val);
+                                                                             return true;
+                                                                         });
+                                                                         return soFar;
+                                                                     })
                                                                    .Where(tuple => tuple.Item2.DesignResistance > vm.InputLoadVM.UltimateLoad)
                                                                     .OrderBy(tuple => tuple.Item2.DesignResistance)
                                                                      .FirstOrDefault();
@@ -503,7 +643,16 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         private static DesignOutput AISIDesignCLippedComp(EffectiveWidthViewModel vm, Material material, LengthBracingConditions bracingConditions)
         {
-            var outTuple = vm.GeometryVM.Sections.Select(dto => Tuple.Create(dto, dto.AsEntity().Convert(vm.GeometryVM.TableUnit, UnitSystems.KIPINCH).AsLippedSection().AsAISICompressionResistance(material, bracingConditions).Convert(UnitSystems.KIPINCH, vm.GeneralInfoVM.Unit)))
+            var outTuple = vm.GeometryVM.Sections.Select(dto => Tuple.Create(dto, dto.AsEntity().Convert(vm.GeometryVM.TableUnit, UnitSystems.KIPINCH).AsLippedSection().Map(c => c.AsAISICompressionResistance(material, bracingConditions).Convert(UnitSystems.KIPINCH, vm.GeneralInfoVM.Unit))))
+                                                                    .Aggregate(new List<Tuple<SectionDimensionDto, CompressionResistanceOutput>>(), (soFar, current) =>
+                                                                    {
+                                                                        current.Item2.Match(errs => false, val =>
+                                                                        {
+                                                                            Tuple.Create(current.Item1, val);
+                                                                            return true;
+                                                                        });
+                                                                        return soFar;
+                                                                    })
                                                                   .Where(tuple => tuple.Item2.DesignResistance > vm.InputLoadVM.UltimateLoad)
                                                                    .OrderBy(tuple => tuple.Item2.DesignResistance)
                                                                     .FirstOrDefault();
@@ -523,7 +672,16 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         private static DesignOutput AISIDesignCUnstiffMoment(EffectiveWidthViewModel vm, Material material, LengthBracingConditions bracingConditions)
         {
-            var outTuple = vm.GeometryVM.Sections.Select(dto => Tuple.Create(dto, dto.AsEntity().Convert(vm.GeometryVM.TableUnit, UnitSystems.KIPINCH).AsUnStiffenedSection().AsAISIMomentResistance(material, bracingConditions).Convert(UnitSystems.KIPINCH, vm.GeneralInfoVM.Unit)))
+            var outTuple = vm.GeometryVM.Sections.Select(dto => Tuple.Create(dto, dto.AsEntity().Convert(vm.GeometryVM.TableUnit, UnitSystems.KIPINCH).AsUnStiffenedSection().Map(c => c.AsAISIMomentResistance(material, bracingConditions).Convert(UnitSystems.KIPINCH, vm.GeneralInfoVM.Unit))))
+                                                                    .Aggregate(new List<Tuple<SectionDimensionDto, MomentResistanceOutput>>(), (soFar, current) =>
+                                                                    {
+                                                                        current.Item2.Match(errs => false, val =>
+                                                                        {
+                                                                            Tuple.Create(current.Item1, val);
+                                                                            return true;
+                                                                        });
+                                                                        return soFar;
+                                                                    })
                                                                   .Where(tuple => tuple.Item2.DesignResistance > vm.InputLoadVM.UltimateMoment)
                                                                    .OrderBy(tuple => tuple.Item2.DesignResistance)
                                                                     .FirstOrDefault();
@@ -543,7 +701,16 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         private static DesignOutput AISIDesignCLippedMoment(EffectiveWidthViewModel vm, Material material, LengthBracingConditions bracingConditions)
         {
-            var outTuple = vm.GeometryVM.Sections.Select(dto => Tuple.Create(dto, dto.AsEntity().Convert(vm.GeometryVM.TableUnit, UnitSystems.KIPINCH).AsLippedSection().AsAISIMomentResistance(material, bracingConditions).Convert(UnitSystems.KIPINCH, vm.GeneralInfoVM.Unit)))
+            var outTuple = vm.GeometryVM.Sections.Select(dto => Tuple.Create(dto, dto.AsEntity().Convert(vm.GeometryVM.TableUnit, UnitSystems.KIPINCH).AsLippedSection().Map(c => c.AsAISIMomentResistance(material, bracingConditions).Convert(UnitSystems.KIPINCH, vm.GeneralInfoVM.Unit))))
+                                                                     .Aggregate(new List<Tuple<SectionDimensionDto, MomentResistanceOutput>>(), (soFar, current) =>
+                                                                     {
+                                                                         current.Item2.Match(errs => false, val =>
+                                                                         {
+                                                                             Tuple.Create(current.Item1, val);
+                                                                             return true;
+                                                                         });
+                                                                         return soFar;
+                                                                     })
                                                                   .Where(tuple => tuple.Item2.DesignResistance > vm.InputLoadVM.UltimateMoment)
                                                                    .OrderBy(tuple => tuple.Item2.DesignResistance)
                                                                     .FirstOrDefault();
@@ -561,7 +728,7 @@ namespace ColdFormedChannelSection.App.ViewModels
             }
         }
 
-        private static void Check(EffectiveWidthViewModel vm)
+        private static Validation<Unit> Check(EffectiveWidthViewModel vm)
         {
             vm.IsResistanceOutput = false;
             var material = (new Material(vm.MaterialVM.Fy, vm.MaterialVM.E, 0.3)).Convert(vm.GeneralInfoVM.Unit, _unitSystemDict[vm.GeneralInfoVM.DesignCode]);
@@ -569,12 +736,15 @@ namespace ColdFormedChannelSection.App.ViewModels
             var sa = vm.GeneralInfoVM.StrainingAction;
             var section = vm.GeneralInfoVM.SteelSection;
             var resistOutput = vm.ResistDict[vm.GeneralInfoVM.DesignCode][KeyValuePair.Create(sa, section)](vm, material, bracingConditions);
-            var result = resistOutput.Item1();
-            vm.ResistanceOutput = result;
-
+            return resistOutput.Map(val =>
+            {
+                var result = val.Item1();
+                vm.ResistanceOutput = result;
+                return Unit();
+            });
         }
 
-        private static void Resistance(EffectiveWidthViewModel vm)
+        private static Validation<Unit> Resistance(EffectiveWidthViewModel vm)
         {
             vm.IsResistanceOutput = false;
             var material = (new Material(vm.MaterialVM.Fy, vm.MaterialVM.E, vm.MaterialVM.V)).Convert(vm.GeneralInfoVM.Unit, _unitSystemDict[vm.GeneralInfoVM.DesignCode]);
@@ -582,231 +752,315 @@ namespace ColdFormedChannelSection.App.ViewModels
             var sa = vm.GeneralInfoVM.StrainingAction;
             var section = vm.GeneralInfoVM.SteelSection;
             var result = vm.ResistDict[vm.GeneralInfoVM.DesignCode][KeyValuePair.Create(sa, section)](vm, material, bracingConditions);
-            vm.ResistanceOutput = result.Item2;
+            return result.Map(val =>
+             {
+                 vm.ResistanceOutput = val.Item2;
+                 return Unit();
+             });
         }
 
-        private Tuple<Func<OutputBase>, OutputBase> EgyptResistanceCLippedMomentCompression(EffectiveWidthViewModel vm, Material material, LengthBracingConditions bracingConditions)
+        private Validation<Tuple<Func<OutputBase>, OutputBase>> EgyptResistanceCLippedMomentCompression(EffectiveWidthViewModel vm, Material material, LengthBracingConditions bracingConditions)
         {
             var result = vm.GeometryVM.AsEntity()
                                          .Convert(vm.GeneralInfoVM.Unit, UnitSystems.TONCM)
                                          .AsLippedSection()
-                                         .AsEgyptInteractionResistance(material, bracingConditions, vm.InputLoadVM.UltimateLoad.ConvertForce(vm.GeneralInfoVM.Unit, UnitSystems.TONCM).Item1, vm.InputLoadVM.UltimateMoment.ConvertMoment(vm.GeneralInfoVM.Unit, UnitSystems.TONCM).Item1)
-                                         .Convert(UnitSystems.TONCM, vm.GeneralInfoVM.Unit);
+                                         .Map(c =>
+                                         c.AsEgyptInteractionResistance(material, bracingConditions, vm.InputLoadVM.UltimateLoad.ConvertForce(vm.GeneralInfoVM.Unit, UnitSystems.TONCM).Item1, vm.InputLoadVM.UltimateMoment.ConvertMoment(vm.GeneralInfoVM.Unit, UnitSystems.TONCM).Item1)
+                                         .Convert(UnitSystems.TONCM, vm.GeneralInfoVM.Unit))
+                                         .Map(val =>
+                                         {
+                                             Func<OutputBase> fun = () => val.AsCheck(_momentDict[vm.GeneralInfoVM.Unit], _compDict[vm.GeneralInfoVM.Unit]);
 
-            Func<OutputBase> fun = () => result.AsCheck(_momentDict[vm.GeneralInfoVM.Unit], _compDict[vm.GeneralInfoVM.Unit]);
-
-            return Tuple.Create(fun, result as OutputBase);
+                                             return Tuple.Create(fun, val as OutputBase);
+                                         });
+            return result;
         }
 
-        private Tuple<Func<OutputBase>, OutputBase> EgyptResistanceCUnstiffMomentCompression(EffectiveWidthViewModel vm, Material material, LengthBracingConditions bracingConditions)
+        private Validation<Tuple<Func<OutputBase>, OutputBase>> EgyptResistanceCUnstiffMomentCompression(EffectiveWidthViewModel vm, Material material, LengthBracingConditions bracingConditions)
         {
             var result = vm.GeometryVM.AsEntity()
                                        .Convert(vm.GeneralInfoVM.Unit, UnitSystems.TONCM)
                                        .AsUnStiffenedSection()
-                                       .AsEgyptInteractionResistance(material, bracingConditions, vm.InputLoadVM.UltimateLoad.ConvertForce(vm.GeneralInfoVM.Unit, UnitSystems.TONCM).Item1, vm.InputLoadVM.UltimateMoment.ConvertMoment(vm.GeneralInfoVM.Unit, UnitSystems.TONCM).Item1)
-                                       .Convert(UnitSystems.TONCM, vm.GeneralInfoVM.Unit);
+                                       .Map(c =>
+                                        c.AsEgyptInteractionResistance(material, bracingConditions, vm.InputLoadVM.UltimateLoad.ConvertForce(vm.GeneralInfoVM.Unit, UnitSystems.TONCM).Item1, vm.InputLoadVM.UltimateMoment.ConvertMoment(vm.GeneralInfoVM.Unit, UnitSystems.TONCM).Item1)
+                                       .Convert(UnitSystems.TONCM, vm.GeneralInfoVM.Unit))
+                                       .Map(val =>
+                                       {
+                                           Func<OutputBase> fun = () => val.AsCheck(_momentDict[vm.GeneralInfoVM.Unit], _compDict[vm.GeneralInfoVM.Unit]);
 
-            Func<OutputBase> fun = () => result.AsCheck(_momentDict[vm.GeneralInfoVM.Unit], _compDict[vm.GeneralInfoVM.Unit]);
+                                           return Tuple.Create(fun, val as OutputBase);
+                                       });
 
-            return Tuple.Create(fun, result as OutputBase);
+            return result;
         }
 
 
-        private static Tuple<Func<OutputBase>, OutputBase> EgyptResistanceCUnstiffComp(EffectiveWidthViewModel vm, Material material, LengthBracingConditions bracingConditions)
+        private static Validation<Tuple<Func<OutputBase>, OutputBase>> EgyptResistanceCUnstiffComp(EffectiveWidthViewModel vm, Material material, LengthBracingConditions bracingConditions)
         {
             var result = vm.GeometryVM.AsEntity()
                                        .Convert(vm.GeneralInfoVM.Unit, UnitSystems.TONCM)
                                        .AsUnStiffenedSection()
-                                       .AsEgyptCompressionResistance(material, bracingConditions)
-                                       .Convert(UnitSystems.TONCM, vm.GeneralInfoVM.Unit);
+                                       .Map(c =>
+                                       c.AsEgyptCompressionResistance(material, bracingConditions)
+                                       .Convert(UnitSystems.TONCM, vm.GeneralInfoVM.Unit))
+                                       .Map(val =>
+                                       {
+                                           Func<OutputBase> fun = () => val.AsCheck(vm.InputLoadVM.UltimateLoad, _compDict[vm.GeneralInfoVM.Unit]);
 
-            Func<OutputBase> fun = () => result.AsCheck(vm.InputLoadVM.UltimateLoad, _compDict[vm.GeneralInfoVM.Unit]);
-
-            return Tuple.Create(fun, result as OutputBase);
+                                           return Tuple.Create(fun, val as OutputBase);
+                                       });
+            return result;
 
         }
-        private static Tuple<Func<OutputBase>, OutputBase> EgyptResistanceCUnstiffMoment(EffectiveWidthViewModel vm, Material material, LengthBracingConditions bracingConditions)
+        private static Validation<Tuple<Func<OutputBase>, OutputBase>> EgyptResistanceCUnstiffMoment(EffectiveWidthViewModel vm, Material material, LengthBracingConditions bracingConditions)
         {
             var result = vm.GeometryVM.AsEntity()
                                        .Convert(vm.GeneralInfoVM.Unit, UnitSystems.TONCM)
                                        .AsUnStiffenedSection()
-                                       .AsEgyptMomentResistance(material, bracingConditions)
-                                       .Convert(UnitSystems.TONCM, vm.GeneralInfoVM.Unit);
-            Func<OutputBase> fun = () => result.AsCheck(vm.InputLoadVM.UltimateMoment, _momentDict[vm.GeneralInfoVM.Unit]);
+                                       .Map(c =>
+                                       c.AsEgyptMomentResistance(material, bracingConditions)
+                                       .Convert(UnitSystems.TONCM, vm.GeneralInfoVM.Unit))
+                                       .Map(val =>
+                                       {
+                                           Func<OutputBase> fun = () => val.AsCheck(vm.InputLoadVM.UltimateMoment, _momentDict[vm.GeneralInfoVM.Unit]);
 
-            return Tuple.Create(fun, result as OutputBase);
+                                           return Tuple.Create(fun, val as OutputBase);
+                                       });
+            return result;
         }
-        private static Tuple<Func<OutputBase>, OutputBase> EgyptResistanceCLippedComp(EffectiveWidthViewModel vm, Material material, LengthBracingConditions bracingConditions)
+        private static Validation<Tuple<Func<OutputBase>, OutputBase>> EgyptResistanceCLippedComp(EffectiveWidthViewModel vm, Material material, LengthBracingConditions bracingConditions)
         {
             var result = vm.GeometryVM.AsEntity()
                                       .Convert(vm.GeneralInfoVM.Unit, UnitSystems.TONCM)
                                       .AsLippedSection()
-                                      .AsEgyptCompressionResistance(material, bracingConditions)
-                                      .Convert(UnitSystems.TONCM, vm.GeneralInfoVM.Unit);
+                                      .Map(c =>
+                                      c.AsEgyptCompressionResistance(material, bracingConditions)
+                                      .Convert(UnitSystems.TONCM, vm.GeneralInfoVM.Unit))
+                                      .Map(val =>
+                                      {
+                                          Func<OutputBase> fun = () => val.AsCheck(vm.InputLoadVM.UltimateLoad, _compDict[vm.GeneralInfoVM.Unit]);
 
-            Func<OutputBase> fun = () => result.AsCheck(vm.InputLoadVM.UltimateLoad, _compDict[vm.GeneralInfoVM.Unit]);
+                                          return Tuple.Create(fun, val as OutputBase);
+                                      });
+            return result;
 
-            return Tuple.Create(fun, result as OutputBase);
         }
-        private static Tuple<Func<OutputBase>, OutputBase> EgyptResistanceCLippedMoment(EffectiveWidthViewModel vm, Material material, LengthBracingConditions bracingConditions)
+        private static Validation<Tuple<Func<OutputBase>, OutputBase>> EgyptResistanceCLippedMoment(EffectiveWidthViewModel vm, Material material, LengthBracingConditions bracingConditions)
         {
             var result = vm.GeometryVM.AsEntity()
                                       .Convert(vm.GeneralInfoVM.Unit, UnitSystems.TONCM)
                                       .AsLippedSection()
-                                      .AsEgyptMomentResistance(material, bracingConditions).Convert(UnitSystems.TONCM, vm.GeneralInfoVM.Unit);
-            Func<OutputBase> fun = () => result.AsCheck(vm.InputLoadVM.UltimateMoment, _momentDict[vm.GeneralInfoVM.Unit]);
-            return Tuple.Create(fun, result as OutputBase);
+                                      .Map(c =>
+                                       c.AsEgyptMomentResistance(material, bracingConditions).Convert(UnitSystems.TONCM, vm.GeneralInfoVM.Unit))
+                                      .Map(val =>
+                                      {
+                                          Func<OutputBase> fun = () => val.AsCheck(vm.InputLoadVM.UltimateMoment, _momentDict[vm.GeneralInfoVM.Unit]);
+                                          return Tuple.Create(fun, val as OutputBase);
+                                      });
+            return result;
         }
 
 
-        private Tuple<Func<OutputBase>, OutputBase> EuroResistanceCLippedMomentCompression(EffectiveWidthViewModel vm, Material material, LengthBracingConditions bracingConditions)
+        private Validation<Tuple<Func<OutputBase>, OutputBase>> EuroResistanceCLippedMomentCompression(EffectiveWidthViewModel vm, Material material, LengthBracingConditions bracingConditions)
         {
             var result = vm.GeometryVM.AsEntity()
                                         .Convert(vm.GeneralInfoVM.Unit, UnitSystems.NMM)
                                         .AsLippedSection()
-                                        .AsEuroInteractionResistance(material, bracingConditions,vm.InputLoadVM.UltimateLoad,vm.InputLoadVM.UltimateMoment)
-                                        .Convert(UnitSystems.NMM, vm.GeneralInfoVM.Unit);
+                                        .Map(c =>
+                                         c.AsEuroInteractionResistance(material, bracingConditions, vm.InputLoadVM.UltimateLoad, vm.InputLoadVM.UltimateMoment)
+                                        .Convert(UnitSystems.NMM, vm.GeneralInfoVM.Unit))
+                                        .Map(val =>
+                                        {
+                                            Func<OutputBase> fun = () => val.AsCheck(_momentDict[vm.GeneralInfoVM.Unit], _compDict[vm.GeneralInfoVM.Unit]);
 
-            Func<OutputBase> fun = () => result.AsCheck(_momentDict[vm.GeneralInfoVM.Unit], _compDict[vm.GeneralInfoVM.Unit]);
-
-            return Tuple.Create(fun, result as OutputBase);
+                                            return Tuple.Create(fun, val as OutputBase);
+                                        });
+            return result;
         }
 
-        private Tuple<Func<OutputBase>, OutputBase> EuroResistanceCUnstiffMomentCompression(EffectiveWidthViewModel vm, Material material, LengthBracingConditions bracingConditions)
+        private Validation<Tuple<Func<OutputBase>, OutputBase>> EuroResistanceCUnstiffMomentCompression(EffectiveWidthViewModel vm, Material material, LengthBracingConditions bracingConditions)
         {
             var result = vm.GeometryVM.AsEntity()
                                        .Convert(vm.GeneralInfoVM.Unit, UnitSystems.NMM)
                                        .AsUnStiffenedSection()
-                                       .AsEuroInteractionResistance(material, bracingConditions, vm.InputLoadVM.UltimateLoad.ConvertForce(vm.GeneralInfoVM.Unit, UnitSystems.NMM).Item1, vm.InputLoadVM.UltimateMoment.ConvertMoment(vm.GeneralInfoVM.Unit, UnitSystems.NMM).Item1)
-                                       .Convert(UnitSystems.NMM, vm.GeneralInfoVM.Unit);
+                                       .Map(c =>
+                                        c.AsEuroInteractionResistance(material, bracingConditions, vm.InputLoadVM.UltimateLoad.ConvertForce(vm.GeneralInfoVM.Unit, UnitSystems.NMM).Item1, vm.InputLoadVM.UltimateMoment.ConvertMoment(vm.GeneralInfoVM.Unit, UnitSystems.NMM).Item1)
+                                       .Convert(UnitSystems.NMM, vm.GeneralInfoVM.Unit))
+                                       .Map(val =>
+                                       {
+                                           Func<OutputBase> fun = () => val.AsCheck(_momentDict[vm.GeneralInfoVM.Unit], _compDict[vm.GeneralInfoVM.Unit]);
 
-            Func<OutputBase> fun = () => result.AsCheck(_momentDict[vm.GeneralInfoVM.Unit], _compDict[vm.GeneralInfoVM.Unit]);
+                                           return Tuple.Create(fun, val as OutputBase);
+                                       });
 
-            return Tuple.Create(fun, result as OutputBase);
+            return result;
         }
 
 
-        private static Tuple<Func<OutputBase>, OutputBase> EuroResistanceCUnstiffComp(EffectiveWidthViewModel vm, Material material, LengthBracingConditions bracingConditions)
+        private static Validation<Tuple<Func<OutputBase>, OutputBase>> EuroResistanceCUnstiffComp(EffectiveWidthViewModel vm, Material material, LengthBracingConditions bracingConditions)
         {
             var result = vm.GeometryVM.AsEntity()
                                        .Convert(vm.GeneralInfoVM.Unit, UnitSystems.NMM)
                                        .AsUnStiffenedSection()
-                                       .AsEuroCompressionResistance(material, bracingConditions, vm.InputLoadVM.UltimateLoad.ConvertForce(vm.GeneralInfoVM.Unit, UnitSystems.NMM).Item1)
-                                       .Convert(UnitSystems.NMM, vm.GeneralInfoVM.Unit);
+                                       .Map(c =>
+                                        c.AsEuroCompressionResistance(material, bracingConditions, vm.InputLoadVM.UltimateLoad.ConvertForce(vm.GeneralInfoVM.Unit, UnitSystems.NMM).Item1)
+                                       .Convert(UnitSystems.NMM, vm.GeneralInfoVM.Unit))
+                                       .Map(val =>
+                                       {
+                                           Func<OutputBase> fun = () => val.AsCheck(vm.InputLoadVM.UltimateLoad, _compDict[vm.GeneralInfoVM.Unit]);
 
-            Func<OutputBase> fun = () => result.AsCheck(vm.InputLoadVM.UltimateLoad, _compDict[vm.GeneralInfoVM.Unit]);
-
-            return Tuple.Create(fun, result as OutputBase);
-
+                                           return Tuple.Create(fun, val as OutputBase);
+                                       });
+            return result;
         }
 
-        private static Tuple<Func<OutputBase>, OutputBase> EuroResistanceCUnstiffMoment(EffectiveWidthViewModel vm, Material material, LengthBracingConditions bracingConditions)
+        private static Validation<Tuple<Func<OutputBase>, OutputBase>> EuroResistanceCUnstiffMoment(EffectiveWidthViewModel vm, Material material, LengthBracingConditions bracingConditions)
         {
             var result = vm.GeometryVM.AsEntity()
                                        .Convert(vm.GeneralInfoVM.Unit, UnitSystems.NMM)
                                        .AsUnStiffenedSection()
-                                       .AsEuroMomentResistance(material, bracingConditions, vm.InputLoadVM.UltimateMoment.ConvertMoment(vm.GeneralInfoVM.Unit, UnitSystems.NMM).Item1)
-                                       .Convert(UnitSystems.NMM, vm.GeneralInfoVM.Unit);
-            Func<OutputBase> fun = () => result.AsCheck(vm.InputLoadVM.UltimateMoment, _momentDict[vm.GeneralInfoVM.Unit]);
+                                       .Map(c =>
+                                        c.AsEuroMomentResistance(material, bracingConditions, vm.InputLoadVM.UltimateMoment.ConvertMoment(vm.GeneralInfoVM.Unit, UnitSystems.NMM).Item1)
+                                       .Convert(UnitSystems.NMM, vm.GeneralInfoVM.Unit))
+                                       .Map(val =>
+                                       {
+                                           Func<OutputBase> fun = () => val.AsCheck(vm.InputLoadVM.UltimateMoment, _momentDict[vm.GeneralInfoVM.Unit]);
 
-            return Tuple.Create(fun, result as OutputBase);
+                                           return Tuple.Create(fun, val as OutputBase);
+                                       });
+            return result;
         }
 
-        private static Tuple<Func<OutputBase>, OutputBase> EuroResistanceCLippedComp(EffectiveWidthViewModel vm, Material material, LengthBracingConditions bracingConditions)
+        private static Validation<Tuple<Func<OutputBase>, OutputBase>> EuroResistanceCLippedComp(EffectiveWidthViewModel vm, Material material, LengthBracingConditions bracingConditions)
         {
             var result = vm.GeometryVM.AsEntity()
                                       .Convert(vm.GeneralInfoVM.Unit, UnitSystems.NMM)
                                       .AsLippedSection()
-                                      .AsEuroCompressionResistance(material, bracingConditions, vm.InputLoadVM.UltimateLoad.ConvertForce(vm.GeneralInfoVM.Unit, UnitSystems.NMM).Item1)
-                                      .Convert(UnitSystems.NMM, vm.GeneralInfoVM.Unit);
+                                      .Map(c =>
+                                       c.AsEuroCompressionResistance(material, bracingConditions, vm.InputLoadVM.UltimateLoad.ConvertForce(vm.GeneralInfoVM.Unit, UnitSystems.NMM).Item1)
+                                      .Convert(UnitSystems.NMM, vm.GeneralInfoVM.Unit))
+                                      .Map(val =>
+                                      {
+                                          Func<OutputBase> fun = () => val.AsCheck(vm.InputLoadVM.UltimateLoad, _compDict[vm.GeneralInfoVM.Unit]);
 
-            Func<OutputBase> fun = () => result.AsCheck(vm.InputLoadVM.UltimateLoad, _compDict[vm.GeneralInfoVM.Unit]);
-
-            return Tuple.Create(fun, result as OutputBase);
+                                          return Tuple.Create(fun, val as OutputBase);
+                                      });
+            return result;
         }
-        private static Tuple<Func<OutputBase>, OutputBase> EuroResistanceCLippedMoment(EffectiveWidthViewModel vm, Material material, LengthBracingConditions bracingConditions)
+
+        private static Validation<Tuple<Func<OutputBase>, OutputBase>> EuroResistanceCLippedMoment(EffectiveWidthViewModel vm, Material material, LengthBracingConditions bracingConditions)
         {
             var result = vm.GeometryVM.AsEntity()
                                       .Convert(vm.GeneralInfoVM.Unit, UnitSystems.NMM)
                                       .AsLippedSection()
-                                      .AsEuroMomentResistance(material, bracingConditions, vm.InputLoadVM.UltimateMoment.ConvertMoment(vm.GeneralInfoVM.Unit, UnitSystems.NMM).Item1).Convert(UnitSystems.NMM, vm.GeneralInfoVM.Unit);
-            Func<OutputBase> fun = () => result.AsCheck(vm.InputLoadVM.UltimateMoment, _momentDict[vm.GeneralInfoVM.Unit]);
-            return Tuple.Create(fun, result as OutputBase);
+                                      .Map(c =>
+                                       c.AsEuroMomentResistance(material, bracingConditions, vm.InputLoadVM.UltimateMoment.ConvertMoment(vm.GeneralInfoVM.Unit, UnitSystems.NMM).Item1).Convert(UnitSystems.NMM, vm.GeneralInfoVM.Unit))
+                                      .Map(val =>
+                                      {
+                                          Func<OutputBase> fun = () => val.AsCheck(vm.InputLoadVM.UltimateMoment, _momentDict[vm.GeneralInfoVM.Unit]);
+                                          return Tuple.Create(fun, val as OutputBase);
+                                      });
+            return result;
         }
 
 
-        private Tuple<Func<OutputBase>, OutputBase> AISIResistanceCLippedMomentCompression(EffectiveWidthViewModel vm, Material material, LengthBracingConditions bracingConditions)
+        private Validation<Tuple<Func<OutputBase>, OutputBase>> AISIResistanceCLippedMomentCompression(EffectiveWidthViewModel vm, Material material, LengthBracingConditions bracingConditions)
         {
             var result = vm.GeometryVM.AsEntity()
                                         .Convert(vm.GeneralInfoVM.Unit, UnitSystems.KIPINCH)
                                         .AsLippedSection()
-                                        .AsAISIInteractionResistance(material, bracingConditions, vm.InputLoadVM.UltimateLoad.ConvertForce(vm.GeneralInfoVM.Unit, UnitSystems.KIPINCH).Item1, vm.InputLoadVM.UltimateMoment.ConvertMoment(vm.GeneralInfoVM.Unit, UnitSystems.KIPINCH).Item1)
-                                        .Convert(UnitSystems.KIPINCH, vm.GeneralInfoVM.Unit);
+                                        .Map(c =>
+                                         c.AsAISIInteractionResistance(material, bracingConditions, vm.InputLoadVM.UltimateLoad.ConvertForce(vm.GeneralInfoVM.Unit, UnitSystems.KIPINCH).Item1, vm.InputLoadVM.UltimateMoment.ConvertMoment(vm.GeneralInfoVM.Unit, UnitSystems.KIPINCH).Item1)
+                                        .Convert(UnitSystems.KIPINCH, vm.GeneralInfoVM.Unit))
+                                        .Map(val =>
+                                        {
+                                            Func<OutputBase> fun = () => val.AsCheck(_momentDict[vm.GeneralInfoVM.Unit], _compDict[vm.GeneralInfoVM.Unit]);
 
-            Func<OutputBase> fun = () => result.AsCheck(_momentDict[vm.GeneralInfoVM.Unit], _compDict[vm.GeneralInfoVM.Unit]);
-
-            return Tuple.Create(fun, result as OutputBase);
+                                            return Tuple.Create(fun, val as OutputBase);
+                                        });
+            return result;
         }
 
-        private Tuple<Func<OutputBase>, OutputBase> AISIResistanceCUnstiffMomentCompression(EffectiveWidthViewModel vm, Material material, LengthBracingConditions bracingConditions)
+        private Validation<Tuple<Func<OutputBase>, OutputBase>> AISIResistanceCUnstiffMomentCompression(EffectiveWidthViewModel vm, Material material, LengthBracingConditions bracingConditions)
         {
             var result = vm.GeometryVM.AsEntity()
                                        .Convert(vm.GeneralInfoVM.Unit, UnitSystems.KIPINCH)
                                        .AsUnStiffenedSection()
-                                       .AsAISIInteractionResistance(material, bracingConditions, vm.InputLoadVM.UltimateLoad.ConvertForce(vm.GeneralInfoVM.Unit, UnitSystems.KIPINCH).Item1, vm.InputLoadVM.UltimateMoment.ConvertMoment(vm.GeneralInfoVM.Unit, UnitSystems.KIPINCH).Item1)
-                                       .Convert(UnitSystems.KIPINCH, vm.GeneralInfoVM.Unit);
+                                       .Map(c =>
+                                        c.AsAISIInteractionResistance(material, bracingConditions, vm.InputLoadVM.UltimateLoad.ConvertForce(vm.GeneralInfoVM.Unit, UnitSystems.KIPINCH).Item1, vm.InputLoadVM.UltimateMoment.ConvertMoment(vm.GeneralInfoVM.Unit, UnitSystems.KIPINCH).Item1)
+                                       .Convert(UnitSystems.KIPINCH, vm.GeneralInfoVM.Unit))
+                                       .Map(val =>
+                                       {
+                                           Func<OutputBase> fun = () => val.AsCheck(_momentDict[vm.GeneralInfoVM.Unit], _compDict[vm.GeneralInfoVM.Unit]);
 
-            Func<OutputBase> fun = () => result.AsCheck(_momentDict[vm.GeneralInfoVM.Unit], _compDict[vm.GeneralInfoVM.Unit]);
-
-            return Tuple.Create(fun, result as OutputBase);
+                                           return Tuple.Create(fun, val as OutputBase);
+                                       });
+            return result;
         }
 
-        private static Tuple<Func<OutputBase>, OutputBase> AISIResistanceCUnstiffComp(EffectiveWidthViewModel vm, Material material, LengthBracingConditions bracingConditions)
+        private static Validation<Tuple<Func<OutputBase>, OutputBase>> AISIResistanceCUnstiffComp(EffectiveWidthViewModel vm, Material material, LengthBracingConditions bracingConditions)
         {
             var result = vm.GeometryVM.AsEntity()
                                        .Convert(vm.GeneralInfoVM.Unit, UnitSystems.KIPINCH)
                                        .AsUnStiffenedSection()
-                                       .AsAISICompressionResistance(material, bracingConditions)
-                                       .Convert(UnitSystems.KIPINCH, vm.GeneralInfoVM.Unit);
+                                       .Map(c =>
+                                        c.AsAISICompressionResistance(material, bracingConditions)
+                                       .Convert(UnitSystems.KIPINCH, vm.GeneralInfoVM.Unit))
+                                       .Map(val =>
+                                       {
+                                           Func<OutputBase> fun = () => val.AsCheck(vm.InputLoadVM.UltimateLoad, _compDict[vm.GeneralInfoVM.Unit]);
 
-            Func<OutputBase> fun = () => result.AsCheck(vm.InputLoadVM.UltimateLoad, _compDict[vm.GeneralInfoVM.Unit]);
-
-            return Tuple.Create(fun, result as OutputBase);
-
+                                           return Tuple.Create(fun, val as OutputBase);
+                                       });
+            return result;
         }
-        private static Tuple<Func<OutputBase>, OutputBase> AISIResistanceCUnstiffMoment(EffectiveWidthViewModel vm, Material material, LengthBracingConditions bracingConditions)
+        private static Validation<Tuple<Func<OutputBase>, OutputBase>> AISIResistanceCUnstiffMoment(EffectiveWidthViewModel vm, Material material, LengthBracingConditions bracingConditions)
         {
             var result = vm.GeometryVM.AsEntity()
                                        .Convert(vm.GeneralInfoVM.Unit, UnitSystems.KIPINCH)
                                        .AsUnStiffenedSection()
-                                       .AsAISIMomentResistance(material, bracingConditions)
-                                       .Convert(UnitSystems.KIPINCH, vm.GeneralInfoVM.Unit);
-            Func<OutputBase> fun = () => result.AsCheck(vm.InputLoadVM.UltimateMoment, _momentDict[vm.GeneralInfoVM.Unit]);
+                                       .Map(c =>
+                                        c.AsAISIMomentResistance(material, bracingConditions)
+                                       .Convert(UnitSystems.KIPINCH, vm.GeneralInfoVM.Unit))
+                                       .Map(val =>
+                                       {
+                                           Func<OutputBase> fun = () => val.AsCheck(vm.InputLoadVM.UltimateMoment, _momentDict[vm.GeneralInfoVM.Unit]);
 
-            return Tuple.Create(fun, result as OutputBase);
+                                           return Tuple.Create(fun, val as OutputBase);
+                                       });
+            return result;
         }
 
-        private static Tuple<Func<OutputBase>, OutputBase> AISIResistanceCLippedComp(EffectiveWidthViewModel vm, Material material, LengthBracingConditions bracingConditions)
+        private static Validation<Tuple<Func<OutputBase>, OutputBase>> AISIResistanceCLippedComp(EffectiveWidthViewModel vm, Material material, LengthBracingConditions bracingConditions)
         {
             var result = vm.GeometryVM.AsEntity()
                                       .Convert(vm.GeneralInfoVM.Unit, UnitSystems.KIPINCH)
                                       .AsLippedSection()
-                                      .AsAISICompressionResistance(material, bracingConditions)
-                                      .Convert(UnitSystems.KIPINCH, vm.GeneralInfoVM.Unit);
+                                      .Map(c =>
+                                       c.AsAISICompressionResistance(material, bracingConditions)
+                                      .Convert(UnitSystems.KIPINCH, vm.GeneralInfoVM.Unit))
+                                      .Map(val =>
+                                      {
+                                          Func<OutputBase> fun = () => val.AsCheck(vm.InputLoadVM.UltimateLoad, _compDict[vm.GeneralInfoVM.Unit]);
 
-            Func<OutputBase> fun = () => result.AsCheck(vm.InputLoadVM.UltimateLoad, _compDict[vm.GeneralInfoVM.Unit]);
-
-            return Tuple.Create(fun, result as OutputBase);
+                                          return Tuple.Create(fun, val as OutputBase);
+                                      });
+            return result;
         }
 
-        private static Tuple<Func<OutputBase>, OutputBase> AISIResistanceCLippedMoment(EffectiveWidthViewModel vm, Material material, LengthBracingConditions bracingConditions)
+        private static Validation<Tuple<Func<OutputBase>, OutputBase>> AISIResistanceCLippedMoment(EffectiveWidthViewModel vm, Material material, LengthBracingConditions bracingConditions)
         {
             var result = vm.GeometryVM.AsEntity()
                                       .Convert(vm.GeneralInfoVM.Unit, UnitSystems.KIPINCH)
                                       .AsLippedSection()
-                                      .AsAISIMomentResistance(material, bracingConditions).Convert(UnitSystems.KIPINCH, vm.GeneralInfoVM.Unit);
-            Func<OutputBase> fun = () => result.AsCheck(vm.InputLoadVM.UltimateMoment, _momentDict[vm.GeneralInfoVM.Unit]);
-            return Tuple.Create(fun, result as OutputBase);
+                                      .Map(c =>
+                                      c.AsAISIMomentResistance(material, bracingConditions).Convert(UnitSystems.KIPINCH, vm.GeneralInfoVM.Unit))
+                                      .Map(val =>
+                                      {
+                                          Func<OutputBase> fun = () => val.AsCheck(vm.InputLoadVM.UltimateMoment, _momentDict[vm.GeneralInfoVM.Unit]);
+                                          return Tuple.Create(fun, val as OutputBase);
+                                      });
+            return result;
         }
 
         #endregion

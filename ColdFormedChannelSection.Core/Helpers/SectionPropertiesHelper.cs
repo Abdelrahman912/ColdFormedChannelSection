@@ -1,28 +1,35 @@
 ﻿using ColdFormedChannelSection.Core.Entities;
 using ColdFormedChannelSection.Core.Enums;
 using ColdFormedChannelSection.Core.Extensions;
+using CSharp.Functional.Constructs;
+using CSharp.Functional.Errors;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using static ColdFormedChannelSection.Core.Errors.Errors;
+using static CSharp.Functional.Extensions.ValidationExtension;
 
 namespace ColdFormedChannelSection.Core.Helpers
 {
     public static class SectionPropertiesHelper
     {
 
-        public static LippedSection AsLippedSection(this SectionDimension sectionDim)
+        public static Validation<LippedSection> AsLippedSection(this SectionDimension sectionDim)
         {
-          var sec = sectionDim.CaclulateSectionProperties(TypeOfChannel.LIPPED);
-            return new LippedSection(sec.Dimensions, sec.Properties);
+            return sectionDim.CaclulateSectionProperties(TypeOfChannel.LIPPED)
+                       .Map(sec => new LippedSection(sec.Dimensions, sec.Properties));
         }
 
 
-        public static UnStiffenedSection AsUnStiffenedSection(this SectionDimension sectionDim)
+        public static Validation<UnStiffenedSection> AsUnStiffenedSection(this SectionDimension sectionDim)
         {
-           var sec =  sectionDim.CaclulateSectionProperties(TypeOfChannel.UNSTIFFENED);
-            return new UnStiffenedSection(sec.Dimensions, sec.Properties);
+          return sectionDim.CaclulateSectionProperties(TypeOfChannel.UNSTIFFENED)
+                           .Map(sec => new UnStiffenedSection(sec.Dimensions, sec.Properties));
         }
 
-        private static Section CaclulateSectionProperties(this SectionDimension sectionDim , TypeOfChannel channel)
+        private static Validation<Section> CaclulateSectionProperties(this SectionDimension sectionDim , TypeOfChannel channel)
         {
+
             var alpha = (int)channel;
             var H = sectionDim.TotalHeightH;
             var B = sectionDim.TotalFlangeWidthB;
@@ -35,6 +42,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             //radius to center line
             var r = R + tover2;
             var a = H - (2 * r + t);
+            
 
             var aOver2 = a / 2;
 
@@ -67,9 +75,25 @@ namespace ColdFormedChannelSection.Core.Helpers
             var CwNumenator = 2 * aPrime.Power(3) * bPrime + 3 * aPrime.Power(2) * bPrime.Power(2) + alpha * (48 * cPrime.Power(4) + 112 * bPrime * cPrime.Power(3) + 8 * aPrime * cPrime.Power(3) + 48 * aPrime * bPrime * cPrime.Power(2) + 12 * aPrime.Power(2) * cPrime.Power(2) + 12 * aPrime.Power(2) * bPrime * cPrime + 6 * aPrime.Power(3) * cPrime);
             var CwDunemenator = 6 * aPrime.Power(2) * bPrime + (aPrime + alpha * 2 * cPrime).Power(3) - alpha * 24 * aPrime * cPrime.Power(2);
             var Cw = ((aPrime.Power(2)*bPrime.Power(2)*t)/12) * (CwNumenator / CwDunemenator) ;
-            var properties = new SectionProperties(aPrime,bPrime,cPrime,A,Ix,Zg,Iy,ix,iy,Xo,J,Cw,c,a,r,u,b,alpha,a);
-            var sec =   new Section(sectionDim,properties);
-            return sec;
+            var errs = new List<Tuple<double, string>>()
+            {
+                Tuple.Create(aPrime,"a prime is less than zero"),
+                Tuple.Create(bPrime," b prime is less tahn zero"),
+                Tuple.Create(cPrime,"c prime is less than zero"),
+                Tuple.Create(a,"a is less than zero"),
+                Tuple.Create(b,"b is less than zero"),
+                Tuple.Create(c,"c is less than zero")
+            };
+            var errors = errs.Where(err => err.Item1 < 0).Select(err => LessThanZeroError($"Cannot use this section because {err.Item2}")).ToList();
+            if (errs.Count > 0)
+                return Invalid(errors);
+            else
+            {
+                var properties = new SectionProperties(aPrime, bPrime, cPrime, A, Ix, Zg, Iy, ix, iy, Xo, J, Cw, c, a, r, u, b, alpha, a);
+                var sec = new Section(sectionDim, properties);
+                return sec;
+            }
+           
         }
 
     }
