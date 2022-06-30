@@ -517,8 +517,8 @@ namespace ColdFormedChannelSection.Core.Helpers
                 : (1 - 0.22 * (M_crd / My).Power(0.5)) * (M_crd / My).Power(0.5) * My;
             var nominalLoads = new List<Tuple<double, FailureMode>>()
             {
-                Tuple.Create(Mne,FailureMode.GLOBALBUCKLING),
                 Tuple.Create(Mnl,FailureMode.LOCALBUCKLING),
+                Tuple.Create(Mne,FailureMode.GLOBALBUCKLING),
                 Tuple.Create(Mnd,FailureMode.DISTRORTIONALBUCKLING)
             };
             var nominalLoad = nominalLoads.Distinct(NominalStrengthEqualComparer).OrderBy(tup => tup.Item1).First();
