@@ -2,6 +2,8 @@
 {
     public static class Constants
     {
+        public const double TOL = 0.1;
+
         public const string EGYPT_UNSTIFF_TABLE = "Egypt - Unstiffened";
         public const string EGYPT_STIFF_TABLE = "Egypt - Stiffened";
         public const string AISI_STIFF_TABLE = "AISI - Stiffened";
