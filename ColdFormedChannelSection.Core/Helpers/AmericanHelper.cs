@@ -235,7 +235,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 be = row_f * b;
 
             //Web.
-            (var Ze, var items) = unstiffenedSection.GetAISIReducedZe(material, be, 0, F_, isOneIter, 0);
+            (var Ze, var items) = unstiffenedSection.GetAISIReducedZe(material, be, false, F_, isOneIter);
             items.Add(new ReportItem("Kf", kf.ToString("0.###"), Units.NONE));
             items.Add(new ReportItem("Effective Flange Width (be)", be.ToString("0.###"), Units.IN));
             items.Add(new ReportItem("Effective Section Modulus (Ze)", Ze.ToString("0.###"), Units.IN_3));
@@ -289,21 +289,11 @@ namespace ColdFormedChannelSection.Core.Helpers
                     be = row_f * b;
 
             }
-            //Lip
-            var y_bar = H / 2;
-            var kc = 0.43;
-            var Fcr_c = kc * e_over_v_term * (t / c).Power(2);
-            var F1 = Fy * ((y_bar - (t / 2) - r) / y_bar);
-            var lambda_c = Math.Sqrt(F1 / Fcr_c);
-            var row_c = (((1 - (0.22 / lambda_c)) / lambda_c)).IfNegativeReturnOne().TakeMinWithOne();
-            var ce = c * Ri;
-            if (lambda_c > 0.673)
-                ce = row_c * c * Ri;
-            (var Ze, var items) = lippedSection.GetAISIReducedZe(material, be, ce, F_, isOneIter, 1);
+
+            (var Ze, var items) = lippedSection.GetAISIReducedZe(material, be, true, F_, isOneIter);
             items.Add(new ReportItem("Kf", Kf.ToString("0.###"), Units.NONE));
             items.Add(new ReportItem("Effective Flange Width (be)", be.ToString("0.###"), Units.IN));
-            items.Add(new ReportItem("Kc", kc.ToString("0.###"), Units.NONE));
-            items.Add(new ReportItem("Effective Lip (ce)", ce.ToString("0.###"), Units.IN));
+
             items.Add(new ReportItem("Effective Section Modulus (Ze)", Ze.ToString("0.###"), Units.IN_3));
             items.Add(new ReportItem("Yield stress (Fy)", Fy.ToString("0.###"), Units.KSI));
             items.Add(new ReportItem("Local Nominal Moment (Mn)", (Fy * Ze).ToString("0.###"), Units.KIP_IN));
@@ -311,8 +301,11 @@ namespace ColdFormedChannelSection.Core.Helpers
             return Tuple.Create(Ze, items);
         }
 
-        private static Tuple<double, List<ReportItem>> GetAISIReducedZe(this Section section, Material material, double be, double ce, double F_ = 0, bool isOneIter = false, int lipFactor = 0)
+        private static Tuple<double, List<ReportItem>> GetAISIReducedZe(this Section section, Material material, double be, bool isLipped, double F_ = 0, bool isOneIter = false)
         {
+            var lipFactor = 0;
+            if (isLipped)
+                lipFactor = 1;
 
             var b = section.Properties.BSmall;
             var B = section.Dimensions.TotalFlangeWidthB;
@@ -328,6 +321,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var v = material.V;
             var Fy = F_ == 0 ? material.Fy : F_;
             var s = 1.28 * Math.Sqrt(E / Fy);
+            var sOver3 = s / 3;
             var ae = a;
             var e_over_v_term = (Math.PI.Power(2) * E) / (12 * (1 - v.Power(2)));
 
@@ -339,10 +333,38 @@ namespace ColdFormedChannelSection.Core.Helpers
             var sum_LY2 = 0.0;
             var hneg = 0.0;
             var Kw = 0.0;
+            var ce = 0.0;
+
+            //Lip
+            var b_over_t = b / t;
+            var Ia_1 = 399 * t.Power(4) * ((b_over_t / s) - 0.328).Power(3);
+            var Ia_2 = t.Power(4) * (115 * (b_over_t / s) + 5);
+            var Ia = Math.Min(Ia_1, Ia_2);
+            var Is = (c.Power(3) * t) / 12;
+            var Ri = Math.Min(Is / Ia, 1);
+            var kc = 0.43;
+            var Fcr_c = kc * e_over_v_term * (t / c).Power(2);
+
+
+
             do
             {
                 y_bar = new_y_bar;
                 var F1 = Fy * ((y_bar - (t / 2) - r) / y_bar);
+
+                //Lip
+                var lambda_c = Math.Sqrt(F1 / Fcr_c);
+                var row_c = (((1 - (0.22 / lambda_c)) / lambda_c)).IfNegativeReturnOne().TakeMinWithOne();
+                if(b_over_t <= sOver3)
+                {
+                    ce = c;
+                }
+                else
+                {
+                    ce = c * Ri;
+                    if (lambda_c > 0.673)
+                        ce = row_c * c * Ri;
+                }
 
                 //Web
                 var F2 = Fy * ((H - y_bar - (t / 2) - r) / (y_bar));
@@ -405,6 +427,11 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("Kw",Kw.ToString("0.###"),Units.NONE),
                 new ReportItem("Effective Height (ae)",(ae-hneg).ToString("0.###"),Units.IN),
             };
+            if (isLipped)
+            {
+                items.Add(new ReportItem("Kc", kc.ToString("0.###"), Units.NONE));
+                items.Add(new ReportItem("Effective Lip (ce)", ce.ToString("0.###"), Units.IN));
+            }
             return Tuple.Create(Ze, items);
         }
 
@@ -416,11 +443,11 @@ namespace ColdFormedChannelSection.Core.Helpers
         public static CompressionResistanceOutput AsAISICompressionResistance(this LippedSection lippedSection, Material material, LengthBracingConditions bracingConditions)
         {
             if (!lippedSection.IsValidForCompression())
-                return new CompressionResistanceOutput(0.0, PHI_C,PHI_C_NAME,COMP_DESIGN_RESIST, FailureMode.UNSAFE, "Kip", null);
+                return new CompressionResistanceOutput(0.0, PHI_C, PHI_C_NAME, COMP_DESIGN_RESIST, FailureMode.UNSAFE, "Kip", null);
             (var pn_local, var localItems) = lippedSection.GetAISICompressionLBResistance(material);
             (var pn_FB, var flexuralItems) = lippedSection.GetAISICompressionFBRessistance(material, bracingConditions);
             (var pn_TFB, var tfbItems) = lippedSection.GetAISICompressionFTBRessistance(material, bracingConditions);
-            (var pn_Tb, var tbItems) = lippedSection.GetAISICompressionTBRessistance(material, bracingConditions); 
+            (var pn_Tb, var tbItems) = lippedSection.GetAISICompressionTBRessistance(material, bracingConditions);
             var pn1 = Tuple.Create(pn_local, FailureMode.LOCALBUCKLING);
             var pn2 = Tuple.Create(pn_FB, FailureMode.FLEXURALBUCKLING);
             var pn3 = Tuple.Create(pn_TFB, FailureMode.FLEXURAL_TORSIONAL_BUCKLING);
@@ -456,14 +483,14 @@ namespace ColdFormedChannelSection.Core.Helpers
             var report = new Report(UnitSystems.KIPINCH, "AISI Code - Compression", sections);
 
 
-            var result = new CompressionResistanceOutput(pn.Item1, PHI_C,PHI_C_NAME,COMP_DESIGN_RESIST, pn.Item2, "Kip", report);
+            var result = new CompressionResistanceOutput(pn.Item1, PHI_C, PHI_C_NAME, COMP_DESIGN_RESIST, pn.Item2, "Kip", report);
             return result;
         }
 
         public static CompressionResistanceOutput AsAISICompressionResistance(this UnStiffenedSection unstiffenedSection, Material material, LengthBracingConditions bracingConditions)
         {
             if (!unstiffenedSection.IsValidForCompression())
-                return new CompressionResistanceOutput(0.0, PHI_C,PHI_C_NAME,COMP_DESIGN_RESIST, FailureMode.UNSAFE, "Kip", null);
+                return new CompressionResistanceOutput(0.0, PHI_C, PHI_C_NAME, COMP_DESIGN_RESIST, FailureMode.UNSAFE, "Kip", null);
             (var pn_local, var localItems) = unstiffenedSection.GetAISICompressionLBResistance(material);
             (var pn_FB, var flexuralItems) = unstiffenedSection.GetAISICompressionFBRessistance(material, bracingConditions);
             (var pn_TFB, var tfbItems) = unstiffenedSection.GetAISICompressionFTBRessistance(material, bracingConditions);
@@ -501,7 +528,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var sections = new List<IReportSection>() { secDimSection, localSection, flexuralSection, tfbSection, tbSection, designSection };
             var report = new Report(UnitSystems.KIPINCH, "AISI Code - Compression", sections);
 
-            var result = new CompressionResistanceOutput(pn.Item1, PHI_C,PHI_C_NAME,COMP_DESIGN_RESIST, pn.Item2, "Kip", report);
+            var result = new CompressionResistanceOutput(pn.Item1, PHI_C, PHI_C_NAME, COMP_DESIGN_RESIST, pn.Item2, "Kip", report);
             return result;
         }
 
@@ -740,7 +767,7 @@ namespace ColdFormedChannelSection.Core.Helpers
         public static MomentResistanceOutput AsAISIMomentResistance(this LippedSection lippedSection, Material material, LengthBracingConditions bracingConditions)
         {
             if (!lippedSection.IsValidForMoment())
-                return new MomentResistanceOutput(0.0, PHI_B,PHI_B_NAME,MOM_DESIGN_RESIST, FailureMode.UNSAFE, "Kip", null);
+                return new MomentResistanceOutput(0.0, PHI_B, PHI_B_NAME, MOM_DESIGN_RESIST, FailureMode.UNSAFE, "Kip", null);
             (var Mn_local, var localItems) = lippedSection.GetAISIMomentLBResistance(material);
             (var Mn_ltb, var ltbItems) = lippedSection.GetAISIMomentLTBRessistance(material, bracingConditions);
             var Mn1 = Tuple.Create(Mn_local, FailureMode.LOCALBUCKLING);
@@ -773,14 +800,14 @@ namespace ColdFormedChannelSection.Core.Helpers
             var report = new Report(UnitSystems.KIPINCH, "AISI Code - Moment", sections);
 
 
-            var result = new MomentResistanceOutput(Mn.Item1, PHI_B,PHI_B_NAME,MOM_DESIGN_RESIST, Mn.Item2, "Kip", report);
+            var result = new MomentResistanceOutput(Mn.Item1, PHI_B, PHI_B_NAME, MOM_DESIGN_RESIST, Mn.Item2, "Kip", report);
             return result;
         }
-        
+
         public static MomentResistanceOutput AsAISIMomentResistance(this UnStiffenedSection unstiffenedSection, Material material, LengthBracingConditions bracingConditions)
         {
             if (!unstiffenedSection.IsValidForMoment())
-                return new MomentResistanceOutput(0.0, PHI_B,PHI_B_NAME,MOM_DESIGN_RESIST, FailureMode.UNSAFE, "Kip", null);
+                return new MomentResistanceOutput(0.0, PHI_B, PHI_B_NAME, MOM_DESIGN_RESIST, FailureMode.UNSAFE, "Kip", null);
             (var Mn_local, var localItems) = unstiffenedSection.GetAISIMomentLBResistance(material);
             var Mn1 = Tuple.Create(Mn_local, FailureMode.LOCALBUCKLING);
             (var Mn_ltb, var ltbItems) = unstiffenedSection.GetAISIMomentLTBRessistance(material, bracingConditions);
@@ -811,7 +838,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var sections = new List<IReportSection>() { secDimSection, localSection, ltbSection, designSection };
             var report = new Report(UnitSystems.KIPINCH, "AISI Code - Moment", sections);
 
-            var result = new MomentResistanceOutput(Mn.Item1, PHI_B,PHI_B_NAME,MOM_DESIGN_RESIST, Mn.Item2, "Kip", report);
+            var result = new MomentResistanceOutput(Mn.Item1, PHI_B, PHI_B_NAME, MOM_DESIGN_RESIST, Mn.Item2, "Kip", report);
             return result;
         }
 
