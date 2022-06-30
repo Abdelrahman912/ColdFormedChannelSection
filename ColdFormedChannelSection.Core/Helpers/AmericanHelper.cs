@@ -352,18 +352,21 @@ namespace ColdFormedChannelSection.Core.Helpers
                 y_bar = new_y_bar;
                 var F1 = Fy * ((y_bar - (t / 2) - r) / y_bar);
 
-                //Lip
-                var lambda_c = Math.Sqrt(F1 / Fcr_c);
-                var row_c = (((1 - (0.22 / lambda_c)) / lambda_c)).IfNegativeReturnOne().TakeMinWithOne();
-                if(b_over_t <= sOver3)
+                if (isLipped)
                 {
-                    ce = c;
-                }
-                else
-                {
-                    ce = c * Ri;
-                    if (lambda_c > 0.673)
-                        ce = row_c * c * Ri;
+                    //Lip
+                    var lambda_c = Math.Sqrt(F1 / Fcr_c);
+                    var row_c = (((1 - (0.22 / lambda_c)) / lambda_c)).IfNegativeReturnOne().TakeMinWithOne();
+                    if (b_over_t <= sOver3)
+                    {
+                        ce = c;
+                    }
+                    else
+                    {
+                        ce = c * Ri;
+                        if (lambda_c > 0.673)
+                            ce = row_c * c * Ri;
+                    }
                 }
 
                 //Web
