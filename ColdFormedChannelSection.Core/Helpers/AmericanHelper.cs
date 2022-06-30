@@ -775,7 +775,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var result = new MomentResistanceOutput(Mn.Item1, PHI_B,PHI_B_NAME,MOM_DESIGN_RESIST, Mn.Item2, "Kip", report);
             return result;
         }
-
+        
         public static MomentResistanceOutput AsAISIMomentResistance(this UnStiffenedSection unstiffenedSection, Material material, LengthBracingConditions bracingConditions)
         {
             if (!unstiffenedSection.IsValidForMoment())

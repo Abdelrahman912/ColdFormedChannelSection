@@ -14,6 +14,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EasyPDF", "..\..\..\Programming\Projects\EasyPDF\EasyPDF\EasyPDF.csproj", "{DE36F625-1D4C-4789-AC5D-9B88C87EF899}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CSharpHelper", "..\..\..\Programming\Projects\CSharpHelper\CSharpHelper\CSharpHelper.csproj", "{0B3CA52D-027D-4D24-A706-5A1EEE3C12E1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,6 +34,10 @@ Global
 		{DE36F625-1D4C-4789-AC5D-9B88C87EF899}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE36F625-1D4C-4789-AC5D-9B88C87EF899}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DE36F625-1D4C-4789-AC5D-9B88C87EF899}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B3CA52D-027D-4D24-A706-5A1EEE3C12E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B3CA52D-027D-4D24-A706-5A1EEE3C12E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B3CA52D-027D-4D24-A706-5A1EEE3C12E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B3CA52D-027D-4D24-A706-5A1EEE3C12E1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

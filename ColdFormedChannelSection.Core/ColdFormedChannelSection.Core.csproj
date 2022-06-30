@@ -16,10 +16,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="CSharpHelper.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="CsvHelper" Version="27.2.1" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Programming\Projects\CSharpHelper\CSharpHelper\CSharpHelper.csproj" />
     <ProjectReference Include="..\..\..\..\Programming\Projects\EasyPDF\EasyPDF\EasyPDF.csproj" />
   </ItemGroup>
 
