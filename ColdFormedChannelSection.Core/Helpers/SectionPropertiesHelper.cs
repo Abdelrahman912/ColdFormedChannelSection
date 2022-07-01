@@ -14,17 +14,30 @@ namespace ColdFormedChannelSection.Core.Helpers
     public static class SectionPropertiesHelper
     {
 
-        public static Validation<LippedSection> AsLippedChannelSection(this SectionDimension sectionDim)
+        public static Validation<LippedCSection> AsLippedCSection(this SectionDimension sectionDim)
         {
             return sectionDim.CaclulateCSectionProperties(TypeOfSection.LIPPED)
-                       .Map(sec => new LippedSection(sec.Dimensions, sec.Properties));
+                       .Map(sec => new LippedCSection(sec.Dimensions, sec.Properties as CSectionProperties));
         }
 
 
-        public static Validation<UnStiffenedSection> AsUnstiffenedChannelSection(this SectionDimension sectionDim)
+        public static Validation<UnStiffenedCSection> AsUnstiffenedCSection(this SectionDimension sectionDim)
         {
             return sectionDim.CaclulateCSectionProperties(TypeOfSection.UNSTIFFENED)
-                             .Map(sec => new UnStiffenedSection(sec.Dimensions, sec.Properties));
+                             .Map(sec => new UnStiffenedCSection(sec.Dimensions, sec.Properties as CSectionProperties));
+        }
+
+        public static Validation<LippedZSection> AsLippedZSection(this SectionDimension sectionDim)
+        {
+            return sectionDim.CalculateZSectionProperties(TypeOfSection.LIPPED)
+                       .Map(sec => new LippedZSection(sec.Dimensions, sec.Properties as ZSectionProperties));
+        }
+
+
+        public static Validation<UnStiffenedZSection> AsUnstiffenedZSection(this SectionDimension sectionDim)
+        {
+            return sectionDim.CalculateZSectionProperties(TypeOfSection.UNSTIFFENED)
+                             .Map(sec => new UnStiffenedZSection(sec.Dimensions, sec.Properties as ZSectionProperties));
         }
 
         private static Validation<Section> CaclulateCSectionProperties(this SectionDimension sectionDim, TypeOfSection channel)
@@ -89,14 +102,14 @@ namespace ColdFormedChannelSection.Core.Helpers
                 return Invalid(errors);
             else
             {
-                var properties = new SectionProperties(aPrime, bPrime, cPrime, A, Ix, Zg, Iy, ix, iy, Xo, J, Cw, c, a, r, u, b, alpha, a);
-                var sec = new Section(sectionDim, properties);
+                var properties = new CSectionProperties(aPrime, bPrime, cPrime, A, Ix, Zg, Iy, ix, iy, Xo, J, Cw, c, r, u, b, alpha, a);
+                var sec = new CSection(sectionDim, properties);
                 return sec;
             }
 
         }
 
-        private static Validation<Section> CalculateZSectionProperties(this SectionDimension secDim, TypeOfSection z)
+        private static Validation<ZSection> CalculateZSectionProperties(this SectionDimension secDim, TypeOfSection z)
         {
             var alpha = (int)z;
 
@@ -108,7 +121,7 @@ namespace ColdFormedChannelSection.Core.Helpers
 
             var r = R + (t / 2);
             var a = H - (2 * r + t);
-            var aprime = H - t;
+            var aPrime = H - t;
             var gamma = Math.PI / 2;
             var tOver2 = t / 2;
             var aOver2 = a / 2;
@@ -158,23 +171,42 @@ namespace ColdFormedChannelSection.Core.Helpers
 
             var Iy2 = Ix * Math.Sin(thetaPrime).Power(2) + Iy * Math.Cos(thetaPrime).Power(2) + 2 * Ixy * Math.Sin(thetaPrime) * Math.Cos(thetaPrime);
 
-            var ix = Math.Sqrt(Ix2 / A);
-            var iy = Math.Sqrt(Iy2 / A);
+            var ix = Math.Sqrt(Ix / A);
+            var iy = Math.Sqrt(Iy / A);
+
+            var ixPrincipal = Math.Sqrt(Ix2 / A);
+            var iyPrincipal = Math.Sqrt(Iy2 / A);
 
             var J = (t.Power(3) / 3) * (a + 2 * b + 2 * u + alpha * (2 * C + 2 * u));
 
 
-            var CwNumLong = bPrime.Power(2) * (4 * cPrime.Power(4) + 16 * bPrime * cPrime.Power(3) + 6 * aprime.Power(3) * cPrime + 4 * aprime.Power(2) * bPrime * cPrime + 8 * aprime * cPrime)
-                            + 6 * aprime * bPrime * cPrime.Power(2) * (aprime + bPrime) * (2 * bPrime * Math.Sin(gamma) + aprime * Math.Cos(gamma))
-                            + 4 * aprime * bPrime * cPrime.Power(3) * (2 * aprime + 4 * bPrime + cPrime) * Math.Sin(gamma) * Math.Cos(gamma)
-                            + Math.Cos(gamma).Power(2) * cPrime.Power(3) * (2 * aprime.Power(3) + 4 * aprime.Power(2) * bPrime - 8 * aprime * bPrime.Power(2) + aprime.Power(2) * cPrime - 16 * bPrime.Power(3) - 4 * bPrime.Power(2) * cPrime);
+            var CwNumLong = bPrime.Power(2) * (4 * cPrime.Power(4) + 16 * bPrime * cPrime.Power(3) + 6 * aPrime.Power(3) * cPrime + 4 * aPrime.Power(2) * bPrime * cPrime + 8 * aPrime * cPrime)
+                            + 6 * aPrime * bPrime * cPrime.Power(2) * (aPrime + bPrime) * (2 * bPrime * Math.Sin(gamma) + aPrime * Math.Cos(gamma))
+                            + 4 * aPrime * bPrime * cPrime.Power(3) * (2 * aPrime + 4 * bPrime + cPrime) * Math.Sin(gamma) * Math.Cos(gamma)
+                            + Math.Cos(gamma).Power(2) * cPrime.Power(3) * (2 * aPrime.Power(3) + 4 * aPrime.Power(2) * bPrime - 8 * aPrime * bPrime.Power(2) + aPrime.Power(2) * cPrime - 16 * bPrime.Power(3) - 4 * bPrime.Power(2) * cPrime);
             var CwNum = 0.0;
-            var CwDnum = aprime + 2 * bPrime + 2 * alpha * cPrime;
+            var CwDnum = aPrime + 2 * bPrime + 2 * alpha * cPrime;
 
             var Cw = (t / 12) * (CwNum / CwDnum);
 
-
-            throw new NotImplementedException();
+            var errs = new List<Tuple<double, string>>()
+            {
+                Tuple.Create(aPrime,"a prime is less than zero"),
+                Tuple.Create(bPrime," b prime is less tahn zero"),
+                Tuple.Create(cPrime,"c prime is less than zero"),
+                Tuple.Create(a,"a is less than zero"),
+                Tuple.Create(b,"b is less than zero"),
+                Tuple.Create(c,"c is less than zero")
+            };
+            var errors = errs.Where(err => err.Item1 < 0).Select(err => LessThanZeroError($"Cannot use this section because {err.Item2}")).ToList();
+            if (errs.Count > 0)
+                return Invalid(errors);
+            else
+            {
+                var properties = new ZSectionProperties(aPrime, bPrime, cPrime, A, Ix, Zg, Iy, ix, iy, 0, J, Cw, c, r, u, b, alpha, a,Ix2,Iy2,Ixy,ixPrincipal,iyPrincipal,thetaPrime);
+                var sec = new ZSection(secDim, properties);
+                return sec;
+            }
         }
 
     }

@@ -1,6 +1,6 @@
 ﻿namespace ColdFormedChannelSection.Core.Entities
 {
-    public class SectionProperties
+    public abstract class SectionProperties
     {
        
         #region Properties
@@ -37,8 +37,6 @@
 
         public double CSmall { get; }
 
-        public double ADimension { get;}
-
         public double RSmall { get; }
 
         public double U { get; }
@@ -53,7 +51,7 @@
 
         #region Constructors
 
-        public SectionProperties(double aPrime, double bPrime, double cPrime, double a, double _Ix, double zg, double _Iy, double rx, double ry, double xo, double j, double cw, double cSmall,double aDimension,double rSmall,double u,double b_small,int alpha,double a_small)
+        public SectionProperties(double aPrime, double bPrime, double cPrime, double a, double _Ix, double zg, double _Iy, double rx, double ry, double xo, double j, double cw, double cSmall,double rSmall,double u,double b_small,int alpha,double a_small)
         {
             APrime = aPrime;
             BPrime = bPrime;
@@ -69,7 +67,6 @@
             J = j;
             Cw = cw;
             CSmall = cSmall;
-            ADimension = aDimension;
             RSmall = rSmall;
             U = u;
             BSmall = b_small;

@@ -81,14 +81,14 @@ namespace ColdFormedChannelSection.Core.Helpers
             return new ResistanceInteractionOutput(pu, pn, mu, mn, ieName, ie, "kip.in", "kip", report);
         }
 
-        public static ResistanceInteractionOutput AsDSInteractionResistance(this LippedSection section, Material material, LengthBracingConditions bracingConditions, double pu, double mu)
+        public static ResistanceInteractionOutput AsDSInteractionResistance(this LippedCSection section, Material material, LengthBracingConditions bracingConditions, double pu, double mu)
         {
             var Pn = section.AsDSCompressionResistance(material, bracingConditions);
             var Mn = section.AsDSMomentResistance(material, bracingConditions);
             return section.AsDSInteractionResistance(material, bracingConditions, pu, mu, Pn, Mn, () => section.GetAISIReducedArea(material).Item1);
         }
 
-        public static ResistanceInteractionOutput AsDSInteractionResistance(this UnStiffenedSection section, Material material, LengthBracingConditions bracingConditions, double pu, double mu)
+        public static ResistanceInteractionOutput AsDSInteractionResistance(this UnStiffenedCSection section, Material material, LengthBracingConditions bracingConditions, double pu, double mu)
         {
             var Pn = section.AsDSCompressionResistance(material, bracingConditions);
             var Mn = section.AsDSMomentResistance(material, bracingConditions);
@@ -99,7 +99,7 @@ namespace ColdFormedChannelSection.Core.Helpers
 
         #region Compression
 
-        public static CompressionResistanceOutput AsDSCompressionResistance(this LippedSection lippedSection, Material material, LengthBracingConditions bracingConditions)
+        public static CompressionResistanceOutput AsDSCompressionResistance(this LippedCSection lippedSection, Material material, LengthBracingConditions bracingConditions)
         {
             if (!lippedSection.IsValidForCompression())
                 return new CompressionResistanceOutput(0.0, PHI_C,PHI_C_NAME,COMP_DESIGN_RESIST, FailureMode.UNSAFE, "Kip", null);
@@ -116,7 +116,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             return lippedSection.AsCompressionResistance(material, bracingConditions, p_crl, secDimSection);
         }
 
-        public static CompressionResistanceOutput AsDSCompressionResistance(this UnStiffenedSection unstiffenedSection, Material material, LengthBracingConditions bracingConditions)
+        public static CompressionResistanceOutput AsDSCompressionResistance(this UnStiffenedCSection unstiffenedSection, Material material, LengthBracingConditions bracingConditions)
         {
             if (!unstiffenedSection.IsValidForCompression())
                 return new CompressionResistanceOutput(0.0, PHI_C,PHI_C_NAME,COMP_DESIGN_RESIST, FailureMode.UNSAFE, "Kip", null);
@@ -208,7 +208,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             return result;
         }
 
-        private static double GetCompressionLBResistance(this LippedSection lippedSection, Material material)
+        private static double GetCompressionLBResistance(this LippedCSection lippedSection, Material material)
         {
             var Pcr = (lippedSection.Properties.CPrime / lippedSection.Properties.BPrime) < 0.6
                 ? lippedSection.GetCompressionLBResistanceFromInteractionMethod(material)
@@ -216,7 +216,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             return Pcr;
         }
 
-        private static double GetCompressionLBResistanceFromInteractionMethod(this LippedSection lippedSection, Material material)
+        private static double GetCompressionLBResistanceFromInteractionMethod(this LippedCSection lippedSection, Material material)
         {
             var cPrimeOverbPrime = lippedSection.Properties.CPrime / lippedSection.Properties.BPrime;
             var aPrimeOverbPrime = lippedSection.Properties.APrime / lippedSection.Properties.BPrime;
@@ -240,7 +240,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             return P_crl;
         }
 
-        private static double GetCompressionLBResistanceFromElementMethod(this LippedSection lippedSection, Material material)
+        private static double GetCompressionLBResistanceFromElementMethod(this LippedCSection lippedSection, Material material)
         {
             var EOverVTerm = ((Math.PI.Power(2) * material.E) / (12 * (1 - material.V.Power(2))));
             //Flange Local buckling
@@ -261,7 +261,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             return P_crl;
         }
 
-        private static double GetCompressionLBResistance(this UnStiffenedSection unstiffenedSection, Material material)
+        private static double GetCompressionLBResistance(this UnStiffenedCSection unstiffenedSection, Material material)
         {
             var EOverVTerm = ((Math.PI.Power(2) * material.E) / (12 * (1 - material.V.Power(2))));
 
@@ -380,9 +380,9 @@ namespace ColdFormedChannelSection.Core.Helpers
 
         #region Moment
 
-        private static bool IsValidForMoment(this UnStiffenedSection section)
+        private static bool IsValidForMoment(this UnStiffenedCSection section)
         {
-            var a_over_t = Tuple.Create(section.Properties.ADimension / section.Dimensions.ThicknessT, 300.0);
+            var a_over_t = Tuple.Create(section.Properties.ASmall / section.Dimensions.ThicknessT, 300.0);
             var b_over_t = Tuple.Create(section.Properties.BSmall / section.Dimensions.ThicknessT, 60.0);
 
             var C_over_b = Tuple.Create(section.Dimensions.TotalFoldWidthC / section.Properties.BSmall, 0.8);
@@ -397,9 +397,9 @@ namespace ColdFormedChannelSection.Core.Helpers
             return !allows.Any(tuple => tuple.Item1 > tuple.Item2);
         }
 
-        private static bool IsValidForMoment(this LippedSection section)
+        private static bool IsValidForMoment(this LippedCSection section)
         {
-            var a_over_t = Tuple.Create(section.Properties.ADimension / section.Dimensions.ThicknessT, 300.0);
+            var a_over_t = Tuple.Create(section.Properties.ASmall / section.Dimensions.ThicknessT, 300.0);
             var b_over_t = Tuple.Create(section.Properties.BSmall / section.Dimensions.ThicknessT, 160.0);
 
             var C_over_b = Tuple.Create(section.Dimensions.TotalFoldWidthC / section.Properties.BSmall, 0.8);
@@ -415,9 +415,9 @@ namespace ColdFormedChannelSection.Core.Helpers
         }
 
 
-        private static bool IsValidForCompression(this UnStiffenedSection section)
+        private static bool IsValidForCompression(this UnStiffenedCSection section)
         {
-            var a_over_t = Tuple.Create(section.Properties.ADimension / section.Dimensions.ThicknessT, 500.0);
+            var a_over_t = Tuple.Create(section.Properties.ASmall / section.Dimensions.ThicknessT, 500.0);
             var b_over_t = Tuple.Create(section.Properties.BSmall / section.Dimensions.ThicknessT, 60.0);
 
             var C_over_b = Tuple.Create(section.Dimensions.TotalFoldWidthC / section.Properties.BSmall, 0.8);
@@ -431,9 +431,9 @@ namespace ColdFormedChannelSection.Core.Helpers
             return !allows.Any(tuple => tuple.Item1 > tuple.Item2);
         }
 
-        private static bool IsValidForCompression(this LippedSection section)
+        private static bool IsValidForCompression(this LippedCSection section)
         {
-            var a_over_t = Tuple.Create(section.Properties.ADimension / section.Dimensions.ThicknessT, 500.0);
+            var a_over_t = Tuple.Create(section.Properties.ASmall / section.Dimensions.ThicknessT, 500.0);
             var b_over_t = Tuple.Create(section.Properties.BSmall / section.Dimensions.ThicknessT, 160.0);
 
             var C_over_b = Tuple.Create(section.Dimensions.TotalFoldWidthC / section.Properties.BSmall, 0.8);
@@ -447,7 +447,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             return !allows.Any(tuple => tuple.Item1 > tuple.Item2);
         }
 
-        public static MomentResistanceOutput AsDSMomentResistance(this UnStiffenedSection unstiffenedSection, Material material, LengthBracingConditions bracingConditions)
+        public static MomentResistanceOutput AsDSMomentResistance(this UnStiffenedCSection unstiffenedSection, Material material, LengthBracingConditions bracingConditions)
         {
             if (!unstiffenedSection.IsValidForMoment())
                 return new MomentResistanceOutput(0.0, PHI_B,PHI_B_NAME,MOM_DESIGN_RESIST, FailureMode.UNSAFE, "Kip", null);
@@ -463,7 +463,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             return unstiffenedSection.AsMomentResistance(material, bracingConditions, m_crl, items_buckling, secDimSection);
         }
 
-        public static MomentResistanceOutput AsDSMomentResistance(this LippedSection lippedSection, Material material, LengthBracingConditions bracingConditions)
+        public static MomentResistanceOutput AsDSMomentResistance(this LippedCSection lippedSection, Material material, LengthBracingConditions bracingConditions)
         {
             if (!lippedSection.IsValidForMoment())
                 return new MomentResistanceOutput(0.0, PHI_B,PHI_B_NAME,MOM_DESIGN_RESIST, FailureMode.UNSAFE, "Kip", null);
@@ -554,7 +554,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             return result;
         }
 
-        public static Tuple<double, List<ReportItem>> GetMomentLBResistance(this LippedSection lippedSection, Material material)
+        public static Tuple<double, List<ReportItem>> GetMomentLBResistance(this LippedCSection lippedSection, Material material)
         {
             var H = lippedSection.Dimensions.TotalHeightH;
             var cPrime = lippedSection.Properties.CPrime;
@@ -580,7 +580,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             throw new NotImplementedException();
         }
 
-        private static Tuple<double, List<ReportItem>> GetMomentLBResistance(this UnStiffenedSection unstiffenedSection, Material material)
+        private static Tuple<double, List<ReportItem>> GetMomentLBResistance(this UnStiffenedCSection unstiffenedSection, Material material)
         {
 
             var EOverVTerm = ((Math.PI.Power(2) * material.E) / (12 * (1 - material.V.Power(2))));
@@ -606,7 +606,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             return Tuple.Create(m_crl, items);
         }
 
-        private static Tuple<double, List<ReportItem>> GetMomentLBResistanceFromInteractionMethod(this LippedSection lippedSection, Material material)
+        private static Tuple<double, List<ReportItem>> GetMomentLBResistanceFromInteractionMethod(this LippedCSection lippedSection, Material material)
         {
             var H = lippedSection.Dimensions.TotalHeightH;
             var t = lippedSection.Dimensions.ThicknessT;
@@ -643,7 +643,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             return Tuple.Create(M_crl, items);
         }
 
-        private static Tuple<double, List<ReportItem>> GetMomentLBResistanceFromElementMethod(this LippedSection lippedSection, Material material)
+        private static Tuple<double, List<ReportItem>> GetMomentLBResistanceFromElementMethod(this LippedCSection lippedSection, Material material)
         {
             var EOverVTerm = ((Math.PI.Power(2) * material.E) / (12 * (1 - material.V.Power(2))));
             var H = lippedSection.Dimensions.TotalHeightH;

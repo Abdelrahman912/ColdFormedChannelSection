@@ -1,6 +1,6 @@
 ﻿namespace ColdFormedChannelSection.Core.Entities
 {
-    public   class Section
+    public abstract  class Section
     {
         
 
@@ -8,16 +8,15 @@
 
         public SectionDimension Dimensions { get;  }
 
-        public SectionProperties Properties { get;  }
+        public SectionProperties Properties { get; }
 
         #endregion
 
         #region Constructors
 
-        public Section(SectionDimension dimensions, SectionProperties properties)
+        public Section(SectionDimension dimensions,SectionProperties properties)
         {
             Dimensions = dimensions;
-            Properties = properties;
         }
 
         #endregion

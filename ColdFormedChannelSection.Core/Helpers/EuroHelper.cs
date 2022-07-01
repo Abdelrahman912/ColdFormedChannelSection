@@ -19,7 +19,7 @@ namespace ColdFormedChannelSection.Core.Helpers
 
         private const string MOM_DESIGN_RESIST = "Mn/gamma";
 
-        private static bool IsValid(this LippedSection section)
+        private static bool IsValid(this LippedCSection section)
         {
             var b_over_t = Tuple.Create(section.Properties.BPrime / section.Dimensions.ThicknessT, 60.0);
 
@@ -35,7 +35,7 @@ namespace ColdFormedChannelSection.Core.Helpers
         }
 
 
-        private static bool IsValid(this UnStiffenedSection section)
+        private static bool IsValid(this UnStiffenedCSection section)
         {
             var b_over_t = Tuple.Create(section.Properties.BPrime / section.Dimensions.ThicknessT, 50.0);
 
@@ -52,7 +52,7 @@ namespace ColdFormedChannelSection.Core.Helpers
 
         #region Moment & Compression
 
-        public static ResistanceInteractionOutput AsEuroInteractionResistance(this LippedSection section, Material material, LengthBracingConditions bracingConditions, double pu, double mu)
+        public static ResistanceInteractionOutput AsEuroInteractionResistance(this LippedCSection section, Material material, LengthBracingConditions bracingConditions, double pu, double mu)
         {
             var Pn = section.AsEuroCompressionResistance(material, bracingConditions,pu);
             var Mn = section.AsEuroMomentResistance(material, bracingConditions,mu);
@@ -69,7 +69,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             return new ResistanceInteractionOutput(pu, Pn.NominalResistance, mu, Mn.NominalResistance, "(\\frac{P_u}{ P_n})^{0.8} + (\\frac{M_u}{M_n})^{0.8}", ie, "N.mm", "N", report);
         }
 
-        public static ResistanceInteractionOutput AsEuroInteractionResistance(this UnStiffenedSection section, Material material, LengthBracingConditions bracingConditions, double pu, double mu)
+        public static ResistanceInteractionOutput AsEuroInteractionResistance(this UnStiffenedCSection section, Material material, LengthBracingConditions bracingConditions, double pu, double mu)
         {
             var Pn = section.AsEuroCompressionResistance(material, bracingConditions,pu);
             var Mn = section.AsEuroMomentResistance(material, bracingConditions,mu);
@@ -99,7 +99,7 @@ namespace ColdFormedChannelSection.Core.Helpers
         /// <param name="be2_intial"></param>
         /// <param name="ce_intial"></param>
         /// <returns></returns>
-        private static double ReduceLippedSection(this LippedSection section, Material material, double Kw, double be2_intial, double ce_intial)
+        private static double ReduceLippedSection(this LippedCSection section, Material material, double Kw, double be2_intial, double ce_intial)
         {
             var t = section.Dimensions.ThicknessT;
             var b_prime = section.Properties.BPrime;
@@ -153,7 +153,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             return ae;
         }
 
-        private static (double be1, double be2, double ce, double Xd, double Kf, double Kc) GetEuroReducedFlange(this LippedSection section, Material material, double kw)
+        private static (double be1, double be2, double ce, double Xd, double Kf, double Kc) GetEuroReducedFlange(this LippedCSection section, Material material, double kw)
         {
             var Fy = material.Fy;
             var b_prime = section.Properties.BPrime;
@@ -211,7 +211,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             return (be1: be1_lst.First(), be2: be2, ce: ce, Xd: Xd, Kf: kf, Kc: kc);
         }
 
-        private static (double be1, double be2) GetEuroReducedFlange(this UnStiffenedSection section, Material material)
+        private static (double be1, double be2) GetEuroReducedFlange(this UnStiffenedCSection section, Material material)
         {
             var Fy = material.Fy;
             var b_prime = section.Properties.BPrime;
@@ -230,7 +230,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             return (be1, be2);
         }
 
-        private static Tuple<double, List<ReportItem>> GetEuroReducedArea(this LippedSection section, Material material)
+        private static Tuple<double, List<ReportItem>> GetEuroReducedArea(this LippedCSection section, Material material)
         {
             var t = section.Dimensions.ThicknessT;
             (var be1, var be2, var ce, var Xd, var Kf, var Kc) = section.GetEuroReducedFlange(material, 1);
@@ -258,7 +258,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             return Tuple.Create(Ae, items);
         }
 
-        private static Tuple<double, List<ReportItem>> GetEuroReducedArea(this UnStiffenedSection section, Material material)
+        private static Tuple<double, List<ReportItem>> GetEuroReducedArea(this UnStiffenedCSection section, Material material)
         {
             var t = section.Dimensions.ThicknessT;
             var Kf = 0.43;
@@ -282,7 +282,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             return Tuple.Create(Ae, items);
         }
 
-        public static CompressionResistanceOutput AsEuroCompressionResistance(this LippedSection section, Material material, LengthBracingConditions bracingConditions , double pu)
+        public static CompressionResistanceOutput AsEuroCompressionResistance(this LippedCSection section, Material material, LengthBracingConditions bracingConditions , double pu)
         {
             if (!section.IsValid())
                 return new CompressionResistanceOutput(0.0, PHI, PHI_NAME,COMP_DESIGN_RESIST, FailureMode.UNSAFE, "N", null);
@@ -329,7 +329,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             return result;
         }
 
-        public static CompressionResistanceOutput AsEuroCompressionResistance(this UnStiffenedSection section, Material material, LengthBracingConditions bracingConditions,double pu)
+        public static CompressionResistanceOutput AsEuroCompressionResistance(this UnStiffenedCSection section, Material material, LengthBracingConditions bracingConditions,double pu)
         {
             if (!section.IsValid())
                 return new CompressionResistanceOutput(0.0, PHI, PHI_NAME, COMP_DESIGN_RESIST, FailureMode.UNSAFE, "N", null);
@@ -501,7 +501,7 @@ namespace ColdFormedChannelSection.Core.Helpers
 
         #region Moment
 
-        public static MomentResistanceOutput AsEuroMomentResistance(this LippedSection section, Material material, LengthBracingConditions bracingConditions,double mu)
+        public static MomentResistanceOutput AsEuroMomentResistance(this LippedCSection section, Material material, LengthBracingConditions bracingConditions,double mu)
         {
             if (!section.IsValid())
                 return new MomentResistanceOutput(0.0, PHI, PHI_NAME,MOM_DESIGN_RESIST, FailureMode.UNSAFE, "N.mm", null);
@@ -542,7 +542,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             return result;
         }
 
-        public static MomentResistanceOutput AsEuroMomentResistance(this UnStiffenedSection section, Material material, LengthBracingConditions bracingConditions,double mu)
+        public static MomentResistanceOutput AsEuroMomentResistance(this UnStiffenedCSection section, Material material, LengthBracingConditions bracingConditions,double mu)
         {
             if (!section.IsValid())
                 return new MomentResistanceOutput(0.0, PHI, PHI_NAME,MOM_DESIGN_RESIST, FailureMode.UNSAFE, "N.mm", null);
@@ -672,7 +672,7 @@ namespace ColdFormedChannelSection.Core.Helpers
 
         }
 
-        private static Tuple<double, List<ReportItem>> GetZe(this LippedSection section, Material material)
+        private static Tuple<double, List<ReportItem>> GetZe(this LippedCSection section, Material material)
         {
             var t = section.Dimensions.ThicknessT;
             (var be1, var be2, var ce, var Xd, var Kf, var Kc) = section.GetEuroReducedFlange(material, 0);
@@ -688,7 +688,7 @@ namespace ColdFormedChannelSection.Core.Helpers
         }
 
 
-        private static Tuple<double, List<ReportItem>> GetZe(this UnStiffenedSection section, Material material)
+        private static Tuple<double, List<ReportItem>> GetZe(this UnStiffenedCSection section, Material material)
         {
             var t = section.Dimensions.ThicknessT;
             (var be1, var be2) = section.GetEuroReducedFlange(material);

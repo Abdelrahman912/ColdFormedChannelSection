@@ -29,7 +29,7 @@ namespace ColdFormedChannelSection.Core.Helpers
 
         #region Moment & Compression
 
-        public static ResistanceInteractionOutput AsEgyptInteractionResistance(this LippedSection section, Material material, LengthBracingConditions bracingConditions, double pu, double mu)
+        public static ResistanceInteractionOutput AsEgyptInteractionResistance(this LippedCSection section, Material material, LengthBracingConditions bracingConditions, double pu, double mu)
         {
             var Pn = section.AsEgyptCompressionResistance(material, bracingConditions);
             var Mn = section.AsEgyptMomentResistance(material, bracingConditions);
@@ -61,7 +61,7 @@ namespace ColdFormedChannelSection.Core.Helpers
         }
 
 
-        public static ResistanceInteractionOutput AsEgyptInteractionResistance(this UnStiffenedSection section, Material material, LengthBracingConditions bracingConditions, double pu, double mu)
+        public static ResistanceInteractionOutput AsEgyptInteractionResistance(this UnStiffenedCSection section, Material material, LengthBracingConditions bracingConditions, double pu, double mu)
         {
             var Pn = section.AsEgyptCompressionResistance(material, bracingConditions);
             var Mn = section.AsEgyptMomentResistance(material, bracingConditions);
@@ -98,7 +98,7 @@ namespace ColdFormedChannelSection.Core.Helpers
 
         #region Moment
 
-        private static bool IsValidMoment(this LippedSection section)
+        private static bool IsValidMoment(this LippedCSection section)
         {
             var c_over_t = Tuple.Create(section.Properties.CPrime / section.Dimensions.ThicknessT, 40.0);
             var b_over_t = Tuple.Create(section.Properties.BPrime / section.Dimensions.ThicknessT, 60.0);
@@ -112,7 +112,7 @@ namespace ColdFormedChannelSection.Core.Helpers
         }
 
 
-        private static bool IsValidMoment(this UnStiffenedSection section)
+        private static bool IsValidMoment(this UnStiffenedCSection section)
         {
             var b_over_t = Tuple.Create(section.Properties.BPrime / section.Dimensions.ThicknessT, 40.0);
 
@@ -127,7 +127,7 @@ namespace ColdFormedChannelSection.Core.Helpers
         }
 
 
-        public static MomentResistanceOutput AsEgyptMomentResistance(this LippedSection section, Material material, LengthBracingConditions bracingConditions)
+        public static MomentResistanceOutput AsEgyptMomentResistance(this LippedCSection section, Material material, LengthBracingConditions bracingConditions)
         {
             if (!section.IsValidMoment())
                 return new MomentResistanceOutput(0.0, PHI_B, PHI_B_NAME, MOM_DESIGN_RESIST, FailureMode.UNSAFE, "t.cm", null);
@@ -161,7 +161,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             return result;
         }
 
-        public static MomentResistanceOutput AsEgyptMomentResistance(this UnStiffenedSection section, Material material, LengthBracingConditions bracingConditions)
+        public static MomentResistanceOutput AsEgyptMomentResistance(this UnStiffenedCSection section, Material material, LengthBracingConditions bracingConditions)
         {
             if (!section.IsValidMoment())
                 return new MomentResistanceOutput(0.0, PHI_B, PHI_B_NAME, MOM_DESIGN_RESIST, FailureMode.UNSAFE, "t.cm", null);
@@ -254,7 +254,7 @@ namespace ColdFormedChannelSection.Core.Helpers
 
         }
 
-        private static Tuple<double, List<ReportItem>> GetEgyptReducedZe(this UnStiffenedSection section, Material material)
+        private static Tuple<double, List<ReportItem>> GetEgyptReducedZe(this UnStiffenedCSection section, Material material)
         {
             var E = material.E;
             var Fy = material.Fy;
@@ -277,7 +277,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             return Tuple.Create(Ze, items);
         }
 
-        private static Tuple<double, List<ReportItem>> GetEgyptReducedZe(this LippedSection section, Material material)
+        private static Tuple<double, List<ReportItem>> GetEgyptReducedZe(this LippedCSection section, Material material)
         {
             var E = material.E;
             var Fy = material.Fy;
@@ -456,7 +456,7 @@ namespace ColdFormedChannelSection.Core.Helpers
 
         #region Compression
 
-        private static bool IsValidCompression(this LippedSection section)
+        private static bool IsValidCompression(this LippedCSection section)
         {
             var c_over_t = Tuple.Create(section.Properties.CPrime / section.Dimensions.ThicknessT, 40.0);
             var b_over_t = Tuple.Create(section.Properties.BPrime / section.Dimensions.ThicknessT, 60.0);
@@ -470,7 +470,7 @@ namespace ColdFormedChannelSection.Core.Helpers
         }
 
 
-        private static bool IsValidCompression(this UnStiffenedSection section)
+        private static bool IsValidCompression(this UnStiffenedCSection section)
         {
             var b_over_t = Tuple.Create(section.Properties.BPrime / section.Dimensions.ThicknessT, 40.0);
 
@@ -485,7 +485,7 @@ namespace ColdFormedChannelSection.Core.Helpers
         }
 
 
-        private static Tuple<double, List<ReportItem>> GetEgyptReducedArea(this LippedSection section, Material material)
+        private static Tuple<double, List<ReportItem>> GetEgyptReducedArea(this LippedCSection section, Material material)
         {
             var E = material.E;
             var Fy = material.Fy;
@@ -599,7 +599,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             return Tuple.Create(Ae, items);
         }
 
-        private static Tuple<double, List<ReportItem>> GetEgyptReducedArea(this UnStiffenedSection section, Material material)
+        private static Tuple<double, List<ReportItem>> GetEgyptReducedArea(this UnStiffenedCSection section, Material material)
         {
             var E = material.E;
             var Fy = material.Fy;
@@ -634,7 +634,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             return Tuple.Create(Ae, items);
         }
 
-        private static double GetEgyptReducedAreaEE(this LippedSection section, Material material)
+        private static double GetEgyptReducedAreaEE(this LippedCSection section, Material material)
         {
             var a_prime = section.Properties.APrime;
             var b_prime = section.Properties.BPrime;
@@ -660,7 +660,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             return A_ee;
         }
 
-        private static double GetEgyptReducedAreaEE(this UnStiffenedSection section, Material material)
+        private static double GetEgyptReducedAreaEE(this UnStiffenedCSection section, Material material)
         {
             var a_prime = section.Properties.APrime;
             var b_prime = section.Properties.BPrime;
@@ -681,7 +681,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             return A_ee;
         }
 
-        private static Tuple<double, List<ReportItem>> GetEgyptCompressionLBResistance(this LippedSection section, Material material)
+        private static Tuple<double, List<ReportItem>> GetEgyptCompressionLBResistance(this LippedCSection section, Material material)
         {
             (var Ae, var items) = section.GetEgyptReducedArea(material);
             var Pn = Ae * material.Fy;
@@ -690,7 +690,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             return Tuple.Create(Pn, items);
         }
 
-        private static Tuple<double, List<ReportItem>> GetEgyptCompressionLBResistance(this UnStiffenedSection section, Material material)
+        private static Tuple<double, List<ReportItem>> GetEgyptCompressionLBResistance(this UnStiffenedCSection section, Material material)
         {
             (var Ae, var items) = section.GetEgyptReducedArea(material);
             var Pn = Ae * material.Fy;
@@ -812,7 +812,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             return Tuple.Create(pn, items);
         }
 
-        public static CompressionResistanceOutput AsEgyptCompressionResistance(this LippedSection section, Material material, LengthBracingConditions bracingConditions)
+        public static CompressionResistanceOutput AsEgyptCompressionResistance(this LippedCSection section, Material material, LengthBracingConditions bracingConditions)
         {
             if (!section.IsValidCompression())
                 return new CompressionResistanceOutput(0.0, PHI_C, PHI_C_NAME, COMP_DESIGN_RESIST, FailureMode.UNSAFE, "ton", null);
@@ -858,7 +858,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             return result;
         }
 
-        public static CompressionResistanceOutput AsEgyptCompressionResistance(this UnStiffenedSection section, Material material, LengthBracingConditions bracingConditions)
+        public static CompressionResistanceOutput AsEgyptCompressionResistance(this UnStiffenedCSection section, Material material, LengthBracingConditions bracingConditions)
         {
             if (!section.IsValidCompression())
                 return new CompressionResistanceOutput(0.0, PHI_C, PHI_C_NAME, COMP_DESIGN_RESIST, FailureMode.UNSAFE, "ton", null);
