@@ -2,7 +2,7 @@
 
 namespace ColdFormedChannelSection.Core.Enums
 {
-    public enum TypeOfChannel
+    public enum TypeOfSection
     {
         
         UNSTIFFENED = 0,
