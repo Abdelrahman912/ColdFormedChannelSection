@@ -2,7 +2,6 @@
 using ColdFormedChannelSection.Core.Enums;
 using ColdFormedChannelSection.Core.Extensions;
 using CSharp.Functional.Constructs;
-using CSharp.Functional.Errors;
 using System;
 using System.Collections.Generic;
 using System.Linq;

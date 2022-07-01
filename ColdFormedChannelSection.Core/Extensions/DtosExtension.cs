@@ -15,5 +15,6 @@ namespace ColdFormedChannelSection.Core.Extensions
                 internalRadiusR: dto.R
                 );
         }
+       
     }
 }

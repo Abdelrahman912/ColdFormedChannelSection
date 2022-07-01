@@ -1,7 +1,10 @@
-﻿namespace ColdFormedChannelSection.Core.Errors
+﻿using CSharp.Functional.Errors;
+
+namespace ColdFormedChannelSection.Core.Errors
 {
     public class Errors
     {
+
         public static GenericError CantCalculateNominalStrength =>
           new GenericError($"Cannot calculate section nominal strength due to section dimensions ratio vilation.");
 

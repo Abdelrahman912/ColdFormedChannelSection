@@ -2,6 +2,18 @@
 {
     public static class Constants
     {
+        public const double PHI_C_AISI = 0.85;
+
+        public const double PHI_B_AISI = 0.9;
+
+        public const string PHI_C_NAME_AISI = "(phi)c";
+
+        public const string COMP_DESIGN_RESIST_AISI = "(phi)c * Pn";
+
+        public const string PHI_B_NAME_AISI = "(phi)b";
+
+        public const string MOM_DESIGN_RESIST_AISI = "(phi)b * Mn";
+
         public const double TOL = 0.1;
 
         public const string EGYPT_UNSTIFF_TABLE = "Egypt - Unstiffened";
