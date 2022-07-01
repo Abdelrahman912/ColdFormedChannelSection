@@ -13,9 +13,9 @@ namespace ColdFormedChannelSection.Core.Dtos
 
         public FBAISICompressionDto FB { get; }
 
-        public FTBAISICompression FTB { get; }
+        public FTBAISICompressionDto FTB { get; }
 
-        public TBAISICompression TB { get; }
+        public TBAISICompressioDto TB { get; }
 
         public NominalStrengthDto GoverningCase { get; }
 
@@ -23,7 +23,7 @@ namespace ColdFormedChannelSection.Core.Dtos
 
         #region Constructors
 
-        public AISICompressionDto(LocalAISICompressionDto lB, FBAISICompressionDto fB, FTBAISICompression fTB, TBAISICompression tB)
+        public AISICompressionDto(LocalAISICompressionDto lB, FBAISICompressionDto fB, FTBAISICompressionDto fTB, TBAISICompressioDto tB)
         {
             LB = lB;
             FB = fB;

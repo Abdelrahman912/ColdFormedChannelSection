@@ -7,7 +7,7 @@ using ColdFormedChannelSection.Core.Enums;
 
 namespace ColdFormedChannelSection.Core.Dtos
 {
-    public class FTBAISICompression:NominalStrengthDto
+    public class FTBAISICompressionDto:NominalStrengthDto
     {
        
 
@@ -21,7 +21,7 @@ namespace ColdFormedChannelSection.Core.Dtos
 
         #region Constructors
 
-        public FTBAISICompression(double f, double a,double pn)
+        public FTBAISICompressionDto(double f, double a,double pn)
             :base(pn,FailureMode.FLEXURAL_TORSIONAL_BUCKLING)
         {
             F = f;

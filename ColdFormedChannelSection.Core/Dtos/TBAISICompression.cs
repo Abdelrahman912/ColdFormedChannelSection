@@ -1,6 +1,6 @@
 ﻿namespace ColdFormedChannelSection.Core.Dtos
 {
-    public class TBAISICompression:NominalStrengthDto
+    public class TBAISICompressioDto:NominalStrengthDto
     {
       
         #region Properties
@@ -13,7 +13,7 @@
 
         #region Constructors
 
-        public TBAISICompression(double f, double a,double pn)
+        public TBAISICompressioDto(double f, double a,double pn)
             :base(pn,Enums.FailureMode.TORSIONALBUCKLING)
         {
             F = f;

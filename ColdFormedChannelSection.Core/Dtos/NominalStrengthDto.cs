@@ -2,7 +2,7 @@
 
 namespace ColdFormedChannelSection.Core.Dtos
 {
-    public abstract class NominalStrengthDto
+    public class NominalStrengthDto
     {
        
 
@@ -16,7 +16,7 @@ namespace ColdFormedChannelSection.Core.Dtos
 
         #region Constructors
 
-        protected NominalStrengthDto(double nominalStrength, FailureMode failureMode)
+        public NominalStrengthDto(double nominalStrength, FailureMode failureMode)
         {
             NominalStrength = nominalStrength;
             FailureMode = failureMode;
