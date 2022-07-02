@@ -6,7 +6,7 @@ namespace ColdFormedChannelSection.Core.Errors
     {
 
         public static GenericError CantCalculateNominalStrength =>
-          new GenericError($"Cannot calculate section nominal strength due to section dimensions ratio vilation.");
+          new GenericError($"Cannot calculate section nominal strength due to section dimensions ratio violation.");
 
         public static GenericError CantFindSafeSection =>
             new GenericError($"Cannot find section to carry these loads.");

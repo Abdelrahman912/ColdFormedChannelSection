@@ -17,7 +17,8 @@
         public Section(SectionDimension dimensions,SectionProperties properties)
         {
             Dimensions = dimensions;
-        }
+            Properties = properties;
+    }
 
         #endregion
 

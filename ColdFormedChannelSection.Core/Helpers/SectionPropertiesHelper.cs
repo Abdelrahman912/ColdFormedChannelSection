@@ -39,7 +39,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                              .Map(sec => new UnStiffenedZSection(sec.Dimensions, sec.Properties as ZSectionProperties));
         }
 
-        private static Validation<Section> CaclulateCSectionProperties(this SectionDimension sectionDim, TypeOfSection channel)
+        private static Validation<CSection> CaclulateCSectionProperties(this SectionDimension sectionDim, TypeOfSection channel)
         {
 
             var alpha = (int)channel;
@@ -97,7 +97,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 Tuple.Create(c,"c is less than zero")
             };
             var errors = errs.Where(err => err.Item1 < 0).Select(err => LessThanZeroError($"Cannot use this section because {err.Item2}")).ToList();
-            if (errs.Count > 0)
+            if (errors.Count > 0)
                 return Invalid(errors);
             else
             {
@@ -198,7 +198,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 Tuple.Create(c,"c is less than zero")
             };
             var errors = errs.Where(err => err.Item1 < 0).Select(err => LessThanZeroError($"Cannot use this section because {err.Item2}")).ToList();
-            if (errs.Count > 0)
+            if (errors.Count > 0)
                 return Invalid(errors);
             else
             {
