@@ -2,6 +2,16 @@
 {
     public static class Constants
     {
+
+        public const double PHI_EURO = 1.0;
+
+        public const string PHI_NAME_EURO = "gamma";
+
+        public const string COMP_DESIGN_RESIST_EURO = "Pn/gamma";
+
+        public const string MOM_DESIGN_RESIST_EURO = "Mn/gamma";
+
+
         public const double PHI_C_AISI = 0.85;
 
         public const double PHI_B_AISI = 0.9;

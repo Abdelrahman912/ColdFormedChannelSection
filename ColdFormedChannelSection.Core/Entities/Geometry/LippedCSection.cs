@@ -2,7 +2,7 @@
 
 namespace ColdFormedChannelSection.Core.Entities
 {
-    public class LippedCSection : Section
+    public class LippedCSection : CSection
     {
         public LippedCSection(SectionDimension dimensions, CSectionProperties properties) 
             : base(dimensions, properties)

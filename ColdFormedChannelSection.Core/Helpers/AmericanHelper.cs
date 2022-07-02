@@ -79,7 +79,7 @@ namespace ColdFormedChannelSection.Core.Helpers
         {
             var result = from Pn in section.AsAISICompressionResistance(material, bracingConditions)
                          from Mn in section.AsAISIMomentResistance(material, bracingConditions)
-                         select section.AsAISIInteractionResistance(material, bracingConditions, pu, mu, Pn, Mn, () => section.GetAISIReducedArea(material).Ae);
+                         select section.AsAISIInteractionResistance(material, bracingConditions, pu, mu, Pn, Mn, () => section.GetAISIReducedArea(material).AreaEffective);
             return result;
         }
 
@@ -87,7 +87,7 @@ namespace ColdFormedChannelSection.Core.Helpers
         {
             var result = from Pn in section.AsAISICompressionResistance(material, bracingConditions)
                          from Mn in section.AsAISIMomentResistance(material, bracingConditions)
-                         select section.AsAISIInteractionResistance(material, bracingConditions, pu, mu, Pn, Mn, () => section.GetAISIReducedArea(material).Ae);
+                         select section.AsAISIInteractionResistance(material, bracingConditions, pu, mu, Pn, Mn, () => section.GetAISIReducedArea(material).AreaEffective);
             return result;
         }
 

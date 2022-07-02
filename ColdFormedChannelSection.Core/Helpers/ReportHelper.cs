@@ -231,7 +231,6 @@ namespace ColdFormedChannelSection.Core.Helpers
         }
 
 
-
         public static ListReportSection AsUnStiffenedReportSection(this LocalDSMomentDto dto)
         {
             var items = new List<ReportItem>()
@@ -290,7 +289,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var squashSection = new ListReportSection("Yield Load", squash_items);
             var nominalSection = new ListReportSection("Nominal Flexural Strength", nominalItems);
             var designSection = new ListReportSection("Design Load", designItems);
-            var sections = new List<IReportSection>() { dimSection,  elasticSection, nominalSection, squashSection, designSection };
+            var sections = new List<IReportSection>() { dimSection, elasticSection, nominalSection, squashSection, designSection };
             var report = new Report(UnitSystems.KIPINCH, "Direct Strength - Compression", sections);
             return report;
         }
@@ -298,16 +297,16 @@ namespace ColdFormedChannelSection.Core.Helpers
         public static Report AsReport(this DSCompressionDto dto, LippedCSection section)
         {
             var dimSection = section.Dimensions.AsLippedReportSection();
-            return dto.AsReport( dimSection);
+            return dto.AsReport(dimSection);
         }
 
         public static Report AsReport(this DSCompressionDto dto, UnStiffenedCSection section)
         {
             var dimSection = section.Dimensions.AsLippedReportSection();
-            return dto.AsReport( dimSection);
+            return dto.AsReport(dimSection);
         }
 
-        private static Report AsReport(this DSMomentDto dto , ListReportSection lbSection , ListReportSection dimSection)
+        private static Report AsReport(this DSMomentDto dto, ListReportSection lbSection, ListReportSection dimSection)
         {
             var bucklingMomentItems = new List<ReportItem>()
             {
@@ -358,6 +357,186 @@ namespace ColdFormedChannelSection.Core.Helpers
             var lbSection = dto.LB.AsLippedReportSection();
             var dimSection = section.Dimensions.AsLippedReportSection();
             return dto.AsReport(lbSection, dimSection);
+        }
+
+        public static ListReportSection AsLippedReportSection(this LocalEuroMomentDto dto)
+        {
+            var items = new List<ReportItem>()
+            {
+                new ReportItem("Effective Heigh (ae)",dto.Ae.ToString("0.###"),Units.MM),
+                new ReportItem("Effective Flange Width (be)",dto.Be.ToString("0.###"),Units.MM),
+                new ReportItem("Effective Lip (Ce)", dto.Ce.ToString("0.###"), Units.MM),
+                new ReportItem("Reduction Factor (Xd)", dto.Xd.ToString("0.###"), Units.NONE),
+                new ReportItem("Effective Section Modulus (Ze)", dto.Ze.ToString("0.###"), Units.MM_3),
+                new ReportItem("Yield Stress (Fy)", dto.Fy.ToString("0.###"), Units.N_MM_2),
+                new ReportItem("Local Nominal Moment (Mn)", (dto.Ze * dto.Fy).ToString("0.###"), Units.N_MM),
+            };
+            var section = new ListReportSection("Local Buckling", items);
+            return section;
+        }
+
+        public static ListReportSection AsUnStiffenedReportSection(this LocalEuroMomentDto dto)
+        {
+            var items = new List<ReportItem>()
+            {
+                new ReportItem("Effective Heigh (ae)",dto.Ae.ToString("0.###"),Units.MM),
+                new ReportItem("Effective Flange Width (be)",dto.Be.ToString("0.###"),Units.MM),
+                new ReportItem("Reduction Factor (Xd)", dto.Xd.ToString("0.###"), Units.NONE),
+                new ReportItem("Effective Section Modulus (Ze)", dto.Ze.ToString("0.###"), Units.MM_3),
+                new ReportItem("Yield Stress (Fy)", dto.Fy.ToString("0.###"), Units.N_MM_2),
+                new ReportItem("Local Nominal Moment (Mn)", (dto.Ze * dto.Fy).ToString("0.###"), Units.N_MM),
+            };
+            var section = new ListReportSection("Local Buckling", items);
+            return section;
+        }
+
+        public static ListReportSection AsReportSection(this LTBEuroMomentDto dto)
+        {
+            var items = new List<ReportItem>()
+            {
+                new ReportItem("Lateral Torsional Section Modulus (Z)",dto.Z.ToString("0.###"),Units.MM_3),
+                new ReportItem("Xlt",dto.X.ToString("0.###"),Units.NONE),
+                new ReportItem("Lateral Torsional Stress (F)",dto.F.ToString("0.###"),Units.N_MM_2),
+                new ReportItem("Lateral Torsional Nominal Moment (Mn)",dto.NominalStrength.ToString("0.###"),Units.N_MM),
+
+            };
+            var section = new ListReportSection("Lateral Torsional Buckling", items);
+            return section;
+        }
+
+        private static Report AsReport(this EuroMomentDto dto, ListReportSection lbSection, ListReportSection dimSection)
+        {
+            var ltbSection = dto.LTB.AsReportSection();
+            var designItems = new List<ReportItem>()
+            {
+                new ReportItem("Governing Case",dto.GoverningCase.FailureMode.GetDescription(),Units.NONE),
+                new ReportItem("Nominal Moment",dto.GoverningCase.NominalStrength.ToString("0.###"),Units.N_MM),
+                new ReportItem("gamma",(PHI_EURO).ToString("0.###"),Units.NONE),
+                new ReportItem("Design Moment (Mn/gamma)",(PHI_EURO*dto.GoverningCase.NominalStrength).ToString("0.###"),Units.N_MM)
+            };
+            var designSection = new ListReportSection("Design moment", designItems);
+            var sections = new List<IReportSection>() { dimSection, lbSection, ltbSection, designSection };
+            var report = new Report(UnitSystems.NMM, "Euro Code - Moment", sections);
+            return report;
+        }
+
+        public static Report AsReport(this EuroMomentDto dto, LippedCSection section)
+        {
+            var dimSection = section.Dimensions.AsLippedReportSection();
+            var lbSection = dto.LB.AsLippedReportSection();
+            return dto.AsReport(lbSection, dimSection);
+        }
+
+        public static Report AsReport(this EuroMomentDto dto, UnStiffenedCSection section)
+        {
+            var dimSection = section.Dimensions.AsLippedReportSection();
+            var lbSection = dto.LB.AsLippedReportSection();
+            return dto.AsReport(lbSection, dimSection);
+        }
+
+        public static ListReportSection AsLippedReportSection(this LocalEuroCompressionDto dto)
+        {
+            var items = new List<ReportItem>()
+            {
+                 new ReportItem("Kw",dto.Kw.ToString("0.###"),Units.NONE),
+                new ReportItem("Effective Height (ae)",dto.Ae.ToString("0.###"),Units.MM),
+                new ReportItem("Kf",dto.Kf.ToString("0.###"),Units.NONE),
+                new ReportItem("Effective Flange Width (be)",dto.Be.ToString("0.###"),Units.MM),
+                new ReportItem("Effective Lip (ce)",dto.Ce.ToString("0.###"),Units.MM),
+                new ReportItem("Reduction Factor (Xd)",dto.Xd.ToString("0.###"),Units.NONE),
+                new ReportItem("Effective Area (Ae)",dto.AreaEffective.ToString("0.###"),Units.MM_2),
+                new ReportItem("Yield Stress (Fy)",dto.Fy.ToString("0.###"),Units.N_MM_2),
+                new ReportItem("Nominal Load (Pn)",(dto.Fy*dto.AreaEffective).ToString("0.###"),Units.N),
+            };
+            var section = new ListReportSection("Local Buckling", items);
+            return section;
+        }
+
+        public static ListReportSection AsUnStiffenedReportSection(this LocalEuroCompressionDto dto)
+        {
+            var items = new List<ReportItem>()
+            {
+                 new ReportItem("Kw",dto.Kw.ToString("0.###"),Units.NONE),
+                new ReportItem("Effective Height (ae)",dto.Ae.ToString("0.###"),Units.MM),
+                new ReportItem("Kf",dto.Kf.ToString("0.###"),Units.NONE),
+                new ReportItem("Effective Flange Width (be)",dto.Be.ToString("0.###"),Units.MM),
+                new ReportItem("Reduction Factor (Xd)",dto.Xd.ToString("0.###"),Units.NONE),
+                new ReportItem("Effective Area (Ae)",dto.AreaEffective.ToString("0.###"),Units.MM_2),
+                new ReportItem("Yield Stress (Fy)",dto.Fy.ToString("0.###"),Units.N_MM_2),
+                new ReportItem("Nominal Load (Pn)",(dto.Fy*dto.AreaEffective).ToString("0.###"),Units.N),
+            };
+            var section = new ListReportSection("Local Buckling", items);
+            return section;
+        }
+
+        public static ListReportSection AsReportSection(this FBEuroCompressionDto dto)
+        {
+            var items = new List<ReportItem>()
+            {
+                new ReportItem("X",dto.X.ToString("0.###"),Units.NONE),
+                new ReportItem("Flexural Stress (X.Fy)",(dto.X*dto.Fy).ToString("0.###"),Units.N_MM_2),
+                new ReportItem("Flexural Area (A)",dto.A.ToString("0.###"),Units.MM_2),
+                new ReportItem("Nominal Load (Pn)",dto.NominalStrength.ToString("0.###"),Units.N)
+            };
+            var section = new ListReportSection("Flexural Buckling", items);
+            return section;
+        }
+
+        public static ListReportSection AsReportSection(this TBEuroCompressionDto dto)
+        {
+            var items = new List<ReportItem>()
+            {
+                new ReportItem("Xt",dto.X.ToString("0.###"),Units.NONE),
+                new ReportItem("Torsional Stress (Xt.Fy)",(dto.X*dto.Fy).ToString("0.###"),Units.N_MM_2),
+                new ReportItem("Torsional Area (Ae)",dto.A.ToString("0.###"),Units.MM_2),
+                new ReportItem("Nominal Load (Pn)",dto.NominalStrength.ToString("0.###"),Units.N)
+            };
+            var section = new ListReportSection("Torsional Buckling",items);
+            return section;
+        }
+
+        public static ListReportSection AsReportSection(this FTBEuroCompressionDto dto)
+        {
+            var items = new List<ReportItem>()
+            {
+                new ReportItem("Xft",dto.X.ToString("0.###"),Units.NONE),
+                new ReportItem("Torsional Flexural Stress (Xft.Fy)",(dto.X*dto.Fy).ToString("0.###"),Units.N_MM_2),
+                new ReportItem("Torsional Flexural Area (Ae)",dto.A.ToString("0.###"),Units.MM_2),
+                new ReportItem("Nominal Load (Pn)",dto.NominalStrength.ToString("0.###"),Units.N)
+            };
+            var section = new ListReportSection("Torsional Flexural Buckling", items);
+            return section;
+        }
+
+        public static Report AsReport(this EuroCompressionDto dto, LippedCSection section)
+        {
+            var dimSection = section.Dimensions.AsLippedReportSection();
+            var lbSection = dto.LB.AsLippedReportSection();
+            return dto.AsReport(lbSection, dimSection);
+        }
+
+        public static Report AsReport(this EuroCompressionDto dto, UnStiffenedCSection section)
+        {
+            var dimSection = section.Dimensions.AsLippedReportSection();
+            var lbSection = dto.LB.AsLippedReportSection();
+            return dto.AsReport(lbSection, dimSection);
+        }
+
+        public static Report AsReport(this EuroCompressionDto dto, ListReportSection lbSection, ListReportSection dimSection)
+        {
+            var fbSection = dto.FB.AsReportSection();
+            var tbSection = dto.TB.AsReportSection();
+            var ftbSection = dto.FTB.AsReportSection();
+            var designItems = new List<ReportItem>()
+            {
+                new ReportItem("Governing Case",dto.GoverningCase.FailureMode.GetDescription(),Units.NONE),
+                new ReportItem("Nominal Load (Pn)",dto.GoverningCase.NominalStrength.ToString("0.###"),Units.N),
+                new ReportItem("Gamma",(PHI_EURO).ToString("0.###"),Units.NONE),
+                new ReportItem("Design Load (Pn/gamma)",dto.GoverningCase.NominalStrength.ToString("0.###"),Units.N),
+            };
+            var designSection = new ListReportSection("Euro Code - Compression",designItems);
+            var sections = new List<IReportSection>() { dimSection, lbSection, fbSection, tbSection, ftbSection, designSection };
+            return new Report(UnitSystems.NMM, "Euro Code - Compression", sections);
         }
 
     }
