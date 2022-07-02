@@ -539,5 +539,184 @@ namespace ColdFormedChannelSection.Core.Helpers
             return new Report(UnitSystems.NMM, "Euro Code - Compression", sections);
         }
 
+        public static ListReportSection AsLippedReportSection(this LocalEgyptMomentDto dto)
+        {
+            var items = new List<ReportItem>()
+            {
+                new ReportItem("Effective Height (ae)",dto.Ae.ToString("0.###"),Units.CM),
+                new ReportItem("Effective Flange Width (be)",dto.Be.ToString("0.###"),Units.CM),
+                new ReportItem("Effective Lip (ce)", dto.Ce.ToString("0.###"), Units.CM)
+            };
+            var section = new ListReportSection("Effective Section", items);
+            return section;
+        }
+
+        public static ListReportSection AsUnStiffenedSection(this LocalEgyptMomentDto dto)
+        {
+            var items = new List<ReportItem>()
+            {
+                new ReportItem("Effective Height (ae)",dto.Ae.ToString("0.###"),Units.CM),
+                new ReportItem("Effective Flange Width (be)",dto.Be.ToString("0.###"),Units.CM),
+            };
+            var section = new ListReportSection("Effective Section", items);
+            return section;
+        }
+
+        public static ListReportSection AsReportSection(this EgyptMomentLBDto dto)
+        {
+            var items = new List<ReportItem>()
+                {
+                    new ReportItem("Flange Slenderness Ratio (lambadaF)",dto.LambdaF.ToString("0.###"),Units.NONE),
+                    new ReportItem("Nominal Moment (Mn)",dto.GoverningCase.NominalStrength.ToString("0.###"),Units.TON_CM)
+                };
+            var section = new ListReportSection("Nominal Moment" , items);
+            return section;
+        }
+
+        public static ListReportSection AsReportSection(this EgyptMomentLTBDto dto)
+        {
+            var items = new List<ReportItem>()
+                {
+                    new ReportItem("Local Section Modulus",dto.ZLocal.ToString("0.###"),Units.CM_3),
+                    new ReportItem("Local Stress (F)",(dto.FLocal).ToString("0.###"),Units.TON_CM_2),
+                    new ReportItem("Local Nominal Moment (Mn)",dto.MnLocal.ToString("0.###"),Units.TON_CM),
+                    new ReportItem("Lateral Torsional Modulus (Z)",dto.ZLTB.ToString("0.###"),Units.CM_3),
+                    new ReportItem("Lateral Torsional Stress (F)",dto.FLTB.ToString("0.###"),Units.TON_CM_2),
+                    new ReportItem("Lateral Torsional Nominal Moment (Mn)",dto.MnLTB.ToString("0.###"),Units.TON_CM)
+                };
+            var section = new ListReportSection("Nominal Moment", items);
+            return section;
+        }
+
+        private static Report AsReport(this EgyptMomentDto dto,ListReportSection lbSection,ListReportSection dimSection)
+        {
+            var nominalSection = dto.GoverningCase.AsReportSection();
+            var designItems = new List<ReportItem>()
+            {
+                new ReportItem("Governing Case",dto.GoverningCase.GoverningCase.FailureMode.GetDescription(),Units.NONE),
+                new ReportItem("Nominal Moment (Mn)",dto.GoverningCase.GoverningCase.NominalStrength.ToString("0.###"),Units.TON_CM),
+                new ReportItem("phi",PHI_B_EGYPT.ToString("0.###"),Units.NONE),
+                new ReportItem("Design Moment",(PHI_B_EGYPT*dto.GoverningCase.GoverningCase.NominalStrength).ToString("0.###"),Units.TON_CM)
+            };
+            var designSection = new ListReportSection("Design Moment",designItems);
+            var sections = new List<IReportSection>() { dimSection,lbSection, nominalSection, designSection };
+
+            var report = new Report(UnitSystems.TONCM, "Egyptian Code - Moment", sections);
+            return report;
+        }
+
+        public static Report AsReport(this EgyptMomentDto dto , LippedCSection section)
+        {
+            var lbSection = dto.LB.AsLippedReportSection();
+            var dimSection = section.Dimensions.AsLippedReportSection();
+            return dto.AsReport(lbSection, dimSection);
+        }
+
+        public static Report AsReport(this EgyptMomentDto dto, UnStiffenedCSection section)
+        {
+            var lbSection = dto.LB.AsUnStiffenedSection();
+            var dimSection = section.Dimensions.AsUnStiffenedReportSection();
+            return dto.AsReport(lbSection, dimSection);
+        }
+
+
+        public static ListReportSection AsLippedReportSection(this LocalEgyptCompressionDto dto)
+        {
+            var items = new List<ReportItem>()
+            {
+                new ReportItem("Kw",dto.Kw.ToString("0.###"),Units.NONE),
+                new ReportItem("Effective Height (ae)",dto.Ae.ToString("0.###"),Units.CM),
+                new ReportItem("Kf",dto.Kf.ToString("0.###"),Units.NONE),
+                new ReportItem("Effective Width (be)",dto.Be.ToString("0.###"),Units.CM),
+                new ReportItem("Kf",dto.Kc.ToString("0.###"),Units.NONE),
+                new ReportItem("Effective Lip (ce)",dto.Ce.ToString("0.###"),Units.CM),
+                new ReportItem("Effective Area (Ae)",dto.AreaEffective.ToString("0.###"),Units.CM_2),
+            };
+            var section = new ListReportSection("Local Buckling", items);
+            return section;
+        }
+
+        public static ListReportSection AsUnStiffenedReportSection(this LocalEgyptCompressionDto dto)
+        {
+            var items = new List<ReportItem>()
+            {
+                new ReportItem("Kw",dto.Kw.ToString("0.###"),Units.NONE),
+                new ReportItem("Effective Height (ae)",dto.Ae.ToString("0.###"),Units.CM),
+                new ReportItem("Kf",dto.Kf.ToString("0.###"),Units.NONE),
+                new ReportItem("Effective Width (be)",dto.Be.ToString("0.###"),Units.CM),
+                new ReportItem("Kf",dto.Kc.ToString("0.###"),Units.NONE),
+                new ReportItem("Effective Area (Ae)",dto.AreaEffective.ToString("0.###"),Units.CM_2),
+            };
+            var section = new ListReportSection("Local Buckling", items);
+            return section;
+        }
+
+        public static ListReportSection AsReportSection(this FBEgyptCompressionDto dto)
+        {
+            var items = new List<ReportItem>()
+            {
+                new ReportItem("Flexural Stress (Fcr)",dto.F.ToString("0.###"),Units.TON_CM_2),
+                new ReportItem("Flexural Area (A)",dto.A.ToString("0.###"),Units.CM_2),
+                new ReportItem("Nominal Load (Pn)",dto.NominalStrength.ToString("0.###"),Units.TON),
+
+            };
+            var section = new ListReportSection("Flexural Buckling", items);
+            return section;
+        }
+
+        public static ListReportSection AsReportSection(this TFBEgyptCompressionDto dto)
+        {
+            var items = new List<ReportItem>()
+            {
+                new ReportItem("Torsional Flexural Stress (Fcr)",dto.F.ToString("0.###"),Units.TON_CM_2),
+                new ReportItem("Torsional Flexural Area (A)",dto.A.ToString("0.###"),Units.CM_2),
+                new ReportItem("Nominal Load (Pn)",dto.NominalStrength.ToString("0.###"),Units.TON),
+            };
+            return new ListReportSection("Torsional Fleaxural Buckling",items);
+        }
+
+        public static ListReportSection AsReportSection(this TBEgyptCompressionDto dto)
+        {
+            var items = new List<ReportItem>()
+            {
+                new ReportItem("Torsional Buckling Stress (Fcrt)",dto.F.ToString("0.###"),Units.TON_CM_2),
+                new ReportItem("Torsional  Area (A)",dto.A.ToString("0.###"),Units.CM_2),
+                new ReportItem("Nominal Load (Pn)",dto.NominalStrength.ToString("0.###"),Units.TON),
+            };
+            var section = new ListReportSection("Torsional Buckling", items);
+            return section;
+        }
+
+        private static Report AsReport(this EgyptCompressionDto dto,ListReportSection lbSection , ListReportSection dimSection)
+        {
+            var fbSection = dto.FB.AsReportSection();
+            var tfbSection = dto.TFB.AsReportSection();
+            var tbSection = dto.TB.AsReportSection();
+            var designItems = new List<ReportItem>()
+            {
+                new ReportItem("Governing Case",dto.GoverningCase.FailureMode.GetDescription(),Units.NONE),
+                new ReportItem("Nomial Load (Pn)",dto.GoverningCase.NominalStrength.ToString("0.###"),Units.TON),
+                new ReportItem("phi",$"{PHI_C_EGYPT}",Units.TON),
+                new ReportItem("Design Load (phi*Pn)",$"{(PHI_C_EGYPT*dto.GoverningCase.NominalStrength).ToString("0.###")}",Units.TON),
+            };
+            var sections = new List<IReportSection> { dimSection, lbSection, fbSection, tfbSection, tbSection };
+            var report = new Report(UnitSystems.TONCM, "Egyptian Code - Compression", sections);
+            return report;
+        }
+
+        public static Report AsReport(this EgyptCompressionDto dto, LippedCSection section)
+        {
+            var lbSection = dto.LB.AsLippedReportSection();
+            var dimSection = section.Dimensions.AsLippedReportSection();
+            return dto.AsReport(lbSection, dimSection);
+        }
+
+        public static Report AsReport(this EgyptCompressionDto dto , UnStiffenedCSection section)
+        {
+            var lbSection = dto.LB.AsUnStiffenedReportSection();
+            var dimSection = section.Dimensions.AsUnStiffenedReportSection();
+            return dto.AsReport(lbSection, dimSection);
+        }
+
     }
 }

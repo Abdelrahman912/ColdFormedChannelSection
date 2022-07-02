@@ -3,6 +3,20 @@
     public static class Constants
     {
 
+        public const double PHI_C_EGYPT = 0.8;
+
+        public const double PHI_B_EGYPT = 0.85;
+
+        public const string PHI_C_NAME_EGYPT = "(phi)c";
+
+        public const string COMP_DESIGN_RESIST_EGYPT = "(phi)c * Pn";
+
+        public const string PHI_B_NAME_EGYPT = "(phi)b";
+
+        public const string MOM_DESIGN_RESIST_EGYPT = "(phi)b * Mn";
+
+
+
         public const double PHI_EURO = 1.0;
 
         public const string PHI_NAME_EURO = "gamma";

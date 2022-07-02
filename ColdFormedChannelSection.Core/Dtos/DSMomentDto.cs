@@ -33,7 +33,7 @@ namespace ColdFormedChannelSection.Core.Dtos
 
         #region Constructors
 
-        public DSMomentDto(LocalDSMomentDto lb, double mcre, double mcrd, double mnl, double mnd, double mne`)
+        public DSMomentDto(LocalDSMomentDto lb, double mcre, double mcrd, double mnl, double mnd, double mne)
         {
             LB = lb;
             Mcre = mcre;
