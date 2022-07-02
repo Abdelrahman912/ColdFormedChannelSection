@@ -3,18 +3,18 @@ using ColdFormedChannelSection.Core.Entities;
 using ColdFormedChannelSection.Core.Enums;
 using ColdFormedChannelSection.Core.Extensions;
 using CSharp.Functional.Constructs;
+using CSharp.Functional.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using static ColdFormedChannelSection.Core.Comparers.Comparers;
 using static ColdFormedChannelSection.Core.Errors.Errors;
-using CSharp.Functional.Extensions;
+using static ColdFormedChannelSection.Core.Constants;
 
 namespace ColdFormedChannelSection.Core.Helpers
 {
     public static class DirectStrengthHelper
     {
-       
+
 
 
         #region Moment & Compression
@@ -33,22 +33,22 @@ namespace ColdFormedChannelSection.Core.Helpers
             var Pex = (Math.PI.Power(2) * E * Ix) / (Kx * Lx).Power(2);
             var alpha_x = 1 - (pu / Pex);
 
-            var loadRatio = (pu / (PHI_C * pn));
+            var loadRatio = (pu / (PHI_C_DS * pn));
             var ieName = "";
             var ie = 0.0;
             if (loadRatio <= 0.15)
             {
-                ie = (pu / (PHI_C * pn)) + (mu / (PHI_B * mn));
+                ie = (pu / (PHI_C_DS * pn)) + (mu / (PHI_B_DS * mn));
                 //tex:
                 //$$ \frac {P_u}{\phi_c P_n} + \frac {M_u} {\phi_b M_n} $$
                 ieName = "\\frac {P_u}{\\phi_c P_n} + \\frac {M_u} {\\phi_b M_n}";
             }
             else
             {
-                var ie_1 = (pu / (PHI_C * pn)) + ((Cm * mu) / (PHI_B * mn * alpha_x));
+                var ie_1 = (pu / (PHI_C_DS * pn)) + ((Cm * mu) / (PHI_B_DS * mn * alpha_x));
                 var Ae = getAe();
                 var Pno = Ae * Fy;
-                var ie_2 = (pu / (PHI_C * Pno)) + (mu / (PHI_B * mn));
+                var ie_2 = (pu / (PHI_C_DS * Pno)) + (mu / (PHI_B_DS * mn));
                 ie = Math.Max(ie_1, ie_2);
                 if (ie_1 > ie_2)
                 {
@@ -71,59 +71,90 @@ namespace ColdFormedChannelSection.Core.Helpers
             return new ResistanceInteractionOutput(pu, pn, mu, mn, ieName, ie, "kip.in", "kip", report);
         }
 
-        public static ResistanceInteractionOutput AsDSInteractionResistance(this LippedCSection section, Material material, LengthBracingConditions bracingConditions, double pu, double mu)
+        public static Validation<ResistanceInteractionOutput> AsDSInteractionResistance(this LippedCSection section, Material material, LengthBracingConditions bracingConditions, double pu, double mu)
         {
-            var Pn = section.AsDSCompressionResistance(material, bracingConditions);
-            var Mn = section.AsDSMomentResistance(material, bracingConditions);
-            return section.AsDSInteractionResistance(material, bracingConditions, pu, mu, Pn, Mn, () => section.GetAISIReducedArea(material).Ae);
+           var result =  from Pn in section.AsDSCompressionResistance(material, bracingConditions)
+                         from Mn in section.AsDSMomentResistance(material, bracingConditions)
+                         select section.AsDSInteractionResistance(material, bracingConditions, pu, mu, Pn, Mn, () => section.GetAISIReducedArea(material).Ae);
+            return result;
         }
 
-        public static ResistanceInteractionOutput AsDSInteractionResistance(this UnStiffenedCSection section, Material material, LengthBracingConditions bracingConditions, double pu, double mu)
+        public static Validation<ResistanceInteractionOutput> AsDSInteractionResistance(this UnStiffenedCSection section, Material material, LengthBracingConditions bracingConditions, double pu, double mu)
         {
-            var Pn = section.AsDSCompressionResistance(material, bracingConditions);
-            var Mn = section.AsDSMomentResistance(material, bracingConditions);
-            return section.AsDSInteractionResistance(material, bracingConditions, pu, mu, Pn, Mn, () => section.GetAISIReducedArea(material).Ae);
+            var result = from Pn in section.AsDSCompressionResistance(material, bracingConditions)
+                         from Mn in section.AsDSMomentResistance(material, bracingConditions)
+                         select section.AsDSInteractionResistance(material, bracingConditions, pu, mu, Pn, Mn, () => section.GetAISIReducedArea(material).Ae);
+            return result;
         }
 
         #endregion
 
         #region Compression
 
-        public static CompressionResistanceOutput AsDSCompressionResistance(this LippedCSection lippedSection, Material material, LengthBracingConditions bracingConditions)
+        public static Validation<CompressionResistanceOutput> AsDSCompressionResistance(this LippedCSection lippedSection, Material material, LengthBracingConditions bracingConditions)
         {
-            if (!lippedSection.IsValidForCompression())
-                return new CompressionResistanceOutput(0.0, PHI_C, PHI_C_NAME, COMP_DESIGN_RESIST, FailureMode.UNSAFE, "Kip", null);
-            var p_crl = lippedSection.GetCompressionLBResistance(material);
-            var secDimsItems = new List<ReportItem>()
-            {
-                new ReportItem("H",lippedSection.Dimensions.TotalHeightH.ToString("0.###"),Units.IN),
-                new ReportItem("B",lippedSection.Dimensions.TotalFlangeWidthB.ToString("0.###"),Units.IN),
-                new ReportItem("R",lippedSection.Dimensions.InternalRadiusR.ToString("0.###"),Units.IN),
-                new ReportItem("t",lippedSection.Dimensions.ThicknessT.ToString("0.###"),Units.IN),
-                new ReportItem("C",lippedSection.Dimensions.TotalFoldWidthC.ToString("0.###"),Units.IN)
-            };
-            var secDimSection = new ListReportSection("Section Dimensions", secDimsItems);
-            return lippedSection.AsCompressionResistance(material, bracingConditions, p_crl, secDimSection);
+            //if (!lippedSection.IsValidForCompression())
+            //    return new CompressionResistanceOutput(0.0, PHI_C, PHI_C_NAME, COMP_DESIGN_RESIST, FailureMode.UNSAFE, "Kip", null);
+            //var p_crl = lippedSection.GetCompressionLBResistance(material);
+            //var secDimsItems = new List<ReportItem>()
+            //{
+            //    new ReportItem("H",lippedSection.Dimensions.TotalHeightH.ToString("0.###"),Units.IN),
+            //    new ReportItem("B",lippedSection.Dimensions.TotalFlangeWidthB.ToString("0.###"),Units.IN),
+            //    new ReportItem("R",lippedSection.Dimensions.InternalRadiusR.ToString("0.###"),Units.IN),
+            //    new ReportItem("t",lippedSection.Dimensions.ThicknessT.ToString("0.###"),Units.IN),
+            //    new ReportItem("C",lippedSection.Dimensions.TotalFoldWidthC.ToString("0.###"),Units.IN)
+            //};
+            //var secDimSection = new ListReportSection("Section Dimensions", secDimsItems);
+            //return lippedSection.AsCompressionResistance(material, bracingConditions, p_crl, secDimSection);
+            var result = from valid in lippedSection.IsValidForCompression()
+                         select lippedSection.AsCompressionDto(material, bracingConditions).AsOutput(lippedSection);
+            return result;
         }
 
-        public static CompressionResistanceOutput AsDSCompressionResistance(this UnStiffenedCSection unstiffenedSection, Material material, LengthBracingConditions bracingConditions)
+        public static Validation<CompressionResistanceOutput> AsDSCompressionResistance(this UnStiffenedCSection unstiffenedSection, Material material, LengthBracingConditions bracingConditions)
         {
-            if (!unstiffenedSection.IsValidForCompression())
-                return new CompressionResistanceOutput(0.0, PHI_C, PHI_C_NAME, COMP_DESIGN_RESIST, FailureMode.UNSAFE, "Kip", null);
-            var p_crl = unstiffenedSection.GetCompressionLBResistance(material);
-            var secDimsItems = new List<ReportItem>()
-            {
-                new ReportItem("H",unstiffenedSection.Dimensions.TotalHeightH.ToString("0.###"),Units.IN),
-                new ReportItem("B",unstiffenedSection.Dimensions.TotalFlangeWidthB.ToString("0.###"),Units.IN),
-                new ReportItem("R",unstiffenedSection.Dimensions.InternalRadiusR.ToString("0.###"),Units.IN),
-                new ReportItem("t",unstiffenedSection.Dimensions.ThicknessT.ToString("0.###"),Units.IN),
-            };
-            var secDimSection = new ListReportSection("Section Dimensions", secDimsItems);
-            return unstiffenedSection.AsCompressionResistance(material, bracingConditions, p_crl, secDimSection);
+            //if (!unstiffenedSection.IsValidForCompression())
+            //    return new CompressionResistanceOutput(0.0, PHI_C, PHI_C_NAME, COMP_DESIGN_RESIST, FailureMode.UNSAFE, "Kip", null);
+            //var p_crl = unstiffenedSection.GetCompressionLBResistance(material);
+            //var secDimsItems = new List<ReportItem>()
+            //{
+            //    new ReportItem("H",unstiffenedSection.Dimensions.TotalHeightH.ToString("0.###"),Units.IN),
+            //    new ReportItem("B",unstiffenedSection.Dimensions.TotalFlangeWidthB.ToString("0.###"),Units.IN),
+            //    new ReportItem("R",unstiffenedSection.Dimensions.InternalRadiusR.ToString("0.###"),Units.IN),
+            //    new ReportItem("t",unstiffenedSection.Dimensions.ThicknessT.ToString("0.###"),Units.IN),
+            //};
+            //var secDimSection = new ListReportSection("Section Dimensions", secDimsItems);
+            //return unstiffenedSection.AsCompressionResistance(material, bracingConditions, p_crl, secDimSection);
+            var result = from valid in unstiffenedSection.IsValidForCompression()
+                         select unstiffenedSection.AsCompressionDto(material, bracingConditions).AsOutput(unstiffenedSection);
+            return result;
         }
 
+        private static CompressionResistanceOutput AsOutput(this DSCompressionDto dto, LippedCSection section)
+        {
+            var report = dto.AsReport(section);
+            return new CompressionResistanceOutput(dto.GoverningCase.NominalStrength, PHI_C_DS, PHI_C_NAME_DS, COMP_DESIGN_RESIST_DS, dto.GoverningCase.FailureMode, "Kip", report);
+        }
 
-        private static CompressionResistanceOutput AsCompressionResistance(this Section section, Material material, LengthBracingConditions bracingConditions, double p_crl, ListReportSection secDimSection)
+        private static CompressionResistanceOutput AsOutput(this DSCompressionDto dto, UnStiffenedCSection section)
+        {
+            var report = dto.AsReport(section);
+            return new CompressionResistanceOutput(dto.GoverningCase.NominalStrength, PHI_C_DS, PHI_C_NAME_DS, COMP_DESIGN_RESIST_DS, dto.GoverningCase.FailureMode, "Kip", report);
+        }
+
+        private static DSCompressionDto AsCompressionDto(this LippedCSection section, Material material, LengthBracingConditions bracingConditions)
+        {
+            var p_crl = section.GetCompressionLBResistance(material);
+            return section.AsCompressionDto(material, bracingConditions, p_crl);
+        }
+
+        private static DSCompressionDto AsCompressionDto(this UnStiffenedCSection section, Material material, LengthBracingConditions bracingConditions)
+        {
+            var p_crl = section.GetCompressionLBResistance(material);
+            return section.AsCompressionDto(material, bracingConditions, p_crl);
+        }
+
+        private static DSCompressionDto AsCompressionDto(this Section section, Material material, LengthBracingConditions bracingConditions, double p_crl)
         {
             var Fy = material.Fy;
             var aPrime = section.Properties.APrime;
@@ -155,48 +186,83 @@ namespace ColdFormedChannelSection.Core.Helpers
             var Pnd = lambda_d <= 0.561
                 ? Py
                 : (1 - 0.25 * (p_crd / Py).Power(0.6)) * ((p_crd / Py).Power(0.6)) * Py;
-            var nominalLoads = new List<Tuple<double, FailureMode>>()
-            {
-                Tuple.Create(Pnl,FailureMode.LOCALBUCKLING),
-                Tuple.Create(Pne,FailureMode.GLOBALBUCKLING),
-                Tuple.Create(Pnd,FailureMode.DISTRORTIONALBUCKLING)
-            };
-            var nominalLoad = nominalLoads/*.Distinct(NominalStrengthEqualComparer)*/.OrderBy(tup => tup.Item1).First();
-            var elasticItems = new List<ReportItem>()
-            {
-                new ReportItem("Local Buckling Load (Pcrl)",p_crl.ToString("0.###"),Units.KIP),
-                new ReportItem("Distortional Buckling Load (Pcrd)",p_crd.ToString("0.###"),Units.KIP),
-                new ReportItem("Global Buckling Load (Pcre)",p_cre.ToString("0.###"),Units.KIP),
-
-            };
-            var strengthItems = new List<ReportItem>()
-            {
-                new ReportItem("Nominal Local Buckling Load (Pnl)",Pnl.ToString("0.###"),Units.KIP),
-                new ReportItem("Nominal Distortional Buckling Load (Pnd)",Pnd.ToString("0.###"),Units.KIP),
-                new ReportItem("Nominal Global Buckling Load (Pne)",Pne.ToString("0.###"),Units.KIP),
-            };
-            var squashItems = new List<ReportItem>()
-            {
-                new ReportItem("Squash Load (Py)",Py.ToString("0.###"),Units.KIP)
-            };
-            var designItems = new List<ReportItem>()
-            {
-                new ReportItem("Governing Case",nominalLoad.Item2.GetDescription(),Units.NONE),
-                new ReportItem("Nominal Load (Pn)",nominalLoad.Item1.ToString("0.###"),Units.KIP),
-                new ReportItem("phi",PHI_C.ToString("0.###"),Units.NONE),
-                new ReportItem("Design Strength (phi*Pn)",(PHI_C*nominalLoad.Item1).ToString("0.###"),Units.KIP),
-            };
-
-            var elasticSection = new ListReportSection("Elastic Buckling Load", elasticItems);
-            var squashSection = new ListReportSection("Yielding Load", squashItems);
-            var strengthSection = new ListReportSection("Nominal Axial Strength", strengthItems);
-            var designSection = new ListReportSection("Design Compression Load", designItems);
-            var sections = new List<IReportSection>() { secDimSection, elasticSection, squashSection, strengthSection, designSection };
-            var report = new Report(UnitSystems.KIPINCH, "Direct Strength - Compression", sections);
-
-            var result = new CompressionResistanceOutput(nominalLoad.Item1, PHI_C, PHI_C_NAME, COMP_DESIGN_RESIST, nominalLoad.Item2, "Kip", report);
-            return result;
+            return new DSCompressionDto(p_crl, p_crd, p_cre, Pnl, Pnd, Pne, Ag, Fy);
         }
+
+        //private static CompressionResistanceOutput AsCompressionResistance(this Section section, Material material, LengthBracingConditions bracingConditions, double p_crl, ListReportSection secDimSection)
+        //{
+        //    var Fy = material.Fy;
+        //    var aPrime = section.Properties.APrime;
+        //    var bPrime = section.Properties.BPrime;
+        //    var cPrime = section.Properties.CPrime;
+        //    var t = section.Dimensions.ThicknessT;
+
+        //    var Ag = (aPrime + 2 * bPrime + 2 * cPrime) * t;
+        //    var Py = Ag * Fy;
+
+        //    var p_crd = section.GetCompressionDBResistance(material, bracingConditions);
+        //    var p_cre = section.GetCompressionGBResistance(material, bracingConditions);
+
+        //    //Nominal axial strength (Pne) for flexural , torsional or flexural torsional buckling
+        //    var lambda_c = Math.Sqrt(Py / p_cre);
+        //    var lambda_c_squared = lambda_c.Power(2);
+        //    var Pne = lambda_c <= 1.5
+        //        ? 0.658.Power(lambda_c_squared) * Py
+        //        : (0.877 / lambda_c_squared) * Py;
+
+        //    //Nominal axial strength (Pnl) for local buckling.
+        //    var lambda_L = Math.Sqrt(Pne / p_crl);
+        //    var Pnl = lambda_L <= 0.776
+        //        ? Pne
+        //        : (1 - 0.15 * (p_crl / Pne).Power(0.4)) * (p_crl / Pne).Power(0.4) * Pne;
+
+        //    //Nominal axial strength for distortional buckling.
+        //    var lambda_d = Math.Sqrt(Py / p_crd);
+        //    var Pnd = lambda_d <= 0.561
+        //        ? Py
+        //        : (1 - 0.25 * (p_crd / Py).Power(0.6)) * ((p_crd / Py).Power(0.6)) * Py;
+        //    var nominalLoads = new List<Tuple<double, FailureMode>>()
+        //    {
+        //        Tuple.Create(Pnl,FailureMode.LOCALBUCKLING),
+        //        Tuple.Create(Pne,FailureMode.GLOBALBUCKLING),
+        //        Tuple.Create(Pnd,FailureMode.DISTRORTIONALBUCKLING)
+        //    };
+        //    var nominalLoad = nominalLoads/*.Distinct(NominalStrengthEqualComparer)*/.OrderBy(tup => tup.Item1).First();
+        //    var elasticItems = new List<ReportItem>()
+        //    {
+        //        new ReportItem("Local Buckling Load (Pcrl)",p_crl.ToString("0.###"),Units.KIP),
+        //        new ReportItem("Distortional Buckling Load (Pcrd)",p_crd.ToString("0.###"),Units.KIP),
+        //        new ReportItem("Global Buckling Load (Pcre)",p_cre.ToString("0.###"),Units.KIP),
+
+        //    };
+        //    var strengthItems = new List<ReportItem>()
+        //    {
+        //        new ReportItem("Nominal Local Buckling Load (Pnl)",Pnl.ToString("0.###"),Units.KIP),
+        //        new ReportItem("Nominal Distortional Buckling Load (Pnd)",Pnd.ToString("0.###"),Units.KIP),
+        //        new ReportItem("Nominal Global Buckling Load (Pne)",Pne.ToString("0.###"),Units.KIP),
+        //    };
+        //    var squashItems = new List<ReportItem>()
+        //    {
+        //        new ReportItem("Squash Load (Py)",Py.ToString("0.###"),Units.KIP)
+        //    };
+        //    var designItems = new List<ReportItem>()
+        //    {
+        //        new ReportItem("Governing Case",nominalLoad.Item2.GetDescription(),Units.NONE),
+        //        new ReportItem("Nominal Load (Pn)",nominalLoad.Item1.ToString("0.###"),Units.KIP),
+        //        new ReportItem("phi",PHI_C.ToString("0.###"),Units.NONE),
+        //        new ReportItem("Design Strength (phi*Pn)",(PHI_C*nominalLoad.Item1).ToString("0.###"),Units.KIP),
+        //    };
+
+        //    var elasticSection = new ListReportSection("Elastic Buckling Load", elasticItems);
+        //    var squashSection = new ListReportSection("Yielding Load", squashItems);
+        //    var strengthSection = new ListReportSection("Nominal Axial Strength", strengthItems);
+        //    var designSection = new ListReportSection("Design Compression Load", designItems);
+        //    var sections = new List<IReportSection>() { secDimSection, elasticSection, squashSection, strengthSection, designSection };
+        //    var report = new Report(UnitSystems.KIPINCH, "Direct Strength - Compression", sections);
+
+        //    var result = new CompressionResistanceOutput(nominalLoad.Item1, PHI_C, PHI_C_NAME, COMP_DESIGN_RESIST, nominalLoad.Item2, "Kip", report);
+        //    return result;
+        //}
 
         private static double GetCompressionLBResistance(this LippedCSection lippedSection, Material material)
         {
@@ -494,12 +560,14 @@ namespace ColdFormedChannelSection.Core.Helpers
 
         private static MomentResistanceOutput AsMomentOutput(this DSMomentDto dto, LippedCSection section)
         {
-            throw new NotImplementedException();
+            var report = dto.AsReport(section);
+            return new MomentResistanceOutput(dto.GoverningCase.NominalStrength, PHI_B_DS, PHI_B_NAME_DS, MOM_DESIGN_RESIST_DS, dto.GoverningCase.FailureMode, "Kip.in", report);
         }
 
-        private static MomentResistanceOutput AsMomentOutput(this DSMomentDto dto,UnStiffenedCSection section)
+        private static MomentResistanceOutput AsMomentOutput(this DSMomentDto dto, UnStiffenedCSection section)
         {
-            throw new NotImplementedException();
+            var report = dto.AsReport(section);
+            return new MomentResistanceOutput(dto.GoverningCase.NominalStrength, PHI_B_DS, PHI_B_NAME_DS, MOM_DESIGN_RESIST_DS, dto.GoverningCase.FailureMode, "Kip.in", report);
         }
 
         private static DSMomentDto AsMomentDto(this LippedCSection section, Material material, LengthBracingConditions bracingConditions)
@@ -559,79 +627,79 @@ namespace ColdFormedChannelSection.Core.Helpers
                 );
         }
 
-        private static MomentResistanceOutput AsMomentResistance(this Section section, Material material, LengthBracingConditions bracingConditions, double m_crl, List<ReportItem> bucklingItems, ListReportSection secDimSection)
-        {
-            var Zg = section.Properties.Zg;
-            var Fy = material.Fy;
+        //private static MomentResistanceOutput AsMomentResistance(this Section section, Material material, LengthBracingConditions bracingConditions, double m_crl, List<ReportItem> bucklingItems, ListReportSection secDimSection)
+        //{
+        //    var Zg = section.Properties.Zg;
+        //    var Fy = material.Fy;
 
-            var My = Zg * Fy;
+        //    var My = Zg * Fy;
 
-            var M_cre = section.GetMomentGBResistance(material, bracingConditions);
-            var M_crd = section.GetMomentDBResistance(material, bracingConditions);
+        //    var M_cre = section.GetMomentGBResistance(material, bracingConditions);
+        //    var M_crd = section.GetMomentDBResistance(material, bracingConditions);
 
-            //Nominal Flexural strength (Mne) for LTB.
-            var Mne = 0.0;
-            if (M_cre < 0.56 * My)
-            {
-                Mne = M_cre;
-            }
-            else if (M_cre > 2.78 * My)
-            {
-                Mne = My;
-            }
-            else
-            {
-                Mne = (10 / 9.0) * My * (1 - ((10 * My) / (36 * M_cre)));
-            }
+        //    //Nominal Flexural strength (Mne) for LTB.
+        //    var Mne = 0.0;
+        //    if (M_cre < 0.56 * My)
+        //    {
+        //        Mne = M_cre;
+        //    }
+        //    else if (M_cre > 2.78 * My)
+        //    {
+        //        Mne = My;
+        //    }
+        //    else
+        //    {
+        //        Mne = (10 / 9.0) * My * (1 - ((10 * My) / (36 * M_cre)));
+        //    }
 
-            //Nominal Flexural strength (Mnl) for local buckling.
-            var lambda_L = Math.Sqrt(Mne / m_crl);
-            var Mnl = lambda_L <= 0.776
-                ? Mne
-                : (1 - 0.15 * (m_crl / Mne).Power(0.4)) * (m_crl / Mne).Power(0.4) * Mne;
+        //    //Nominal Flexural strength (Mnl) for local buckling.
+        //    var lambda_L = Math.Sqrt(Mne / m_crl);
+        //    var Mnl = lambda_L <= 0.776
+        //        ? Mne
+        //        : (1 - 0.15 * (m_crl / Mne).Power(0.4)) * (m_crl / Mne).Power(0.4) * Mne;
 
-            var lambda_d = Math.Sqrt(My / M_crd);
-            var Mnd = lambda_d <= 0.673
-                ? My
-                : (1 - 0.22 * (M_crd / My).Power(0.5)) * (M_crd / My).Power(0.5) * My;
-            var nominalLoads = new List<Tuple<double, FailureMode>>()
-            {
-                Tuple.Create(Mnl,FailureMode.LOCALBUCKLING),
-                Tuple.Create(Mne,FailureMode.GLOBALBUCKLING),
-                Tuple.Create(Mnd,FailureMode.DISTRORTIONALBUCKLING)
-            };
-            var nominalLoad = nominalLoads/*.Distinct(NominalStrengthEqualComparer)*/.OrderBy(tup => tup.Item1).First();
-            bucklingItems.Add(new ReportItem("Distortional Buckling Moment (Mcrd)", M_crd.ToString("0.###"), Units.KIP_IN));
-            bucklingItems.Add(new ReportItem("Global Buckling Moment (Mcre)", M_cre.ToString("0.###"), Units.KIP_IN));
+        //    var lambda_d = Math.Sqrt(My / M_crd);
+        //    var Mnd = lambda_d <= 0.673
+        //        ? My
+        //        : (1 - 0.22 * (M_crd / My).Power(0.5)) * (M_crd / My).Power(0.5) * My;
+        //    var nominalLoads = new List<Tuple<double, FailureMode>>()
+        //    {
+        //        Tuple.Create(Mnl,FailureMode.LOCALBUCKLING),
+        //        Tuple.Create(Mne,FailureMode.GLOBALBUCKLING),
+        //        Tuple.Create(Mnd,FailureMode.DISTRORTIONALBUCKLING)
+        //    };
+        //    var nominalLoad = nominalLoads/*.Distinct(NominalStrengthEqualComparer)*/.OrderBy(tup => tup.Item1).First();
+        //    bucklingItems.Add(new ReportItem("Distortional Buckling Moment (Mcrd)", M_crd.ToString("0.###"), Units.KIP_IN));
+        //    bucklingItems.Add(new ReportItem("Global Buckling Moment (Mcre)", M_cre.ToString("0.###"), Units.KIP_IN));
 
-            var nominalItems = new List<ReportItem>()
-            {
-                new ReportItem("Nominal Local Buckling Moment (Mnl)" , Mnl.ToString("0.###"),Units.KIP_IN),
-                new ReportItem("Nominal Distortional Buckling Moment (Mnd)" , Mnd.ToString("0.###"),Units.KIP_IN),
-                new ReportItem("Nominal Global Buckling Moment (Mne)" , Mne.ToString("0.###"),Units.KIP_IN),
-            };
-            var squash_items = new List<ReportItem>()
-            {
-                new ReportItem("Squash Moment (My)",My.ToString("0.###"),Units.KIP_IN)
-            };
+        //    var nominalItems = new List<ReportItem>()
+        //    {
+        //        new ReportItem("Nominal Local Buckling Moment (Mnl)" , Mnl.ToString("0.###"),Units.KIP_IN),
+        //        new ReportItem("Nominal Distortional Buckling Moment (Mnd)" , Mnd.ToString("0.###"),Units.KIP_IN),
+        //        new ReportItem("Nominal Global Buckling Moment (Mne)" , Mne.ToString("0.###"),Units.KIP_IN),
+        //    };
+        //    var squash_items = new List<ReportItem>()
+        //    {
+        //        new ReportItem("Squash Moment (My)",My.ToString("0.###"),Units.KIP_IN)
+        //    };
 
-            var designItems = new List<ReportItem>()
-            {
-                new ReportItem("Governing Case",nominalLoad.Item2.GetDescription(),Units.NONE),
-                new ReportItem("Nominal Moment",nominalLoad.Item1.ToString("0.###"),Units.KIP_IN),
-                new ReportItem("phi",PHI_B.ToString("0.###"),Units.NONE),
-                new ReportItem("Design Moment",(PHI_B*nominalLoad.Item1).ToString("0.###"),Units.KIP_IN)
-            };
+        //    var designItems = new List<ReportItem>()
+        //    {
+        //        new ReportItem("Governing Case",nominalLoad.Item2.GetDescription(),Units.NONE),
+        //        new ReportItem("Nominal Moment",nominalLoad.Item1.ToString("0.###"),Units.KIP_IN),
+        //        new ReportItem("phi",PHI_B.ToString("0.###"),Units.NONE),
+        //        new ReportItem("Design Moment",(PHI_B*nominalLoad.Item1).ToString("0.###"),Units.KIP_IN)
+        //    };
 
-            var elasticSection = new ListReportSection("Elstic Buckling Moment", bucklingItems);
-            var nominalSection = new ListReportSection("Nominal Flexural Strength", nominalItems);
-            var designSection = new ListReportSection("Design Moment", designItems);
-            var sections = new List<IReportSection>() { secDimSection, elasticSection, nominalSection, designSection };
-            var report = new Report(UnitSystems.KIPINCH, "Direct Strength - Moment", sections);
+        //    var elasticSection = new ListReportSection("Elstic Buckling Moment", bucklingItems);
+        //    var nominalSection = new ListReportSection("Nominal Flexural Strength", nominalItems);
+        //    var designSection = new ListReportSection("Design Moment", designItems);
+        //    var sections = new List<IReportSection>() { secDimSection, elasticSection, nominalSection, designSection };
+        //    var report = new Report(UnitSystems.KIPINCH, "Direct Strength - Moment", sections);
 
-            var result = new MomentResistanceOutput(nominalLoad.Item1, PHI_B, PHI_B_NAME, MOM_DESIGN_RESIST, nominalLoad.Item2, "Kip.in", report);
-            return result;
-        }
+        //    var result = new MomentResistanceOutput(nominalLoad.Item1, PHI_B, PHI_B_NAME, MOM_DESIGN_RESIST, nominalLoad.Item2, "Kip.in", report);
+        //    return result;
+        //}
 
         public static LocalDSMomentDto GetMomentLBResistance(this LippedCSection lippedSection, Material material)
         {
