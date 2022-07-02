@@ -4,7 +4,7 @@ using static ColdFormedChannelSection.Core.Comparers.Comparers;
 
 namespace ColdFormedChannelSection.Core.Dtos
 {
-    public class AISICompressionDto
+    public class AISICompressionCDto
     {
        
         #region Properties
@@ -23,7 +23,7 @@ namespace ColdFormedChannelSection.Core.Dtos
 
         #region Constructors
 
-        public AISICompressionDto(LocalAISICompressionDto lB, FBAISICompressionDto fB, FTBAISICompressionDto fTB, TBAISICompressioDto tB)
+        public AISICompressionCDto(LocalAISICompressionDto lB, FBAISICompressionDto fB, FTBAISICompressionDto fTB, TBAISICompressioDto tB)
         {
             LB = lB;
             FB = fB;

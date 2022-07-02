@@ -11,7 +11,51 @@ namespace ColdFormedChannelSection.Core.Helpers
     public static class ReportHelper
     {
 
-        public static Report AsReport(this AISICompressionDto dto, LippedCSection section)
+        public static Report AsReport(this AISICompressionZDto dto, LippedZSection section)
+        {
+            var dimSection = section.Dimensions.AsLippedReportSection();
+            var lbSection = dto.LB.AsLippedReportSection();
+            var fbSection = dto.FB.AsReportSection();
+            var tbSection = dto.TB.AsReportSection();
+
+            var items = new List<ReportItem>()
+            {
+                new ReportItem("Governing Case",dto.GoverningCase.FailureMode.GetDescription(),Units.NONE),
+                new ReportItem("Nominal Load",dto.GoverningCase.NominalStrength.ToString("0.###"),Units.KIP),
+                new ReportItem("phi",PHI_C_AISI.ToString("0.###"),Units.NONE),
+               new ReportItem("Design Resistance",(PHI_C_AISI*dto.GoverningCase.NominalStrength).ToString("0.###"),Units.KIP),
+            };
+            var designSection = new ListReportSection("Design Compression", items);
+
+            var sections = new List<IReportSection>() { dimSection, lbSection, fbSection, tbSection, designSection };
+
+            var report = new Report(UnitSystems.KIPINCH, "AISI Code - Compression", sections);
+            return report;
+        }
+
+        public static Report AsReport(this AISICompressionZDto dto, UnStiffenedZSection section)
+        {
+            var dimSection = section.Dimensions.AsUnStiffenedReportSection();
+            var lbSection = dto.LB.AsUnStiffenedReportSection();
+            var fbSection = dto.FB.AsReportSection();
+            var tbSection = dto.TB.AsReportSection();
+
+            var items = new List<ReportItem>()
+            {
+                new ReportItem("Governing Case",dto.GoverningCase.FailureMode.GetDescription(),Units.NONE),
+                new ReportItem("Nominal Load",dto.GoverningCase.NominalStrength.ToString("0.###"),Units.KIP),
+                new ReportItem("phi",PHI_C_AISI.ToString("0.###"),Units.NONE),
+               new ReportItem("Design Resistance",(PHI_C_AISI*dto.GoverningCase.NominalStrength).ToString("0.###"),Units.KIP),
+            };
+            var designSection = new ListReportSection("Design Compression", items);
+
+            var sections = new List<IReportSection>() { dimSection, lbSection, fbSection, tbSection, designSection };
+
+            var report = new Report(UnitSystems.KIPINCH, "AISI Code - Compression", sections);
+            return report;
+        }
+
+        public static Report AsReport(this AISICompressionCDto dto, LippedCSection section)
         {
             var dimSection = section.Dimensions.AsLippedReportSection();
             var lbSection = dto.LB.AsLippedReportSection();
@@ -34,7 +78,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             return report;
         }
 
-        public static Report AsReport(this AISICompressionDto dto, UnStiffenedSection section)
+        public static Report AsReport(this AISICompressionCDto dto, UnStiffenedCSection section)
         {
             var dimSection = section.Dimensions.AsUnStiffenedReportSection();
             var lbSection = dto.LB.AsUnStiffenedReportSection();
