@@ -1,6 +1,6 @@
 ﻿namespace ColdFormedChannelSection.Core.Entities
 {
-    public abstract  class Section
+    public   class Section
     {
         
 

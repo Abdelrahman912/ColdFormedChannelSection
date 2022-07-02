@@ -34,7 +34,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             return report;
         }
 
-        public static Report AsReport(this AISICompressionDto dto, UnStiffenedCSection section)
+        public static Report AsReport(this AISICompressionDto dto, UnStiffenedSection section)
         {
             var dimSection = section.Dimensions.AsUnStiffenedReportSection();
             var lbSection = dto.LB.AsUnStiffenedReportSection();
@@ -57,7 +57,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             return report;
         }
 
-        public static Report AsReport(this AISIMomentDto dto, LippedCSection section)
+        public static Report AsReport(this AISIMomentDto dto, LippedSection section)
         {
             var dimSection = section.Dimensions.AsLippedReportSection();
             var lbSection = dto.LB.AsLippedReportSection();
@@ -77,7 +77,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             return report;
         }
 
-        public static Report AsReport(this AISIMomentDto dto, UnStiffenedCSection section)
+        public static Report AsReport(this AISIMomentDto dto, UnStiffenedSection section)
         {
             var dimSection = section.Dimensions.AsUnStiffenedReportSection();
             var lbSection = dto.LB.AsUnStiffenedReportSection();

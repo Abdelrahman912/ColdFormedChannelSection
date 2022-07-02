@@ -39,7 +39,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                              .Map(sec => new UnStiffenedZSection(sec.Dimensions, sec.Properties as ZSectionProperties));
         }
 
-        private static Validation<CSection> CaclulateCSectionProperties(this SectionDimension sectionDim, TypeOfSection channel)
+        private static Validation<Section> CaclulateCSectionProperties(this SectionDimension sectionDim, TypeOfSection channel)
         {
 
             var alpha = (int)channel;
@@ -102,13 +102,13 @@ namespace ColdFormedChannelSection.Core.Helpers
             else
             {
                 var properties = new CSectionProperties(aPrime, bPrime, cPrime, A, Ix, Zg, Iy, ix, iy, Xo, J, Cw, c, r, u, b, alpha, a);
-                var sec = new CSection(sectionDim, properties);
+                var sec = new Section(sectionDim, properties);
                 return sec;
             }
 
         }
 
-        private static Validation<ZSection> CalculateZSectionProperties(this SectionDimension secDim, TypeOfSection z)
+        private static Validation<Section> CalculateZSectionProperties(this SectionDimension secDim, TypeOfSection z)
         {
             var alpha = (int)z;
 
@@ -202,8 +202,8 @@ namespace ColdFormedChannelSection.Core.Helpers
                 return Invalid(errors);
             else
             {
-                var properties = new ZSectionProperties(aPrime, bPrime, cPrime, A, Ix, Zg, Iy, ix, iy, 0, J, Cw, c, r, u, b, alpha, a,Ix2,Iy2,Ixy,ixPrincipal,iyPrincipal,thetaPrime);
-                var sec = new ZSection(secDim, properties);
+                var properties = new ZSectionProperties(aPrime, bPrime, cPrime, A, Ix2, Zg, Iy2, ixPrincipal, iyPrincipal, 0, J, Cw, c, r, u, b, alpha, a, Ix, Iy, Ixy, ix, iy, thetaPrime);
+                var sec = new Section(secDim, properties);
                 return sec;
             }
         }

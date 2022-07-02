@@ -20,7 +20,7 @@ namespace ColdFormedChannelSection.Core.Helpers
 
         #region Moment & Compression
 
-        private static ResistanceInteractionOutput AsEgyptInteractionResistance(this CSection section , CompressionResistanceOutput Pn , MomentResistanceOutput Mn , double pu,double mu)
+        private static ResistanceInteractionOutput AsEgyptInteractionResistance(this Section section , CompressionResistanceOutput Pn , MomentResistanceOutput Mn , double pu,double mu)
         {
             //tex:
             //Load Ratio =$$ \frac {P_u} {\phi_c P_n} $$

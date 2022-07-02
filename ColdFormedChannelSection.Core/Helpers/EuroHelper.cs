@@ -57,7 +57,7 @@ namespace ColdFormedChannelSection.Core.Helpers
 
         #region Moment & Compression
 
-        private static ResistanceInteractionOutput AsEuroInteractionResistance(this CSection section, CompressionResistanceOutput Pn, MomentResistanceOutput Mn, double pu, double mu)
+        private static ResistanceInteractionOutput AsEuroInteractionResistance(this Section section, CompressionResistanceOutput Pn, MomentResistanceOutput Mn, double pu, double mu)
         {
             //tex:
             //$$ (\frac{P_u}{ P_n})^{0.8} + (\frac{M_u}{M_n})^{0.8}  $$

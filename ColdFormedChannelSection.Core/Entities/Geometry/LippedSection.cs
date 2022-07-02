@@ -1,9 +1,8 @@
 ﻿namespace ColdFormedChannelSection.Core.Entities
 {
-    public class ZSection : Section
+    public class LippedSection : Section
     {
-
-        public ZSection(SectionDimension dimensions, ZSectionProperties properties) 
+        public LippedSection(SectionDimension dimensions, SectionProperties properties) 
             : base(dimensions, properties)
         {
         }
