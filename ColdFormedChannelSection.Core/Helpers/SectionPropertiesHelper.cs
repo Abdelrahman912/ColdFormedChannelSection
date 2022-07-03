@@ -202,7 +202,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 return Invalid(errors);
             else
             {
-                var properties = new ZSectionProperties(aPrime, bPrime, cPrime, A, Ix2, Zg, Iy2, ixPrincipal, iyPrincipal, 0, J, Cw, c, r, u, b, alpha, a, Ix, Iy, Ixy, ix, iy, thetaPrime);
+                var properties = new ZSectionProperties(aPrime, bPrime, cPrime, A, Ix, Zg, Iy, ixPrincipal, iyPrincipal, 0, J, Cw, c, r, u, b, alpha, a, Ix2, Iy2, Ixy, ix, iy, thetaPrime);
                 var sec = new Section(secDim, properties);
                 return sec;
             }
