@@ -338,13 +338,13 @@ namespace ColdFormedChannelSection.Core.Helpers
             return report;
         }
 
-        public static Report AsReport(this DSCompressionDto dto, LippedCSection section)
+        public static Report AsReport(this DSCompressionDto dto, LippedSection section)
         {
             var dimSection = section.Dimensions.AsLippedReportSection();
             return dto.AsReport(dimSection);
         }
 
-        public static Report AsReport(this DSCompressionDto dto, UnStiffenedCSection section)
+        public static Report AsReport(this DSCompressionDto dto, UnStiffenedSection section)
         {
             var dimSection = section.Dimensions.AsLippedReportSection();
             return dto.AsReport(dimSection);
@@ -389,14 +389,14 @@ namespace ColdFormedChannelSection.Core.Helpers
             return report;
         }
 
-        public static Report AsReport(this DSMomentDto dto, LippedCSection section)
+        public static Report AsReport(this DSMomentDto dto, LippedSection section)
         {
             var lbSection = dto.LB.AsLippedReportSection();
             var dimSection = section.Dimensions.AsLippedReportSection();
             return dto.AsReport(lbSection, dimSection);
         }
 
-        public static Report AsReport(this DSMomentDto dto, UnStiffenedCSection section)
+        public static Report AsReport(this DSMomentDto dto, UnStiffenedSection  section)
         {
             var lbSection = dto.LB.AsLippedReportSection();
             var dimSection = section.Dimensions.AsLippedReportSection();
