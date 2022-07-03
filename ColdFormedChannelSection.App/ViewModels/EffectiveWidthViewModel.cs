@@ -136,6 +136,13 @@ namespace ColdFormedChannelSection.App.ViewModels
                 [KeyValuePair.Create(StrainingActions.COMPRESSION, SteelSection.C_LIPPED)] = EgyptDesignCLippedComp,
                 [KeyValuePair.Create(StrainingActions.MOMENT, SteelSection.C_LIPPED)] = EgyptDesignCLippedMoment,
                 [KeyValuePair.Create(StrainingActions.MOMENT_COMPRESSION, SteelSection.C_LIPPED)] = EgyptDesignCLippedMomentCompression,
+
+                [KeyValuePair.Create(StrainingActions.COMPRESSION, SteelSection.Z_UNSTIFFENED)] = EgyptDesignZUnstiffComp,
+                [KeyValuePair.Create(StrainingActions.MOMENT, SteelSection.Z_UNSTIFFENED)] = EgyptDesignZUnstiffMoment,
+                [KeyValuePair.Create(StrainingActions.MOMENT_COMPRESSION, SteelSection.Z_UNSTIFFENED)] = EgyptDesignZUnstiffMomentCompression,
+                [KeyValuePair.Create(StrainingActions.COMPRESSION, SteelSection.Z_LIPPED)] = EgyptDesignZLippedComp,
+                [KeyValuePair.Create(StrainingActions.MOMENT, SteelSection.Z_LIPPED)] = EgyptDesignZLippedMoment,
+                [KeyValuePair.Create(StrainingActions.MOMENT_COMPRESSION, SteelSection.Z_LIPPED)] = EgyptDesignZLippedMomentCompression,
             };
             DesignEuroDict = new Dictionary<KeyValuePair<StrainingActions, SteelSection>, Func<EffectiveWidthViewModel, Material, LengthBracingConditions, OutputBase>>()
             {
@@ -145,6 +152,13 @@ namespace ColdFormedChannelSection.App.ViewModels
                 [KeyValuePair.Create(StrainingActions.COMPRESSION, SteelSection.C_LIPPED)] = EuroDesignCLippedComp,
                 [KeyValuePair.Create(StrainingActions.MOMENT, SteelSection.C_LIPPED)] = EuroDesignCLippedMoment,
                 [KeyValuePair.Create(StrainingActions.MOMENT_COMPRESSION, SteelSection.C_LIPPED)] = EuroDesignCLippedMomentCompression,
+
+                [KeyValuePair.Create(StrainingActions.COMPRESSION, SteelSection.Z_UNSTIFFENED)] = EuroDesignZUnstiffComp,
+                [KeyValuePair.Create(StrainingActions.MOMENT, SteelSection.Z_UNSTIFFENED)] = EuroDesignZUnstiffMoment,
+                [KeyValuePair.Create(StrainingActions.MOMENT_COMPRESSION, SteelSection.Z_UNSTIFFENED)] = EuroDesignZUnstiffMomentCompression,
+                [KeyValuePair.Create(StrainingActions.COMPRESSION, SteelSection.Z_LIPPED)] = EuroDesignZLippedComp,
+                [KeyValuePair.Create(StrainingActions.MOMENT, SteelSection.Z_LIPPED)] = EuroDesignZLippedMoment,
+                [KeyValuePair.Create(StrainingActions.MOMENT_COMPRESSION, SteelSection.Z_LIPPED)] = EuroDesignZLippedMomentCompression,
             };
             DesignAISIDict = new Dictionary<KeyValuePair<StrainingActions, SteelSection>, Func<EffectiveWidthViewModel, Material, LengthBracingConditions, OutputBase>>()
             {
@@ -154,6 +168,13 @@ namespace ColdFormedChannelSection.App.ViewModels
                 [KeyValuePair.Create(StrainingActions.COMPRESSION, SteelSection.C_LIPPED)] = AISIDesignCLippedComp,
                 [KeyValuePair.Create(StrainingActions.MOMENT, SteelSection.C_LIPPED)] = AISIDesignCLippedMoment,
                 [KeyValuePair.Create(StrainingActions.MOMENT_COMPRESSION, SteelSection.C_LIPPED)] = AISIDesignCLippedMomentCompression,
+
+                [KeyValuePair.Create(StrainingActions.COMPRESSION, SteelSection.Z_UNSTIFFENED)] = AISIDesignZUnstiffComp,
+                [KeyValuePair.Create(StrainingActions.MOMENT, SteelSection.Z_UNSTIFFENED)] = AISIDesignZUnstiffMoment,
+                [KeyValuePair.Create(StrainingActions.MOMENT_COMPRESSION, SteelSection.Z_UNSTIFFENED)] = AISIDesignZUnstiffMomentCompression,
+                [KeyValuePair.Create(StrainingActions.COMPRESSION, SteelSection.Z_LIPPED)] = AISIDesignZLippedComp,
+                [KeyValuePair.Create(StrainingActions.MOMENT, SteelSection.Z_LIPPED)] = AISIDesignZLippedMoment,
+                [KeyValuePair.Create(StrainingActions.MOMENT_COMPRESSION, SteelSection.Z_LIPPED)] = AISIDesignZLippedMomentCompression,
             };
             DesignDict = new Dictionary<DesignCode, Dictionary<KeyValuePair<StrainingActions, SteelSection>, Func<EffectiveWidthViewModel, Material, LengthBracingConditions, OutputBase>>>()
             {
