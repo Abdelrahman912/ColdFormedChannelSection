@@ -30,10 +30,10 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         private readonly Dictionary<SteelSection, string> _sectionImageDict = new Dictionary<SteelSection, string>()
         {
-            [SteelSection.C_LIPPED] = "../Resources/lipped C.jpg",
-            [SteelSection.C_UNSTIFFENED] = "../Resources/Unstiffened C.jpg",
-            [SteelSection.Z_LIPPED] = "../Resources/lipped C.jpg",
-            [SteelSection.Z_UNSTIFFENED] = "../Resources/Unstiffened C.jpg",
+            [SteelSection.C_LIPPED] = "../Resources/C Lipped.jpg",
+            [SteelSection.C_UNSTIFFENED] = "../Resources/C Unstiffened.jpg",
+            [SteelSection.Z_LIPPED] = "../Resources/Z Lipped.jpg",
+            [SteelSection.Z_UNSTIFFENED] = "../Resources/Z Unstiffened.jpg",
         };
 
         #endregion

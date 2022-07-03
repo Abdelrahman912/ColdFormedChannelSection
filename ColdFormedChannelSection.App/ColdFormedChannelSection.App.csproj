@@ -19,10 +19,23 @@
   
     
   <ItemGroup>
+    <None Remove="UI\Resources\C Lipped.jpg" />
+    <None Remove="UI\Resources\C Unstiffened.jpg" />
     <None Remove="UI\Resources\Intro Icon.png" />
     <None Remove="UI\Resources\lipped C.jpg" />
     <None Remove="UI\Resources\Lipped.png" />
     <None Remove="UI\Resources\Unstiffened C.jpg" />
+    <None Remove="UI\Resources\Z Lipped.jpg" />
+    <None Remove="UI\Resources\Z Unstiffened.jpg" />
+  </ItemGroup>
+    
+  
+    
+  <ItemGroup>
+    <Resource Include="UI\Resources\C Lipped.jpg" />
+    <Resource Include="UI\Resources\C Unstiffened.jpg" />
+    <Resource Include="UI\Resources\Z Lipped.jpg" />
+    <Resource Include="UI\Resources\Z Unstiffened.jpg" />
   </ItemGroup>
 
   <ItemGroup>
