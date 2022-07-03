@@ -761,7 +761,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             return section;
         }
 
-        private static Report AsReport(this EgyptCompressionDto dto,ListReportSection lbSection , ListReportSection dimSection)
+        private static Report AsReport(this EgyptCompressionCDto dto,ListReportSection lbSection , ListReportSection dimSection)
         {
             var fbSection = dto.FB.AsReportSection();
             var tfbSection = dto.TFB.AsReportSection();
@@ -778,14 +778,45 @@ namespace ColdFormedChannelSection.Core.Helpers
             return report;
         }
 
-        public static Report AsReport(this EgyptCompressionDto dto, LippedCSection section)
+        public static Report AsReport(this EgyptCompressionCDto dto, LippedCSection section)
         {
             var lbSection = dto.LB.AsLippedReportSection();
             var dimSection = section.Dimensions.AsLippedReportSection();
             return dto.AsReport(lbSection, dimSection);
         }
 
-        public static Report AsReport(this EgyptCompressionDto dto , UnStiffenedCSection section)
+        public static Report AsReport(this EgyptCompressionCDto dto , UnStiffenedCSection section)
+        {
+            var lbSection = dto.LB.AsUnStiffenedReportSection();
+            var dimSection = section.Dimensions.AsUnStiffenedReportSection();
+            return dto.AsReport(lbSection, dimSection);
+        }
+
+
+        private static Report AsReport(this EgyptCompressionZDto dto, ListReportSection lbSection, ListReportSection dimSection)
+        {
+            var fbSection = dto.FB.AsReportSection();
+            var tbSection = dto.TB.AsReportSection();
+            var designItems = new List<ReportItem>()
+            {
+                new ReportItem("Governing Case",dto.GoverningCase.FailureMode.GetDescription(),Units.NONE),
+                new ReportItem("Nomial Load (Pn)",dto.GoverningCase.NominalStrength.ToString("0.###"),Units.TON),
+                new ReportItem("phi",$"{PHI_C_EGYPT}",Units.TON),
+                new ReportItem("Design Load (phi*Pn)",$"{(PHI_C_EGYPT*dto.GoverningCase.NominalStrength).ToString("0.###")}",Units.TON),
+            };
+            var sections = new List<IReportSection> { dimSection, lbSection, fbSection, tbSection };
+            var report = new Report(UnitSystems.TONCM, "Egyptian Code - Compression", sections);
+            return report;
+        }
+
+        public static Report AsReport(this EgyptCompressionZDto dto, LippedZSection section)
+        {
+            var lbSection = dto.LB.AsLippedReportSection();
+            var dimSection = section.Dimensions.AsLippedReportSection();
+            return dto.AsReport(lbSection, dimSection);
+        }
+
+        public static Report AsReport(this EgyptCompressionZDto dto, UnStiffenedZSection section)
         {
             var lbSection = dto.LB.AsUnStiffenedReportSection();
             var dimSection = section.Dimensions.AsUnStiffenedReportSection();

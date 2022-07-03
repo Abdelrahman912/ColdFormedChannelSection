@@ -4,7 +4,7 @@ using static ColdFormedChannelSection.Core.Comparers.Comparers;
 
 namespace ColdFormedChannelSection.Core.Dtos
 {
-    public class EgyptCompressionDto
+    public class EgyptCompressionCDto
     {
         
         #region Properties
@@ -23,7 +23,7 @@ namespace ColdFormedChannelSection.Core.Dtos
 
         #region Constructors
 
-        public EgyptCompressionDto(LocalEgyptCompressionDto lB, FBEgyptCompressionDto fB, TFBEgyptCompressionDto tFB, TBEgyptCompressionDto tB)
+        public EgyptCompressionCDto(LocalEgyptCompressionDto lB, FBEgyptCompressionDto fB, TFBEgyptCompressionDto tFB, TBEgyptCompressionDto tB)
         {
             LB = lB;
             FB = fB;
