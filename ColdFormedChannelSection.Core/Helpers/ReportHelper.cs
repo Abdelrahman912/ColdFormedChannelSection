@@ -464,14 +464,14 @@ namespace ColdFormedChannelSection.Core.Helpers
             return report;
         }
 
-        public static Report AsReport(this EuroMomentDto dto, LippedCSection section)
+        public static Report AsReport(this EuroMomentDto dto, LippedSection section)
         {
             var dimSection = section.Dimensions.AsLippedReportSection();
             var lbSection = dto.LB.AsLippedReportSection();
             return dto.AsReport(lbSection, dimSection);
         }
 
-        public static Report AsReport(this EuroMomentDto dto, UnStiffenedCSection section)
+        public static Report AsReport(this EuroMomentDto dto, UnStiffenedSection section)
         {
             var dimSection = section.Dimensions.AsLippedReportSection();
             var lbSection = dto.LB.AsLippedReportSection();

@@ -15,9 +15,7 @@ namespace ColdFormedChannelSection.Core.Helpers
     public static class EuroHelper
     {
 
-
-
-        private static Validation<bool> IsValid(this LippedCSection section)
+        private static Validation<bool> IsValid(this LippedSection section)
         {
             var b_over_t = Tuple.Create(section.Properties.BPrime / section.Dimensions.ThicknessT, 60.0);
 
@@ -36,8 +34,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 return CantCalculateNominalStrength;
         }
 
-
-        private static Validation<bool> IsValid(this UnStiffenedCSection section)
+        private static Validation<bool> IsValid(this UnStiffenedSection section)
         {
             var b_over_t = Tuple.Create(section.Properties.BPrime / section.Dimensions.ThicknessT, 50.0);
 
@@ -101,7 +98,7 @@ namespace ColdFormedChannelSection.Core.Helpers
         /// <param name="be2_intial"></param>
         /// <param name="ce_intial"></param>
         /// <returns></returns>
-        private static double ReduceLippedSection(this LippedCSection section, Material material, double Kw, double be2_intial, double ce_intial)
+        private static double ReduceLippedSection(this LippedSection section, Material material, double Kw, double be2_intial, double ce_intial)
         {
             var t = section.Dimensions.ThicknessT;
             var b_prime = section.Properties.BPrime;
@@ -155,7 +152,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             return ae;
         }
 
-        private static (double be1, double be2, double ce, double Xd, double Kf, double Kc) GetEuroReducedFlange(this LippedCSection section, Material material, double kw)
+        private static (double be1, double be2, double ce, double Xd, double Kf, double Kc) GetEuroReducedFlange(this LippedSection section, Material material, double kw)
         {
             var Fy = material.Fy;
             var b_prime = section.Properties.BPrime;
@@ -213,7 +210,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             return (be1: be1_lst.First(), be2: be2, ce: ce, Xd: Xd, Kf: kf, Kc: kc);
         }
 
-        private static (double be1, double be2) GetEuroReducedFlange(this UnStiffenedCSection section, Material material)
+        private static (double be1, double be2) GetEuroReducedFlange(this UnStiffenedSection section, Material material)
         {
             var Fy = material.Fy;
             var b_prime = section.Properties.BPrime;
@@ -417,8 +414,6 @@ namespace ColdFormedChannelSection.Core.Helpers
             return result;
         }
 
-        private static double GetEuroCompressionLBResistance(this Section section, Material material, double Ae) =>
-            Ae * material.Fy;
 
         private static FBEuroCompressionDto GetEuroCompressionFBResistance(this Section section, Material material, LengthBracingConditions lengthBracingConditions, double Ae, double alpa_w, double pu)
         {
@@ -466,7 +461,6 @@ namespace ColdFormedChannelSection.Core.Helpers
             //return Tuple.Create(Pn, items);
             return new FBEuroCompressionDto(Ae, X, material.Fy, Pn);
         }
-
 
         private static TBEuroCompressionDto GetEuroCompressionTBResistance(this Section section, Material material, LengthBracingConditions lengthBracingConditions, double Ae, double alpha_w, double pu)
         {
@@ -548,10 +542,55 @@ namespace ColdFormedChannelSection.Core.Helpers
 
         #region Moment
 
+        #region Z Sections
+
+        private static EuroMomentDto AsMomentDto(this LippedZSection section, Material material, LengthBracingConditions bracingConditions, double mu)
+        {
+            var lbDto = section.GetZe(material);
+            var ltb = section.GetEuroMomentLTBResistance(material, bracingConditions, lbDto.Ze, mu);
+            return new EuroMomentDto(lbDto, ltb);
+        }
+
+        private static EuroMomentDto AsMomentDto(this UnStiffenedZSection section, Material material, LengthBracingConditions bracingConditions, double mu)
+        {
+            var lbDto = section.GetZe(material);
+            //var lb = section.GetEuroMomentLBResistance(material, lbDto.Ze);
+            var ltb = section.GetEuroMomentLTBResistance(material, bracingConditions, lbDto.Ze, mu);
+            return new EuroMomentDto(lbDto, ltb);
+        }
+
+        private static MomentResistanceOutput AsOutput(this EuroMomentDto dto, LippedZSection section)
+        {
+            var report = dto.AsReport(section);
+            return new MomentResistanceOutput(dto.GoverningCase.NominalStrength, PHI_EURO, PHI_NAME_EURO, MOM_DESIGN_RESIST_EURO, dto.GoverningCase.FailureMode, "N.mm", report);
+        }
+
+        private static MomentResistanceOutput AsOutput(this EuroMomentDto dto, UnStiffenedZSection section)
+        {
+            var report = dto.AsReport(section);
+            return new MomentResistanceOutput(dto.GoverningCase.NominalStrength, PHI_EURO, PHI_NAME_EURO, MOM_DESIGN_RESIST_EURO, dto.GoverningCase.FailureMode, "N.mm", report);
+        }
+
+        public static Validation<MomentResistanceOutput> AsEuroMomentResistance(this LippedZSection section, Material material, LengthBracingConditions bracingConditions, double mu)
+        {
+            var result = from valid in section.IsValid()
+                         select section.AsMomentDto(material, bracingConditions, mu).AsOutput(section);
+            return result;
+        }
+
+        public static Validation<MomentResistanceOutput> AsEuroMomentResistance(this UnStiffenedZSection section, Material material, LengthBracingConditions bracingConditions, double mu)
+        {
+            var result = from valid in section.IsValid()
+                         select section.AsMomentDto(material, bracingConditions, mu).AsOutput(section);
+            return result;
+        }
+
+        #endregion
+
         private static EuroMomentDto AsMomentDto(this LippedCSection section, Material material, LengthBracingConditions bracingConditions, double mu)
         {
             var lbDto = section.GetZe(material);
-            var lb = section.GetEuroMomentLBResistance(material, lbDto.Ze);
+            //var lb = section.GetEuroMomentLBResistance(material, lbDto.Ze);
             var ltb = section.GetEuroMomentLTBResistance(material, bracingConditions, lbDto.Ze, mu);
             return new EuroMomentDto(lbDto, ltb);
         }
@@ -559,7 +598,7 @@ namespace ColdFormedChannelSection.Core.Helpers
         private static EuroMomentDto AsMomentDto(this UnStiffenedCSection section, Material material, LengthBracingConditions bracingConditions, double mu)
         {
             var lbDto = section.GetZe(material);
-            var lb = section.GetEuroMomentLBResistance(material, lbDto.Ze);
+            //var lb = section.GetEuroMomentLBResistance(material, lbDto.Ze);
             var ltb = section.GetEuroMomentLTBResistance(material, bracingConditions, lbDto.Ze, mu);
             return new EuroMomentDto(lbDto, ltb);
         }
@@ -578,43 +617,6 @@ namespace ColdFormedChannelSection.Core.Helpers
 
         public static Validation<MomentResistanceOutput> AsEuroMomentResistance(this LippedCSection section, Material material, LengthBracingConditions bracingConditions, double mu)
         {
-            //if (!section.IsValid())
-            //    return new MomentResistanceOutput(0.0, PHI_EURO, PHI_NAME_EURO,MOM_DESIGN_RESIST_EURO, FailureMode.UNSAFE, "N.mm", null);
-            //(var Ze, var localItems) = section.GetZe(material);
-            //var Mn1 = Tuple.Create(section.GetEuroMomentLBResistance(material, Ze), FailureMode.LOCALBUCKLING);
-            //(var Mn_LTB, var ltbItems) = section.GetEuroMomentLTBResistance(material, bracingConditions, Ze,mu);
-            //var Mn2 = Tuple.Create(Mn_LTB, FailureMode.LATERALTORSIONALBUCKLING);
-            //var Mns = new List<Tuple<double, FailureMode>>()
-            //{
-            //    Mn1,Mn2
-            //};
-            //var Mn = Mns/*.Distinct(NominalStrengthEqualComparer)*/.OrderBy(tuple => tuple.Item1).First();
-            //var designItems = new List<ReportItem>()
-            //{
-            //    new ReportItem("Governing Case",Mn.Item2.GetDescription(),Units.NONE),
-            //    new ReportItem("Nominal Moment",Mn.Item1.ToString("0.###"),Units.N_MM),
-            //    new ReportItem("gamma",1.0.ToString("0.###"),Units.NONE),
-            //    new ReportItem("Design Moment (Mn/gamma)",Mn.Item1.ToString("0.###"),Units.N_MM)
-
-            //};
-            //var secDimsItems = new List<ReportItem>()
-            //{
-            //    new ReportItem("H",section.Dimensions.TotalHeightH.ToString("0.###"),Units.MM),
-            //    new ReportItem("B",section.Dimensions.TotalFlangeWidthB.ToString("0.###"),Units.MM),
-            //    new ReportItem("R",section.Dimensions.InternalRadiusR.ToString("0.###"),Units.MM),
-            //    new ReportItem("t",section.Dimensions.ThicknessT.ToString("0.###"),Units.MM),
-            //    new ReportItem("C",section.Dimensions.TotalFoldWidthC.ToString("0.###"),Units.MM)
-            //};
-            //var secDimSection = new ListReportSection("Section Dimensions", secDimsItems);
-            //var localSection = new ListReportSection("Local Buckling", localItems);
-            //var ltbSection = new ListReportSection("Lateral Torsional Buckling", ltbItems);
-            //var designSection = new ListReportSection("Design Moment", designItems);
-            //var sections = new List<IReportSection>() { secDimSection, localSection, ltbSection, designSection };
-
-            //var report = new Report(UnitSystems.NMM, "Euro Code - Moment", sections);
-
-            //var result = new MomentResistanceOutput(Mn.Item1, PHI_EURO, PHI_NAME_EURO,MOM_DESIGN_RESIST_EURO, Mn.Item2, "N.mm", report);
-            //return result;
             var result = from valid in section.IsValid()
                          select section.AsMomentDto(material, bracingConditions, mu).AsOutput(section);
             return result;
@@ -622,40 +624,6 @@ namespace ColdFormedChannelSection.Core.Helpers
 
         public static Validation<MomentResistanceOutput> AsEuroMomentResistance(this UnStiffenedCSection section, Material material, LengthBracingConditions bracingConditions, double mu)
         {
-            //if (!section.IsValid())
-            //    return new MomentResistanceOutput(0.0, PHI_EURO, PHI_NAME_EURO,MOM_DESIGN_RESIST_EURO, FailureMode.UNSAFE, "N.mm", null);
-            //(var Ze, var localItems) = section.GetZe(material);
-            //var Mn1 = Tuple.Create(section.GetEuroMomentLBResistance(material, Ze), FailureMode.LOCALBUCKLING);
-            //(var Mn_LTB, var ltbItems) = section.GetEuroMomentLTBResistance(material, bracingConditions, Ze,mu);
-            //var Mn2 = Tuple.Create(Mn_LTB, FailureMode.LATERALTORSIONALBUCKLING);
-            //var Mns = new List<Tuple<double, FailureMode>>()
-            //{
-            //    Mn1,Mn2
-            //};
-            //var Mn = Mns/*.Distinct(NominalStrengthEqualComparer)*/.OrderBy(tuple => tuple.Item1).First();
-            //var designItems = new List<ReportItem>()
-            //{
-            //    new ReportItem("Governing Case",Mn.Item2.GetDescription(),Units.NONE),
-            //    new ReportItem("Nominal Moment",Mn.Item1.ToString("0.###"),Units.N_MM),
-            //    new ReportItem("gamma",(1.0).ToString("0.###"),Units.NONE),
-            //    new ReportItem("Design Moment (Mn/gamma)",Mn.Item1.ToString("0.###"),Units.N_MM)
-
-            //};
-            //var secDimsItems = new List<ReportItem>()
-            //{
-            //    new ReportItem("H",section.Dimensions.TotalHeightH.ToString("0.###"),Units.MM),
-            //    new ReportItem("B",section.Dimensions.TotalFlangeWidthB.ToString("0.###"),Units.MM),
-            //    new ReportItem("R",section.Dimensions.InternalRadiusR.ToString("0.###"),Units.MM),
-            //    new ReportItem("t",section.Dimensions.ThicknessT.ToString("0.###"),Units.MM),
-            //};
-            //var secDimSection = new ListReportSection("Section Dimensions", secDimsItems);
-            //var localSection = new ListReportSection("Local Buckling", localItems);
-            //var ltbSection = new ListReportSection("Lateral Tosional Buckling", ltbItems);
-            //var designSection = new ListReportSection("Design Moment", designItems);
-            //var sections = new List<IReportSection>() { secDimSection, localSection, ltbSection, designSection };
-            //var report = new Report(UnitSystems.NMM, "Euro Code - Moment", sections);
-            //var result = new MomentResistanceOutput(Mn.Item1, PHI_EURO, PHI_NAME_EURO,MOM_DESIGN_RESIST_EURO, Mn.Item2, "N.mm", report);
-            //return result;
             var result = from valid in section.IsValid()
                          select section.AsMomentDto(material, bracingConditions, mu).AsOutput(section);
             return result;
@@ -697,7 +665,6 @@ namespace ColdFormedChannelSection.Core.Helpers
             //return Tuple.Create(Mn, items);
             return new LTBEuroMomentDto(Ze, x_lt * Fy, x_lt, Mn);
         }
-
 
 
         private static LocalEuroMomentDto GetZe(this Section section, Material material, double be1, double be2, double ce, double Xd)
@@ -763,7 +730,7 @@ namespace ColdFormedChannelSection.Core.Helpers
 
         }
 
-        private static LocalEuroMomentDto GetZe(this LippedCSection section, Material material)
+        private static LocalEuroMomentDto GetZe(this LippedSection section, Material material)
         {
             var t = section.Dimensions.ThicknessT;
             (var be1, var be2, var ce, var Xd, var Kf, var Kc) = section.GetEuroReducedFlange(material, 0);
@@ -779,8 +746,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             return dto;
         }
 
-
-        private static LocalEuroMomentDto GetZe(this UnStiffenedCSection section, Material material)
+        private static LocalEuroMomentDto GetZe(this UnStiffenedSection section, Material material)
         {
             var t = section.Dimensions.ThicknessT;
             (var be1, var be2) = section.GetEuroReducedFlange(material);
