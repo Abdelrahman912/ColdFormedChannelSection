@@ -16,11 +16,15 @@ using static ColdFormedChannelSection.Core.Errors.Errors;
 
 namespace ColdFormedChannelSection.App.ViewModels
 {
-    public class GeometryViewModel:ViewModelBase
+    public class GeometryViewModel : ViewModelBase
     {
 
 
         #region Private Fields
+
+        private readonly List<TablesName> _allTables = new List<TablesName>() { TablesName.EGYPT_EURO, TablesName.AMERICAN };
+
+        private readonly List<TablesName> _americanTables = new List<TablesName>() { TablesName.AMERICAN };
 
         private bool _isDesign;
 
@@ -37,34 +41,44 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         private SectionDimensionDto _selectedSection;
 
-        public UnitSystems TableUnit { get; set; }
+        private List<TablesName> _tables;
+
 
         private UnitSystems _unit;
 
-        private readonly Dictionary<KeyValuePair<SteelSection, TablesName>, Tuple<UnitSystems,Lazy<Task<List<SectionDimensionDto>>>>> _tables = new Dictionary<KeyValuePair<SteelSection, TablesName>, Tuple<UnitSystems, Lazy<Task<List<SectionDimensionDto>>>>> ()
+        private readonly Dictionary<KeyValuePair<SteelSection, TablesName>, Tuple<UnitSystems, Lazy<Task<List<SectionDimensionDto>>>>> _tablesDict = new Dictionary<KeyValuePair<SteelSection, TablesName>, Tuple<UnitSystems, Lazy<Task<List<SectionDimensionDto>>>>>()
         {
             //Unstiffened, Egypt
-            [KeyValuePair.Create(SteelSection.C_UNSTIFFENED,TablesName.EGYPT_EURO)]=Tuple.Create(UnitSystems.NMM, new Lazy<Task<List<SectionDimensionDto>>>(()=>LoadSections(EGYPT_UNSTIFF_TABLE_C))) ,
+            [KeyValuePair.Create(SteelSection.C_UNSTIFFENED, TablesName.EGYPT_EURO)] = Tuple.Create(UnitSystems.NMM, new Lazy<Task<List<SectionDimensionDto>>>(() => LoadSections(EGYPT_UNSTIFF_TABLE_C))),
             //Stiffened, Egypt
-            [KeyValuePair.Create(SteelSection.C_LIPPED,TablesName.EGYPT_EURO)]=Tuple.Create(UnitSystems.NMM, new Lazy<Task<List<SectionDimensionDto>>>(()=>LoadSections(EGYPT_STIFF_TABL_C))) ,
+            [KeyValuePair.Create(SteelSection.C_LIPPED, TablesName.EGYPT_EURO)] = Tuple.Create(UnitSystems.NMM, new Lazy<Task<List<SectionDimensionDto>>>(() => LoadSections(EGYPT_STIFF_TABL_C))),
             //Unstiffened, American
-            [KeyValuePair.Create(SteelSection.C_UNSTIFFENED,TablesName.AMERICAN)]=Tuple.Create(UnitSystems.KIPINCH, new Lazy<Task<List<SectionDimensionDto>>>(()=>LoadSections(AISI_UNSTIFF_TABLE_C))) ,
-              //Stiffened, American
-            [KeyValuePair.Create(SteelSection.C_LIPPED,TablesName.AMERICAN)]= Tuple.Create(UnitSystems.KIPINCH,new Lazy<Task<List<SectionDimensionDto>>>(()=>LoadSections(AISI_STIFF_TABLE_C))) ,
+            [KeyValuePair.Create(SteelSection.C_UNSTIFFENED, TablesName.AMERICAN)] = Tuple.Create(UnitSystems.KIPINCH, new Lazy<Task<List<SectionDimensionDto>>>(() => LoadSections(AISI_UNSTIFF_TABLE_C))),
+            //Stiffened, American
+            [KeyValuePair.Create(SteelSection.C_LIPPED, TablesName.AMERICAN)] = Tuple.Create(UnitSystems.KIPINCH, new Lazy<Task<List<SectionDimensionDto>>>(() => LoadSections(AISI_STIFF_TABLE_C))),
 
             //Unstiffened, Egypt
-            [KeyValuePair.Create(SteelSection.Z_UNSTIFFENED,TablesName.EGYPT_EURO)]=Tuple.Create(UnitSystems.NMM, new Lazy<Task<List<SectionDimensionDto>>>(()=>LoadSections(EGYPT_UNSTIFF_TABLE_Z))) ,
+            [KeyValuePair.Create(SteelSection.Z_UNSTIFFENED, TablesName.EGYPT_EURO)] = Tuple.Create(UnitSystems.NMM, new Lazy<Task<List<SectionDimensionDto>>>(() => LoadSections(EGYPT_UNSTIFF_TABLE_Z))),
             //Stiffened, Egypt
-            [KeyValuePair.Create(SteelSection.Z_LIPPED,TablesName.EGYPT_EURO)]=Tuple.Create(UnitSystems.NMM, new Lazy<Task<List<SectionDimensionDto>>>(()=>LoadSections(EGYPT_STIFF_TABL_Z))) ,
+            [KeyValuePair.Create(SteelSection.Z_LIPPED, TablesName.EGYPT_EURO)] = Tuple.Create(UnitSystems.NMM, new Lazy<Task<List<SectionDimensionDto>>>(() => LoadSections(EGYPT_STIFF_TABL_Z))),
             //Unstiffened, American
-            [KeyValuePair.Create(SteelSection.Z_UNSTIFFENED,TablesName.AMERICAN)]=Tuple.Create(UnitSystems.KIPINCH, new Lazy<Task<List<SectionDimensionDto>>>(()=>LoadSections(AISI_UNSTIFF_TABLE_Z))) ,
-              //Stiffened, American
-            [KeyValuePair.Create(SteelSection.Z_LIPPED,TablesName.AMERICAN)]= Tuple.Create(UnitSystems.KIPINCH,new Lazy<Task<List<SectionDimensionDto>>>(()=>LoadSections(AISI_STIFF_TABLE_Z))) ,
+            [KeyValuePair.Create(SteelSection.Z_UNSTIFFENED, TablesName.AMERICAN)] = Tuple.Create(UnitSystems.KIPINCH, new Lazy<Task<List<SectionDimensionDto>>>(() => LoadSections(AISI_UNSTIFF_TABLE_Z))),
+            //Stiffened, American
+            [KeyValuePair.Create(SteelSection.Z_LIPPED, TablesName.AMERICAN)] = Tuple.Create(UnitSystems.KIPINCH, new Lazy<Task<List<SectionDimensionDto>>>(() => LoadSections(AISI_STIFF_TABLE_Z))),
         };
 
         #endregion
 
         #region Properties
+
+        public List<TablesName> Tables
+        {
+            get => _tables;
+            set => NotifyPropertyChanged(ref _tables, value);
+        }
+
+        public UnitSystems TableUnit { get; set; }
+
 
         public bool IsDesign
         {
@@ -75,7 +89,7 @@ namespace ColdFormedChannelSection.App.ViewModels
         public UnitSystems Unit
         {
             get => _unit;
-            set=>NotifyPropertyChanged(ref _unit, value);   
+            set => NotifyPropertyChanged(ref _unit, value);
         }
 
         public TablesName SelectedTableName
@@ -83,8 +97,9 @@ namespace ColdFormedChannelSection.App.ViewModels
             get => _selectedTableName;
             set
             {
-                NotifyPropertyChanged(ref _selectedTableName,value);
-                UpdateTable();
+                NotifyPropertyChanged(ref _selectedTableName, value);
+                 if(!IsUserDefined)
+                    LoadTable();
             }
         }
 
@@ -97,9 +112,9 @@ namespace ColdFormedChannelSection.App.ViewModels
         public SectionDimensionDto SelectedSection
         {
             get => _selectedSection;
-            set 
-            { 
-                NotifyPropertyChanged(ref _selectedSection, value); 
+            set
+            {
+                NotifyPropertyChanged(ref _selectedSection, value);
                 UpdateSection();
             }
         }
@@ -107,10 +122,10 @@ namespace ColdFormedChannelSection.App.ViewModels
         public bool IsUserDefined
         {
             get => _isUserDefined;
-            set 
-            { 
+            set
+            {
                 NotifyPropertyChanged(ref _isUserDefined, value);
-               UpdateTable();
+                UpdateTable();
             }
         }
 
@@ -185,7 +200,7 @@ namespace ColdFormedChannelSection.App.ViewModels
         private void OnModuleChanged(Tuple<Core.Enums.Module, StrainingActions> tuple)
         {
             (var module, var _) = tuple;
-            if(module == Core.Enums.Module.DESIGN)
+            if (module == Core.Enums.Module.DESIGN)
             {
                 IsUserDefined = false;
                 IsDesign = true;
@@ -196,22 +211,36 @@ namespace ColdFormedChannelSection.App.ViewModels
             }
         }
 
-        private async void UpdateTable()
+        private  void UpdateTable()
         {
+
             if (!IsUserDefined)
             {
-              var tuple =   _tables[KeyValuePair.Create(Section, SelectedTableName)];
-                TableUnit = tuple.Item1;
-                Sections = await tuple.Item2.Value;
-                SelectedSection = Sections.FirstOrDefault();
-                
+                if (Section == SteelSection.Z_UNSTIFFENED)
+                {
+                    Tables = _americanTables;
+                    SelectedTableName = Tables.FirstOrDefault();
+                }
+                else
+                {
+                    Tables = _allTables;
+                    SelectedTableName = Tables.FirstOrDefault();
+                }
             }
         }
+        private async void LoadTable()
+        {
+            var tuple = _tablesDict[KeyValuePair.Create(Section, SelectedTableName)];
+            TableUnit = tuple.Item1;
+            Sections = await tuple.Item2.Value;
+            SelectedSection = Sections.FirstOrDefault();
+        }
+
         private void UpdateSection()
         {
-            if(SelectedSection != null)
+            if (SelectedSection != null)
             {
-                var secDim = SelectedSection.AsEntity().Convert(TableUnit,Unit);
+                var secDim = SelectedSection.AsEntity().Convert(TableUnit, Unit);
                 TotalHeightH = secDim.TotalHeightH.Round(4);
                 TotalFoldWidthC = secDim.TotalFoldWidthC.Round(4);
                 TotalWidthB = secDim.TotalFlangeWidthB.Round(4);
@@ -237,9 +266,9 @@ namespace ColdFormedChannelSection.App.ViewModels
         private void OnStiffChanged(SteelSection steelSection)
         {
 
-            IsUnstiffened=steelSection == SteelSection.C_UNSTIFFENED || steelSection== SteelSection.Z_UNSTIFFENED ;
+            IsUnstiffened = steelSection == SteelSection.C_UNSTIFFENED || steelSection == SteelSection.Z_UNSTIFFENED;
             Section = steelSection;
-           UpdateTable();
+            UpdateTable();
             if (IsUnstiffened)
                 TotalFoldWidthC = 0;
         }
@@ -255,7 +284,7 @@ namespace ColdFormedChannelSection.App.ViewModels
                 errs.Add(LessThanZeroError("t"));
             if (InternalRadiusR <= 0)
                 errs.Add(LessThanZeroError("R"));
-            if (!_isUnstiffened &&TotalFoldWidthC <= 0 )
+            if (!_isUnstiffened && TotalFoldWidthC <= 0)
                 errs.Add(LessThanZeroError("C"));
             return errs;
         }
@@ -265,8 +294,8 @@ namespace ColdFormedChannelSection.App.ViewModels
             var dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             var filePath = $"{dir}\\{DATABASE_FOLDER}\\{tableName}.csv";
             return (await filePath.ReadAsCsv<SectionDimensionDto>())
-                           .Match(errs=> new List<SectionDimensionDto>(),
-                                  dtos =>dtos);
+                           .Match(errs => new List<SectionDimensionDto>(),
+                                  dtos => dtos);
         }
 
         #endregion

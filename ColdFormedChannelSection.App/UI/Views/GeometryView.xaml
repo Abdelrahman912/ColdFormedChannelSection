@@ -34,7 +34,7 @@
                                     <ColumnDefinition Width="2*"/>
                                 </Grid.ColumnDefinitions>
                                 <ComboBox VerticalAlignment="Top" Margin="5" SelectedItem="{Binding SelectedTableName}"
-                                          ItemsSource="{Binding Source={markup:EnumBindingSource {x:Type enums:TablesName}}}"/>
+                                          ItemsSource="{Binding Tables}"/>
                                 <ComboBox Grid.Column="1" IsEnabled="{Binding IsDesign,Converter={StaticResource InvertBooleanConverter}}" ItemsSource="{Binding Sections}" SelectedItem="{Binding SelectedSection}"
                                   VerticalAlignment="Top" Height="auto" Margin="5" >
                                     <ComboBox.ItemTemplate>
