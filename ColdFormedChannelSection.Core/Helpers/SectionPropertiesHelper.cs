@@ -178,7 +178,6 @@ namespace ColdFormedChannelSection.Core.Helpers
 
             var J = (t.Power(3) / 3) * (a + 2 * b + 2 * u + alpha * (2 * C + 2 * u));
 
-
             var CwNumLong = bPrime.Power(2) * (4 * cPrime.Power(4) + 16 * bPrime * cPrime.Power(3) + 6 * aPrime.Power(3) * cPrime + 4 * aPrime.Power(2) * bPrime * cPrime + 8 * aPrime * cPrime)
                             + 6 * aPrime * bPrime * cPrime.Power(2) * (aPrime + bPrime) * (2 * bPrime * Math.Sin(gamma) + aPrime * Math.Cos(gamma))
                             + 4 * aPrime * bPrime * cPrime.Power(3) * (2 * aPrime + 4 * bPrime + cPrime) * Math.Sin(gamma) * Math.Cos(gamma)
