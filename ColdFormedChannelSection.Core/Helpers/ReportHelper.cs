@@ -240,7 +240,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("Kf", dto.Kf.ToString("0.###"), Units.NONE),
                 new ReportItem("Effective Flange Width (be)", dto.Be.ToString("0.###"), Units.IN),
                 new ReportItem("Yield stress (Fy)", dto.Fy.ToString("0.###"), Units.KSI),
-                new ReportItem("Local Nominal Load (Pn)", dto.NominalStrength.ToString("0.###"), Units.KIP_IN)
+                new ReportItem("Local Nominal Load (Pn)", dto.NominalStrength.ToString("0.###"), Units.KIP)
             };
             return new ListReportSection("Local Buckling", items);
         }
@@ -269,7 +269,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("Kf", dto.Kf.ToString("0.###"), Units.NONE),
                 new ReportItem("Effective Flange Width (be)", dto.Be.ToString("0.###"), Units.IN),
                 new ReportItem("Yield stress (Fy)", dto.Fy.ToString("0.###"), Units.KSI),
-                new ReportItem("Local Nominal Load (Pn)", dto.NominalStrength.ToString("0.###"), Units.KIP_IN)
+                new ReportItem("Local Nominal Load (Pn)", dto.NominalStrength.ToString("0.###"), Units.KIP)
             };
             return new ListReportSection("Local Buckling", items);
         }

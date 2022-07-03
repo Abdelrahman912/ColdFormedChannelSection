@@ -80,4 +80,8 @@
     </None>
   </ItemGroup>
 
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="if not exist &quot;$(ProjectDir)$(OutDir)\Database&quot; mkdir &quot;$(ProjectDir)$(OutDir)\Database&quot;&#xD;&#xA;copy &quot;$(SolutionDir)\ColdFormedChannelSection.Core\Database&quot; &quot;$(ProjectDir)$(OutDir)\Database&quot; " />
+  </Target>
+
 </Project>

@@ -54,10 +54,15 @@
 
         public const double TOL = 0.1;
 
-        public const string EGYPT_UNSTIFF_TABLE = "Egypt - Unstiffened";
-        public const string EGYPT_STIFF_TABLE = "Egypt - Stiffened";
-        public const string AISI_STIFF_TABLE = "AISI - Stiffened";
-        public const string AISI_UNSTIFF_TABLE = "AISI - Unstiffened"; 
+        public const string EGYPT_UNSTIFF_TABLE_C = "Egypt - Unstiffened - C";
+        public const string EGYPT_STIFF_TABL_C = "Egypt - Stiffened - C";
+        public const string AISI_STIFF_TABLE_C = "AISI - Stiffened - C";
+        public const string AISI_UNSTIFF_TABLE_C = "AISI - Unstiffened - C";
+
+        public const string EGYPT_UNSTIFF_TABLE_Z = "Egypt - Unstiffened - Z";
+        public const string EGYPT_STIFF_TABL_Z = "Egypt - Stiffened - Z";
+        public const string AISI_STIFF_TABLE_Z = "AISI - Stiffened - Z";
+        public const string AISI_UNSTIFF_TABLE_Z = "AISI - Unstiffened - Z";
         public const string DATABASE_FOLDER = "Database";
     }
 }

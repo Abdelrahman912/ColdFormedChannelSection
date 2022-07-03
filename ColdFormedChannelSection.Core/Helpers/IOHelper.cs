@@ -39,7 +39,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                      });
                 }
             }
-            catch (IOException)
+            catch (IOException e)
             {
                 return await Task.Run(()=> {
                      Validation<List<T>> lst =  FileUsedByAnotherProcess(filePath);

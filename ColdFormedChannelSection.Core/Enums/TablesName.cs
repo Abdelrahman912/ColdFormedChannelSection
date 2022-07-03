@@ -8,6 +8,6 @@ namespace ColdFormedChannelSection.Core.Enums
         [Description("Euro\\Egypt")]
         EGYPT_EURO,
         [Description("American")]
-        AMERICAN
+        AMERICAN,
     }
 }

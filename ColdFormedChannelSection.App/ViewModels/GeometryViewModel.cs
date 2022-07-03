@@ -30,7 +30,7 @@ namespace ColdFormedChannelSection.App.ViewModels
         private double _thicknessT;
         private double _totalFoldWidthC;
         private bool _isUnstiffened;
-
+        //private SteelSection _section;
         private bool _isUserDefined;
         private TablesName _selectedTableName;
         private List<SectionDimensionDto> _sections;
@@ -41,16 +41,25 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         private UnitSystems _unit;
 
-        private readonly Dictionary<KeyValuePair<bool, TablesName>, Tuple<UnitSystems,Lazy<Task<List<SectionDimensionDto>>>>> _tables = new Dictionary<KeyValuePair<bool, TablesName>, Tuple<UnitSystems, Lazy<Task<List<SectionDimensionDto>>>>> ()
+        private readonly Dictionary<KeyValuePair<SteelSection, TablesName>, Tuple<UnitSystems,Lazy<Task<List<SectionDimensionDto>>>>> _tables = new Dictionary<KeyValuePair<SteelSection, TablesName>, Tuple<UnitSystems, Lazy<Task<List<SectionDimensionDto>>>>> ()
         {
             //Unstiffened, Egypt
-            {KeyValuePair.Create(true,TablesName.EGYPT_EURO),Tuple.Create(UnitSystems.NMM, new Lazy<Task<List<SectionDimensionDto>>>(()=>LoadSections(EGYPT_UNSTIFF_TABLE))) },
+            [KeyValuePair.Create(SteelSection.C_UNSTIFFENED,TablesName.EGYPT_EURO)]=Tuple.Create(UnitSystems.NMM, new Lazy<Task<List<SectionDimensionDto>>>(()=>LoadSections(EGYPT_UNSTIFF_TABLE_C))) ,
             //Stiffened, Egypt
-            {KeyValuePair.Create(false,TablesName.EGYPT_EURO),Tuple.Create(UnitSystems.NMM, new Lazy<Task<List<SectionDimensionDto>>>(()=>LoadSections(EGYPT_STIFF_TABLE))) },
+            [KeyValuePair.Create(SteelSection.C_LIPPED,TablesName.EGYPT_EURO)]=Tuple.Create(UnitSystems.NMM, new Lazy<Task<List<SectionDimensionDto>>>(()=>LoadSections(EGYPT_STIFF_TABL_C))) ,
             //Unstiffened, American
-            {KeyValuePair.Create(true,TablesName.AMERICAN),Tuple.Create(UnitSystems.KIPINCH, new Lazy<Task<List<SectionDimensionDto>>>(()=>LoadSections(AISI_UNSTIFF_TABLE))) },
+            [KeyValuePair.Create(SteelSection.C_UNSTIFFENED,TablesName.AMERICAN)]=Tuple.Create(UnitSystems.KIPINCH, new Lazy<Task<List<SectionDimensionDto>>>(()=>LoadSections(AISI_UNSTIFF_TABLE_C))) ,
               //Stiffened, American
-            {KeyValuePair.Create(false,TablesName.AMERICAN), Tuple.Create(UnitSystems.KIPINCH,new Lazy<Task<List<SectionDimensionDto>>>(()=>LoadSections(AISI_STIFF_TABLE))) },
+            [KeyValuePair.Create(SteelSection.C_LIPPED,TablesName.AMERICAN)]= Tuple.Create(UnitSystems.KIPINCH,new Lazy<Task<List<SectionDimensionDto>>>(()=>LoadSections(AISI_STIFF_TABLE_C))) ,
+
+            //Unstiffened, Egypt
+            [KeyValuePair.Create(SteelSection.Z_UNSTIFFENED,TablesName.EGYPT_EURO)]=Tuple.Create(UnitSystems.NMM, new Lazy<Task<List<SectionDimensionDto>>>(()=>LoadSections(EGYPT_UNSTIFF_TABLE_Z))) ,
+            //Stiffened, Egypt
+            [KeyValuePair.Create(SteelSection.Z_LIPPED,TablesName.EGYPT_EURO)]=Tuple.Create(UnitSystems.NMM, new Lazy<Task<List<SectionDimensionDto>>>(()=>LoadSections(EGYPT_STIFF_TABL_Z))) ,
+            //Unstiffened, American
+            [KeyValuePair.Create(SteelSection.Z_UNSTIFFENED,TablesName.AMERICAN)]=Tuple.Create(UnitSystems.KIPINCH, new Lazy<Task<List<SectionDimensionDto>>>(()=>LoadSections(AISI_UNSTIFF_TABLE_Z))) ,
+              //Stiffened, American
+            [KeyValuePair.Create(SteelSection.Z_LIPPED,TablesName.AMERICAN)]= Tuple.Create(UnitSystems.KIPINCH,new Lazy<Task<List<SectionDimensionDto>>>(()=>LoadSections(AISI_STIFF_TABLE_Z))) ,
         };
 
         #endregion
@@ -104,6 +113,8 @@ namespace ColdFormedChannelSection.App.ViewModels
                UpdateTable();
             }
         }
+
+        public SteelSection Section { get; set; }
 
         public bool IsUnstiffened
         {
@@ -189,7 +200,7 @@ namespace ColdFormedChannelSection.App.ViewModels
         {
             if (!IsUserDefined)
             {
-              var tuple =   _tables[KeyValuePair.Create(IsUnstiffened, SelectedTableName)];
+              var tuple =   _tables[KeyValuePair.Create(Section, SelectedTableName)];
                 TableUnit = tuple.Item1;
                 Sections = await tuple.Item2.Value;
                 SelectedSection = Sections.FirstOrDefault();
@@ -226,7 +237,8 @@ namespace ColdFormedChannelSection.App.ViewModels
         private void OnStiffChanged(SteelSection steelSection)
         {
 
-            IsUnstiffened=steelSection == SteelSection.C_UNSTIFFENED ;
+            IsUnstiffened=steelSection == SteelSection.C_UNSTIFFENED || steelSection== SteelSection.Z_UNSTIFFENED ;
+            Section = steelSection;
            UpdateTable();
             if (IsUnstiffened)
                 TotalFoldWidthC = 0;

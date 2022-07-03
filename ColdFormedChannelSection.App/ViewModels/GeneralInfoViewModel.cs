@@ -31,7 +31,9 @@ namespace ColdFormedChannelSection.App.ViewModels
         private readonly Dictionary<SteelSection, string> _sectionImageDict = new Dictionary<SteelSection, string>()
         {
             [SteelSection.C_LIPPED] = "../Resources/lipped C.jpg",
-            [SteelSection.C_UNSTIFFENED] = "../Resources/Unstiffened C.jpg"
+            [SteelSection.C_UNSTIFFENED] = "../Resources/Unstiffened C.jpg",
+            [SteelSection.Z_LIPPED] = "../Resources/lipped C.jpg",
+            [SteelSection.Z_UNSTIFFENED] = "../Resources/Unstiffened C.jpg",
         };
 
         #endregion
@@ -78,8 +80,8 @@ namespace ColdFormedChannelSection.App.ViewModels
             set
             {
                 NotifyPropertyChanged(ref _steelSection, value);
-                SteelSectionImage = _sectionImageDict[_steelSection];
                 Mediator.Mediator.Instance.NotifyColleagues(SteelSection, Context.STIFF_UNSTIFF);
+                SteelSectionImage = _sectionImageDict[_steelSection];
 
             }
         }
