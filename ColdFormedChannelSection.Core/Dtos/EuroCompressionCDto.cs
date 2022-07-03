@@ -4,7 +4,7 @@ using static ColdFormedChannelSection.Core.Comparers.Comparers;
 
 namespace ColdFormedChannelSection.Core.Dtos
 {
-    public class EuroCompressionDto
+    public class EuroCompressionCDto
     {
        
         #region Properties
@@ -23,7 +23,7 @@ namespace ColdFormedChannelSection.Core.Dtos
 
         #region Constructors
 
-        public EuroCompressionDto(LocalEuroCompressionDto lB, FBEuroCompressionDto fB, TBEuroCompressionDto tB, FTBEuroCompressionDto fTB)
+        public EuroCompressionCDto(LocalEuroCompressionDto lB, FBEuroCompressionDto fB, TBEuroCompressionDto tB, FTBEuroCompressionDto fTB)
         {
             LB = lB;
             FB = fB;

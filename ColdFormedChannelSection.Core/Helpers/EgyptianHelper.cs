@@ -70,7 +70,53 @@ namespace ColdFormedChannelSection.Core.Helpers
 
         #region Moment
 
-        private static Validation<bool> IsValidMoment(this LippedCSection section)
+        #region Z Sections
+
+        private static EgyptMomentDto AsMomentDto(this LippedZSection section, Material material, LengthBracingConditions bracingConditions)
+        {
+            var dto = section.GetEgyptReducedZe(material);
+
+            var momDto = section.GetEgyptMomentResistance(material, bracingConditions, dto.Ze);
+            return new EgyptMomentDto(dto, momDto);
+        }
+
+        private static EgyptMomentDto AsMomentDto(this UnStiffenedZSection section, Material material, LengthBracingConditions bracingConditions)
+        {
+            var dto = section.GetEgyptReducedZe(material);
+
+            var momDto = section.GetEgyptMomentResistance(material, bracingConditions, dto.Ze);
+            return new EgyptMomentDto(dto, momDto);
+        }
+
+        private static MomentResistanceOutput AsOutput(this EgyptMomentDto dto, LippedZSection section)
+        {
+            var report = dto.AsReport(section);
+            return new MomentResistanceOutput(dto.GoverningCase.GoverningCase.NominalStrength, PHI_B_EGYPT, PHI_B_NAME_EGYPT, MOM_DESIGN_RESIST_EGYPT, dto.GoverningCase.GoverningCase.FailureMode, "t.cm", report);
+        }
+
+        private static MomentResistanceOutput AsOutput(this EgyptMomentDto dto, UnStiffenedZSection section)
+        {
+            var report = dto.AsReport(section);
+            return new MomentResistanceOutput(dto.GoverningCase.GoverningCase.NominalStrength, PHI_B_EGYPT, PHI_B_NAME_EGYPT, MOM_DESIGN_RESIST_EGYPT, dto.GoverningCase.GoverningCase.FailureMode, "t.cm", report);
+        }
+
+        public static Validation<MomentResistanceOutput> AsEgyptMomentResistance(this LippedZSection section, Material material, LengthBracingConditions bracingConditions)
+        {
+            var result = from valid in section.IsValidMoment()
+                         select section.AsMomentDto(material, bracingConditions).AsOutput(section);
+            return result;
+        }
+
+        public static Validation<MomentResistanceOutput> AsEgyptMomentResistance(this UnStiffenedZSection section, Material material, LengthBracingConditions bracingConditions)
+        {
+            var result = from valid in section.IsValidMoment()
+                         select section.AsMomentDto(material, bracingConditions).AsOutput(section);
+            return result;
+        }
+
+        #endregion
+
+        private static Validation<bool> IsValidMoment(this LippedSection section)
         {
             var c_over_t = Tuple.Create(section.Properties.CPrime / section.Dimensions.ThicknessT, 40.0);
             var b_over_t = Tuple.Create(section.Properties.BPrime / section.Dimensions.ThicknessT, 60.0);
@@ -87,8 +133,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 return CantCalculateNominalStrength;
         }
 
-
-        private static Validation<bool> IsValidMoment(this UnStiffenedCSection section)
+        private static Validation<bool> IsValidMoment(this UnStiffenedSection section)
         {
             var b_over_t = Tuple.Create(section.Properties.BPrime / section.Dimensions.ThicknessT, 40.0);
 
@@ -135,36 +180,6 @@ namespace ColdFormedChannelSection.Core.Helpers
 
         public static Validation<MomentResistanceOutput> AsEgyptMomentResistance(this LippedCSection section, Material material, LengthBracingConditions bracingConditions)
         {
-            //if (!section.IsValidMoment())
-            //    return new MomentResistanceOutput(0.0, PHI_B, PHI_B_NAME, MOM_DESIGN_RESIST, FailureMode.UNSAFE, "t.cm", null);
-
-            //(var Ze, var Z_items) = section.GetEgyptReducedZe(material);
-
-            //(var Mn, var failureMode, var items_stress) = section.GetEgyptMomentResistance(material, bracingConditions, Ze);
-
-            //var nominalItems = Z_items.Concat(items_stress).ToList();
-            //var designItems = new List<ReportItem>()
-            //{
-            //    new ReportItem("Governing Case",failureMode.GetDescription(),Units.NONE),
-            //    new ReportItem("Nominal Moment (Mn)",Mn.ToString("0.###"),Units.TON_CM),
-            //    new ReportItem("phi",PHI_B.ToString("0.###"),Units.NONE),
-            //    new ReportItem("Design Moment",(PHI_B*Mn).ToString("0.###"),Units.TON_CM)
-            //};
-            //var secDimsItems = new List<ReportItem>()
-            //{
-            //    new ReportItem("H",section.Dimensions.TotalHeightH.ToString("0.###"),Units.CM),
-            //    new ReportItem("B",section.Dimensions.TotalFlangeWidthB.ToString("0.###"),Units.CM),
-            //    new ReportItem("R",section.Dimensions.InternalRadiusR.ToString("0.###"),Units.CM),
-            //    new ReportItem("t",section.Dimensions.ThicknessT.ToString("0.###"),Units.CM),
-            //    new ReportItem("C",section.Dimensions.TotalFoldWidthC.ToString("0.###"),Units.CM)
-            //};
-            //var secDimSection = new ListReportSection("Section Dimensions", secDimsItems);
-            //var nominalSection = new ListReportSection("Nominal Moment", nominalItems);
-            //var designSection = new ListReportSection("Design Moment", designItems);
-            //var sections = new List<IReportSection>() { secDimSection, nominalSection, designSection };
-            //var report = new Report(UnitSystems.TONCM, "Egytian Code - Moment", sections);
-            //var result = new MomentResistanceOutput(Mn, PHI_B, PHI_B_NAME, MOM_DESIGN_RESIST, failureMode, "t.cm", report);
-            //return result;
             var result = from valid in section.IsValidMoment()
                          select section.AsMomentDto(material, bracingConditions).AsOutput(section);
             return result;
@@ -172,37 +187,6 @@ namespace ColdFormedChannelSection.Core.Helpers
 
         public static Validation<MomentResistanceOutput> AsEgyptMomentResistance(this UnStiffenedCSection section, Material material, LengthBracingConditions bracingConditions)
         {
-            //if (!section.IsValidMoment())
-            //    return new MomentResistanceOutput(0.0, PHI_B, PHI_B_NAME, MOM_DESIGN_RESIST, FailureMode.UNSAFE, "t.cm", null);
-
-            //(var Ze, var Z_items) = section.GetEgyptReducedZe(material);
-            //(var Mn, var failureMode, var items_stress) = section.GetEgyptMomentResistance(material, bracingConditions, Ze);
-
-            //var nominalItems = Z_items.Concat(items_stress).ToList();
-
-            //var designItems = new List<ReportItem>()
-            //{
-            //    new ReportItem("Governing Case",failureMode.GetDescription(),Units.NONE),
-            //    new ReportItem("Nominal Moment (Mn)",Mn.ToString("0.###"),Units.TON_CM),
-            //    new ReportItem("phi",PHI_B.ToString("0.###"),Units.NONE),
-            //    new ReportItem("Design Moment",(PHI_B*Mn).ToString("0.###"),Units.TON_CM)
-            //};
-            //var secDimsItems = new List<ReportItem>()
-            //{
-            //    new ReportItem("H",section.Dimensions.TotalHeightH.ToString("0.###"),Units.CM),
-            //    new ReportItem("B",section.Dimensions.TotalFlangeWidthB.ToString("0.###"),Units.CM),
-            //    new ReportItem("R",section.Dimensions.InternalRadiusR.ToString("0.###"),Units.CM),
-            //    new ReportItem("t",section.Dimensions.ThicknessT.ToString("0.###"),Units.CM),
-            //};
-            //var secDimSection = new ListReportSection("Section Dimensions", secDimsItems);
-            //var nominalSection = new ListReportSection("Nominal Moment", nominalItems);
-            //var designSection = new ListReportSection("Design Moment", designItems);
-            //var sections = new List<IReportSection>() { secDimSection, nominalSection, designSection };
-
-            //var report = new Report(UnitSystems.TONCM, "Egyptian Code - Moment", sections);
-
-            //var result = new MomentResistanceOutput(Mn, PHI_B, PHI_B_NAME, MOM_DESIGN_RESIST, failureMode, "t.cm", report);
-            //return result;
             var result = from valid in section.IsValidMoment()
                          select section.AsMomentDto(material, bracingConditions).AsOutput(section);
             return result;
@@ -276,7 +260,7 @@ namespace ColdFormedChannelSection.Core.Helpers
 
         }
 
-        private static LocalEgyptMomentDto GetEgyptReducedZe(this UnStiffenedCSection section, Material material)
+        private static LocalEgyptMomentDto GetEgyptReducedZe(this UnStiffenedSection section, Material material)
         {
             var E = material.E;
             var Fy = material.Fy;
@@ -300,7 +284,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             return dto;
         }
 
-        private static LocalEgyptMomentDto GetEgyptReducedZe(this LippedCSection section, Material material)
+        private static LocalEgyptMomentDto GetEgyptReducedZe(this LippedSection section, Material material)
         {
             var E = material.E;
             var Fy = material.Fy;

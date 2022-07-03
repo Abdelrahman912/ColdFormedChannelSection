@@ -54,6 +54,26 @@ namespace ColdFormedChannelSection.Core.Helpers
 
         #region Moment & Compression
 
+        #region Z Sections
+
+        public static Validation<ResistanceInteractionOutput> AsEuroInteractionResistance(this LippedZSection section, Material material, LengthBracingConditions bracingConditions, double pu, double mu)
+        {
+            var result = from Pn in section.AsEuroCompressionResistance(material, bracingConditions, pu)
+                         from Mn in section.AsEuroMomentResistance(material, bracingConditions, mu)
+                         select section.AsEuroInteractionResistance(Pn, Mn, pu, mu);
+            return result;
+        }
+
+        public static Validation<ResistanceInteractionOutput> AsEuroInteractionResistance(this UnStiffenedZSection section, Material material, LengthBracingConditions bracingConditions, double pu, double mu)
+        {
+            var result = from Pn in section.AsEuroCompressionResistance(material, bracingConditions, pu)
+                         from Mn in section.AsEuroMomentResistance(material, bracingConditions, mu)
+                         select section.AsEuroInteractionResistance(Pn, Mn, pu, mu);
+            return result;
+        }
+
+        #endregion
+
         private static ResistanceInteractionOutput AsEuroInteractionResistance(this Section section, CompressionResistanceOutput Pn, MomentResistanceOutput Mn, double pu, double mu)
         {
             //tex:
@@ -88,6 +108,56 @@ namespace ColdFormedChannelSection.Core.Helpers
         #endregion
 
         #region Compression
+
+        #region Z Sections
+
+        private static EuroCompressionZDto AsCompressionDto(this LippedZSection section, Material material, LengthBracingConditions bracingConditions, double pu)
+        {
+            var lbDto = section.GetEuroReducedArea(material);
+            //var pn1 = Tuple.Create(section.GetEuroCompressionLBResistance(material, Ae), FailureMode.LOCALBUCKLING);
+            var fbDto = section.GetEuroCompressionFBResistance(material, bracingConditions, lbDto.AreaEffective, 0.34, pu);
+            var tbDto = section.GetEuroCompressionTBResistance(material, bracingConditions, lbDto.AreaEffective, 0.34, pu);
+            //var ftbDto = section.GetEuroCompressionTFBResistance(material, bracingConditions, lbDto.AreaEffective, 0.34, pu);
+            return new EuroCompressionZDto(lbDto, fbDto, tbDto);
+        }
+
+        private static EuroCompressionZDto AsCompressionDto(this UnStiffenedZSection section, Material material, LengthBracingConditions bracingConditions, double pu)
+        {
+            var lbDto = section.GetEuroReducedArea(material);
+            //var pn1 = Tuple.Create(section.GetEuroCompressionLBResistance(material, Ae), FailureMode.LOCALBUCKLING);
+            var fbDto = section.GetEuroCompressionFBResistance(material, bracingConditions, lbDto.AreaEffective, 0.49, pu);
+            var tbDto = section.GetEuroCompressionTBResistance(material, bracingConditions, lbDto.AreaEffective, 0.49, pu);
+            //var ftbDto = section.GetEuroCompressionTFBResistance(material, bracingConditions, lbDto.AreaEffective, 0.49, pu);
+            return new EuroCompressionZDto(lbDto, fbDto, tbDto);
+        }
+
+        private static CompressionResistanceOutput AsOutput(this EuroCompressionZDto dto, LippedZSection section)
+        {
+            var report = dto.AsReport(section);
+            return new CompressionResistanceOutput(dto.GoverningCase.NominalStrength, PHI_EURO, PHI_NAME_EURO, COMP_DESIGN_RESIST_EURO, dto.GoverningCase.FailureMode, "N", report);
+        }
+
+        private static CompressionResistanceOutput AsOutput(this EuroCompressionZDto dto, UnStiffenedZSection section)
+        {
+            var report = dto.AsReport(section);
+            return new CompressionResistanceOutput(dto.GoverningCase.NominalStrength, PHI_EURO, PHI_NAME_EURO, COMP_DESIGN_RESIST_EURO, dto.GoverningCase.FailureMode, "N", report);
+        }
+
+        public static Validation<CompressionResistanceOutput> AsEuroCompressionResistance(this LippedZSection section, Material material, LengthBracingConditions bracingConditions, double pu)
+        {
+            var result = from valid in section.IsValid()
+                         select section.AsCompressionDto(material, bracingConditions, pu).AsOutput(section);
+            return result;
+        }
+
+        public static Validation<CompressionResistanceOutput> AsEuroCompressionResistance(this UnStiffenedZSection section, Material material, LengthBracingConditions bracingConditions, double pu)
+        {
+            var result = from valid in section.IsValid()
+                         select section.AsCompressionDto(material, bracingConditions, pu).AsOutput(section);
+            return result;
+        }
+
+        #endregion
 
         /// <summary>
         /// Get Xd.
@@ -229,7 +299,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             return (be1, be2);
         }
 
-        private static LocalEuroCompressionDto GetEuroReducedArea(this LippedCSection section, Material material)
+        private static LocalEuroCompressionDto GetEuroReducedArea(this LippedSection section, Material material)
         {
             var t = section.Dimensions.ThicknessT;
             (var be1, var be2, var ce, var Xd, var Kf, var Kc) = section.GetEuroReducedFlange(material, 1);
@@ -259,7 +329,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             return new LocalEuroCompressionDto(Ae, (be1 + be2), 0, Kw, Kf, Kc, material.Fy, Ae, (material.Fy * Ae), Xd);
         }
 
-        private static LocalEuroCompressionDto GetEuroReducedArea(this UnStiffenedCSection section, Material material)
+        private static LocalEuroCompressionDto GetEuroReducedArea(this UnStiffenedSection section, Material material)
         {
             var t = section.Dimensions.ThicknessT;
             var Kf = 0.43;
@@ -284,33 +354,33 @@ namespace ColdFormedChannelSection.Core.Helpers
             return new LocalEuroCompressionDto(Ae, (be1 + be2), 0, Kw, Kf, 0, material.Fy, Ae, (material.Fy * Ae), 1);
         }
 
-        private static EuroCompressionDto AsCompressionDto(this LippedCSection section, Material material, LengthBracingConditions bracingConditions, double pu)
+        private static EuroCompressionCDto AsCompressionDto(this LippedCSection section, Material material, LengthBracingConditions bracingConditions, double pu)
         {
             var lbDto = section.GetEuroReducedArea(material);
             //var pn1 = Tuple.Create(section.GetEuroCompressionLBResistance(material, Ae), FailureMode.LOCALBUCKLING);
             var fbDto = section.GetEuroCompressionFBResistance(material, bracingConditions, lbDto.AreaEffective, 0.34, pu);
             var tbDto = section.GetEuroCompressionTBResistance(material, bracingConditions, lbDto.AreaEffective, 0.34, pu);
             var ftbDto = section.GetEuroCompressionTFBResistance(material, bracingConditions, lbDto.AreaEffective, 0.34, pu);
-            return new EuroCompressionDto(lbDto, fbDto, tbDto, ftbDto);
+            return new EuroCompressionCDto(lbDto, fbDto, tbDto, ftbDto);
         }
 
-        private static EuroCompressionDto AsCompressionDto(this UnStiffenedCSection section, Material material, LengthBracingConditions bracingConditions, double pu)
+        private static EuroCompressionCDto AsCompressionDto(this UnStiffenedCSection section, Material material, LengthBracingConditions bracingConditions, double pu)
         {
             var lbDto = section.GetEuroReducedArea(material);
             //var pn1 = Tuple.Create(section.GetEuroCompressionLBResistance(material, Ae), FailureMode.LOCALBUCKLING);
             var fbDto = section.GetEuroCompressionFBResistance(material, bracingConditions, lbDto.AreaEffective, 0.49, pu);
             var tbDto = section.GetEuroCompressionTBResistance(material, bracingConditions, lbDto.AreaEffective, 0.49, pu);
             var ftbDto = section.GetEuroCompressionTFBResistance(material, bracingConditions, lbDto.AreaEffective, 0.49, pu);
-            return new EuroCompressionDto(lbDto, fbDto, tbDto, ftbDto);
+            return new EuroCompressionCDto(lbDto, fbDto, tbDto, ftbDto);
         }
 
-        private static CompressionResistanceOutput AsOutput(this EuroCompressionDto dto, LippedCSection section)
+        private static CompressionResistanceOutput AsOutput(this EuroCompressionCDto dto, LippedCSection section)
         {
             var report = dto.AsReport(section);
             return new CompressionResistanceOutput(dto.GoverningCase.NominalStrength, PHI_EURO, PHI_NAME_EURO, COMP_DESIGN_RESIST_EURO, dto.GoverningCase.FailureMode, "N", report);
         }
 
-        private static CompressionResistanceOutput AsOutput(this EuroCompressionDto dto, UnStiffenedCSection section)
+        private static CompressionResistanceOutput AsOutput(this EuroCompressionCDto dto, UnStiffenedCSection section)
         {
             var report = dto.AsReport(section);
             return new CompressionResistanceOutput(dto.GoverningCase.NominalStrength, PHI_EURO, PHI_NAME_EURO, COMP_DESIGN_RESIST_EURO, dto.GoverningCase.FailureMode, "N", report);
@@ -318,49 +388,6 @@ namespace ColdFormedChannelSection.Core.Helpers
 
         public static Validation<CompressionResistanceOutput> AsEuroCompressionResistance(this LippedCSection section, Material material, LengthBracingConditions bracingConditions, double pu)
         {
-            //if (!section.IsValid())
-            //    return new CompressionResistanceOutput(0.0, PHI_EURO, PHI_NAME_EURO, COMP_DESIGN_RESIST_EURO, FailureMode.UNSAFE, "N", null);
-            //(var Ae, var localItems) = section.GetEuroReducedArea(material);
-            //var pn1 = Tuple.Create(section.GetEuroCompressionLBResistance(material, Ae), FailureMode.LOCALBUCKLING);
-            //(var pn_FB, var fbItems) = section.GetEuroCompressionFBResistance(material, bracingConditions, Ae, 0.34, pu);
-            //(var pn_TB, var tbItems) = section.GetEuroCompressionTBResistance(material, bracingConditions, Ae, 0.34, pu);
-            //(var pn_TFB, var tfbItems) = section.GetEuroCompressionTFBResistance(material, bracingConditions, Ae, 0.34, pu);
-            //var pn2 = Tuple.Create(pn_FB, FailureMode.FLEXURALBUCKLING);
-            //var pn3 = Tuple.Create(pn_TB, FailureMode.TORSIONALBUCKLING);
-            //var pn4 = Tuple.Create(pn_TFB, FailureMode.FLEXURAL_TORSIONAL_BUCKLING);
-            //var pns = new List<Tuple<double, FailureMode>>()
-            //{
-            //    pn1, pn2, pn3,pn4
-            //};
-            //var pn = pns/*.Distinct(NominalStrengthEqualComparer)*/.OrderBy(tuple => tuple.Item1).First();
-            //var designItems = new List<ReportItem>()
-            //{
-            //    new ReportItem("Governing Case",pn.Item2.GetDescription(),Units.NONE),
-            //    new ReportItem("Nominal Load (Pn)",pn.Item1.ToString("0.###"),Units.N),
-            //    new ReportItem("Gamma",(1.0).ToString("0.###"),Units.N),
-            //    new ReportItem("Design Load (Pn/gamma)",pn.Item1.ToString("0.###"),Units.N),
-            //};
-            //var secDimsItems = new List<ReportItem>()
-            //{
-            //    new ReportItem("H",section.Dimensions.TotalHeightH.ToString("0.###"),Units.MM),
-            //    new ReportItem("B",section.Dimensions.TotalFlangeWidthB.ToString("0.###"),Units.MM),
-            //    new ReportItem("R",section.Dimensions.InternalRadiusR.ToString("0.###"),Units.MM),
-            //    new ReportItem("t",section.Dimensions.ThicknessT.ToString("0.###"),Units.MM),
-            //    new ReportItem("C",section.Dimensions.TotalFoldWidthC.ToString("0.###"),Units.MM)
-            //};
-            //var secDimSection = new ListReportSection("Section Dimensions", secDimsItems);
-            //var localSection = new ListReportSection("Local Buckling", localItems);
-            //var flexuralSection = new ListReportSection("Flexural Buckling", fbItems);
-            //var tbSection = new ListReportSection("Torsional Buckling", tbItems);
-            //var tfbSection = new ListReportSection("Torsional Flexural Buckling", tfbItems);
-            //var designSection = new ListReportSection("Design Compression Load", designItems);
-
-            //var sections = new List<IReportSection>() { secDimSection, localSection, flexuralSection, tbSection, tfbSection, designSection };
-
-            //var report = new Report(UnitSystems.NMM, "Euro Code - Compression", sections);
-
-            //var result = new CompressionResistanceOutput(pn.Item1, PHI_EURO, PHI_NAME_EURO, COMP_DESIGN_RESIST_EURO, pn.Item2, "N", report);
-            //return result;
             var result = from valid in section.IsValid()
                          select section.AsCompressionDto(material, bracingConditions, pu).AsOutput(section);
             return result;
@@ -368,47 +395,6 @@ namespace ColdFormedChannelSection.Core.Helpers
 
         public static Validation<CompressionResistanceOutput> AsEuroCompressionResistance(this UnStiffenedCSection section, Material material, LengthBracingConditions bracingConditions, double pu)
         {
-            //if (!section.IsValid())
-            //    return new CompressionResistanceOutput(0.0, PHI_EURO, PHI_NAME_EURO, COMP_DESIGN_RESIST_EURO, FailureMode.UNSAFE, "N", null);
-            //(var Ae, var localItems) = section.GetEuroReducedArea(material);
-            //var pn1 = Tuple.Create(section.GetEuroCompressionLBResistance(material, Ae), FailureMode.LOCALBUCKLING);
-            //(var pn_FB, var fbItems) = section.GetEuroCompressionFBResistance(material, bracingConditions, Ae, 0.49, pu);
-            //(var pn_TB, var tbItems) = section.GetEuroCompressionTBResistance(material, bracingConditions, Ae, 0.49, pu);
-            //(var pn_TFB, var tfbItems) = section.GetEuroCompressionTFBResistance(material, bracingConditions, Ae, 0.49, pu);
-            //var pn2 = Tuple.Create(pn_FB, FailureMode.FLEXURALBUCKLING);
-            //var pn3 = Tuple.Create(pn_TB, FailureMode.TORSIONALBUCKLING);
-            //var pn4 = Tuple.Create(pn_TFB, FailureMode.FLEXURAL_TORSIONAL_BUCKLING);
-            //var pns = new List<Tuple<double, FailureMode>>()
-            //{
-            //    pn1, pn2, pn3,pn4
-            //};
-            //var pn = pns/*.Distinct(NominalStrengthEqualComparer)*/.OrderBy(tuple => tuple.Item1).First();
-            //var designItems = new List<ReportItem>()
-            //{
-            //    new ReportItem("Governing Case",pn.Item2.GetDescription(),Units.NONE),
-            //    new ReportItem("Nominal Load (Pn)",pn.Item1.ToString("0.###"),Units.N),
-            //    new ReportItem("Gamma",(1.0).ToString("0.###"),Units.N),
-            //    new ReportItem("Design Load (Pn/gamma)",pn.Item1.ToString("0.###"),Units.N),
-            //};
-            //var secDimsItems = new List<ReportItem>()
-            //{
-            //    new ReportItem("H",section.Dimensions.TotalHeightH.ToString("0.###"),Units.MM),
-            //    new ReportItem("B",section.Dimensions.TotalFlangeWidthB.ToString("0.###"),Units.MM),
-            //    new ReportItem("R",section.Dimensions.InternalRadiusR.ToString("0.###"),Units.MM),
-            //    new ReportItem("t",section.Dimensions.ThicknessT.ToString("0.###"),Units.MM),
-            //};
-            //var secDimSection = new ListReportSection("Section Dimensions", secDimsItems);
-            //var localSection = new ListReportSection("Local Buckling", localItems);
-            //var fbSection = new ListReportSection("Flexural Buckling", fbItems);
-            //var tbSection = new ListReportSection("Torsional Buckling", tbItems);
-            //var tfbSection = new ListReportSection("Torsional Flexural Buckling", tfbItems);
-            //var designSection = new ListReportSection("Design Compression Load", designItems);
-            //var sections = new List<IReportSection>() { secDimSection, localSection, fbSection, tbSection, tfbSection, designSection };
-
-            //var report = new Report(UnitSystems.NMM, "Euro Code - Compression", sections);
-
-            //var result = new CompressionResistanceOutput(pn.Item1, PHI_EURO, PHI_NAME_EURO, COMP_DESIGN_RESIST_EURO, pn.Item2, "N", report);
-            //return result;
             var result = from valid in section.IsValid()
                          select section.AsCompressionDto(material, bracingConditions, pu).AsOutput(section);
             return result;

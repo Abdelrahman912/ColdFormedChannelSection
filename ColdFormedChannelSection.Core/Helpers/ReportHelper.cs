@@ -552,21 +552,51 @@ namespace ColdFormedChannelSection.Core.Helpers
             return section;
         }
 
-        public static Report AsReport(this EuroCompressionDto dto, LippedCSection section)
+        public static Report AsReport(this EuroCompressionZDto dto, LippedZSection section)
         {
             var dimSection = section.Dimensions.AsLippedReportSection();
             var lbSection = dto.LB.AsLippedReportSection();
             return dto.AsReport(lbSection, dimSection);
         }
 
-        public static Report AsReport(this EuroCompressionDto dto, UnStiffenedCSection section)
+        public static Report AsReport(this EuroCompressionZDto dto, UnStiffenedZSection section)
         {
             var dimSection = section.Dimensions.AsLippedReportSection();
             var lbSection = dto.LB.AsLippedReportSection();
             return dto.AsReport(lbSection, dimSection);
         }
 
-        public static Report AsReport(this EuroCompressionDto dto, ListReportSection lbSection, ListReportSection dimSection)
+        public static Report AsReport(this EuroCompressionZDto dto, ListReportSection lbSection, ListReportSection dimSection)
+        {
+            var fbSection = dto.FB.AsReportSection();
+            var tbSection = dto.TB.AsReportSection();
+            var designItems = new List<ReportItem>()
+            {
+                new ReportItem("Governing Case",dto.GoverningCase.FailureMode.GetDescription(),Units.NONE),
+                new ReportItem("Nominal Load (Pn)",dto.GoverningCase.NominalStrength.ToString("0.###"),Units.N),
+                new ReportItem("Gamma",(PHI_EURO).ToString("0.###"),Units.NONE),
+                new ReportItem("Design Load (Pn/gamma)",dto.GoverningCase.NominalStrength.ToString("0.###"),Units.N),
+            };
+            var designSection = new ListReportSection("Euro Code - Compression", designItems);
+            var sections = new List<IReportSection>() { dimSection, lbSection, fbSection, tbSection, designSection };
+            return new Report(UnitSystems.NMM, "Euro Code - Compression", sections);
+        }
+
+        public static Report AsReport(this EuroCompressionCDto dto, LippedCSection section)
+        {
+            var dimSection = section.Dimensions.AsLippedReportSection();
+            var lbSection = dto.LB.AsLippedReportSection();
+            return dto.AsReport(lbSection, dimSection);
+        }
+
+        public static Report AsReport(this EuroCompressionCDto dto, UnStiffenedCSection section)
+        {
+            var dimSection = section.Dimensions.AsLippedReportSection();
+            var lbSection = dto.LB.AsLippedReportSection();
+            return dto.AsReport(lbSection, dimSection);
+        }
+
+        public static Report AsReport(this EuroCompressionCDto dto, ListReportSection lbSection, ListReportSection dimSection)
         {
             var fbSection = dto.FB.AsReportSection();
             var tbSection = dto.TB.AsReportSection();
@@ -649,14 +679,14 @@ namespace ColdFormedChannelSection.Core.Helpers
             return report;
         }
 
-        public static Report AsReport(this EgyptMomentDto dto , LippedCSection section)
+        public static Report AsReport(this EgyptMomentDto dto , LippedSection section)
         {
             var lbSection = dto.LB.AsLippedReportSection();
             var dimSection = section.Dimensions.AsLippedReportSection();
             return dto.AsReport(lbSection, dimSection);
         }
 
-        public static Report AsReport(this EgyptMomentDto dto, UnStiffenedCSection section)
+        public static Report AsReport(this EgyptMomentDto dto, UnStiffenedSection section)
         {
             var lbSection = dto.LB.AsUnStiffenedSection();
             var dimSection = section.Dimensions.AsUnStiffenedReportSection();
