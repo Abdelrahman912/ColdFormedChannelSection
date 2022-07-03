@@ -1,22 +1,19 @@
-﻿using ColdFormedChannelSection.Core.Entities;
+﻿using ColdFormedChannelSection.Core.Dtos;
+using ColdFormedChannelSection.Core.Entities;
 using ColdFormedChannelSection.Core.Enums;
 using ColdFormedChannelSection.Core.Extensions;
+using CSharp.Functional.Constructs;
+using CSharp.Functional.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using static ColdFormedChannelSection.Core.Comparers.Comparers;
 using static ColdFormedChannelSection.Core.Constants;
-using CSharp.Functional.Extensions;
 using static ColdFormedChannelSection.Core.Errors.Errors;
-using CSharp.Functional.Constructs;
-using ColdFormedChannelSection.Core.Dtos;
 
 namespace ColdFormedChannelSection.Core.Helpers
 {
     public static class EgyptianHelper
     {
-
-
 
         #region Moment & Compression
 
@@ -29,7 +26,6 @@ namespace ColdFormedChannelSection.Core.Helpers
                          select section.AsEgyptInteractionResistance(Pn, Mn, pu, mu);
             return result;
         }
-
 
         public static Validation<ResistanceInteractionOutput> AsEgyptInteractionResistance(this UnStiffenedZSection section, Material material, LengthBracingConditions bracingConditions, double pu, double mu)
         {

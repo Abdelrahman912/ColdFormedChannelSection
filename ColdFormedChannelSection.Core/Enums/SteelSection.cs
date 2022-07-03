@@ -9,9 +9,9 @@ namespace ColdFormedChannelSection.Core.Enums
         C_LIPPED,
         [Description("C - Unstiffened")]
         C_UNSTIFFENED,
-        //[Description("Z - Lipped")]
-        //Z_LIPPED,
-        //[Description("Z - Unstiffened")]
-        //Z_UNSTIFFENED
+        [Description("Z - Lipped")]
+        Z_LIPPED,
+        [Description("Z - Unstiffened")]
+        Z_UNSTIFFENED
     }
 }
