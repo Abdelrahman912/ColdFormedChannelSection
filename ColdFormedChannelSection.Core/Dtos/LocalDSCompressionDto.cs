@@ -3,28 +3,26 @@ using ColdFormedChannelSection.Core.Enums;
 
 namespace ColdFormedChannelSection.Core.Dtos
 {
-    public abstract class LocalDSMomentDto
+    public abstract class LocalDSCompressionDto
     {
-
+       
         #region Properties
 
-        public double Mcrl { get; }
+        public double Pcrl { get; }
 
         #endregion
 
         #region Constructors
-
-        protected LocalDSMomentDto( double mcrl)
+        protected LocalDSCompressionDto(double pcrl)
         {
-            Mcrl = mcrl;
+            Pcrl = pcrl;
         }
-
         #endregion
 
         #region Methods
 
-        public abstract ListReportSection AsReportSection(TypeOfSection sectionType);
-
         #endregion
+
+        public abstract ListReportSection AsReportSection(TypeOfSection sectionType);
     }
 }

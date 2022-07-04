@@ -150,11 +150,12 @@ namespace ColdFormedChannelSection.Core.Helpers
             return report;
         }
 
-        private static Report AsReport(this DSCompressionDto dto, ListReportSection dimSection,ListReportSection propSection)
+        private static Report AsReport(this DSCompressionDto dto, ListReportSection dimSection,ListReportSection propSection,ListReportSection lbSection)
         {
+            
             var bucklingMomentItems = new List<ReportItem>()
             {
-                new ReportItem("Local Buckling Moment (Pcrl)", dto.Pcrl.ToString("0.###"), Units.KIP),
+                new ReportItem("Local Buckling Moment (Pcrl)", dto.LB.Pcrl.ToString("0.###"), Units.KIP),
                 new ReportItem("Distortional Buckling Load (Pcrd)", dto.Pcrd.ToString("0.###"), Units.KIP),
                 new ReportItem("Global Buckling Moment (Pcre)", dto.Pcre.ToString("0.###"), Units.KIP),
             };
@@ -184,7 +185,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var squashSection = new ListReportSection("Yield Load", squash_items);
             var nominalSection = new ListReportSection("Nominal Flexural Strength", nominalItems);
             var designSection = new ListReportSection("Design Load", designItems);
-            var sections = new List<IReportSection>() { dimSection,propSection, elasticSection, nominalSection, squashSection, designSection };
+            var sections = new List<IReportSection>() { dimSection,propSection,lbSection, elasticSection, nominalSection, squashSection, designSection };
             var report = new Report(UnitSystems.KIPINCH, "Direct Strength - Compression", sections);
             return report;
         }
@@ -193,14 +194,16 @@ namespace ColdFormedChannelSection.Core.Helpers
         {
             var dimSection = section.Dimensions.AsLippedReportSection();
             var propSection = section.Properties.AsReportSection(UnitSystems.KIPINCH);
-            return dto.AsReport(dimSection,propSection);
+            var lbSection = dto.LB.AsReportSection(TypeOfSection.LIPPED);
+            return dto.AsReport(dimSection,propSection,lbSection);
         }
 
         public static Report AsReport(this DSCompressionDto dto, UnStiffenedSection section)
         {
             var dimSection = section.Dimensions.AsUnStiffenedReportSection();
             var propSection = section.Properties.AsReportSection(UnitSystems.KIPINCH);
-            return dto.AsReport(dimSection,propSection);
+            var lbSection = dto.LB.AsReportSection(TypeOfSection.UNSTIFFENED);
+            return dto.AsReport(dimSection,propSection,lbSection);
         }
 
         private static Report AsReport(this DSMomentDto dto, ListReportSection lbSection, ListReportSection dimSection,ListReportSection propSection)
@@ -244,7 +247,7 @@ namespace ColdFormedChannelSection.Core.Helpers
 
         public static Report AsReport(this DSMomentDto dto, LippedSection section)
         {
-            var lbSection = dto.LB.AsLippedReportSection();
+            var lbSection = dto.LB.AsReportSection(TypeOfSection.LIPPED);
             var dimSection = section.Dimensions.AsLippedReportSection();
             var propSection = section.Properties.AsReportSection(UnitSystems.KIPINCH);
             return dto.AsReport(lbSection, dimSection,propSection);
@@ -252,7 +255,7 @@ namespace ColdFormedChannelSection.Core.Helpers
 
         public static Report AsReport(this DSMomentDto dto, UnStiffenedSection section)
         {
-            var lbSection = dto.LB.AsUnStiffenedReportSection();
+            var lbSection = dto.LB.AsReportSection(TypeOfSection.UNSTIFFENED);
             var dimSection = section.Dimensions.AsUnStiffenedReportSection();
             var propSection = section.Properties.AsReportSection(UnitSystems.KIPINCH);
             return dto.AsReport(lbSection, dimSection,propSection);
@@ -462,6 +465,39 @@ namespace ColdFormedChannelSection.Core.Helpers
 
 
 
+        public static ListReportSection AsReportSection(this InteractionDSCompressionDto dto)
+        {
+            var items = new List<ReportItem>()
+            {
+                new ReportItem("K_flange_web",dto.KFlangeWeb.ToString("0.###"),Units.NONE),
+                new ReportItem("K_flange_lip",dto.KFlangeLip.ToString("0.###"),Units.NONE)
+            };
+            var section = new ListReportSection("Interaction method K values", items);
+            return section;
+        }
+
+        public static ListReportSection AsLippedReportSection(this ElementDSCompressionDto dto)
+        {
+            var items = new List<ReportItem>()
+            {
+                new ReportItem("Kw",dto.Kw.ToString("0.###"),Units.NONE),
+                new ReportItem("Kf",dto.Kf.ToString("0.###"),Units.NONE),
+                new ReportItem("Kc",dto.Kc.ToString("0.###"),Units.NONE)
+            };
+            var section = new ListReportSection("Element method K values", items);
+            return section;
+        }
+
+        public static ListReportSection AsUnStiffenedReportSection(this ElementDSCompressionDto dto)
+        {
+            var items = new List<ReportItem>()
+            {
+                new ReportItem("Kw",dto.Kw.ToString("0.###"),Units.NONE),
+                new ReportItem("Kf",dto.Kf.ToString("0.###"),Units.NONE),
+            };
+            var section = new ListReportSection("Element method K values", items);
+            return section;
+        }
 
         public static ListReportSection AsReportSection(this CSectionProperties sec,UnitSystems system)
         {
@@ -650,18 +686,29 @@ namespace ColdFormedChannelSection.Core.Helpers
         }
 
 
-        public static ListReportSection AsUnStiffenedReportSection(this LocalDSMomentDto dto)
+        public static ListReportSection AsReportSection(this InteractionDSMomentDto dto)
+        {
+            var items = new List<ReportItem>()
+            {
+                new ReportItem("K_flange_web" , dto.KFlangeWeb.ToString("0.###"),Units.NONE),
+                new ReportItem("K_flange_lip" , dto.KFlangeLip.ToString("0.###"),Units.NONE),
+            };
+            var section = new ListReportSection("Interaction method k values", items);
+            return section;
+        }
+
+        public static ListReportSection AsUnStiffenedReportSection(this ElementDSMomentDto dto)
         {
             var items = new List<ReportItem>()
             {
                 new ReportItem("Kw" , dto.Kw.ToString("0.###"),Units.NONE),
                 new ReportItem("Kf" , dto.Kf.ToString("0.###"),Units.NONE),
             };
-            var section = new ListReportSection("Local Buckling k values", items);
+            var section = new ListReportSection("Element method k values", items);
             return section;
         }
 
-        public static ListReportSection AsLippedReportSection(this LocalDSMomentDto dto)
+        public static ListReportSection AsLippedReportSection(this ElementDSMomentDto dto)
         {
             var items = new List<ReportItem>()
             {
@@ -670,7 +717,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("Kc" , dto.Kc.ToString("0.###"),Units.NONE),
 
             };
-            var section = new ListReportSection("Local Buckling k values", items);
+            var section = new ListReportSection("Element k values", items);
             return section;
         }
 

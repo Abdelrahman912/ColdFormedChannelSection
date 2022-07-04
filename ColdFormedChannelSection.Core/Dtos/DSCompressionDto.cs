@@ -10,7 +10,7 @@ namespace ColdFormedChannelSection.Core.Dtos
         
         #region Properties
 
-        public double Pcrl { get; }
+        public LocalDSCompressionDto LB { get; }
 
         public double Pcrd { get; }
 
@@ -34,9 +34,9 @@ namespace ColdFormedChannelSection.Core.Dtos
 
         #region Contructors
 
-        public DSCompressionDto(double pcrl, double pcrd, double pcre, double pnl, double pnd, double pne, double ag, double fy)
+        public DSCompressionDto(LocalDSCompressionDto lb, double pcrd, double pcre, double pnl, double pnd, double pne, double ag, double fy)
         {
-            Pcrl = pcrl;
+            LB = lb;
             Pcrd = pcrd;
             Pcre = pcre;
             Pnl = pnl;

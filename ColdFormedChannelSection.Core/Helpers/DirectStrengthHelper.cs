@@ -192,7 +192,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             return section.AsCompressionDto(material, bracingConditions, p_crl);
         }
 
-        private static DSCompressionDto AsCompressionDto(this Section section, Material material, LengthBracingConditions bracingConditions, double p_crl)
+        private static DSCompressionDto AsCompressionDto(this Section section, Material material, LengthBracingConditions bracingConditions, LocalDSCompressionDto localDto)
         {
             var Fy = material.Fy;
             var aPrime = section.Properties.APrime;
@@ -214,21 +214,21 @@ namespace ColdFormedChannelSection.Core.Helpers
                 : (0.877 / lambda_c_squared) * Py;
 
             //Nominal axial strength (Pnl) for local buckling.
-            var lambda_L = Math.Sqrt(Pne / p_crl);
+            var lambda_L = Math.Sqrt(Pne / localDto.Pcrl);
             var Pnl = lambda_L <= 0.776
                 ? Pne
-                : (1 - 0.15 * (p_crl / Pne).Power(0.4)) * (p_crl / Pne).Power(0.4) * Pne;
+                : (1 - 0.15 * (localDto.Pcrl / Pne).Power(0.4)) * (localDto.Pcrl / Pne).Power(0.4) * Pne;
 
             //Nominal axial strength for distortional buckling.
             var lambda_d = Math.Sqrt(Py / p_crd);
             var Pnd = lambda_d <= 0.561
                 ? Py
                 : (1 - 0.25 * (p_crd / Py).Power(0.6)) * ((p_crd / Py).Power(0.6)) * Py;
-            return new DSCompressionDto(p_crl, p_crd, p_cre, Pnl, Pnd, Pne, Ag, Fy);
+            return new DSCompressionDto(localDto, p_crd, p_cre, Pnl, Pnd, Pne, Ag, Fy);
         }
 
 
-        private static double GetCompressionLBResistance(this LippedSection section, Material material)
+        private static LocalDSCompressionDto GetCompressionLBResistance(this LippedSection section, Material material)
         {
             var Pcr = (section.Properties.CPrime / section.Properties.BPrime) < 0.6
                 ? section.GetCompressionLBResistanceFromInteractionMethod(material)
@@ -236,7 +236,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             return Pcr;
         }
 
-        private static double GetCompressionLBResistanceFromInteractionMethod(this LippedSection section, Material material)
+        private static LocalDSCompressionDto GetCompressionLBResistanceFromInteractionMethod(this LippedSection section, Material material)
         {
             var cPrimeOverbPrime = section.Properties.CPrime / section.Properties.BPrime;
             var aPrimeOverbPrime = section.Properties.APrime / section.Properties.BPrime;
@@ -256,11 +256,11 @@ namespace ColdFormedChannelSection.Core.Helpers
             var Fcr = Math.Min(Fcr_Flange_Lip, Fcr_Flange_Web);
             var Ag = (section.Properties.APrime + 2 * section.Properties.BPrime + 2 * section.Properties.CPrime) * section.Dimensions.ThicknessT;
             var P_crl = Ag * Fcr;
-
-            return P_crl;
+            return new InteractionDSCompressionDto(kFlange_Lip, kFlange_Web, P_crl);
+            //return P_crl;
         }
 
-        private static double GetCompressionLBResistanceFromElementMethod(this LippedSection section, Material material)
+        private static LocalDSCompressionDto GetCompressionLBResistanceFromElementMethod(this LippedSection section, Material material)
         {
             var EOverVTerm = ((Math.PI.Power(2) * material.E) / (12 * (1 - material.V.Power(2))));
             //Flange Local buckling
@@ -278,10 +278,10 @@ namespace ColdFormedChannelSection.Core.Helpers
             var Fcr = Math.Min(Math.Min(Fcr_Flange, Fcr_Web), Fcr_Lip);
             var Ag = (section.Properties.APrime + 2 * section.Properties.BPrime + 2 * section.Properties.CPrime) * section.Dimensions.ThicknessT;
             var P_crl = Ag * Fcr;
-            return P_crl;
+            return new ElementDSCompressionDto(kWeb, kFlange, kLip, P_crl);
         }
 
-        private static double GetCompressionLBResistance(this UnStiffenedSection section, Material material)
+        private static LocalDSCompressionDto GetCompressionLBResistance(this UnStiffenedSection section, Material material)
         {
             var EOverVTerm = ((Math.PI.Power(2) * material.E) / (12 * (1 - material.V.Power(2))));
 
@@ -297,7 +297,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var Fcr = Math.Min(Fcr_flange, Fcr_web);
             var Ag = (section.Properties.APrime + 2 * section.Properties.BPrime) * section.Dimensions.ThicknessT;
             var P_crl = Ag * Fcr;
-            return P_crl;
+            return new ElementDSCompressionDto(kWeb, kFlange, 0, P_crl);
         }
 
         private static double GetCompressionDBResistance(this Section input, Material material, LengthBracingConditions bracingConditions)
@@ -673,7 +673,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var Zg = unstiffenedSection.Properties.Zg;
             var m_crl = Zg * Fcr;
            
-            return new LocalDSMomentDto(
+            return new ElementDSMomentDto(
                 kw: kWeb,
                 kf: kFlange,
                 kc: 0,
@@ -712,7 +712,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var F_crl = Math.Min(Fcr_flange_lip, Fcr_flange_web);
             var M_crl = Zg * F_crl;
             
-            return new LocalDSMomentDto(0, 0, 0, M_crl);
+            return new InteractionDSMomentDto(k_flange_web,k_flange_lip, M_crl);
         }
 
         private static LocalDSMomentDto GetMomentLBResistanceFromElementMethod(this LippedSection lippedSection, Material material)
@@ -743,7 +743,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var M_crl = Zg * F_crl;
 
             
-            return new LocalDSMomentDto(kWeb, kFlange, k_lip, M_crl);
+            return new ElementDSMomentDto(kWeb, kFlange, k_lip, M_crl);
         }
 
         private static double GetMomentDBResistance(this Section input, Material material, LengthBracingConditions bracingConditions)
