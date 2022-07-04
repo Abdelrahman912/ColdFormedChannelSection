@@ -88,8 +88,8 @@ namespace ColdFormedChannelSection.Core.Helpers
                     ieName = "\\frac {P_u} {\\phi_c P_{no}} + \\frac {M_u} {\\phi_b M_n}";
                 }
             }
-            var sections = pn_out.Report.Sections.Take(1).Concat(pn_out.Report.Sections.Skip(1).Select(sec => sec.AppendToName("Compression")))
-                                                 .Concat(mn_out.Report.Sections.Skip(1).Select(sec => sec.AppendToName("Moment")))
+            var sections = pn_out.Report.Sections.Take(2).Concat(pn_out.Report.Sections.Skip(2).Select(sec => sec.AppendToName("Compression")))
+                                                 .Concat(mn_out.Report.Sections.Skip(2).Select(sec => sec.AppendToName("Moment")))
                                                  .ToList();
             var report = new Report(UnitSystems.KIPINCH, "AISI Code - Interaction", sections);
             return new ResistanceInteractionOutput(pu, pn, mu, mn, ieName, ie, "kip.in", "kip", report);

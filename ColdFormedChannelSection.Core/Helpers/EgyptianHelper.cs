@@ -58,8 +58,8 @@ namespace ColdFormedChannelSection.Core.Helpers
                 ie = (pu / (2 * PHI_C_EGYPT * Pn.NominalResistance)) + (mu / (PHI_B_EGYPT * Mn.NominalResistance));
                 ieName = "\\frac {P_u} {2 \\phi_c P_n} +  \frac {M_u} {\\phi_b M_n}";
             }
-            var sections = Pn.Report.Sections.Take(1).Concat(Pn.Report.Sections.Skip(1).Select(sec => sec.AppendToName("Compression")))
-                                                .Concat(Mn.Report.Sections.Skip(1).Select(sec => sec.AppendToName("Moment")))
+            var sections = Pn.Report.Sections.Take(2).Concat(Pn.Report.Sections.Skip(2).Select(sec => sec.AppendToName("Compression")))
+                                                .Concat(Mn.Report.Sections.Skip(2).Select(sec => sec.AppendToName("Moment")))
                                                 .ToList();
 
             var report = new Report(UnitSystems.TONCM, "Egyptian Code - Interaction", sections);

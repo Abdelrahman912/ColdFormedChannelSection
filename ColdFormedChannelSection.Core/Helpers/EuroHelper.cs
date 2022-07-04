@@ -80,8 +80,8 @@ namespace ColdFormedChannelSection.Core.Helpers
             //$$ (\frac{P_u}{ P_n})^{0.8} + (\frac{M_u}{M_n})^{0.8}  $$
             var ie = (pu / Pn.NominalResistance).Power(0.8) + (mu / Mn.NominalResistance).Power(0.8);
 
-            var sections = Pn.Report.Sections.Take(1).Concat(Pn.Report.Sections.Skip(1).Select(sec => sec.AppendToName("Compression")))
-                                                .Concat(Mn.Report.Sections.Skip(1).Select(sec => sec.AppendToName("Moment")))
+            var sections = Pn.Report.Sections.Take(2).Concat(Pn.Report.Sections.Skip(2).Select(sec => sec.AppendToName("Compression")))
+                                                .Concat(Mn.Report.Sections.Skip(2).Select(sec => sec.AppendToName("Moment")))
                                                 .ToList();
 
             var report = new Report(UnitSystems.NMM, "Euro Code - Interaction", sections);
