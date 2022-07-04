@@ -585,7 +585,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var Kf = 0.0;
             var Kc = 0.0;
 
-            if (b_over_t <= s / 3 && c_over_b <= 0.25)
+            if (b_over_t <= s / 3 )
             {
                 be = b_prime;
                 ce = c_prime;

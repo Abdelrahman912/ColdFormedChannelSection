@@ -224,7 +224,15 @@ namespace ColdFormedChannelSection.Core.Helpers
             var Pnd = lambda_d <= 0.561
                 ? Py
                 : (1 - 0.25 * (p_crd / Py).Power(0.6)) * ((p_crd / Py).Power(0.6)) * Py;
-            return new DSCompressionDto(localDto, p_crd, p_cre, Pnl, Pnd, Pne, Ag, Fy);
+            var lst = new List<Tuple<double, FailureMode, double>>()
+            {
+                Tuple.Create(localDto.Pcrl,FailureMode.LOCALBUCKLING,Pnl),
+                Tuple.Create(p_cre,FailureMode.GLOBALBUCKLING,Pne),
+                Tuple.Create(p_crd,FailureMode.DISTRORTIONALBUCKLING,Pnd)
+            };
+            var governingCaseTuple = lst.OrderBy(tup=>tup.Item1).First();
+            var governingCase = new NominalStrengthDto(governingCaseTuple.Item3, governingCaseTuple.Item2);
+            return new DSCompressionDto(localDto, p_crd, p_cre, Pnl, Pnd, Pne, Ag, Fy,governingCase);
         }
 
 
@@ -618,13 +626,24 @@ namespace ColdFormedChannelSection.Core.Helpers
             var Mnd = lambda_d <= 0.673
                 ? My
                 : (1 - 0.22 * (M_crd / My).Power(0.5)) * (M_crd / My).Power(0.5) * My;
+            var lst = new List<Tuple<double, FailureMode, double>>()
+            {
+                Tuple.Create(lbDto.Mcrl,FailureMode.LOCALBUCKLING,Mnl),
+                Tuple.Create(M_cre,FailureMode.GLOBALBUCKLING,Mne),
+                Tuple.Create(M_crd,FailureMode.DISTRORTIONALBUCKLING,Mnd)
+            };
+            var govTuple = lst.OrderBy(tuple => tuple.Item1).First();
+            var governingCase = new NominalStrengthDto(govTuple.Item3, govTuple.Item2);
             return new DSMomentDto(
                 lb: lbDto,
                 mcre: M_cre,
                 mcrd: M_crd,
                 mnl: Mnl,
                 mnd: Mnd,
-                mne: Mne
+                mne: Mne,
+                fy:Fy,
+                zg:Zg,
+                governingCase
                 );
         }
 

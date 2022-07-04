@@ -33,7 +33,7 @@ namespace ColdFormedChannelSection.Core.Dtos
 
         #region Constructors
 
-        public DSMomentDto(LocalDSMomentDto lb, double mcre, double mcrd, double mnl, double mnd, double mne)
+        public DSMomentDto(LocalDSMomentDto lb, double mcre, double mcrd, double mnl, double mnd, double mne,double fy,double zg,NominalStrengthDto governingCase)
         {
             LB = lb;
             Mcre = mcre;
@@ -47,8 +47,10 @@ namespace ColdFormedChannelSection.Core.Dtos
                 new NominalStrengthDto(Mne,FailureMode.GLOBALBUCKLING),
                new NominalStrengthDto(Mnd,FailureMode.DISTRORTIONALBUCKLING)
             };
+            Fy = fy;
+            Zg = zg;
             My = Fy * Zg;
-           GoverningCase= nominalLoads.Distinct(NominalStrengthEqualComparer).OrderBy(tup => tup.NominalStrength).First();
+            GoverningCase = governingCase; /*nominalLoads.Distinct(NominalStrengthEqualComparer).OrderBy(tup => tup.NominalStrength).First();*/
         }
 
         #endregion

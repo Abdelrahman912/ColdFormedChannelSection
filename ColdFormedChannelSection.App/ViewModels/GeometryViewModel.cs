@@ -275,18 +275,25 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         public List<Error> Validate()
         {
-            var errs = new List<Error>();
-            if (TotalHeightH <= 0)
-                errs.Add(LessThanZeroError("H"));
-            if (TotalWidthB <= 0)
-                errs.Add(LessThanZeroError("B"));
-            if (ThicknessT <= 0)
-                errs.Add(LessThanZeroError("t"));
-            if (InternalRadiusR <= 0)
-                errs.Add(LessThanZeroError("R"));
-            if (!_isUnstiffened && TotalFoldWidthC <= 0)
-                errs.Add(LessThanZeroError("C"));
-            return errs;
+            if (!IsDesign)
+            {
+                var errs = new List<Error>();
+                if (TotalHeightH <= 0)
+                    errs.Add(LessThanZeroError("H"));
+                if (TotalWidthB <= 0)
+                    errs.Add(LessThanZeroError("B"));
+                if (ThicknessT <= 0)
+                    errs.Add(LessThanZeroError("t"));
+                if (InternalRadiusR <= 0)
+                    errs.Add(LessThanZeroError("R"));
+                if (!_isUnstiffened && TotalFoldWidthC <= 0)
+                    errs.Add(LessThanZeroError("C"));
+                return errs;
+            }
+            else
+            {
+                return new List<Error>();
+            }
         }
 
         private static async Task<List<SectionDimensionDto>> LoadSections(string tableName)

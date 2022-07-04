@@ -34,7 +34,7 @@ namespace ColdFormedChannelSection.Core.Dtos
 
         #region Contructors
 
-        public DSCompressionDto(LocalDSCompressionDto lb, double pcrd, double pcre, double pnl, double pnd, double pne, double ag, double fy)
+        public DSCompressionDto(LocalDSCompressionDto lb, double pcrd, double pcre, double pnl, double pnd, double pne, double ag, double fy,NominalStrengthDto governingCase)
         {
             LB = lb;
             Pcrd = pcrd;
@@ -52,7 +52,7 @@ namespace ColdFormedChannelSection.Core.Dtos
                 new NominalStrengthDto(pne,FailureMode.GLOBALBUCKLING),
                new NominalStrengthDto(pnd,FailureMode.DISTRORTIONALBUCKLING)
             };
-            GoverningCase = nominalLoads.Distinct(NominalStrengthEqualComparer).OrderBy(tup => tup.NominalStrength).First();
+            GoverningCase = governingCase;
         }
 
         #endregion

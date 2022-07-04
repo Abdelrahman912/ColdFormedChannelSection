@@ -44,7 +44,7 @@
                                     </ComboBox.ItemTemplate>
                                 </ComboBox>
                             </Grid>
-                            <RadioButton  Grid.Row="2" Grid.Column="1" Content="User defined" IsChecked="{Binding IsUserDefined}" Margin="0 5 0 0" VerticalAlignment="Center"/>
+                            <RadioButton Visibility="{Binding IsDesign, Converter={StaticResource InverseBoolToVisConverter}}" Grid.Row="2" Grid.Column="1" Content="User defined" IsChecked="{Binding IsUserDefined}" Margin="0 5 0 0" VerticalAlignment="Center"/>
                         </Grid>
 
                       
