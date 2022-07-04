@@ -380,7 +380,7 @@ namespace ColdFormedChannelSection.Core.Helpers
         {
             var lbSection = dto.LB.AsLippedReportSection();
             var dimSection = section.Dimensions.AsLippedReportSection(UnitSystems.TONCM);
-            var propSection = section.Properties.AsReportSection(UnitSystems.NMM);
+            var propSection = section.Properties.AsReportSection(UnitSystems.TONCM);
             return dto.AsReport(lbSection, dimSection, propSection);
         }
 
@@ -848,13 +848,15 @@ namespace ColdFormedChannelSection.Core.Helpers
 
         public static ListReportSection AsLippedReportSection(this LocalEgyptMomentDto dto)
         {
+            var kcString = dto.Kc == 0 ? "No edge stiffener required" : dto.Kc.ToString("0.###");
+            var kfString = dto.Kf == 0 ? "No edge stiffener required" : dto.Kf.ToString("0.###");
             var items = new List<ReportItem>()
             {
                 new ReportItem("Kw",dto.Kw.ToString("0.###"),Units.NONE),
                 new ReportItem("Effective Height (ae)",dto.Ae.ToString("0.###"),Units.CM),
-                new ReportItem("Kf",dto.Kf.ToString("0.###"),Units.NONE),
+                new ReportItem("Kf",kfString,Units.NONE),
                 new ReportItem("Effective Flange Width (be)",dto.Be.ToString("0.###"),Units.CM),
-                new ReportItem("Kc",dto.Kc.ToString("0.###"),Units.NONE),
+                new ReportItem("Kc",kcString,Units.NONE),
                 new ReportItem("Effective Lip (ce)", dto.Ce.ToString("0.###"), Units.CM),
                  new ReportItem("Effective Section modulus (Ze)",dto.Ze.ToString("0.###"),Units.CM_3)
             };
@@ -864,11 +866,12 @@ namespace ColdFormedChannelSection.Core.Helpers
 
         public static ListReportSection AsUnStiffenedSection(this LocalEgyptMomentDto dto)
         {
+            var kfString = dto.Kf == 0 ? "No edge stiffener required" : dto.Kf.ToString("0.###");
             var items = new List<ReportItem>()
             {
                 new ReportItem("Kw",dto.Kw.ToString("0.###"),Units.NONE),
                 new ReportItem("Effective Height (ae)",dto.Ae.ToString("0.###"),Units.CM),
-                new ReportItem("Kf",dto.Kf.ToString("0.###"),Units.NONE),
+                new ReportItem("Kf",kfString,Units.NONE),
                 new ReportItem("Effective Flange Width (be)",dto.Be.ToString("0.###"),Units.CM),
                 new ReportItem("Effective Section modulus (Ze)",dto.Ze.ToString("0.###"),Units.CM_3)
             };

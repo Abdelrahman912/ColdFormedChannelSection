@@ -314,7 +314,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var Is = (t * c.Power(3)) / 12;
             var Ia = 0.0;
             var Kf = 0.0;
-            if (b_over_t <= s / 3 && c_over_b <= 0.25)
+            if (b_over_t <= s / 3 /*&& c_over_b <= 0.25*/)
             {
                 be = b_prime;
             }
