@@ -240,15 +240,6 @@ namespace ColdFormedChannelSection.Core.Helpers
                     F_report = Fy;
                 }
                 var fLocal = (C_star / lambda_f.Power(2));
-                var items = new List<ReportItem>()
-                {
-                    new ReportItem("Local Section Modulus",Zg.ToString("0.###"),Units.CM_3),
-                    new ReportItem("Local Stress (F)",(C_star/lambda_f.Power(2)).ToString("0.###"),Units.TON_CM_2),
-                    new ReportItem("Local Nominal Moment (Mn)",Mn1.ToString("0.###"),Units.TON_CM),
-                    new ReportItem("Lateral Torsional Modulus (Z)",Ze_report.ToString("0.###"),Units.CM_3),
-                    new ReportItem("Lateral Torsional Stress (F)",F_report.ToString("0.###"),Units.TON_CM_2),
-                    new ReportItem("Lateral Torsional Nominal Moment (Mn)",Mn2.ToString("0.###"),Units.TON_CM)
-                };
                 if (Mn1 < Mn2)
                 {
                     var dto = new NominalStrengthDto(Mn1, FailureMode.LOCALBUCKLING);

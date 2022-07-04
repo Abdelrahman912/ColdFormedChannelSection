@@ -31,7 +31,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             };
             var designSection = new ListReportSection("Design Compression", items);
 
-            var sections = new List<IReportSection>() { dimSection,propSection, lbSection, fbSection, tbSection, designSection };
+            var sections = new List<IReportSection>() { dimSection, propSection, lbSection, fbSection, tbSection, designSection };
 
             var report = new Report(UnitSystems.KIPINCH, "AISI Code - Compression", sections);
             return report;
@@ -54,7 +54,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             };
             var designSection = new ListReportSection("Design Compression", items);
 
-            var sections = new List<IReportSection>() { dimSection,propSection, lbSection, fbSection, tbSection, designSection };
+            var sections = new List<IReportSection>() { dimSection, propSection, lbSection, fbSection, tbSection, designSection };
 
             var report = new Report(UnitSystems.KIPINCH, "AISI Code - Compression", sections);
             return report;
@@ -78,7 +78,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             };
             var designSection = new ListReportSection("Design Compression", items);
 
-            var sections = new List<IReportSection>() { dimSection,propSection, lbSection, fbSection, tfbSection, tbSection, designSection };
+            var sections = new List<IReportSection>() { dimSection, propSection, lbSection, fbSection, tfbSection, tbSection, designSection };
 
             var report = new Report(UnitSystems.KIPINCH, "AISI Code - Compression", sections);
             return report;
@@ -102,7 +102,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             };
             var designSection = new ListReportSection("Design Compression", items);
 
-            var sections = new List<IReportSection>() { dimSection,propSection, lbSection, fbSection, tfbSection, tbSection, designSection };
+            var sections = new List<IReportSection>() { dimSection, propSection, lbSection, fbSection, tfbSection, tbSection, designSection };
 
             var report = new Report(UnitSystems.KIPINCH, "AISI Code - Compression", sections);
             return report;
@@ -123,7 +123,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             };
             var designSection = new ListReportSection("Design Moment", items);
 
-            var sections = new List<IReportSection>() { dimSection,propSection, lbSection, ltbSection, designSection };
+            var sections = new List<IReportSection>() { dimSection, propSection, lbSection, ltbSection, designSection };
 
             var report = new Report(UnitSystems.KIPINCH, "AISI Code - Moment", sections);
             return report;
@@ -144,15 +144,15 @@ namespace ColdFormedChannelSection.Core.Helpers
             };
             var designSection = new ListReportSection("Design Moment", items);
 
-            var sections = new List<IReportSection>() { dimSection,propSection, lbSection, ltbSection, designSection };
+            var sections = new List<IReportSection>() { dimSection, propSection, lbSection, ltbSection, designSection };
 
             var report = new Report(UnitSystems.KIPINCH, "AISI Code - Moment", sections);
             return report;
         }
 
-        private static Report AsReport(this DSCompressionDto dto, ListReportSection dimSection,ListReportSection propSection,ListReportSection lbSection)
+        private static Report AsReport(this DSCompressionDto dto, ListReportSection dimSection, ListReportSection propSection, ListReportSection lbSection)
         {
-            
+
             var bucklingMomentItems = new List<ReportItem>()
             {
                 new ReportItem("Local Buckling Moment (Pcrl)", dto.LB.Pcrl.ToString("0.###"), Units.KIP),
@@ -185,7 +185,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var squashSection = new ListReportSection("Yield Load", squash_items);
             var nominalSection = new ListReportSection("Nominal Flexural Strength", nominalItems);
             var designSection = new ListReportSection("Design Load", designItems);
-            var sections = new List<IReportSection>() { dimSection,propSection,lbSection, elasticSection, nominalSection, squashSection, designSection };
+            var sections = new List<IReportSection>() { dimSection, propSection, lbSection, elasticSection, nominalSection, squashSection, designSection };
             var report = new Report(UnitSystems.KIPINCH, "Direct Strength - Compression", sections);
             return report;
         }
@@ -195,7 +195,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var dimSection = section.Dimensions.AsLippedReportSection();
             var propSection = section.Properties.AsReportSection(UnitSystems.KIPINCH);
             var lbSection = dto.LB.AsReportSection(TypeOfSection.LIPPED);
-            return dto.AsReport(dimSection,propSection,lbSection);
+            return dto.AsReport(dimSection, propSection, lbSection);
         }
 
         public static Report AsReport(this DSCompressionDto dto, UnStiffenedSection section)
@@ -203,10 +203,10 @@ namespace ColdFormedChannelSection.Core.Helpers
             var dimSection = section.Dimensions.AsUnStiffenedReportSection();
             var propSection = section.Properties.AsReportSection(UnitSystems.KIPINCH);
             var lbSection = dto.LB.AsReportSection(TypeOfSection.UNSTIFFENED);
-            return dto.AsReport(dimSection,propSection,lbSection);
+            return dto.AsReport(dimSection, propSection, lbSection);
         }
 
-        private static Report AsReport(this DSMomentDto dto, ListReportSection lbSection, ListReportSection dimSection,ListReportSection propSection)
+        private static Report AsReport(this DSMomentDto dto, ListReportSection lbSection, ListReportSection dimSection, ListReportSection propSection)
         {
             var bucklingMomentItems = new List<ReportItem>()
             {
@@ -240,7 +240,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var squashSection = new ListReportSection("Yield Moment", squash_items);
             var nominalSection = new ListReportSection("Nominal Flexural Strength", nominalItems);
             var designSection = new ListReportSection("Design Moment", designItems);
-            var sections = new List<IReportSection>() { dimSection,propSection, lbSection, elasticSection, nominalSection, squashSection, designSection };
+            var sections = new List<IReportSection>() { dimSection, propSection, lbSection, elasticSection, nominalSection, squashSection, designSection };
             var report = new Report(UnitSystems.KIPINCH, "Direct Strength - Moment", sections);
             return report;
         }
@@ -250,7 +250,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var lbSection = dto.LB.AsReportSection(TypeOfSection.LIPPED);
             var dimSection = section.Dimensions.AsLippedReportSection();
             var propSection = section.Properties.AsReportSection(UnitSystems.KIPINCH);
-            return dto.AsReport(lbSection, dimSection,propSection);
+            return dto.AsReport(lbSection, dimSection, propSection);
         }
 
         public static Report AsReport(this DSMomentDto dto, UnStiffenedSection section)
@@ -258,10 +258,10 @@ namespace ColdFormedChannelSection.Core.Helpers
             var lbSection = dto.LB.AsReportSection(TypeOfSection.UNSTIFFENED);
             var dimSection = section.Dimensions.AsUnStiffenedReportSection();
             var propSection = section.Properties.AsReportSection(UnitSystems.KIPINCH);
-            return dto.AsReport(lbSection, dimSection,propSection);
+            return dto.AsReport(lbSection, dimSection, propSection);
         }
 
-        private static Report AsReport(this EuroMomentDto dto, ListReportSection lbSection, ListReportSection dimSection,ListReportSection propSection)
+        private static Report AsReport(this EuroMomentDto dto, ListReportSection lbSection, ListReportSection dimSection, ListReportSection propSection)
         {
             var ltbSection = dto.LTB.AsReportSection();
             var designItems = new List<ReportItem>()
@@ -272,7 +272,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("Design Moment (Mn/gamma)",(PHI_EURO*dto.GoverningCase.NominalStrength).ToString("0.###"),Units.N_MM)
             };
             var designSection = new ListReportSection("Design moment", designItems);
-            var sections = new List<IReportSection>() { dimSection,propSection, lbSection, ltbSection, designSection };
+            var sections = new List<IReportSection>() { dimSection, propSection, lbSection, ltbSection, designSection };
             var report = new Report(UnitSystems.NMM, "Euro Code - Moment", sections);
             return report;
         }
@@ -282,7 +282,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var dimSection = section.Dimensions.AsLippedReportSection();
             var lbSection = dto.LB.AsLippedReportSection();
             var propSection = section.Properties.AsReportSection(UnitSystems.NMM);
-            return dto.AsReport(lbSection, dimSection,propSection);
+            return dto.AsReport(lbSection, dimSection, propSection);
         }
 
         public static Report AsReport(this EuroMomentDto dto, UnStiffenedSection section)
@@ -290,7 +290,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var dimSection = section.Dimensions.AsUnStiffenedReportSection();
             var lbSection = dto.LB.AsUnStiffenedReportSection();
             var propSection = section.Properties.AsReportSection(UnitSystems.NMM);
-            return dto.AsReport(lbSection, dimSection,propSection);
+            return dto.AsReport(lbSection, dimSection, propSection);
         }
 
         public static Report AsReport(this EuroCompressionZDto dto, LippedZSection section)
@@ -298,7 +298,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var dimSection = section.Dimensions.AsLippedReportSection();
             var lbSection = dto.LB.AsLippedReportSection();
             var propSection = section.Properties.AsReportSection(UnitSystems.NMM);
-            return dto.AsReport(lbSection, dimSection,propSection);
+            return dto.AsReport(lbSection, dimSection, propSection);
         }
 
         public static Report AsReport(this EuroCompressionZDto dto, UnStiffenedZSection section)
@@ -306,10 +306,10 @@ namespace ColdFormedChannelSection.Core.Helpers
             var dimSection = section.Dimensions.AsUnStiffenedReportSection();
             var lbSection = dto.LB.AsUnStiffenedReportSection();
             var propSection = section.Properties.AsReportSection(UnitSystems.NMM);
-            return dto.AsReport(lbSection, dimSection,propSection);
+            return dto.AsReport(lbSection, dimSection, propSection);
         }
 
-        public static Report AsReport(this EuroCompressionZDto dto, ListReportSection lbSection, ListReportSection dimSection,ListReportSection propSection)
+        public static Report AsReport(this EuroCompressionZDto dto, ListReportSection lbSection, ListReportSection dimSection, ListReportSection propSection)
         {
             var fbSection = dto.FB.AsReportSection();
             var tbSection = dto.TB.AsReportSection();
@@ -321,7 +321,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("Design Load (Pn/gamma)",dto.GoverningCase.NominalStrength.ToString("0.###"),Units.N),
             };
             var designSection = new ListReportSection("Euro Code - Compression", designItems);
-            var sections = new List<IReportSection>() { dimSection,propSection, lbSection, fbSection, tbSection, designSection };
+            var sections = new List<IReportSection>() { dimSection, propSection, lbSection, fbSection, tbSection, designSection };
             return new Report(UnitSystems.NMM, "Euro Code - Compression", sections);
         }
 
@@ -330,7 +330,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var dimSection = section.Dimensions.AsLippedReportSection();
             var lbSection = dto.LB.AsLippedReportSection();
             var propSection = section.Properties.AsReportSection(UnitSystems.NMM);
-            return dto.AsReport(lbSection, dimSection,propSection);
+            return dto.AsReport(lbSection, dimSection, propSection);
         }
 
         public static Report AsReport(this EuroCompressionCDto dto, UnStiffenedCSection section)
@@ -338,10 +338,10 @@ namespace ColdFormedChannelSection.Core.Helpers
             var dimSection = section.Dimensions.AsUnStiffenedReportSection();
             var lbSection = dto.LB.AsUnStiffenedReportSection();
             var propSection = section.Properties.AsReportSection(UnitSystems.NMM);
-            return dto.AsReport(lbSection, dimSection,propSection);
+            return dto.AsReport(lbSection, dimSection, propSection);
         }
 
-        public static Report AsReport(this EuroCompressionCDto dto, ListReportSection lbSection, ListReportSection dimSection,ListReportSection propSection)
+        public static Report AsReport(this EuroCompressionCDto dto, ListReportSection lbSection, ListReportSection dimSection, ListReportSection propSection)
         {
             var fbSection = dto.FB.AsReportSection();
             var tbSection = dto.TB.AsReportSection();
@@ -354,12 +354,12 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("Design Load (Pn/gamma)",dto.GoverningCase.NominalStrength.ToString("0.###"),Units.N),
             };
             var designSection = new ListReportSection("Euro Code - Compression", designItems);
-            var sections = new List<IReportSection>() { dimSection,propSection, lbSection, fbSection, tbSection, ftbSection, designSection };
+            var sections = new List<IReportSection>() { dimSection, propSection, lbSection, fbSection, tbSection, ftbSection, designSection };
             return new Report(UnitSystems.NMM, "Euro Code - Compression", sections);
         }
 
 
-        private static Report AsReport(this EgyptMomentDto dto, ListReportSection lbSection, ListReportSection dimSection,ListReportSection propSection)
+        private static Report AsReport(this EgyptMomentDto dto, ListReportSection lbSection, ListReportSection dimSection, ListReportSection propSection)
         {
             var nominalSection = dto.GoverningCase.AsReportSection();
             var designItems = new List<ReportItem>()
@@ -370,7 +370,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("Design Moment",(PHI_B_EGYPT*dto.GoverningCase.GoverningCase.NominalStrength).ToString("0.###"),Units.TON_CM)
             };
             var designSection = new ListReportSection("Design Moment", designItems);
-            var sections = new List<IReportSection>() { dimSection,propSection, lbSection, nominalSection, designSection };
+            var sections = new List<IReportSection>() { dimSection, propSection, lbSection, nominalSection, designSection };
 
             var report = new Report(UnitSystems.TONCM, "Egyptian Code - Moment", sections);
             return report;
@@ -381,7 +381,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var lbSection = dto.LB.AsLippedReportSection();
             var dimSection = section.Dimensions.AsLippedReportSection();
             var propSection = section.Properties.AsReportSection(UnitSystems.NMM);
-            return dto.AsReport(lbSection, dimSection,propSection);
+            return dto.AsReport(lbSection, dimSection, propSection);
         }
 
         public static Report AsReport(this EgyptMomentDto dto, UnStiffenedSection section)
@@ -389,11 +389,11 @@ namespace ColdFormedChannelSection.Core.Helpers
             var lbSection = dto.LB.AsUnStiffenedSection();
             var dimSection = section.Dimensions.AsUnStiffenedReportSection();
             var propSection = section.Properties.AsReportSection(UnitSystems.TONCM);
-            return dto.AsReport(lbSection, dimSection,propSection);
+            return dto.AsReport(lbSection, dimSection, propSection);
         }
 
 
-        private static Report AsReport(this EgyptCompressionCDto dto, ListReportSection lbSection, ListReportSection dimSection,ListReportSection propSection)
+        private static Report AsReport(this EgyptCompressionCDto dto, ListReportSection lbSection, ListReportSection dimSection, ListReportSection propSection)
         {
             var fbSection = dto.FB.AsReportSection();
             var tfbSection = dto.TFB.AsReportSection();
@@ -405,7 +405,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("phi",$"{PHI_C_EGYPT}",Units.TON),
                 new ReportItem("Design Load (phi*Pn)",$"{(PHI_C_EGYPT*dto.GoverningCase.NominalStrength).ToString("0.###")}",Units.TON),
             };
-            var sections = new List<IReportSection> { dimSection,propSection, lbSection, fbSection, tfbSection, tbSection };
+            var sections = new List<IReportSection> { dimSection, propSection, lbSection, fbSection, tfbSection, tbSection };
             var report = new Report(UnitSystems.TONCM, "Egyptian Code - Compression", sections);
             return report;
         }
@@ -415,7 +415,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var lbSection = dto.LB.AsLippedReportSection();
             var dimSection = section.Dimensions.AsLippedReportSection();
             var propSection = section.Properties.AsReportSection(UnitSystems.TONCM);
-            return dto.AsReport(lbSection, dimSection,propSection);
+            return dto.AsReport(lbSection, dimSection, propSection);
         }
 
         public static Report AsReport(this EgyptCompressionCDto dto, UnStiffenedCSection section)
@@ -423,11 +423,11 @@ namespace ColdFormedChannelSection.Core.Helpers
             var lbSection = dto.LB.AsUnStiffenedReportSection();
             var dimSection = section.Dimensions.AsUnStiffenedReportSection();
             var propSection = section.Properties.AsReportSection(UnitSystems.TONCM);
-            return dto.AsReport(lbSection, dimSection,propSection);
+            return dto.AsReport(lbSection, dimSection, propSection);
         }
 
 
-        private static Report AsReport(this EgyptCompressionZDto dto, ListReportSection lbSection, ListReportSection dimSection,ListReportSection propSection)
+        private static Report AsReport(this EgyptCompressionZDto dto, ListReportSection lbSection, ListReportSection dimSection, ListReportSection propSection)
         {
             var fbSection = dto.FB.AsReportSection();
             var tbSection = dto.TB.AsReportSection();
@@ -438,7 +438,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("phi",$"{PHI_C_EGYPT}",Units.TON),
                 new ReportItem("Design Load (phi*Pn)",$"{(PHI_C_EGYPT*dto.GoverningCase.NominalStrength).ToString("0.###")}",Units.TON),
             };
-            var sections = new List<IReportSection> { dimSection,propSection, lbSection, fbSection, tbSection };
+            var sections = new List<IReportSection> { dimSection, propSection, lbSection, fbSection, tbSection };
             var report = new Report(UnitSystems.TONCM, "Egyptian Code - Compression", sections);
             return report;
         }
@@ -448,7 +448,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var lbSection = dto.LB.AsLippedReportSection();
             var dimSection = section.Dimensions.AsLippedReportSection();
             var propSection = section.Properties.AsReportSection(UnitSystems.TONCM);
-            return dto.AsReport(lbSection, dimSection,propSection);
+            return dto.AsReport(lbSection, dimSection, propSection);
         }
 
         public static Report AsReport(this EgyptCompressionZDto dto, UnStiffenedZSection section)
@@ -456,7 +456,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var lbSection = dto.LB.AsUnStiffenedReportSection();
             var dimSection = section.Dimensions.AsUnStiffenedReportSection();
             var propSection = section.Properties.AsReportSection(UnitSystems.TONCM);
-            return dto.AsReport(lbSection, dimSection,propSection);
+            return dto.AsReport(lbSection, dimSection, propSection);
         }
 
         #endregion
@@ -499,7 +499,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             return section;
         }
 
-        public static ListReportSection AsReportSection(this CSectionProperties sec,UnitSystems system)
+        public static ListReportSection AsReportSection(this CSectionProperties sec, UnitSystems system)
         {
             var items = new List<ReportItem>()
             {
@@ -867,7 +867,7 @@ namespace ColdFormedChannelSection.Core.Helpers
         {
             var items = new List<ReportItem>()
                 {
-                    new ReportItem("Flange Slenderness Ratio (lambadaF)",dto.LambdaF.ToString("0.###"),Units.NONE),
+                    new ReportItem("Flange Slenderness Ratio (lambada_f)",dto.LambdaF.ToString("0.###"),Units.NONE),
                     new ReportItem("Nominal Moment (Mn)",dto.GoverningCase.NominalStrength.ToString("0.###"),Units.TON_CM)
                 };
             var section = new ListReportSection("Nominal Moment", items);
@@ -878,6 +878,7 @@ namespace ColdFormedChannelSection.Core.Helpers
         {
             var items = new List<ReportItem>()
                 {
+                    new ReportItem("Flange Slenderness Ratio (lambda_f)",dto.LambdaF.ToString("0.###"),Units.NONE),
                     new ReportItem("Local Section Modulus",dto.ZLocal.ToString("0.###"),Units.CM_3),
                     new ReportItem("Local Stress (F)",(dto.FLocal).ToString("0.###"),Units.TON_CM_2),
                     new ReportItem("Local Nominal Moment (Mn)",dto.MnLocal.ToString("0.###"),Units.TON_CM),
