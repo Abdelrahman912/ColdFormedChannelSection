@@ -1,5 +1,5 @@
 ﻿using ColdFormedChannelSection.Core.Entities;
-using ColdFormedChannelSection.Core.Extensions;
+using CSharpHelper.Extensions;
 using EasyPDF;
 using iText.Layout;
 using iText.Layout.Element;

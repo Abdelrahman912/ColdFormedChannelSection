@@ -23,6 +23,18 @@ namespace ColdFormedChannelSection.Core.Enums
         IN_3,
         [Description("mm^3")] 
         MM_3,
+        [Description("cm^4")]
+        CM_4,
+        [Description("in^4")]
+        IN_4,
+        [Description("mm^4")]
+        MM_4,
+        [Description("cm^6")]
+        CM_6,
+        [Description("in^6")]
+        IN_6,
+        [Description("mm^6")]
+        MM_6,
         [Description("ton")]
         TON,
         [Description("kip")] 

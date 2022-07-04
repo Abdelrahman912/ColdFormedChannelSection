@@ -1,5 +1,6 @@
 ﻿using ColdFormedChannelSection.Core.Enums;
 using ColdFormedChannelSection.Core.Extensions;
+using CSharpHelper.Extensions;
 using System.Collections.Generic;
 
 namespace ColdFormedChannelSection.Core.Entities

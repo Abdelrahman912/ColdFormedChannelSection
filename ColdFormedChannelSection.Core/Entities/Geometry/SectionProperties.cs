@@ -1,4 +1,6 @@
-﻿namespace ColdFormedChannelSection.Core.Entities
+﻿using ColdFormedChannelSection.Core.Enums;
+
+namespace ColdFormedChannelSection.Core.Entities
 {
     public abstract class SectionProperties
     {
@@ -47,11 +49,13 @@
 
         public double ASmall { get;  }
 
+        public double M { get; }
+
         #endregion
 
         #region Constructors
 
-        public SectionProperties(double aPrime, double bPrime, double cPrime, double a, double _Ix, double zg, double _Iy, double rx, double ry, double xo, double j, double cw, double cSmall,double rSmall,double u,double b_small,int alpha,double a_small)
+        public SectionProperties(double aPrime, double bPrime, double cPrime, double a, double _Ix, double zg, double _Iy, double rx, double ry, double xo, double j, double cw, double cSmall,double rSmall, double u, double b_small, int alpha, double a_small, double m)
         {
             APrime = aPrime;
             BPrime = bPrime;
@@ -71,9 +75,15 @@
             U = u;
             BSmall = b_small;
             Alpha = alpha;
+            M = m;
         }
 
         #endregion
 
+        #region Methods
+
+        public abstract ListReportSection AsReportSection(UnitSystems system);
+
+        #endregion
     }
 }

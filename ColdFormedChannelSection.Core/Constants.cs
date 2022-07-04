@@ -1,7 +1,45 @@
-﻿namespace ColdFormedChannelSection.Core
+﻿using ColdFormedChannelSection.Core.Enums;
+using System.Collections.Generic;
+
+namespace ColdFormedChannelSection.Core
 {
     public static class Constants
     {
+
+        public static Dictionary<UnitSystems, Units> Power1Dict = new Dictionary<UnitSystems, Units>()
+        {
+            [UnitSystems.KIPINCH] = Units.IN,
+            [UnitSystems.NMM] = Units.MM,
+            [UnitSystems.TONCM] = Units.CM
+        };
+
+        public static Dictionary<UnitSystems, Units> Power2Dict = new Dictionary<UnitSystems, Units>()
+        {
+            [UnitSystems.KIPINCH]=Units.IN_2,
+            [UnitSystems.NMM]=Units.MM_2,
+            [UnitSystems.TONCM]=Units.CM_2
+        };
+
+        public static Dictionary<UnitSystems, Units> Power3Dict = new Dictionary<UnitSystems, Units>()
+        {
+            [UnitSystems.KIPINCH] = Units.IN_3,
+            [UnitSystems.NMM] = Units.MM_3,
+            [UnitSystems.TONCM] = Units.CM_3
+        };
+
+        public static Dictionary<UnitSystems, Units> Power4Dict = new Dictionary<UnitSystems, Units>()
+        {
+            [UnitSystems.KIPINCH] = Units.IN_4,
+            [UnitSystems.NMM] = Units.MM_4,
+            [UnitSystems.TONCM] = Units.CM_4
+        };
+
+        public static Dictionary<UnitSystems, Units> Power6Dict = new Dictionary<UnitSystems, Units>()
+        {
+            [UnitSystems.KIPINCH] = Units.IN_6,
+            [UnitSystems.NMM] = Units.MM_6,
+            [UnitSystems.TONCM] = Units.CM_6
+        };
 
         public const double PHI_C_EGYPT = 0.8;
 

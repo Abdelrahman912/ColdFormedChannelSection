@@ -101,7 +101,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 return Invalid(errors);
             else
             {
-                var properties = new CSectionProperties(aPrime, bPrime, cPrime, A, Ix, Zg, Iy, ix, iy, Xo, J, Cw, c, r, u, b, alpha, a);
+                var properties = new CSectionProperties(aPrime, bPrime, cPrime, A, Ix, Zg, Iy, ix, iy, Xo, J, Cw, c, r, u, b, alpha, a,m);
                 var sec = new Section(sectionDim, properties);
                 return sec;
             }
@@ -182,7 +182,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                             + 6 * aPrime * bPrime * cPrime.Power(2) * (aPrime + bPrime) * (2 * bPrime * Math.Sin(gamma) + aPrime * Math.Cos(gamma))
                             + 4 * aPrime * bPrime * cPrime.Power(3) * (2 * aPrime + 4 * bPrime + cPrime) * Math.Sin(gamma) * Math.Cos(gamma)
                             + Math.Cos(gamma).Power(2) * cPrime.Power(3) * (2 * aPrime.Power(3) + 4 * aPrime.Power(2) * bPrime - 8 * aPrime * bPrime.Power(2) + aPrime.Power(2) * cPrime - 16 * bPrime.Power(3) - 4 * bPrime.Power(2) * cPrime);
-            var CwNum = 0.0;
+            var CwNum = aPrime.Power(2)*bPrime.Power(3)*(2*aPrime+bPrime)+alpha*CwNumLong;
             var CwDnum = aPrime + 2 * bPrime + 2 * alpha * cPrime;
 
             var Cw = (t / 12) * (CwNum / CwDnum);

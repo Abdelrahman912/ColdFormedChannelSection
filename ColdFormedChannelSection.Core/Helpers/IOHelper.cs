@@ -21,12 +21,10 @@ namespace ColdFormedChannelSection.Core.Helpers
                     Validation<List<T>> lst = FileNotFound(filePath);
                     return lst;
                 });
-              
             }
 
             try
             {
-                
                 var config = new CsvHelper.Configuration.CsvConfiguration(CultureInfo.InvariantCulture);
                 config.HeaderValidated = null;
                 config.MissingFieldFound = null;
