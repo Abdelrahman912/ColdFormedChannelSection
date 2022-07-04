@@ -285,7 +285,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var lambda_f = ((b_prime / t) / 59) * Math.Sqrt(Fy / Kf);
             var row_f = Math.Min(1, (lambda_f - 0.15 - 0.05 * sai_f) / (lambda_f.Power(2)));
             var be = row_f * b_prime;
-            var dto = section.GetEgyptReducedZe(material, be, false, 0);
+            var dto = section.GetEgyptReducedZe(material, be, false, 0,Kf);
             //items.Add(new ReportItem("Effective Section Modulus (Ze)", Ze.ToString("0.###"), Units.CM_3));
             //items.Add(new ReportItem("Yield Stress (Fy)", material.Fy.ToString("0.###"), Units.TON_CM_2));
             //return Tuple.Create(Ze, items);
@@ -313,6 +313,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var be = b_prime;
             var Is = (t * c.Power(3)) / 12;
             var Ia = 0.0;
+            var Kf = 0.0;
             if (b_over_t <= s / 3 && c_over_b <= 0.25)
             {
                 be = b_prime;
@@ -322,7 +323,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 Ia = 399 * (((b_over_t) / s) - 0.33).Power(3) * t.Power(4);
                 var Kf_1 = (4.82 - 5 * (C / b)) * (Is / Ia).Power(0.5) + 0.43;
                 var Kf_2 = 5.25 - 5 * (C / b);
-                var Kf = Math.Min(Kf_1, Kf_2);
+                Kf = Math.Min(Kf_1, Kf_2);
                 var lambda_f = ((b_prime / t) / 44) * Math.Sqrt(Fy / Kf);
                 var sai_f = 1.0;
                 var row_f = Math.Min(1, Math.Abs((lambda_f - 0.15 - 0.05 * sai_f) / (lambda_f.Power(2))));
@@ -332,7 +333,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             else if (b_over_t < s && b_over_t > s / 3 && c_over_b <= 0.25)
             {
                 Ia = 399 * (((b_over_t) / s) - 0.33).Power(3) * t.Power(4);
-                var Kf = Math.Min(3.57 * (Is / Ia).Power(0.5) + 0.43, 4);
+                Kf = Math.Min(3.57 * (Is / Ia).Power(0.5) + 0.43, 4);
                 var lambda_f = ((b_prime / t) / 44) * Math.Sqrt(Fy / Kf);
                 var sai_f = 1.0;
                 var row_f = Math.Min(1, Math.Abs((lambda_f - 0.15 - 0.05 * sai_f) / (lambda_f.Power(2))));
@@ -345,7 +346,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 Ia = (((115 * (b / t)) / (s)) + 5) * t.Power(4);
                 var Kf_1 = (4.82 - 5 * (C / b)) * (Is / Ia).Power(1 / 3.0) + 0.43;
                 var Kf_2 = 5.25 - 5 * (C / b);
-                var Kf = Math.Min(Kf_1, Kf_2);
+                Kf = Math.Min(Kf_1, Kf_2);
                 var lambda_f = ((b_prime / t) / 44) * Math.Sqrt(Fy / Kf);
                 var sai_f = 1.0;
                 var row_f = Math.Min(1, Math.Abs((lambda_f - 0.15 - 0.05 * sai_f) / (lambda_f.Power(2))));
@@ -356,7 +357,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             else if (b_over_t >= s && c_over_b <= 0.25)
             {
                 Ia = (((115 * (b / t)) / (s)) + 5) * t.Power(4);
-                var Kf = Math.Min(3.57 * (Is / Ia).Power(1 / 3.0) + 0.43, 4);
+                Kf = Math.Min(3.57 * (Is / Ia).Power(1 / 3.0) + 0.43, 4);
                 var lambda_f = ((b_prime / t) / 44) * Math.Sqrt(Fy / Kf);
                 var sai_f = 1.0;
                 var row_f = Math.Min(1, Math.Abs((lambda_f - 0.15 - 0.05 * sai_f) / (lambda_f.Power(2))));
@@ -366,14 +367,14 @@ namespace ColdFormedChannelSection.Core.Helpers
 
 
 
-            var dto = section.GetEgyptReducedZe(material, be, true, Ri);
+            var dto = section.GetEgyptReducedZe(material, be, true, Ri,Kf);
             //items.Add(new ReportItem("Effective Section Modulus (Ze)", Ze.ToString("0.###"), Units.CM_3));
             //items.Add(new ReportItem("Yield Stress (Fy)", material.Fy.ToString("0.###"), Units.TON_CM_2));
             //return Tuple.Create(Ze, items);
             return dto;
         }
 
-        private static LocalEgyptMomentDto GetEgyptReducedZe(this Section section, Material material, double be, bool isLipped, double Ri)
+        private static LocalEgyptMomentDto GetEgyptReducedZe(this Section section, Material material, double be, bool isLipped, double Ri,double kf)
         {
             var E = material.E;
             var Fy = material.Fy;
@@ -397,6 +398,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var h2 = 0.0;
             var Kc = 0.0;
             var ce = 0.0;
+            var kw = 0.0;
 
             //start loop
             do
@@ -415,7 +417,6 @@ namespace ColdFormedChannelSection.Core.Helpers
                     ce = row_c * c_prime * Ri;
                 }
                 var sai_w = -(F3 / F1);
-                var kw = 0.0;
                 if (Math.Abs(sai_w + 1) <= 0.00002)
                 {
                     kw = 23.9;
@@ -458,18 +459,18 @@ namespace ColdFormedChannelSection.Core.Helpers
                   + (ce * xd * t * (y_bar - (ce / 2)).Power(2));
 
             var Ze = Ieff / y_bar;
-            var items = new List<ReportItem>()
-            {
-                new ReportItem("Effective Height (ae)",(h1+h2).ToString("0.###"),Units.CM),
-                new ReportItem("Effective Flange Width (be)",(be).ToString("0.###"),Units.CM),
-            };
-            if (isLipped)
-            {
+            //var items = new List<ReportItem>()
+            //{
+            //    new ReportItem("Effective Height (ae)",(h1+h2).ToString("0.###"),Units.CM),
+            //    new ReportItem("Effective Flange Width (be)",(be).ToString("0.###"),Units.CM),
+            //};
+            //if (isLipped)
+            //{
                 //items.Add(new ReportItem("Effective Lip (ce)", ce.ToString("0.###"), Units.CM));
-                return new LocalEgyptMomentDto((h1 + h2), be, 0, Ze, material.Fy);
-            }
+                return new LocalEgyptMomentDto((h1 + h2), be, ce, Ze, material.Fy,kw,kf,Kc);
+            //}
             //return Tuple.Create(Ze, items);
-            return new LocalEgyptMomentDto((h1 + h2), be, ce, Ze, material.Fy);
+            //return new LocalEgyptMomentDto((h1 + h2), be, ce, Ze, material.Fy);
         }
 
         #endregion
@@ -674,7 +675,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             //    new ReportItem("Effective Area (Ae)",Ae.ToString("0.###"),Units.CM_2),
             //};
             //return Tuple.Create(Ae, items);
-            return new LocalEgyptCompressionDto(Ae, be, ce, Kw, Kc, Kf, Fy, Ae, Ae * Fy);
+            return new LocalEgyptCompressionDto(ae, be, ce, Kw, Kc, Kf, Fy, Ae, Ae * Fy);
         }
 
         private static LocalEgyptCompressionDto GetEgyptReducedArea(this UnStiffenedSection section, Material material)
@@ -710,7 +711,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             //    new ReportItem("Effective Area (Ae)",Ae.ToString("0.###"),Units.CM_2),
             //};
             //return Tuple.Create(Ae, items);
-            return new LocalEgyptCompressionDto(Ae, be, 0, Kw, 0, Kf, Fy, Ae, Ae * Fy);
+            return new LocalEgyptCompressionDto(ae, be, 0, Kw, 0, Kf, Fy, Ae, Ae * Fy);
         }
 
         private static double GetEgyptReducedAreaEE(this LippedSection section, Material material)

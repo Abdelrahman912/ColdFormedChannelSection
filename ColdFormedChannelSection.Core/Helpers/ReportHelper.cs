@@ -850,9 +850,13 @@ namespace ColdFormedChannelSection.Core.Helpers
         {
             var items = new List<ReportItem>()
             {
+                new ReportItem("Kw",dto.Kw.ToString("0.###"),Units.NONE),
                 new ReportItem("Effective Height (ae)",dto.Ae.ToString("0.###"),Units.CM),
+                new ReportItem("Kf",dto.Kf.ToString("0.###"),Units.NONE),
                 new ReportItem("Effective Flange Width (be)",dto.Be.ToString("0.###"),Units.CM),
-                new ReportItem("Effective Lip (ce)", dto.Ce.ToString("0.###"), Units.CM)
+                new ReportItem("Kc",dto.Kc.ToString("0.###"),Units.NONE),
+                new ReportItem("Effective Lip (ce)", dto.Ce.ToString("0.###"), Units.CM),
+                 new ReportItem("Effective Section modulus (Ze)",dto.Ze.ToString("0.###"),Units.CM_3)
             };
             var section = new ListReportSection("Effective Section", items);
             return section;
@@ -862,8 +866,11 @@ namespace ColdFormedChannelSection.Core.Helpers
         {
             var items = new List<ReportItem>()
             {
+                new ReportItem("Kw",dto.Kw.ToString("0.###"),Units.NONE),
                 new ReportItem("Effective Height (ae)",dto.Ae.ToString("0.###"),Units.CM),
+                new ReportItem("Kf",dto.Kf.ToString("0.###"),Units.NONE),
                 new ReportItem("Effective Flange Width (be)",dto.Be.ToString("0.###"),Units.CM),
+                new ReportItem("Effective Section modulus (Ze)",dto.Ze.ToString("0.###"),Units.CM_3)
             };
             var section = new ListReportSection("Effective Section", items);
             return section;

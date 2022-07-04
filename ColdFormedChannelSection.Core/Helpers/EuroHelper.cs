@@ -326,7 +326,7 @@ namespace ColdFormedChannelSection.Core.Helpers
 
             //return Tuple.Create(Ae, items);
 
-            return new LocalEuroCompressionDto(Ae, (be1 + be2), 0, Kw, Kf, Kc, material.Fy, Ae, (material.Fy * Ae), Xd);
+            return new LocalEuroCompressionDto(ae, (be1 + be2), ce, Kw, Kf, Kc, material.Fy, Ae, (material.Fy * Ae), Xd);
         }
 
         private static LocalEuroCompressionDto GetEuroReducedArea(this UnStiffenedSection section, Material material)
@@ -351,7 +351,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             //    new ReportItem("Nominal Load (Pn)",(material.Fy*Ae).ToString("0.###"),Units.N),
             //};
             //return Tuple.Create(Ae, items);
-            return new LocalEuroCompressionDto(Ae, (be1 + be2), 0, Kw, Kf, 0, material.Fy, Ae, (material.Fy * Ae), 1);
+            return new LocalEuroCompressionDto(ae, (be1 + be2), 0, Kw, Kf, 0, material.Fy, Ae, (material.Fy * Ae), 1);
         }
 
         private static EuroCompressionCDto AsCompressionDto(this LippedCSection section, Material material, LengthBracingConditions bracingConditions, double pu)

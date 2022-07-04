@@ -193,7 +193,7 @@ namespace ColdFormedChannelSection.App.ViewModels
                                                                     {
                                                                         current.Item2.Match(errs => false, val =>
                                                                         {
-                                                                            Tuple.Create(current.Item1, val);
+                                                                            soFar.Add(Tuple.Create(current.Item1, val));
                                                                             return true;
                                                                         });
                                                                         return soFar;
@@ -223,7 +223,7 @@ namespace ColdFormedChannelSection.App.ViewModels
                                                                      {
                                                                          current.Item2.Match(errs => false, val =>
                                                                          {
-                                                                             Tuple.Create(current.Item1, val);
+                                                                             soFar.Add(Tuple.Create(current.Item1, val));
                                                                              return true;
                                                                          });
                                                                          return soFar;
@@ -252,7 +252,7 @@ namespace ColdFormedChannelSection.App.ViewModels
                                                                     {
                                                                         current.Item2.Match(errs => false, val =>
                                                                         {
-                                                                            Tuple.Create(current.Item1, val);
+                                                                            soFar.Add(Tuple.Create(current.Item1, val));
                                                                             return true;
                                                                         });
                                                                         return soFar;
@@ -281,7 +281,7 @@ namespace ColdFormedChannelSection.App.ViewModels
                                                                    {
                                                                        current.Item2.Match(errs => false, val =>
                                                                        {
-                                                                           Tuple.Create(current.Item1, val);
+                                                                           soFar.Add(Tuple.Create(current.Item1, val));
                                                                            return true;
                                                                        });
                                                                        return soFar;
@@ -311,7 +311,7 @@ namespace ColdFormedChannelSection.App.ViewModels
                                                                    {
                                                                        current.Item2.Match(errs => false, val =>
                                                                        {
-                                                                           Tuple.Create(current.Item1, val);
+                                                                           soFar.Add(Tuple.Create(current.Item1, val));
                                                                            return true;
                                                                        });
                                                                        return soFar;
@@ -340,7 +340,7 @@ namespace ColdFormedChannelSection.App.ViewModels
                                                                      {
                                                                          current.Item2.Match(errs => false, val =>
                                                                          {
-                                                                             Tuple.Create(current.Item1, val);
+                                                                             soFar.Add(Tuple.Create(current.Item1, val));
                                                                              return true;
                                                                          });
                                                                          return soFar;
