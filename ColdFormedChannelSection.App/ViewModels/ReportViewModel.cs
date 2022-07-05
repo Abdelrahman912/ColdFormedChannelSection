@@ -13,49 +13,32 @@ using static CSharp.Functional.Extensions.OptionExtension;
 using static CSharp.Functional.Extensions.ExceptionalExtension;
 using Unit = System.ValueTuple;
 using static CSharp.Functional.Functional;
+using System.Windows.Controls;
 
 namespace ColdFormedChannelSection.App.ViewModels
 {
     public class ReportViewModel:ViewModelBase
     {
 
-        #region Private Fields
-
-        private readonly Func<Func<string, Exceptional<Unit>>, Option<Exceptional<Unit>>> _folderDialogService;
-
-        #endregion
 
         #region Properties
 
         public IReport Report { get; }
 
-        public ICommand PrintReportCommand { get; }
-
         #endregion
 
         #region Constuctors
-        public ReportViewModel(IReport report,Func<Func<string, Exceptional<Unit>>, Option<Exceptional<Unit>>> folderDialogService)
+        public ReportViewModel(IReport report)
         {
-            _folderDialogService = folderDialogService;
+           
             Report = report;
-            PrintReportCommand = new RelayCommand(OnPrintReport);
         }
 
         #endregion
 
         #region Methods
 
-        private void OnPrintReport()
-        {
-            _folderDialogService(fileName =>
-            {
-            var x = from exp in Report.CreatePdf(fileName)
-                    select exp;
-            var result = x.Match(e => MessageBox.Show(e.Message), _ => MessageBox.Show("Pdf created successfully!"));
-                return Exceptional(Unit());
-           
-            });
-        }
+       
        
 
         #endregion

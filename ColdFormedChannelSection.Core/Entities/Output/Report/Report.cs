@@ -1,7 +1,5 @@
 ﻿using ColdFormedChannelSection.Core.Enums;
 using CSharp.Functional.Constructs;
-using EasyPDF;
-using iText.Layout;
 using System.Collections.Generic;
 using System.Linq;
 using Unit = System.ValueTuple;
@@ -43,29 +41,6 @@ namespace ColdFormedChannelSection.Core.Entities
             var newSections = Sections.Select(sec => sec.Convert(UnitSystem, target)).ToList();
             return new Report(target, Name, newSections);
         }
-
-        public Exceptional<Unit> CreatePdf(string fileName)
-        {
-            try
-            {
-               return fileName.WritePdf((pdf, doc) =>
-                {
-                    Name.AsTitle().AddToDocument(doc);
-                    doc.AddNewLine();
-                    doc.AddNewLine();
-                    Sections.ForEach(section => { section.AddToPdf(doc);doc.AddNewLine();doc.AddNewLine(); });
-                    pdf.AddPageNumberAsFooter(doc);
-                    return Unit();
-                });
-            }
-            catch (System.Exception e)
-            {
-                return e;
-               
-            }
-        }
-
-       
 
         #endregion
 

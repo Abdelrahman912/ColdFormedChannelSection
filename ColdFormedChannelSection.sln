@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColdFormedChannelSection.Ap
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColdFormedChannelSection.Core", "ColdFormedChannelSection.Core\ColdFormedChannelSection.Core.csproj", "{D11C4200-F7B8-48D0-93BF-8CA5D7787E2D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EasyPDF", "..\..\..\Programming\Projects\EasyPDF\EasyPDF\EasyPDF.csproj", "{DE36F625-1D4C-4789-AC5D-9B88C87EF899}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CSharpHelper", "..\..\..\Programming\Projects\CSharpHelper\CSharpHelper\CSharpHelper.csproj", "{0B3CA52D-027D-4D24-A706-5A1EEE3C12E1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharp.Functional", "..\..\..\Programming\Projects\CSharp.Functional\CSharp.Functional\CSharp.Functional.csproj", "{E321F3BC-FFFA-4985-83D1-F382B9D238EF}"
@@ -27,10 +25,6 @@ Global
 		{D11C4200-F7B8-48D0-93BF-8CA5D7787E2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D11C4200-F7B8-48D0-93BF-8CA5D7787E2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D11C4200-F7B8-48D0-93BF-8CA5D7787E2D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DE36F625-1D4C-4789-AC5D-9B88C87EF899}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DE36F625-1D4C-4789-AC5D-9B88C87EF899}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DE36F625-1D4C-4789-AC5D-9B88C87EF899}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DE36F625-1D4C-4789-AC5D-9B88C87EF899}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0B3CA52D-027D-4D24-A706-5A1EEE3C12E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0B3CA52D-027D-4D24-A706-5A1EEE3C12E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0B3CA52D-027D-4D24-A706-5A1EEE3C12E1}.Release|Any CPU.ActiveCfg = Release|Any CPU

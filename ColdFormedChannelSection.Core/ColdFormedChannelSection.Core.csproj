@@ -16,7 +16,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\Programming\Projects\CSharp.Functional\CSharp.Functional\CSharp.Functional.csproj" />
     <ProjectReference Include="..\..\..\..\Programming\Projects\CSharpHelper\CSharpHelper\CSharpHelper.csproj" />
-    <ProjectReference Include="..\..\..\..\Programming\Projects\EasyPDF\EasyPDF\EasyPDF.csproj" />
   </ItemGroup>
 
   <ItemGroup>

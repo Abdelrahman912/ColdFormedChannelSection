@@ -176,7 +176,7 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         private void OnPrintReport()
         {
-            var report = new ReportViewModel(Report,_folderDialogService);
+            var report = new ReportViewModel(Report);
             _reportService(report);
         }
 
