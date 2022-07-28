@@ -726,15 +726,15 @@ namespace ColdFormedChannelSection.Core.Helpers
             //Web
             var E_over_Fy_sqrt = Math.Sqrt(E / Fy);
             var a_over_t = a_prime / t;
-            var a_ee = (1.92 * t * E_over_Fy_sqrt * (1 - 0.385 * (E_over_Fy_sqrt / a_over_t))).IfNegativeReturn(a_prime).TakeMin(a_prime);
+            var a_ee = (1.92 * t * E_over_Fy_sqrt * (1 - 0.385 * (E_over_Fy_sqrt / a_over_t))).IfNegativeReturn(a_prime).TakeMinWith(a_prime);
 
             //Flange 
             var b_over_t = b_prime / t;
-            var b_ee = (1.92 * t * E_over_Fy_sqrt * (1 - 0.385 * (E_over_Fy_sqrt / b_over_t))).IfNegativeReturn(b_prime).TakeMin(b_prime);
+            var b_ee = (1.92 * t * E_over_Fy_sqrt * (1 - 0.385 * (E_over_Fy_sqrt / b_over_t))).IfNegativeReturn(b_prime).TakeMinWith(b_prime);
 
             //Lip
             var c_over_t = c_prime / t;
-            var c_ee = (0.78 * t * E_over_Fy_sqrt * (1 - (0.13 / c_over_t) * (E_over_Fy_sqrt))).IfNegativeReturn(c_prime).TakeMin(c_prime);
+            var c_ee = (0.78 * t * E_over_Fy_sqrt * (1 - (0.13 / c_over_t) * (E_over_Fy_sqrt))).IfNegativeReturn(c_prime).TakeMinWith(c_prime);
 
             var A_ee = t * (a_ee + 2 * b_ee + 2 * c_ee);
             return A_ee;
@@ -751,10 +751,10 @@ namespace ColdFormedChannelSection.Core.Helpers
             //Web
             var E_over_Fy_sqrt = Math.Sqrt(E / Fy);
             var a_over_t = a_prime / t;
-            var a_ee = (1.92 * t * E_over_Fy_sqrt * (1 - 0.385 * (E_over_Fy_sqrt / a_over_t))).IfNegativeReturn(a_prime).TakeMin(a_prime);
+            var a_ee = (1.92 * t * E_over_Fy_sqrt * (1 - 0.385 * (E_over_Fy_sqrt / a_over_t))).IfNegativeReturn(a_prime).TakeMinWith(a_prime);
 
             //Flange
-            var b_ee = (0.78 * t * E_over_Fy_sqrt * (1 - (0.13 / (b_prime / t)) * E_over_Fy_sqrt)).IfNegativeReturn(b_prime).TakeMin(b_prime);
+            var b_ee = (0.78 * t * E_over_Fy_sqrt * (1 - (0.13 / (b_prime / t)) * E_over_Fy_sqrt)).IfNegativeReturn(b_prime).TakeMinWith(b_prime);
 
 
             var A_ee = t * (a_ee + 2 * b_ee);

@@ -438,33 +438,21 @@ namespace ColdFormedChannelSection.Core.Helpers
             var lambda_y = ((ky * Ly) / iy) * (Math.Sqrt(Ae / A) / lambda_1);
             var lambda_x = ((Kx * Lx) / ix) * (Math.Sqrt(Ae / A) / lambda_1);
 
-            var phi_y = 0.5 * (1 + alpa_w * (lambda_y - 0.2) + lambda_y.Power(2));
-            var phi_x = 0.5 * (1 + alpa_w * (lambda_x - 0.2) + lambda_x.Power(2));
-
-            var Xy = Math.Min(1.0, (1 / (phi_y + Math.Sqrt(phi_y.Power(2) - lambda_y.Power(2)))));
-            var Xx = Math.Min(1.0, (1.0 / (phi_x + Math.Sqrt(phi_x.Power(2) - lambda_x.Power(2)))));
-            var X = Math.Min(Xx, Xy);
-
             var Ncr_x = (Math.PI.Power(2) * E) / ((Kx * Lx) / ix).Power(2);
             var Ncr_y = (Math.PI.Power(2) * E) / ((ky * Ly) / iy).Power(2);
 
-            if (pu == 0 && lambda_x * lambda_y <= 0.2)
+            var Ncr_f = Ncr_x.TakeMinWith(Ncr_y);
+            var lambdaPrime = Math.Sqrt((Ae * Fy) / Ncr_f);
+
+            var X = 1.0;
+            if(lambdaPrime > 0.2)
             {
-                X = 1;
-            }
-            else if (pu != 0 && (lambda_x * lambda_y <= 0.2 || pu / Ncr_x <= 0.04 || pu / Ncr_y <= 0.04))
-            {
-                X = 1;
+                var phiF = 0.5 * (1 + alpa_w * (lambdaPrime - 0.2) + lambdaPrime.Power(2));
+                X = (1 / (phiF + Math.Sqrt(phiF.Power(2) - lambdaPrime.Power(2)))).TakeMinWithOne();
             }
 
             var Pn = X * Ae * Fy;
-            //var items = new List<ReportItem>()
-            //{
-            //    new ReportItem("Flexural Stress (X.Fy)",(X*Fy).ToString("0.###"),Units.N_MM_2),
-            //    new ReportItem("Flexural Area (A)",Ae.ToString("0.###"),Units.MM_2),
-            //    new ReportItem("Nominal Load (Pn)",Pn.ToString("0.###"),Units.N)
-            //};
-            //return Tuple.Create(Pn, items);
+            
             return new FBEuroCompressionDto(Ae, X, material.Fy, Pn);
         }
 

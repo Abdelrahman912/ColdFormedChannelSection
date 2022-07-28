@@ -146,8 +146,8 @@ namespace ColdFormedChannelSection.Core.Helpers
 
                 //Flange.
                 var C_over_b = C / b;
-                Kf = C_over_b <= 0.25 ? (3.57 * (Ri).Power(n) + 0.43).TakeMin(4.0)
-                                   : ((4.82 - ((5 * C) / (b))) * Ri.Power(n) + 0.43).TakeMin(4);
+                Kf = C_over_b <= 0.25 ? (3.57 * (Ri).Power(n) + 0.43).TakeMinWith(4.0)
+                                   : ((4.82 - ((5 * C) / (b))) * Ri.Power(n) + 0.43).TakeMinWith(4);
 
                 var Fcr_f = Kf * e_over_v_term * (t / b).Power(2);
                 var lambda_f = Math.Sqrt(Fy / Fcr_f);
@@ -288,8 +288,8 @@ namespace ColdFormedChannelSection.Core.Helpers
 
                 //Flange.
                 var C_over_b = C / b;
-                Kf = C_over_b <= 0.25 ? (3.57 * (Ri).Power(n) + 0.43).TakeMin(4)
-                                       : ((4.82 - ((5 * C) / (b))) * Ri.Power(n) + 0.43).TakeMin(4);
+                Kf = C_over_b <= 0.25 ? (3.57 * (Ri).Power(n) + 0.43).TakeMinWith(4)
+                                       : ((4.82 - ((5 * C) / (b))) * Ri.Power(n) + 0.43).TakeMinWith(4);
 
                 var Fcr_f = Kf * e_over_v_term * (t / b).Power(2);
                 var lambda_f = Math.Sqrt(Fy / Fcr_f);
