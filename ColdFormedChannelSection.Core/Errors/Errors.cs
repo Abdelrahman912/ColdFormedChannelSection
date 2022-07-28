@@ -5,6 +5,9 @@ namespace ColdFormedChannelSection.Core.Errors
     public class Errors
     {
 
+        public static GenericError EuroInternalRadiusError =>
+         new GenericError($"Unsafe, Resistance of the cross section should be determined by tests (R > 0.04 t E/Fy).");
+
         public static GenericError CantCalculateNominalStrength =>
           new GenericError($"Cannot calculate section nominal strength due to section dimensions ratio violation.");
 

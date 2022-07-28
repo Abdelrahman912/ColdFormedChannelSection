@@ -15,8 +15,14 @@ namespace ColdFormedChannelSection.Core.Helpers
     public static class EuroHelper
     {
 
-        private static Validation<TypeOfSection> IsValid(this LippedSection section)
+        private static Validation<TypeOfSection> IsValid(this LippedSection section,Material material)
         {
+            var t = section.Dimensions.ThicknessT;
+            var E = material.E;
+            var Fy = material.Fy;
+            if (section.Dimensions.InternalRadiusR > 0.04 * t * (E / Fy))
+                return EuroInternalRadiusError;
+
             var b_over_t = Tuple.Create(section.Properties.BPrime / section.Dimensions.ThicknessT, 60.0);
 
             var c_over_t = Tuple.Create(section.Properties.CPrime / section.Dimensions.ThicknessT, 50.0);
@@ -36,8 +42,14 @@ namespace ColdFormedChannelSection.Core.Helpers
                 return CantCalculateNominalStrength;
         }
 
-        private static Validation<bool> IsValid(this UnStiffenedSection section)
+        private static Validation<bool> IsValid(this UnStiffenedSection section, Material material)
         {
+            var t = section.Dimensions.ThicknessT;
+            var E = material.E;
+            var Fy = material.Fy;
+            if (section.Dimensions.InternalRadiusR > 0.04 * t * (E / Fy))
+                return EuroInternalRadiusError;
+
             var b_over_t = Tuple.Create(section.Properties.BPrime / section.Dimensions.ThicknessT, 50.0);
 
             var a_over_t = Tuple.Create(section.Properties.APrime / section.Dimensions.ThicknessT, 500.0);
@@ -153,7 +165,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 [TypeOfSection.UNSTIFFENED] = new Lazy<Validation<CompressionResistanceOutput>>(() => section.Dimensions.AsNewWithC(0).AsUnstiffenedZSection().Bind(sec => sec.AsEuroCompressionResistance(material, bracingConditions, pu)))
             };
 
-            var result = from typeOfSection in section.IsValid()
+            var result = from typeOfSection in section.IsValid(material)
                          from val in dict[typeOfSection].Value
                          select val;
             return result;
@@ -161,7 +173,7 @@ namespace ColdFormedChannelSection.Core.Helpers
 
         public static Validation<CompressionResistanceOutput> AsEuroCompressionResistance(this UnStiffenedZSection section, Material material, LengthBracingConditions bracingConditions, double pu)
         {
-            var result = from valid in section.IsValid()
+            var result = from valid in section.IsValid(material)
                          select section.AsCompressionDto(material, bracingConditions, pu).AsOutput(section);
             return result;
         }
@@ -311,6 +323,8 @@ namespace ColdFormedChannelSection.Core.Helpers
         private static LocalEuroCompressionDto GetEuroReducedArea(this LippedSection section, Material material)
         {
             var t = section.Dimensions.ThicknessT;
+            var R = section.Dimensions.InternalRadiusR;
+            var bPrime = section.Properties.BPrime;
             (var be1, var be2, var ce, var Xd, var Kf, var Kc) = section.GetEuroReducedFlange(material, 1);
 
             //Web.
@@ -318,7 +332,13 @@ namespace ColdFormedChannelSection.Core.Helpers
             var ae = section.ReduceWebCompression(material);
 
             var Ae = t * (2 * be1 + ae + 2 * Xd * (be2 + ce));
-
+            if (R > 5 * t || R > 0.1 * bPrime)
+            {
+                var n = 2;
+                var sumLe = 2 * be1 + ae + 2 * be2 + 2*ce;
+                var delta = 0.43 * ((n * R) / sumLe);
+                Ae = Ae * (1 - delta);
+            }
 
             return new LocalEuroCompressionDto(ae, (be1 + be2), ce, Kw, Kf, Kc, material.Fy, Ae, (material.Fy * Ae), Xd);
         }
@@ -326,6 +346,8 @@ namespace ColdFormedChannelSection.Core.Helpers
         private static LocalEuroCompressionDto GetEuroReducedArea(this UnStiffenedSection section, Material material)
         {
             var t = section.Dimensions.ThicknessT;
+            var R = section.Dimensions.InternalRadiusR;
+            var bPrime = section.Properties.BPrime;
             var Kf = 0.43;
             (var be1, var be2) = section.GetEuroReducedFlange(material);
 
@@ -335,6 +357,13 @@ namespace ColdFormedChannelSection.Core.Helpers
 
             var Ae = t * (2 * be1 + ae + 2 * be2);
 
+            if(R > 5*t || R > 0.1 * bPrime)
+            {
+                var n = 2;
+                var sumLe = 2 * be1 + ae + 2 * be2;
+                var delta = 0.43 * ((n * R) / sumLe);
+                Ae = Ae * (1 - delta);
+            }
             return new LocalEuroCompressionDto(ae, (be1 + be2), 0, Kw, Kf, 0, material.Fy, Ae, (material.Fy * Ae), 1);
         }
 
@@ -378,7 +407,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 [TypeOfSection.UNSTIFFENED] = new Lazy<Validation<CompressionResistanceOutput>>(() => section.Dimensions.AsNewWithC(0).AsUnstiffenedCSection().Bind(sec => sec.AsEuroCompressionResistance(material, bracingConditions, pu)))
             };
 
-            var result = from typeOfSection in section.IsValid()
+            var result = from typeOfSection in section.IsValid(material)
                          from val in dict[typeOfSection].Value
                          select val;
             return result;
@@ -386,7 +415,7 @@ namespace ColdFormedChannelSection.Core.Helpers
 
         public static Validation<CompressionResistanceOutput> AsEuroCompressionResistance(this UnStiffenedCSection section, Material material, LengthBracingConditions bracingConditions, double pu)
         {
-            var result = from valid in section.IsValid()
+            var result = from valid in section.IsValid(material)
                          select section.AsCompressionDto(material, bracingConditions, pu).AsOutput(section);
             return result;
         }
@@ -556,7 +585,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 [TypeOfSection.UNSTIFFENED] = new Lazy<Validation<MomentResistanceOutput>>(() => section.Dimensions.AsNewWithC(0).AsUnstiffenedZSection().Bind(sec => sec.AsEuroMomentResistance(material, bracingConditions, mu)))
             };
 
-            var result = from typeOfSection in section.IsValid()
+            var result = from typeOfSection in section.IsValid(material)
                          from val in dict[typeOfSection].Value
                          select val;
             return result;
@@ -564,7 +593,7 @@ namespace ColdFormedChannelSection.Core.Helpers
 
         public static Validation<MomentResistanceOutput> AsEuroMomentResistance(this UnStiffenedZSection section, Material material, LengthBracingConditions bracingConditions, double mu)
         {
-            var result = from valid in section.IsValid()
+            var result = from valid in section.IsValid(material)
                          select section.AsMomentDto(material, bracingConditions, mu).AsOutput(section);
             return result;
         }
@@ -607,7 +636,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 [TypeOfSection.UNSTIFFENED] = new Lazy<Validation<MomentResistanceOutput>>(() => section.Dimensions.AsNewWithC(0).AsUnstiffenedCSection().Bind(sec => sec.AsEuroMomentResistance(material, bracingConditions, mu)))
             };
 
-            var result = from typeOfSection in section.IsValid()
+            var result = from typeOfSection in section.IsValid(material)
                          from val in dict[typeOfSection].Value
                          select val;
             return result;
@@ -615,7 +644,7 @@ namespace ColdFormedChannelSection.Core.Helpers
 
         public static Validation<MomentResistanceOutput> AsEuroMomentResistance(this UnStiffenedCSection section, Material material, LengthBracingConditions bracingConditions, double mu)
         {
-            var result = from valid in section.IsValid()
+            var result = from valid in section.IsValid(material)
                          select section.AsMomentDto(material, bracingConditions, mu).AsOutput(section);
             return result;
         }
@@ -655,13 +684,15 @@ namespace ColdFormedChannelSection.Core.Helpers
         }
 
 
-        private static LocalEuroMomentDto GetZe(this Section section, Material material, double be1, double be2, double ce, double Xd)
+        private static LocalEuroMomentDto GetZe(this Section section, Material material, double be1, double be2, double ce, double Xd,double n)
         {
             var c_prime = section.Properties.CPrime;
             var b_prime = section.Properties.BPrime;
             var a_prime = section.Properties.APrime;
             var t = section.Dimensions.ThicknessT;
             var Fy = material.Fy;
+            var R = section.Dimensions.InternalRadiusR;
+            
 
             var epslon = Math.Sqrt(235.0 / Fy);
 
@@ -699,12 +730,15 @@ namespace ColdFormedChannelSection.Core.Helpers
                  + (h1 * t * (y_bar - (h1 / 2)).Power(2)) + (be1 * t * y_bar.Power(2)) + (be2 * Xd * t * y_bar.Power(2))
                  + (ce * Xd * t * (y_bar - (ce / 2)).Power(2));
 
-            var Ze = Ieff / y_bar;
-            var items = new List<ReportItem>()
+            if(R > 5*t || R > 0.1 * b_prime)
             {
-                new ReportItem("Effective Heigh (ae)",(h1+h2).ToString("0.###"),Units.MM),
-                new ReportItem("Effective Flange Width (be)",(be1+be2).ToString("0.###"),Units.MM)
-            };
+                var sumLe = be1 + be2 + ce + c_prime + b_prime + h1 + h2;
+                var delta = 0.43 * ((n*R) / sumLe);
+                Ieff = Ieff * (1 - 2 * delta);
+            }
+
+            var Ze = Ieff / y_bar;
+            
             return new LocalEuroMomentDto(
                 ze: Ze,
                 fy: material.Fy,
@@ -723,7 +757,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var t = section.Dimensions.ThicknessT;
             (var be1, var be2, var ce, var Xd, var Kf, var Kc) = section.GetEuroReducedFlange(material, 0);
 
-            var dto = section.GetZe(material, be1, be2, ce, Xd);
+            var dto = section.GetZe(material, be1, be2, ce, Xd,4);
             //local_items.Add(new ReportItem("Effective Lip (Ce)", ce.ToString("0.###"), Units.MM));
             //local_items.Add(new ReportItem("Reduction Factor (Xd)", Xd.ToString("0.###"), Units.NONE));
             //local_items.Add(new ReportItem("Effective Section Modulus (Ze)", Ze.ToString("0.###"), Units.MM_3));
@@ -739,7 +773,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var t = section.Dimensions.ThicknessT;
             (var be1, var be2) = section.GetEuroReducedFlange(material);
 
-            var dto = section.GetZe(material, be1, be2, 0, 1.0);
+            var dto = section.GetZe(material, be1, be2, 0, 1.0,2);
             //local_items.Add(new ReportItem("Effective Section Modulus (Ze)", Ze.ToString("0.###"), Units.MM_3));
             //local_items.Add(new ReportItem("Yield Stress (Fy)", material.Fy.ToString("0.###"), Units.N_MM_2));
             //local_items.Add(new ReportItem("Local Nominal Moment (Mn)", (Ze * material.Fy).ToString("0.###"), Units.N_MM));

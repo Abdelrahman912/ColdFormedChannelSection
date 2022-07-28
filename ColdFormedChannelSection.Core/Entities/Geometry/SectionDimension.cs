@@ -3,8 +3,6 @@
     public  class SectionDimension
     {
        
-
-
         #region Properties
 
         public double TotalHeightH { get; }
