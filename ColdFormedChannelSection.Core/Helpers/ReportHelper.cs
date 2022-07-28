@@ -150,22 +150,10 @@ namespace ColdFormedChannelSection.Core.Helpers
             return report;
         }
 
-        private static Report AsReport(this DSCompressionDto dto, ListReportSection dimSection, ListReportSection propSection, ListReportSection lbSection)
+        private static Report AsReport(this DSCompressionDto dto, ListReportSection dimSection, ListReportSection propSection, ListReportSection lbSection, List<ReportItem> bucklingMomentItems , List<ReportItem> nominalItems)
         {
 
-            var bucklingMomentItems = new List<ReportItem>()
-            {
-                new ReportItem("Local Buckling Load (Pcrl)", dto.LB.Pcrl.ToString("0.###"), Units.KIP),
-                new ReportItem("Distortional Buckling Load (Pcrd)", dto.Pcrd.ToString("0.###"), Units.KIP),
-                new ReportItem("Global Buckling Load (Pcre)", dto.Pcre.ToString("0.###"), Units.KIP),
-            };
-
-            var nominalItems = new List<ReportItem>()
-            {
-                new ReportItem("Nominal Local Buckling Load (Pnl)" , dto.Pnl.ToString("0.###"),Units.KIP),
-                new ReportItem("Nominal Distortional Buckling Load (Pnd)" , dto.Pnd.ToString("0.###"),Units.KIP),
-                new ReportItem("Nominal Global Buckling Load (Pne)" , dto.Pne.ToString("0.###"),Units.KIP),
-            };
+           
             var squash_items = new List<ReportItem>()
             {
                  new ReportItem("Yield Stress (Fy)",dto.Fy.ToString("0.###"),Units.KSI),
@@ -190,37 +178,49 @@ namespace ColdFormedChannelSection.Core.Helpers
             return report;
         }
 
-        public static Report AsReport(this DSCompressionDto dto, LippedSection section)
+        public static Report AsReport(this DSLippedCompressionDto dto, LippedSection section)
         {
             var dimSection = section.Dimensions.AsLippedReportSection(UnitSystems.KIPINCH);
             var propSection = section.Properties.AsReportSection(UnitSystems.KIPINCH);
             var lbSection = dto.LB.AsReportSection(TypeOfSection.LIPPED);
-            return dto.AsReport(dimSection, propSection, lbSection);
-        }
-
-        public static Report AsReport(this DSCompressionDto dto, UnStiffenedSection section)
-        {
-            var dimSection = section.Dimensions.AsUnStiffenedReportSection(UnitSystems.KIPINCH);
-            var propSection = section.Properties.AsReportSection(UnitSystems.KIPINCH);
-            var lbSection = dto.LB.AsReportSection(TypeOfSection.UNSTIFFENED);
-            return dto.AsReport(dimSection, propSection, lbSection);
-        }
-
-        private static Report AsReport(this DSMomentDto dto, ListReportSection lbSection, ListReportSection dimSection, ListReportSection propSection)
-        {
             var bucklingMomentItems = new List<ReportItem>()
             {
-                new ReportItem("Local Buckling Moment (Mcrl)", dto.LB.Mcrl.ToString("0.###"), Units.KIP_IN),
-                new ReportItem("Distortional Buckling Moment (Mcrd)", dto.Mcrd.ToString("0.###"), Units.KIP_IN),
-                new ReportItem("Global Buckling Moment (Mcre)", dto.Mcre.ToString("0.###"), Units.KIP_IN),
+                new ReportItem("Local Buckling Load (Pcrl)", dto.LB.Pcrl.ToString("0.###"), Units.KIP),
+                new ReportItem("Distortional Buckling Load (Pcrd)", dto.Pcrd.ToString("0.###"), Units.KIP),
+                new ReportItem("Global Buckling Load (Pcre)", dto.Pcre.ToString("0.###"), Units.KIP),
             };
 
             var nominalItems = new List<ReportItem>()
             {
-                new ReportItem("Nominal Local Buckling Moment (Mnl)" , dto.Mnl.ToString("0.###"),Units.KIP_IN),
-                new ReportItem("Nominal Distortional Buckling Moment (Mnd)" , dto.Mnd.ToString("0.###"),Units.KIP_IN),
-                new ReportItem("Nominal Global Buckling Moment (Mne)" , dto.Mne.ToString("0.###"),Units.KIP_IN),
+                new ReportItem("Nominal Local Buckling Load (Pnl)" , dto.Pnl.ToString("0.###"),Units.KIP),
+                new ReportItem("Nominal Distortional Buckling Load (Pnd)" , dto.Pnd.ToString("0.###"),Units.KIP),
+                new ReportItem("Nominal Global Buckling Load (Pne)" , dto.Pne.ToString("0.###"),Units.KIP),
             };
+            return dto.AsReport(dimSection, propSection, lbSection , bucklingMomentItems,nominalItems);
+        }
+
+        public static Report AsReport(this DSUnStiffenedCompressionDto dto, UnStiffenedSection section)
+        {
+            var dimSection = section.Dimensions.AsUnStiffenedReportSection(UnitSystems.KIPINCH);
+            var propSection = section.Properties.AsReportSection(UnitSystems.KIPINCH);
+            var lbSection = dto.LB.AsReportSection(TypeOfSection.UNSTIFFENED);
+            var bucklingMomentItems = new List<ReportItem>()
+            {
+                new ReportItem("Local Buckling Load (Pcrl)", dto.LB.Pcrl.ToString("0.###"), Units.KIP),
+                new ReportItem("Global Buckling Load (Pcre)", dto.Pcre.ToString("0.###"), Units.KIP),
+            };
+
+            var nominalItems = new List<ReportItem>()
+            {
+                new ReportItem("Nominal Local Buckling Load (Pnl)" , dto.Pnl.ToString("0.###"),Units.KIP),
+                new ReportItem("Nominal Global Buckling Load (Pne)" , dto.Pne.ToString("0.###"),Units.KIP),
+            };
+            return dto.AsReport(dimSection, propSection, lbSection,bucklingMomentItems,nominalItems);
+        }
+
+        private static Report AsReport(this DSMomentDto dto, ListReportSection lbSection, ListReportSection dimSection, ListReportSection propSection , List<ReportItem> bucklingMomentItems , List<ReportItem> nominalItems  )
+        {
+            
             var squash_items = new List<ReportItem>()
             {
                  new ReportItem("Yield Stress (Fy)",dto.Fy.ToString("0.###"),Units.KSI),
@@ -245,20 +245,44 @@ namespace ColdFormedChannelSection.Core.Helpers
             return report;
         }
 
-        public static Report AsReport(this DSMomentDto dto, LippedSection section)
+        public static Report AsReport(this DSLippedMomentDto dto, LippedSection section)
         {
             var lbSection = dto.LB.AsReportSection(TypeOfSection.LIPPED);
             var dimSection = section.Dimensions.AsLippedReportSection(UnitSystems.KIPINCH);
             var propSection = section.Properties.AsReportSection(UnitSystems.KIPINCH);
-            return dto.AsReport(lbSection, dimSection, propSection);
+            var bucklingMomentItems = new List<ReportItem>()
+            {
+                new ReportItem("Local Buckling Moment (Mcrl)", dto.LB.Mcrl.ToString("0.###"), Units.KIP_IN),
+                new ReportItem("Distortional Buckling Moment (Mcrd)", dto.Mcrd.ToString("0.###"), Units.KIP_IN),
+                new ReportItem("Global Buckling Moment (Mcre)", dto.Mcre.ToString("0.###"), Units.KIP_IN),
+            };
+
+            var nominalItems = new List<ReportItem>()
+            {
+                new ReportItem("Nominal Local Buckling Moment (Mnl)" , dto.Mnl.ToString("0.###"),Units.KIP_IN),
+                new ReportItem("Nominal Distortional Buckling Moment (Mnd)" , dto.Mnd.ToString("0.###"),Units.KIP_IN),
+                new ReportItem("Nominal Global Buckling Moment (Mne)" , dto.Mne.ToString("0.###"),Units.KIP_IN),
+            };
+            return dto.AsReport(lbSection, dimSection, propSection,bucklingMomentItems,nominalItems);
         }
 
-        public static Report AsReport(this DSMomentDto dto, UnStiffenedSection section)
+        public static Report AsReport(this DSUnStiffenedMomentDto dto, UnStiffenedSection section)
         {
             var lbSection = dto.LB.AsReportSection(TypeOfSection.UNSTIFFENED);
             var dimSection = section.Dimensions.AsUnStiffenedReportSection(UnitSystems.KIPINCH);
             var propSection = section.Properties.AsReportSection(UnitSystems.KIPINCH);
-            return dto.AsReport(lbSection, dimSection, propSection);
+            var bucklingMomentItems = new List<ReportItem>()
+            {
+                new ReportItem("Local Buckling Moment (Mcrl)", dto.LB.Mcrl.ToString("0.###"), Units.KIP_IN),
+                new ReportItem("Global Buckling Moment (Mcre)", dto.Mcre.ToString("0.###"), Units.KIP_IN),
+            };
+
+            var nominalItems = new List<ReportItem>()
+            {
+                new ReportItem("Nominal Local Buckling Moment (Mnl)" , dto.Mnl.ToString("0.###"),Units.KIP_IN),
+                new ReportItem("Nominal Global Buckling Moment (Mne)" , dto.Mne.ToString("0.###"),Units.KIP_IN),
+            };
+            return dto.AsReport(lbSection, dimSection, propSection,bucklingMomentItems,nominalItems);
         }
 
         private static Report AsReport(this EuroMomentDto dto, ListReportSection lbSection, ListReportSection dimSection, ListReportSection propSection)

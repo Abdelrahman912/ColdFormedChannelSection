@@ -93,7 +93,7 @@ namespace ColdFormedChannelSection.Core.Helpers
 
         public static Validation<ResistanceInteractionOutput> AsDSInteractionResistance(this LippedCSection section, Material material, LengthBracingConditions bracingConditions, double pu, double mu)
         {
-           var result =  from Pn in section.AsDSCompressionResistance(material, bracingConditions)
+            var result = from Pn in section.AsDSCompressionResistance(material, bracingConditions)
                          from Mn in section.AsDSMomentResistance(material, bracingConditions)
                          select section.AsDSInteractionResistance(material, bracingConditions, pu, mu, Pn, Mn, () => section.GetAISIReducedArea(material).Ae);
             return result;
@@ -128,28 +128,28 @@ namespace ColdFormedChannelSection.Core.Helpers
             return result;
         }
 
-        private static CompressionResistanceOutput AsOutput(this DSCompressionDto dto, LippedZSection section)
+        private static CompressionResistanceOutput AsOutput(this DSLippedCompressionDto dto, LippedZSection section)
         {
             var report = dto.AsReport(section);
             return new CompressionResistanceOutput(dto.GoverningCase.NominalStrength, PHI_C_DS, PHI_C_NAME_DS, COMP_DESIGN_RESIST_DS, dto.GoverningCase.FailureMode, "Kip", report);
         }
 
-        private static CompressionResistanceOutput AsOutput(this DSCompressionDto dto, UnStiffenedZSection section)
+        private static CompressionResistanceOutput AsOutput(this DSUnStiffenedCompressionDto dto, UnStiffenedZSection section)
         {
             var report = dto.AsReport(section);
             return new CompressionResistanceOutput(dto.GoverningCase.NominalStrength, PHI_C_DS, PHI_C_NAME_DS, COMP_DESIGN_RESIST_DS, dto.GoverningCase.FailureMode, "Kip", report);
         }
 
-        private static DSCompressionDto AsCompressionDto(this LippedZSection section, Material material, LengthBracingConditions bracingConditions)
+        private static DSLippedCompressionDto AsCompressionDto(this LippedZSection section, Material material, LengthBracingConditions bracingConditions)
         {
             var p_crl = section.GetCompressionLBResistance(material);
-            return section.AsCompressionDto(material, bracingConditions, p_crl);
+            return section.AsCompressionDto(material, bracingConditions, p_crl, (lst) => section.GetLippedCompressionDto(material, bracingConditions, lst, p_crl)) as DSLippedCompressionDto;
         }
 
-        private static DSCompressionDto AsCompressionDto(this UnStiffenedZSection section, Material material, LengthBracingConditions bracingConditions)
+        private static DSUnStiffenedCompressionDto AsCompressionDto(this UnStiffenedZSection section, Material material, LengthBracingConditions bracingConditions)
         {
             var p_crl = section.GetCompressionLBResistance(material);
-            return section.AsCompressionDto(material, bracingConditions, p_crl);
+            return section.AsCompressionDto(material, bracingConditions, p_crl, (lst) => section.GetUnstiffenedCompressionDto(material, bracingConditions, lst, p_crl)) as DSUnStiffenedCompressionDto;
         }
 
         #endregion
@@ -168,31 +168,96 @@ namespace ColdFormedChannelSection.Core.Helpers
             return result;
         }
 
-        private static CompressionResistanceOutput AsOutput(this DSCompressionDto dto, LippedCSection section)
+        private static CompressionResistanceOutput AsOutput(this DSLippedCompressionDto dto, LippedCSection section)
         {
             var report = dto.AsReport(section);
             return new CompressionResistanceOutput(dto.GoverningCase.NominalStrength, PHI_C_DS, PHI_C_NAME_DS, COMP_DESIGN_RESIST_DS, dto.GoverningCase.FailureMode, "Kip", report);
         }
 
-        private static CompressionResistanceOutput AsOutput(this DSCompressionDto dto, UnStiffenedCSection section)
+        private static CompressionResistanceOutput AsOutput(this DSUnStiffenedCompressionDto dto, UnStiffenedCSection section)
         {
             var report = dto.AsReport(section);
             return new CompressionResistanceOutput(dto.GoverningCase.NominalStrength, PHI_C_DS, PHI_C_NAME_DS, COMP_DESIGN_RESIST_DS, dto.GoverningCase.FailureMode, "Kip", report);
         }
 
-        private static DSCompressionDto AsCompressionDto(this LippedCSection section, Material material, LengthBracingConditions bracingConditions)
+        private static DSLippedCompressionDto AsCompressionDto(this LippedCSection section, Material material, LengthBracingConditions bracingConditions)
         {
             var p_crl = section.GetCompressionLBResistance(material);
-            return section.AsCompressionDto(material, bracingConditions, p_crl);
+            return section.AsCompressionDto(material, bracingConditions, p_crl, (lst) => section.GetLippedCompressionDto(material, bracingConditions, lst, p_crl)) as DSLippedCompressionDto;
         }
 
-        private static DSCompressionDto AsCompressionDto(this UnStiffenedCSection section, Material material, LengthBracingConditions bracingConditions)
+        private static DSUnStiffenedCompressionDto AsCompressionDto(this UnStiffenedCSection section, Material material, LengthBracingConditions bracingConditions)
         {
             var p_crl = section.GetCompressionLBResistance(material);
-            return section.AsCompressionDto(material, bracingConditions, p_crl);
+            return section.AsCompressionDto(material, bracingConditions, p_crl, (lst) => section.GetUnstiffenedCompressionDto(material, bracingConditions, lst, p_crl)) as DSUnStiffenedCompressionDto;
         }
 
-        private static DSCompressionDto AsCompressionDto(this Section section, Material material, LengthBracingConditions bracingConditions, LocalDSCompressionDto localDto)
+
+        private static DSLippedCompressionDto GetLippedCompressionDto(this Section section, Material material, LengthBracingConditions bracingConditions, List<Tuple<double, FailureMode, double>> lst, LocalDSCompressionDto localDto)
+        {
+            var govTuple = lst.OrderBy(tuple => tuple.Item1).First();
+            var governingCase = new NominalStrengthDto(govTuple.Item3, govTuple.Item2);
+            var creTuple = lst.First(tup => tup.Item2 == FailureMode.GLOBALBUCKLING);
+            var P_crd = section.GetCompressionDBResistance(material, bracingConditions);
+            var Fy = material.Fy;
+            var aPrime = section.Properties.APrime;
+            var bPrime = section.Properties.BPrime;
+            var cPrime = section.Properties.CPrime;
+            var t = section.Dimensions.ThicknessT;
+
+            var Ag = (aPrime + 2 * bPrime + 2 * cPrime) * t;
+            var Py = Ag * Fy;
+            var lambda_d = Math.Sqrt(Py / P_crd);
+            var Pnd = lambda_d <= 0.561
+                ? Py
+                : (1 - 0.25 * (P_crd / Py).Power(0.6)) * ((P_crd / Py).Power(0.6)) * Py;
+            if(P_crd>3.18 * Py)
+            {
+                P_crd = Py;
+                Pnd = Py;
+            }
+            var distTuple = Tuple.Create(P_crd, FailureMode.DISTRORSIONALBUCKLING, Pnd);
+            lst.Add(distTuple);
+            return new DSLippedCompressionDto(
+                lb: localDto,
+                pcrd: P_crd,
+                pcre: creTuple.Item1,
+                pnl: lst.First(tup => tup.Item2 == FailureMode.LOCALBUCKLING).Item3,
+                pnd: Pnd,
+                pne: creTuple.Item3,
+                ag: section.Properties.Zg,
+                fy: material.Fy,
+                governingCase
+                );
+        }
+
+        private static DSUnStiffenedCompressionDto GetUnstiffenedCompressionDto(this Section section, Material material, LengthBracingConditions bracingConditions, List<Tuple<double, FailureMode, double>> lst, LocalDSCompressionDto localDto)
+        {
+            var govTuple = lst.OrderBy(tuple => tuple.Item1).First();
+            var governingCase = new NominalStrengthDto(govTuple.Item3, govTuple.Item2);
+            var creTuple = lst.First(tup => tup.Item2 == FailureMode.GLOBALBUCKLING);
+            var Fy = material.Fy;
+            var aPrime = section.Properties.APrime;
+            var bPrime = section.Properties.BPrime;
+            var cPrime = section.Properties.CPrime;
+            var t = section.Dimensions.ThicknessT;
+
+            var Ag = (aPrime + 2 * bPrime + 2 * cPrime) * t;
+            var Py = Ag * Fy;
+
+            return new DSUnStiffenedCompressionDto(
+                lb: localDto,
+                pcre: creTuple.Item1,
+                pnl: lst.First(tup => tup.Item2 == FailureMode.LOCALBUCKLING).Item3,
+                pne: creTuple.Item3,
+                ag: Ag,
+                fy: Fy,
+                governingCase
+                );
+        }
+
+
+        private static DSCompressionDto AsCompressionDto(this Section section, Material material, LengthBracingConditions bracingConditions, LocalDSCompressionDto localDto, Func<List<Tuple<double, FailureMode, double>>, DSCompressionDto> getDto)
         {
             var Fy = material.Fy;
             var aPrime = section.Properties.APrime;
@@ -203,7 +268,6 @@ namespace ColdFormedChannelSection.Core.Helpers
             var Ag = (aPrime + 2 * bPrime + 2 * cPrime) * t;
             var Py = Ag * Fy;
 
-            var p_crd = section.GetCompressionDBResistance(material, bracingConditions);
             var p_cre = section.GetCompressionGBResistance(material, bracingConditions);
 
             //Nominal axial strength (Pne) for flexural , torsional or flexural torsional buckling
@@ -219,20 +283,19 @@ namespace ColdFormedChannelSection.Core.Helpers
                 ? Pne
                 : (1 - 0.15 * (localDto.Pcrl / Pne).Power(0.4)) * (localDto.Pcrl / Pne).Power(0.4) * Pne;
 
-            //Nominal axial strength for distortional buckling.
-            var lambda_d = Math.Sqrt(Py / p_crd);
-            var Pnd = lambda_d <= 0.561
-                ? Py
-                : (1 - 0.25 * (p_crd / Py).Power(0.6)) * ((p_crd / Py).Power(0.6)) * Py;
+            var pcrl = localDto.Pcrl;
+            if (pcrl > 1.66 * Py)
+            {
+                pcrl = Py;
+                Pnl = Py;
+            }
             var lst = new List<Tuple<double, FailureMode, double>>()
             {
-                Tuple.Create(localDto.Pcrl,FailureMode.LOCALBUCKLING,Pnl),
+                Tuple.Create(pcrl,FailureMode.LOCALBUCKLING,Pnl),
                 Tuple.Create(p_cre,FailureMode.GLOBALBUCKLING,Pne),
-                Tuple.Create(p_crd,FailureMode.DISTRORSIONALBUCKLING,Pnd)
             };
-            var governingCaseTuple = lst.OrderBy(tup=>tup.Item1).First();
-            var governingCase = new NominalStrengthDto(governingCaseTuple.Item3, governingCaseTuple.Item2);
-            return new DSCompressionDto(localDto, p_crd, p_cre, Pnl, Pnd, Pne, Ag, Fy,governingCase);
+
+            return getDto(lst);
         }
 
 
@@ -468,28 +531,82 @@ namespace ColdFormedChannelSection.Core.Helpers
             return result;
         }
 
-        private static MomentResistanceOutput AsMomentOutput(this DSMomentDto dto, LippedZSection section)
+        private static MomentResistanceOutput AsMomentOutput(this DSLippedMomentDto dto, LippedZSection section)
         {
             var report = dto.AsReport(section);
             return new MomentResistanceOutput(dto.GoverningCase.NominalStrength, PHI_B_DS, PHI_B_NAME_DS, MOM_DESIGN_RESIST_DS, dto.GoverningCase.FailureMode, "Kip.in", report);
         }
 
-        private static MomentResistanceOutput AsMomentOutput(this DSMomentDto dto, UnStiffenedZSection section)
+        private static MomentResistanceOutput AsMomentOutput(this DSUnStiffenedMomentDto dto, UnStiffenedZSection section)
         {
             var report = dto.AsReport(section);
             return new MomentResistanceOutput(dto.GoverningCase.NominalStrength, PHI_B_DS, PHI_B_NAME_DS, MOM_DESIGN_RESIST_DS, dto.GoverningCase.FailureMode, "Kip.in", report);
         }
 
-        private static DSMomentDto AsMomentDto(this LippedZSection section, Material material, LengthBracingConditions bracingConditions)
+        private static DSLippedMomentDto GetLippedMomentDTo(this Section section, Material material, LengthBracingConditions bracingConditions, List<Tuple<double, FailureMode, double>> lst, LocalDSMomentDto lbDto)
         {
-            var lbDto = section.GetMomentLBResistance(material);
-            return section.AsMomentDto(material, bracingConditions, lbDto,section.CalcFeForZ(material,bracingConditions));
+            var govTuple = lst.OrderBy(tuple => tuple.Item1).First();
+            var governingCase = new NominalStrengthDto(govTuple.Item3, govTuple.Item2);
+            var creTuple = lst.First(tup => tup.Item2 == FailureMode.GLOBALBUCKLING);
+            var M_crd = section.GetMomentDBResistance(material, bracingConditions);
+            var Zg = section.Properties.Zg;
+            var Fy = material.Fy;
+            var My = Zg * Fy;
+            var lambda_d = Math.Sqrt(My / M_crd);
+            var Mnd = lambda_d <= 0.673
+                ? My
+                : (1 - 0.22 * (M_crd / My).Power(0.5)) * (M_crd / My).Power(0.5) * My;
+            if(M_crd > 2.21 * My)
+            {
+                M_crd = My;
+                Mnd = My;
+            }
+
+            var distTuple = Tuple.Create(M_crd, FailureMode.DISTRORSIONALBUCKLING, Mnd);
+            lst.Add(distTuple);
+            return new DSLippedMomentDto(
+                lb: lbDto,
+                mcre: creTuple.Item1,
+                mcrd: M_crd,
+                mnl: lst.First(tup => tup.Item2 == FailureMode.LOCALBUCKLING).Item3,
+                mnd: Mnd,
+                mne: creTuple.Item3,
+                fy: material.Fy,
+                zg: section.Properties.Zg,
+                governingCase
+                );
         }
 
-        private static DSMomentDto AsMomentDto(this UnStiffenedZSection section, Material material, LengthBracingConditions bracingConditions)
+        private static DSUnStiffenedMomentDto GetUnStiffenedMomentDTo(this Section section, Material material, LengthBracingConditions bracingConditions, List<Tuple<double, FailureMode, double>> lst, LocalDSMomentDto lbDto)
+        {
+            var govTuple = lst.OrderBy(tuple => tuple.Item1).First();
+            var governingCase = new NominalStrengthDto(govTuple.Item3, govTuple.Item2);
+            var creTuple = lst.First(tup => tup.Item2 == FailureMode.GLOBALBUCKLING);
+            var Zg = section.Properties.Zg;
+            var Fy = material.Fy;
+
+            return new DSUnStiffenedMomentDto(
+                lb: lbDto,
+                mcre: creTuple.Item1,
+                mnl: lst.First(tup => tup.Item2 == FailureMode.LOCALBUCKLING).Item3,
+                mne: creTuple.Item3,
+                fy: Fy,
+                zg: Zg,
+                governingCase
+                );
+        }
+
+        private static DSLippedMomentDto AsMomentDto(this LippedZSection section, Material material, LengthBracingConditions bracingConditions)
         {
             var lbDto = section.GetMomentLBResistance(material);
-            return section.AsMomentDto(material, bracingConditions, lbDto,section.CalcFeForZ(material,bracingConditions));
+            return section.AsMomentDto(material, bracingConditions, lbDto, section.CalcFeForZ(material, bracingConditions), (lst) => section.GetLippedMomentDTo(material, bracingConditions, lst, lbDto)) as DSLippedMomentDto;
+        }
+
+        private static DSUnStiffenedMomentDto AsMomentDto(this UnStiffenedZSection section, Material material, LengthBracingConditions bracingConditions)
+        {
+            var lbDto = section.GetMomentLBResistance(material);
+
+            return section.AsMomentDto(material, bracingConditions, lbDto, section.CalcFeForZ(material, bracingConditions), (lst) => section.GetUnStiffenedMomentDTo(material, bracingConditions, lst, lbDto)) as DSUnStiffenedMomentDto;
         }
 
         private static double CalcFeForZ(this Section section, Material material, LengthBracingConditions bracingConditions)
@@ -551,7 +668,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             else
                 return CantCalculateNominalStrength;
         }
-     
+
 
         public static Validation<MomentResistanceOutput> AsDSMomentResistance(this UnStiffenedCSection unstiffenedSection, Material material, LengthBracingConditions bracingConditions)
         {
@@ -567,41 +684,39 @@ namespace ColdFormedChannelSection.Core.Helpers
             return result;
         }
 
-        private static MomentResistanceOutput AsMomentOutput(this DSMomentDto dto, LippedCSection section)
+        private static MomentResistanceOutput AsMomentOutput(this DSLippedMomentDto dto, LippedCSection section)
         {
             var report = dto.AsReport(section);
             return new MomentResistanceOutput(dto.GoverningCase.NominalStrength, PHI_B_DS, PHI_B_NAME_DS, MOM_DESIGN_RESIST_DS, dto.GoverningCase.FailureMode, "Kip.in", report);
         }
 
-        private static MomentResistanceOutput AsMomentOutput(this DSMomentDto dto, UnStiffenedCSection section)
+        private static MomentResistanceOutput AsMomentOutput(this DSUnStiffenedMomentDto dto, UnStiffenedCSection section)
         {
             var report = dto.AsReport(section);
             return new MomentResistanceOutput(dto.GoverningCase.NominalStrength, PHI_B_DS, PHI_B_NAME_DS, MOM_DESIGN_RESIST_DS, dto.GoverningCase.FailureMode, "Kip.in", report);
         }
 
-        private static DSMomentDto AsMomentDto(this LippedCSection section, Material material, LengthBracingConditions bracingConditions)
+        private static DSLippedMomentDto AsMomentDto(this LippedCSection section, Material material, LengthBracingConditions bracingConditions)
         {
             var lbDto = section.GetMomentLBResistance(material);
-            return section.AsMomentDto(material, bracingConditions, lbDto,section.CalcFeForC(material,bracingConditions));
+            return section.AsMomentDto(material, bracingConditions, lbDto, section.CalcFeForC(material, bracingConditions), (lst) => section.GetLippedMomentDTo(material, bracingConditions, lst, lbDto)) as DSLippedMomentDto;
         }
 
-        private static DSMomentDto AsMomentDto(this UnStiffenedCSection section, Material material, LengthBracingConditions bracingConditions)
+        private static DSUnStiffenedMomentDto AsMomentDto(this UnStiffenedCSection section, Material material, LengthBracingConditions bracingConditions)
         {
             var lbDto = section.GetMomentLBResistance(material);
-            return section.AsMomentDto(material, bracingConditions, lbDto,section.CalcFeForC(material,bracingConditions));
+            return section.AsMomentDto(material, bracingConditions, lbDto, section.CalcFeForC(material, bracingConditions), (lst) => section.GetUnStiffenedMomentDTo(material, bracingConditions, lst, lbDto)) as DSUnStiffenedMomentDto;
         }
 
-        private static DSMomentDto AsMomentDto(this Section section, Material material, LengthBracingConditions bracingConditions, LocalDSMomentDto lbDto,double Fe)
+        private static DSMomentDto AsMomentDto(this Section section, Material material, LengthBracingConditions bracingConditions, LocalDSMomentDto lbDto, double Fe, Func<List<Tuple<double, FailureMode, double>>, DSMomentDto> getDto)
         {
             var Zg = section.Properties.Zg;
             var Fy = material.Fy;
 
             var My = Zg * Fy;
 
-            var M_cre = section.GetMomentGBResistance(material, bracingConditions,Fe);
-            var M_crd = section.GetMomentDBResistance(material, bracingConditions);
+            var M_cre = section.GetMomentGBResistance(material, bracingConditions, Fe);
 
-            //Nominal Flexural strength (Mne) for LTB.
             var Mne = 0.0;
             if (M_cre < 0.56 * My)
             {
@@ -622,29 +737,24 @@ namespace ColdFormedChannelSection.Core.Helpers
                 ? Mne
                 : (1 - 0.15 * (lbDto.Mcrl / Mne).Power(0.4)) * (lbDto.Mcrl / Mne).Power(0.4) * Mne;
 
-            var lambda_d = Math.Sqrt(My / M_crd);
-            var Mnd = lambda_d <= 0.673
-                ? My
-                : (1 - 0.22 * (M_crd / My).Power(0.5)) * (M_crd / My).Power(0.5) * My;
+            var mcrl = lbDto.Mcrl;
+            if(mcrl > 1.66 * My)
+            {
+                mcrl = My;
+                Mnl = My;
+            }
+            if(M_cre > 2.78 * My)
+            {
+                M_cre = My;
+                Mne = My;
+            }
             var lst = new List<Tuple<double, FailureMode, double>>()
             {
-                Tuple.Create(lbDto.Mcrl,FailureMode.LOCALBUCKLING,Mnl),
+                Tuple.Create(mcrl,FailureMode.LOCALBUCKLING,Mnl),
                 Tuple.Create(M_cre,FailureMode.GLOBALBUCKLING,Mne),
-                Tuple.Create(M_crd,FailureMode.DISTRORSIONALBUCKLING,Mnd)
             };
-            var govTuple = lst.OrderBy(tuple => tuple.Item1).First();
-            var governingCase = new NominalStrengthDto(govTuple.Item3, govTuple.Item2);
-            return new DSMomentDto(
-                lb: lbDto,
-                mcre: M_cre,
-                mcrd: M_crd,
-                mnl: Mnl,
-                mnd: Mnd,
-                mne: Mne,
-                fy:Fy,
-                zg:Zg,
-                governingCase
-                );
+            return getDto(lst);
+
         }
 
 
@@ -691,7 +801,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var Fcr = Math.Min(Fcr_flange, Fcr_web);
             var Zg = unstiffenedSection.Properties.Zg;
             var m_crl = Zg * Fcr;
-           
+
             return new ElementDSMomentDto(
                 kw: kWeb,
                 kf: kFlange,
@@ -730,8 +840,8 @@ namespace ColdFormedChannelSection.Core.Helpers
 
             var F_crl = Math.Min(Fcr_flange_lip, Fcr_flange_web);
             var M_crl = Zg * F_crl;
-            
-            return new InteractionDSMomentDto(k_flange_web,k_flange_lip, M_crl);
+
+            return new InteractionDSMomentDto(k_flange_web, k_flange_lip, M_crl);
         }
 
         private static LocalDSMomentDto GetMomentLBResistanceFromElementMethod(this LippedSection lippedSection, Material material)
@@ -761,7 +871,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var F_crl = Math.Min(Math.Min(Fcr_flange, Fcr_web), Fcr_lip);
             var M_crl = Zg * F_crl;
 
-            
+
             return new ElementDSMomentDto(kWeb, kFlange, k_lip, M_crl);
         }
 
@@ -824,8 +934,8 @@ namespace ColdFormedChannelSection.Core.Helpers
             return M_crd;
         }
 
-       
-        private static double CalcFeForC(this Section section , Material material , LengthBracingConditions bracingConditions)
+
+        private static double CalcFeForC(this Section section, Material material, LengthBracingConditions bracingConditions)
         {
             var E = material.E;
             var G = material.G;
@@ -856,7 +966,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             return Fe;
         }
 
-        private static double GetMomentGBResistance(this Section section, Material material, LengthBracingConditions bracingConditions,double Fe)
+        private static double GetMomentGBResistance(this Section section, Material material, LengthBracingConditions bracingConditions, double Fe)
         {
             var Zg = section.Properties.Zg;
             //Individual Buckling modes.

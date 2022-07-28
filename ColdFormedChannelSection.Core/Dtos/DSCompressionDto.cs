@@ -1,24 +1,15 @@
-﻿using ColdFormedChannelSection.Core.Enums;
-using System.Collections.Generic;
-using System.Linq;
-using static ColdFormedChannelSection.Core.Comparers.Comparers;
-
-namespace ColdFormedChannelSection.Core.Dtos
+﻿namespace ColdFormedChannelSection.Core.Dtos
 {
-    public class DSCompressionDto
+    public abstract class DSCompressionDto
     {
         
         #region Properties
 
         public LocalDSCompressionDto LB { get; }
 
-        public double Pcrd { get; }
-
         public double Pcre { get; }
 
         public double Pnl { get; }
-
-        public double Pnd { get; }
 
         public double Pne { get; }
 
@@ -34,24 +25,15 @@ namespace ColdFormedChannelSection.Core.Dtos
 
         #region Contructors
 
-        public DSCompressionDto(LocalDSCompressionDto lb, double pcrd, double pcre, double pnl, double pnd, double pne, double ag, double fy,NominalStrengthDto governingCase)
+        public DSCompressionDto(LocalDSCompressionDto lb,  double pcre, double pnl,  double pne, double ag, double fy,NominalStrengthDto governingCase)
         {
             LB = lb;
-            Pcrd = pcrd;
             Pcre = pcre;
             Pnl = pnl;
-            Pnd = pnd;
             Pne = pne;
             Ag = ag;
             Fy = fy;
             Py = Fy*Ag;
-
-            var nominalLoads = new List<NominalStrengthDto>()
-            {
-               new NominalStrengthDto(pnl,FailureMode.LOCALBUCKLING),
-                new NominalStrengthDto(pne,FailureMode.GLOBALBUCKLING),
-               new NominalStrengthDto(pnd,FailureMode.DISTRORSIONALBUCKLING)
-            };
             GoverningCase = governingCase;
         }
 
