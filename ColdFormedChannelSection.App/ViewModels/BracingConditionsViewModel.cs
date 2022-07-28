@@ -34,6 +34,8 @@ namespace ColdFormedChannelSection.App.ViewModels
 
         private Dictionary<KeyValuePair<DesignCode, StrainingActions>, Action> _bracingDict;
 
+        private Dictionary< StrainingActions, Action> _bracingDSDict;
+
         private Task _initTask;
 
         #endregion
@@ -166,6 +168,13 @@ namespace ColdFormedChannelSection.App.ViewModels
             {
                 Mediator.Mediator.Instance.Subscribe<UnitSystems>(this, OnUnitsChanged, Context.UNITS);
                 Mediator.Mediator.Instance.Subscribe<KeyValuePair<DesignCode, StrainingActions>>(this, OnBracingChanged, Context.BRACING);
+                Mediator.Mediator.Instance.Subscribe<StrainingActions>(this, OnDSBracingChanged, Context.BRACING_DS);
+                _bracingDSDict = new Dictionary<StrainingActions, Action>()
+                {
+                    [StrainingActions.COMPRESSION] = DSCompression,
+                    [StrainingActions.MOMENT] = DefaultMoment,
+                    [StrainingActions.MOMENT_COMPRESSION] = AISIMomentCompression
+                };
                 _bracingDict = new Dictionary<KeyValuePair<DesignCode, StrainingActions>, Action>()
                 {
                     [KeyValuePair.Create(DesignCode.EGYPTIAN, StrainingActions.COMPRESSION)] = DefaultCompression,
@@ -181,7 +190,11 @@ namespace ColdFormedChannelSection.App.ViewModels
             });
         }
 
-       
+        private async void OnDSBracingChanged(StrainingActions action)
+        {
+            await _initTask;
+            _bracingDSDict[action]();
+        }
 
         private async void OnBracingChanged(KeyValuePair<DesignCode, StrainingActions> kvp)
         {
@@ -224,6 +237,17 @@ namespace ColdFormedChannelSection.App.ViewModels
             IsCmUsed = true;
             Cm = 1;
             C1 = 0;
+        }
+
+        private void DSCompression()
+        {
+            IsCbUsed = false;
+            Cb = 0;
+            IsLuUsed = true;
+            IsC1Used = false;
+            C1 = 0;
+            IsCmUsed = false;
+            Cm = 0;
         }
 
         private  void DefaultCompression()

@@ -426,7 +426,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             {
                 new ReportItem("Governing Case",dto.GoverningCase.FailureMode.GetDescription(),Units.NONE),
                 new ReportItem("Nomial Load (Pn)",dto.GoverningCase.NominalStrength.ToString("0.###"),Units.TON),
-                new ReportItem("phi",$"{PHI_C_EGYPT}",Units.TON),
+                new ReportItem("phi",$"{PHI_C_EGYPT}",Units.NONE),
                 new ReportItem("Design Load (phi*Pn)",$"{(PHI_C_EGYPT*dto.GoverningCase.NominalStrength).ToString("0.###")}",Units.TON),
             };
             var designSection = new ListReportSection("Design Load",designItems);
@@ -460,7 +460,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             {
                 new ReportItem("Governing Case",dto.GoverningCase.FailureMode.GetDescription(),Units.NONE),
                 new ReportItem("Nomial Load (Pn)",dto.GoverningCase.NominalStrength.ToString("0.###"),Units.TON),
-                new ReportItem("phi",$"{PHI_C_EGYPT}",Units.TON),
+                new ReportItem("phi",$"{PHI_C_EGYPT}",Units.NONE),
                 new ReportItem("Design Load (phi*Pn)",$"{(PHI_C_EGYPT*dto.GoverningCase.NominalStrength).ToString("0.###")}",Units.TON),
             };
             var designSection = new ListReportSection("Design Load", designItems);

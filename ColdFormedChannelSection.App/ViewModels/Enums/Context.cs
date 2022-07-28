@@ -24,6 +24,7 @@
         EFFECTIVE_WIDTH,
         HOME,
         BRACING,
+        BRACING_DS,
             SA_MODULE
     }
 }

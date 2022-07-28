@@ -112,7 +112,7 @@ namespace ColdFormedChannelSection.App
             IsMenu = true;
             CurrentVM = _directStrengthVM.Value;
             _directStrengthVM.Value.GeneralInfoVM.IsDesignCode = false;
-            Mediator.Instance.NotifyColleagues(KeyValuePair.Create(DesignCode.AISI, _generalInfoVM.Value.StrainingAction),Context.BRACING);
+            Mediator.Instance.NotifyColleagues( _generalInfoVM.Value.StrainingAction,Context.BRACING_DS);
             MenuVM.Name = "Direct Strength";
         }
 
