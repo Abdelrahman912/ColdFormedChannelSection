@@ -310,21 +310,6 @@ namespace ColdFormedChannelSection.Core.Helpers
 
             var Ae = t * (2 * be1 + ae + 2 * Xd * (be2 + ce));
 
-            //var items = new List<ReportItem>()
-            //{
-            //    new ReportItem("Kw",Kw.ToString("0.###"),Units.NONE),
-            //    new ReportItem("Effective Height (ae)",ae.ToString("0.###"),Units.MM),
-            //    new ReportItem("Kf",Kf.ToString("0.###"),Units.NONE),
-            //    new ReportItem("Effective Flange Width (be)",(be1+be2).ToString("0.###"),Units.MM),
-            //    new ReportItem("Kc",Kc.ToString("0.###"),Units.NONE),
-            //    new ReportItem("Effective Lip (ce)",ce.ToString("0.###"),Units.MM),
-            //    new ReportItem("Effective Area (Ae)",Ae.ToString("0.###"),Units.MM_2),
-            //    new ReportItem("Reduction Factor (Xd)",Xd.ToString("0.###"),Units.NONE),
-            //    new ReportItem("Yield Stress (Fy)",material.Fy.ToString("0.###"),Units.N_MM_2),
-            //    new ReportItem("Nominal Load (Pn)",(material.Fy*Ae).ToString("0.###"),Units.N),
-            //};
-
-            //return Tuple.Create(Ae, items);
 
             return new LocalEuroCompressionDto(ae, (be1 + be2), ce, Kw, Kf, Kc, material.Fy, Ae, (material.Fy * Ae), Xd);
         }
@@ -340,17 +325,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var ae = section.ReduceWebCompression(material);
 
             var Ae = t * (2 * be1 + ae + 2 * be2);
-            //var items = new List<ReportItem>()
-            //{
-            //     new ReportItem("Kw",Kw.ToString("0.###"),Units.NONE),
-            //    new ReportItem("Effective Height (ae)",ae.ToString("0.###"),Units.MM),
-            //    new ReportItem("Kf",Kf.ToString("0.###"),Units.NONE),
-            //    new ReportItem("Effective Flange Width (be)",(be1+be2).ToString("0.###"),Units.MM),
-            //    new ReportItem("Effective Area (Ae)",Ae.ToString("0.###"),Units.MM_2),
-            //    new ReportItem("Yield Stress (Fy)",material.Fy.ToString("0.###"),Units.N_MM_2),
-            //    new ReportItem("Nominal Load (Pn)",(material.Fy*Ae).ToString("0.###"),Units.N),
-            //};
-            //return Tuple.Create(Ae, items);
+           
             return new LocalEuroCompressionDto(ae, (be1 + be2), 0, Kw, Kf, 0, material.Fy, Ae, (material.Fy * Ae), 1);
         }
 
