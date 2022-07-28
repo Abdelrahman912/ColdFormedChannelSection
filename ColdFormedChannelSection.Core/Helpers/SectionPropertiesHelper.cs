@@ -101,7 +101,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 Tuple.Create(b,"b is less than zero"),
                 Tuple.Create(c,"c is less than zero")
             };
-            var errors = errs.Where(err => err.Item1 < 0).Select(err => LessThanZeroError($"Cannot use this section because {err.Item2}")).ToList();
+            var errors = errs.Where(err => err.Item1 < 0).Select(err => GreaterThanZeroError($"Cannot use this section because {err.Item2}")).ToList();
             if (errors.Count > 0)
                 return Invalid(errors);
             else
@@ -201,7 +201,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 Tuple.Create(b,"b is less than zero"),
                 Tuple.Create(c,"c is less than zero")
             };
-            var errors = errs.Where(err => err.Item1 < 0).Select(err => LessThanZeroError($"Cannot use this section because {err.Item2}")).ToList();
+            var errors = errs.Where(err => err.Item1 < 0).Select(err => GreaterThanZeroError($"Cannot use this section because {err.Item2}")).ToList();
             if (errors.Count > 0)
                 return Invalid(errors);
             else

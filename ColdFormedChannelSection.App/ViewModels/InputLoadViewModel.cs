@@ -94,9 +94,9 @@ namespace ColdFormedChannelSection.App.ViewModels
         {
             var errs = new List<Error>();
             if (IsUltimateLoad && UltimateLoad <= 0)
-                errs.Add(LessThanZeroError("Pu"));
+                errs.Add(GreaterThanZeroError("Pu"));
             if (IsUltimateMoment && UltimateMoment <= 0)
-                errs.Add(LessThanZeroError("Mu"));
+                errs.Add(GreaterThanZeroError("Mu"));
             return errs;
 
         }

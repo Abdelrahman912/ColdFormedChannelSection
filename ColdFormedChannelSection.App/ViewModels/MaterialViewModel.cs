@@ -96,11 +96,11 @@ namespace ColdFormedChannelSection.App.ViewModels
         {
             var errs = new List<Error>();
             if (Fy <= 0)
-                errs.Add(LessThanZeroError("Fy"));
+                errs.Add(GreaterThanZeroError("Fy"));
             if (E <= 0)
-                errs.Add(LessThanZeroError("E"));
+                errs.Add(GreaterThanZeroError("E"));
             if (V <= 0)
-                errs.Add(LessThanZeroError("v"));
+                errs.Add(GreaterThanZeroError("v"));
             return errs;
         }
 

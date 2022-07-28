@@ -645,26 +645,24 @@ namespace ColdFormedChannelSection.Core.Helpers
             var Iy = section.Properties.Iy;
             var J = section.Properties.J;
             var Cw = section.Properties.Cw;
-
-            var Mcr = C1 * ((Math.PI.Power(2) * E * Iy) / (Lu.Power(2))) * ((Cw / Iy) + ((Lu.Power(2) * G * J) / (Math.PI.Power(2) * E * Iy))).Power(0.5);
-
-            var alpha_lt = 0.34;
-            var lambda_lt = Math.Sqrt((Ze * Fy) / (Mcr));
-            var phi_lt = 0.5 * (1 + alpha_lt * (lambda_lt - 0.2) + lambda_lt.Power(2));
-            var x_lt = Math.Min(1.0, (1 / (phi_lt + Math.Sqrt(phi_lt.Power(2) - lambda_lt.Power(2)))));
-            if (mu == 0 && lambda_lt <= 0.2)
-                x_lt = 1;
-            else if (mu != 0 && (lambda_lt <= 0.2 || mu / Mcr <= 0.16))
-                x_lt = 1;
+            var x_lt = 1.0;
             var Mn = x_lt * Ze * Fy;
-            //var items = new List<ReportItem>()
-            //{
-            //    new ReportItem("Lateral Torsional Section Modulus (Z)",Ze.ToString("0.###"),Units.MM_3),
-            //    new ReportItem("Lateral Torsional Stress (F)",(x_lt*Fy).ToString("0.###"),Units.N_MM_2),
-            //    new ReportItem("Lateral Torsional Nominal Moment (Mn)",Mn.ToString("0.###"),Units.N_MM),
 
-            //};
-            //return Tuple.Create(Mn, items);
+            if (Lu > 0)
+            {
+                var Mcr = C1 * ((Math.PI.Power(2) * E * Iy) / (Lu.Power(2))) * ((Cw / Iy) + ((Lu.Power(2) * G * J) / (Math.PI.Power(2) * E * Iy))).Power(0.5);
+
+                var alpha_lt = 0.34;
+                var lambda_lt = Math.Sqrt((Ze * Fy) / (Mcr));
+                var phi_lt = 0.5 * (1 + alpha_lt * (lambda_lt - 0.2) + lambda_lt.Power(2));
+                x_lt = Math.Min(1.0, (1 / (phi_lt + Math.Sqrt(phi_lt.Power(2) - lambda_lt.Power(2)))));
+                if (mu == 0 && lambda_lt <= 0.2)
+                    x_lt = 1;
+                else if (mu != 0 && (lambda_lt <= 0.2 || mu / Mcr <= 0.16))
+                    x_lt = 1;
+                Mn = x_lt * Ze * Fy;
+            }
+           
             return new LTBEuroMomentDto(Ze, x_lt * Fy, x_lt, Mn);
         }
 

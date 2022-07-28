@@ -715,7 +715,7 @@ namespace ColdFormedChannelSection.Core.Helpers
 
             var My = Zg * Fy;
 
-            var M_cre = section.GetMomentGBResistance(material, bracingConditions, Fe);
+            var M_cre = section.GetMomentGBResistance(Fe);
 
             var Mne = 0.0;
             if (M_cre < 0.56 * My)
@@ -913,7 +913,8 @@ namespace ColdFormedChannelSection.Core.Helpers
             var Lcr_vTerm = (4 * Math.PI.Power(4) * aPrime * (1 - v.Power(2))) / (t.Power(3));
             var Lcr_ITerm = Ixf * (Xof - hxf).Power(2) + Cwf - (Ixyf.Power(2) / Iyf) * (Xof - hxf).Power(2);
             var Lcr = (Lcr_vTerm * Lcr_ITerm + ((Math.PI.Power(4) * aPrime.Power(4)) / (720.0))).Power(0.25);
-            Lcr = Math.Min(Lcr, Lu);
+            if(Lu != 0)
+                 Lcr = Math.Min(Lcr, Lu);
 
             var piOverLCr = Math.PI / Lcr;
             var K_phi_fe = (piOverLCr).Power(4) * (E * Ixf * (Xof - hxf).Power(2) + E * Cwf - E * (Ixyf.Power(2) / Iyf) * (Xof - hxf).Power(2)) + piOverLCr.Power(2) * G * Jf;
@@ -939,10 +940,8 @@ namespace ColdFormedChannelSection.Core.Helpers
         {
             var E = material.E;
             var G = material.G;
-            var Kx = bracingConditions.Kx;
             var Ky = bracingConditions.Ky;
             var Kz = bracingConditions.Kz;
-            var Lx = bracingConditions.Lx;
             var Ly = bracingConditions.Ly;
             var Lz = bracingConditions.Lz;
             var Cb = bracingConditions.Cb;
@@ -952,11 +951,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var Cw = section.Properties.Cw;
             var J = section.Properties.J;
             var A = section.Properties.A;
-            var aPrime = section.Properties.APrime;
-            var bPrime = section.Properties.BPrime;
-            var cPrime = section.Properties.CPrime;
             var Zg = section.Properties.Zg;
-            var t = section.Dimensions.ThicknessT;
             var sigma_ey = (Math.PI.Power(2) * E) / ((Ky * Ly) / (ry)).Power(2);
 
             var ro = Math.Sqrt((rx.Power(2) + ry.Power(2) + Xo.Power(2)));
@@ -966,18 +961,9 @@ namespace ColdFormedChannelSection.Core.Helpers
             return Fe;
         }
 
-        private static double GetMomentGBResistance(this Section section, Material material, LengthBracingConditions bracingConditions, double Fe)
+        private static double GetMomentGBResistance(this Section section, double Fe)
         {
             var Zg = section.Properties.Zg;
-            //Individual Buckling modes.
-
-            //var sigma_ey = (Math.PI.Power(2) * E) / ((Ky * Ly) / (ry)).Power(2);
-
-            //var ro = Math.Sqrt((rx.Power(2) + ry.Power(2) + Xo.Power(2)));
-
-            //var sigma_t = ((1.0) / (A * ro.Power(2))) * (G * J + ((Math.PI.Power(2) * E * Cw) / (Kz * Lz).Power(2)));
-
-            //var Fe = ((Cb * ro * A) / (Zg)) * (Math.Sqrt(sigma_ey * sigma_t));
             var F_cre = Fe;
             var M_cre = Zg * F_cre;
             return M_cre;

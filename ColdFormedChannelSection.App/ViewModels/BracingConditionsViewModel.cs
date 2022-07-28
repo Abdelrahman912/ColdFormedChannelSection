@@ -193,25 +193,25 @@ namespace ColdFormedChannelSection.App.ViewModels
         {
             var errs = new List<Error>();
             if (Lx <= 0)
-                errs.Add(LessThanZeroError("Lx"));
+                errs.Add(GreaterThanZeroError("Lx"));
             if (Kx <= 0)
-                errs.Add(LessThanZeroError("Kx"));
+                errs.Add(GreaterThanZeroError("Kx"));
             if (Ly <= 0)
-                errs.Add(LessThanZeroError("Ly"));
+                errs.Add(GreaterThanZeroError("Ly"));
             if (Ky <= 0)
-                errs.Add(LessThanZeroError("Ky"));
+                errs.Add(GreaterThanZeroError("Ky"));
             if (Lz <= 0)
-                errs.Add(LessThanZeroError("Lz"));
+                errs.Add(GreaterThanZeroError("Lz"));
             if (Kz <= 0)
-                errs.Add(LessThanZeroError("Kz"));
+                errs.Add(GreaterThanZeroError("Kz"));
             if (IsCbUsed && Cb <= 0)
-                errs.Add(LessThanZeroError("Cb"));
-            if (IsLuUsed && Lu <= 0)
-                errs.Add(LessThanZeroError("Lu"));
+                errs.Add(GreaterThanZeroError("Cb"));
+            if (IsLuUsed && Lu < 0)
+                errs.Add(GreaterThanOrEqualZeroError("Lu"));
             if (IsC1Used && C1 <= 0)
-                errs.Add(LessThanZeroError("C1"));
+                errs.Add(GreaterThanZeroError("C1"));
             if (IsCmUsed && Cm <= 0)
-                errs.Add(LessThanZeroError("Cm"));
+                errs.Add(GreaterThanZeroError("Cm"));
             return errs;
         }
 

@@ -279,15 +279,15 @@ namespace ColdFormedChannelSection.App.ViewModels
             {
                 var errs = new List<Error>();
                 if (TotalHeightH <= 0)
-                    errs.Add(LessThanZeroError("H"));
+                    errs.Add(GreaterThanZeroError("H"));
                 if (TotalWidthB <= 0)
-                    errs.Add(LessThanZeroError("B"));
+                    errs.Add(GreaterThanZeroError("B"));
                 if (ThicknessT <= 0)
-                    errs.Add(LessThanZeroError("t"));
+                    errs.Add(GreaterThanZeroError("t"));
                 if (InternalRadiusR <= 0)
-                    errs.Add(LessThanZeroError("R"));
+                    errs.Add(GreaterThanZeroError("R"));
                 if (!_isUnstiffened && TotalFoldWidthC <= 0)
-                    errs.Add(LessThanZeroError("C"));
+                    errs.Add(GreaterThanZeroError("C"));
                 return errs;
             }
             else

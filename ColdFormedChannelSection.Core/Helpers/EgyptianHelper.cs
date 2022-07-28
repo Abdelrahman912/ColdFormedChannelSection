@@ -226,7 +226,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 var It = ((b.Power(3) * t) / 12) + (1.0 / 6.0) * a * t.Power(3);
                 var At = b * t + (1.0 / 6.0) * a * t;
                 var rt = Math.Sqrt(It / At);
-                var Mn2 = Math.Min(Ze * Fy, Zg * Math.Sqrt(((1380 * b * t) / (H * Lu)).Power(2) + ((20700) / (Lu / rt).Power(2)).Power(2)));
+                var Mn2 = Lu ==0 ? Ze*Fy: Math.Min(Ze * Fy, Zg * Math.Sqrt(((1380 * b * t) / (H * Lu)).Power(2) + ((20700) / (Lu / rt).Power(2)).Power(2)));
                 var Ze_report = 0.0;
                 var F_report = 0.0;
                 if (Mn2 < Ze * Fy)
