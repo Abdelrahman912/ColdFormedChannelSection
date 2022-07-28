@@ -15,7 +15,7 @@ namespace ColdFormedChannelSection.Core.Helpers
     public static class EuroHelper
     {
 
-        private static Validation<bool> IsValid(this LippedSection section)
+        private static Validation<TypeOfSection> IsValid(this LippedSection section)
         {
             var b_over_t = Tuple.Create(section.Properties.BPrime / section.Dimensions.ThicknessT, 60.0);
 
@@ -29,7 +29,9 @@ namespace ColdFormedChannelSection.Core.Helpers
             };
             var result = !allows.Any(tuple => tuple.Item1 > tuple.Item2) && c_over_b >= 0.2 && c_over_b <= 0.6;
             if (result)
-                return true;
+                return TypeOfSection.LIPPED;
+            else if (c_over_b < 0.2)
+                return TypeOfSection.UNSTIFFENED;
             else
                 return CantCalculateNominalStrength;
         }
@@ -145,8 +147,15 @@ namespace ColdFormedChannelSection.Core.Helpers
 
         public static Validation<CompressionResistanceOutput> AsEuroCompressionResistance(this LippedZSection section, Material material, LengthBracingConditions bracingConditions, double pu)
         {
-            var result = from valid in section.IsValid()
-                         select section.AsCompressionDto(material, bracingConditions, pu).AsOutput(section);
+            var dict = new Dictionary<TypeOfSection, Lazy<Validation<CompressionResistanceOutput>>>()
+            {
+                [TypeOfSection.LIPPED] = new Lazy<Validation<CompressionResistanceOutput>>(() => section.AsCompressionDto(material, bracingConditions, pu).AsOutput(section)),
+                [TypeOfSection.UNSTIFFENED] = new Lazy<Validation<CompressionResistanceOutput>>(() => section.Dimensions.AsNewWithC(0).AsUnstiffenedZSection().Bind(sec => sec.AsEuroCompressionResistance(material, bracingConditions, pu)))
+            };
+
+            var result = from typeOfSection in section.IsValid()
+                         from val in dict[typeOfSection].Value
+                         select val;
             return result;
         }
 
@@ -325,7 +334,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var ae = section.ReduceWebCompression(material);
 
             var Ae = t * (2 * be1 + ae + 2 * be2);
-           
+
             return new LocalEuroCompressionDto(ae, (be1 + be2), 0, Kw, Kf, 0, material.Fy, Ae, (material.Fy * Ae), 1);
         }
 
@@ -363,8 +372,15 @@ namespace ColdFormedChannelSection.Core.Helpers
 
         public static Validation<CompressionResistanceOutput> AsEuroCompressionResistance(this LippedCSection section, Material material, LengthBracingConditions bracingConditions, double pu)
         {
-            var result = from valid in section.IsValid()
-                         select section.AsCompressionDto(material, bracingConditions, pu).AsOutput(section);
+            var dict = new Dictionary<TypeOfSection, Lazy<Validation<CompressionResistanceOutput>>>()
+            {
+                [TypeOfSection.LIPPED] = new Lazy<Validation<CompressionResistanceOutput>>(() => section.AsCompressionDto(material, bracingConditions, pu).AsOutput(section)),
+                [TypeOfSection.UNSTIFFENED] = new Lazy<Validation<CompressionResistanceOutput>>(() => section.Dimensions.AsNewWithC(0).AsUnstiffenedCSection().Bind(sec => sec.AsEuroCompressionResistance(material, bracingConditions, pu)))
+            };
+
+            var result = from typeOfSection in section.IsValid()
+                         from val in dict[typeOfSection].Value
+                         select val;
             return result;
         }
 
@@ -534,8 +550,15 @@ namespace ColdFormedChannelSection.Core.Helpers
 
         public static Validation<MomentResistanceOutput> AsEuroMomentResistance(this LippedZSection section, Material material, LengthBracingConditions bracingConditions, double mu)
         {
-            var result = from valid in section.IsValid()
-                         select section.AsMomentDto(material, bracingConditions, mu).AsOutput(section);
+            var dict = new Dictionary<TypeOfSection, Lazy<Validation<MomentResistanceOutput>>>()
+            {
+                [TypeOfSection.LIPPED] = new Lazy<Validation<MomentResistanceOutput>>(() => section.AsMomentDto(material, bracingConditions, mu).AsOutput(section)),
+                [TypeOfSection.UNSTIFFENED] = new Lazy<Validation<MomentResistanceOutput>>(() => section.Dimensions.AsNewWithC(0).AsUnstiffenedZSection().Bind(sec => sec.AsEuroMomentResistance(material, bracingConditions, mu)))
+            };
+
+            var result = from typeOfSection in section.IsValid()
+                         from val in dict[typeOfSection].Value
+                         select val;
             return result;
         }
 
@@ -578,8 +601,15 @@ namespace ColdFormedChannelSection.Core.Helpers
 
         public static Validation<MomentResistanceOutput> AsEuroMomentResistance(this LippedCSection section, Material material, LengthBracingConditions bracingConditions, double mu)
         {
-            var result = from valid in section.IsValid()
-                         select section.AsMomentDto(material, bracingConditions, mu).AsOutput(section);
+            var dict = new Dictionary<TypeOfSection, Lazy<Validation<MomentResistanceOutput>>>()
+            {
+                [TypeOfSection.LIPPED] = new Lazy<Validation<MomentResistanceOutput>>(() => section.AsMomentDto(material, bracingConditions, mu).AsOutput(section)),
+                [TypeOfSection.UNSTIFFENED] = new Lazy<Validation<MomentResistanceOutput>>(() => section.Dimensions.AsNewWithC(0).AsUnstiffenedCSection().Bind(sec => sec.AsEuroMomentResistance(material, bracingConditions, mu)))
+            };
+
+            var result = from typeOfSection in section.IsValid()
+                         from val in dict[typeOfSection].Value
+                         select val;
             return result;
         }
 
@@ -589,9 +619,6 @@ namespace ColdFormedChannelSection.Core.Helpers
                          select section.AsMomentDto(material, bracingConditions, mu).AsOutput(section);
             return result;
         }
-
-        private static double GetEuroMomentLBResistance(this Section section, Material material, double Ze) =>
-            Ze * material.Fy;
 
         private static LTBEuroMomentDto GetEuroMomentLTBResistance(this Section section, Material material, LengthBracingConditions bracingConditions, double Ze, double mu)
         {

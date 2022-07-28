@@ -13,11 +13,15 @@ namespace ColdFormedChannelSection.Core.Helpers
     public static class SectionPropertiesHelper
     {
 
+        public static SectionDimension AsNewWithC(this SectionDimension secDim, double c) =>
+            new SectionDimension(secDim.TotalHeightH, secDim.TotalFlangeWidthB, secDim.InternalRadiusR, secDim.ThicknessT, c);
+
         public static Validation<LippedCSection> AsLippedCSection(this SectionDimension sectionDim)
         {
             return sectionDim.CaclulateCSectionProperties(TypeOfSection.LIPPED)
                        .Map(sec => new LippedCSection(sec.Dimensions, sec.Properties as CSectionProperties));
         }
+
 
 
         public static Validation<UnStiffenedCSection> AsUnstiffenedCSection(this SectionDimension sectionDim)
@@ -38,6 +42,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             return sectionDim.CalculateZSectionProperties(TypeOfSection.UNSTIFFENED)
                              .Map(sec => new UnStiffenedZSection(sec.Dimensions, sec.Properties as ZSectionProperties));
         }
+
 
         private static Validation<Section> CaclulateCSectionProperties(this SectionDimension sectionDim, TypeOfSection channel)
         {
