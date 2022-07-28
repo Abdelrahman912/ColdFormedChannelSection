@@ -45,7 +45,7 @@ namespace ColdFormedChannelSection.Core.Dtos
             {
                new NominalStrengthDto(Mnl,FailureMode.LOCALBUCKLING),
                 new NominalStrengthDto(Mne,FailureMode.GLOBALBUCKLING),
-               new NominalStrengthDto(Mnd,FailureMode.DISTRORTIONALBUCKLING)
+               new NominalStrengthDto(Mnd,FailureMode.DISTRORSIONALBUCKLING)
             };
             Fy = fy;
             Zg = zg;

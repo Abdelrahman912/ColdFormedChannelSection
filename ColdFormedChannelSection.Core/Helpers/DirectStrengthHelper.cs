@@ -228,7 +228,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             {
                 Tuple.Create(localDto.Pcrl,FailureMode.LOCALBUCKLING,Pnl),
                 Tuple.Create(p_cre,FailureMode.GLOBALBUCKLING,Pne),
-                Tuple.Create(p_crd,FailureMode.DISTRORTIONALBUCKLING,Pnd)
+                Tuple.Create(p_crd,FailureMode.DISTRORSIONALBUCKLING,Pnd)
             };
             var governingCaseTuple = lst.OrderBy(tup=>tup.Item1).First();
             var governingCase = new NominalStrengthDto(governingCaseTuple.Item3, governingCaseTuple.Item2);
@@ -630,7 +630,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             {
                 Tuple.Create(lbDto.Mcrl,FailureMode.LOCALBUCKLING,Mnl),
                 Tuple.Create(M_cre,FailureMode.GLOBALBUCKLING,Mne),
-                Tuple.Create(M_crd,FailureMode.DISTRORTIONALBUCKLING,Mnd)
+                Tuple.Create(M_crd,FailureMode.DISTRORSIONALBUCKLING,Mnd)
             };
             var govTuple = lst.OrderBy(tuple => tuple.Item1).First();
             var governingCase = new NominalStrengthDto(govTuple.Item3, govTuple.Item2);

@@ -1,4 +1,6 @@
-﻿namespace ColdFormedChannelSection.Core.Dtos
+﻿using ColdFormedChannelSection.Core.Enums;
+
+namespace ColdFormedChannelSection.Core.Dtos
 {
     public class LocalEuroCompressionDto:NominalStrengthDto
     {
@@ -26,8 +28,8 @@
 
         #region Constructors
 
-        public LocalEuroCompressionDto(double ae, double be, double ce, double kw, double kf, double kc, double fy, double areaEffective,double pn,double xd)
-            :base(pn,Enums.FailureMode.LOCALBUCKLING)
+        public LocalEuroCompressionDto(double ae, double be, double ce, double kw, double kf, double kc, double fy, double areaEffective,double pn,double xd,FailureMode failureMode)
+            :base(pn,failureMode)
         {
             Ae = ae;
             Be = be;

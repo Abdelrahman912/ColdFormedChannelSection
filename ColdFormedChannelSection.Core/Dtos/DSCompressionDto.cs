@@ -50,7 +50,7 @@ namespace ColdFormedChannelSection.Core.Dtos
             {
                new NominalStrengthDto(pnl,FailureMode.LOCALBUCKLING),
                 new NominalStrengthDto(pne,FailureMode.GLOBALBUCKLING),
-               new NominalStrengthDto(pnd,FailureMode.DISTRORTIONALBUCKLING)
+               new NominalStrengthDto(pnd,FailureMode.DISTRORSIONALBUCKLING)
             };
             GoverningCase = governingCase;
         }
