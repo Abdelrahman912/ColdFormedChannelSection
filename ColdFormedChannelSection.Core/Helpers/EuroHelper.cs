@@ -348,8 +348,8 @@ namespace ColdFormedChannelSection.Core.Helpers
             var t = section.Dimensions.ThicknessT;
             var R = section.Dimensions.InternalRadiusR;
             var bPrime = section.Properties.BPrime;
-            var Kf = 0.43;
-            (var be1, var be2) = section.GetEuroReducedFlange(material);
+            
+            (var be1, var be2 , var Kf) = section.GetEuroReducedFlange(material);
 
             //Web.
             var Kw = 4.0;
