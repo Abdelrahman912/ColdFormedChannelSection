@@ -15,7 +15,7 @@ namespace ColdFormedChannelSection.Core.Helpers
     public static class EuroHelper
     {
 
-        private static Validation<TypeOfSection> IsValid(this LippedSection section,Material material)
+        private static Validation<TypeOfSection> IsValid(this LippedSection section, Material material)
         {
             var t = section.Dimensions.ThicknessT;
             var E = material.E;
@@ -129,7 +129,7 @@ namespace ColdFormedChannelSection.Core.Helpers
         {
             var lbDto = section.GetEuroReducedArea(material);
             //var pn1 = Tuple.Create(section.GetEuroCompressionLBResistance(material, Ae), FailureMode.LOCALBUCKLING);
-            var fbDto = section.GetEuroCompressionFBResistance(material, bracingConditions, lbDto.AreaEffective, 0.34 );
+            var fbDto = section.GetEuroCompressionFBResistance(material, bracingConditions, lbDto.AreaEffective, 0.34);
             var tbDto = section.GetEuroCompressionTBResistance(material, bracingConditions, lbDto.AreaEffective, 0.34);
             //var ftbDto = section.GetEuroCompressionTFBResistance(material, bracingConditions, lbDto.AreaEffective, 0.34, pu);
             return new EuroCompressionZDto(lbDto, fbDto, tbDto);
@@ -301,7 +301,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             return (be1: be1_lst.First(), be2: be2, ce: ce, Xd: Xd, Kf: kf, Kc: kc);
         }
 
-        private static (double be1, double be2) GetEuroReducedFlange(this UnStiffenedSection section, Material material)
+        private static (double be1, double be2 , double Kf) GetEuroReducedFlange(this UnStiffenedSection section, Material material)
         {
             var Fy = material.Fy;
             var b_prime = section.Properties.BPrime;
@@ -317,7 +317,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var be = row_f * b_prime;
             var be1 = 0.5 * be;
             var be2 = 0.5 * be;
-            return (be1, be2);
+            return (be1, be2,kf);
         }
 
         private static LocalEuroCompressionDto GetEuroReducedArea(this LippedSection section, Material material)
@@ -335,12 +335,12 @@ namespace ColdFormedChannelSection.Core.Helpers
             if (R > 5 * t || R > 0.1 * bPrime)
             {
                 var n = 2;
-                var sumLe = 2 * be1 + ae + 2 * be2 + 2*ce;
+                var sumLe = 2 * be1 + ae + 2 * be2 + 2 * ce;
                 var delta = 0.43 * ((n * R) / sumLe);
                 Ae = Ae * (1 - delta);
             }
 
-            return new LocalEuroCompressionDto(ae, (be1 + be2), ce, Kw, Kf, Kc, material.Fy, Ae, (material.Fy * Ae), Xd,FailureMode.LOCAL_DISTORSIONAL_BUCKLING);
+            return new LocalEuroCompressionDto(ae, (be1 + be2), ce, Kw, Kf, Kc, material.Fy, Ae, (material.Fy * Ae), Xd, FailureMode.LOCAL_DISTORSIONAL_BUCKLING);
         }
 
         private static LocalEuroCompressionDto GetEuroReducedArea(this UnStiffenedSection section, Material material)
@@ -357,14 +357,14 @@ namespace ColdFormedChannelSection.Core.Helpers
 
             var Ae = t * (2 * be1 + ae + 2 * be2);
 
-            if(R > 5*t || R > 0.1 * bPrime)
+            if (R > 5 * t || R > 0.1 * bPrime)
             {
                 var n = 2;
                 var sumLe = 2 * be1 + ae + 2 * be2;
                 var delta = 0.43 * ((n * R) / sumLe);
                 Ae = Ae * (1 - delta);
             }
-            return new LocalEuroCompressionDto(ae, (be1 + be2), 0, Kw, Kf, 0, material.Fy, Ae, (material.Fy * Ae), 1,FailureMode.LOCALBUCKLING);
+            return new LocalEuroCompressionDto(ae, (be1 + be2), 0, Kw, Kf, 0, material.Fy, Ae, (material.Fy * Ae), 1, FailureMode.LOCALBUCKLING);
         }
 
         private static EuroCompressionCDto AsCompressionDto(this LippedCSection section, Material material, LengthBracingConditions bracingConditions, double pu)
@@ -445,14 +445,14 @@ namespace ColdFormedChannelSection.Core.Helpers
             var lambdaPrime = Math.Sqrt((Ae * Fy) / Ncr_f);
 
             var X = 1.0;
-            if(lambdaPrime > 0.2)
+            if (lambdaPrime > 0.2)
             {
                 var phiF = 0.5 * (1 + alpa_w * (lambdaPrime - 0.2) + lambdaPrime.Power(2));
                 X = (1 / (phiF + Math.Sqrt(phiF.Power(2) - lambdaPrime.Power(2)))).TakeMinWithOne();
             }
 
             var Pn = X * Ae * Fy;
-            
+
             return new FBEuroCompressionDto(Ae, X, material.Fy, Pn);
         }
 
@@ -510,7 +510,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var beta = 1 - (xo_squared / io_squared);
             var Ncr = (1 / io_squared) * (G * J + ((Math.PI.Power(2) * Cw * E) / (Kz * Lz).Power(2)));
             var Ncr_x = (Math.PI.Power(2) * E) / ((Kx * Lx) / ix).Power(2);
-            var Ncr_ft = (Ncr_x / (2 * beta)) * (1 + (Ncr / Ncr_x) - Math.Sqrt((1 + (Ncr / Ncr_x)).Power(2) + 4 * (xo_squared /io_squared) * (Ncr / Ncr_x)));
+            var Ncr_ft = (Ncr_x / (2 * beta)) * (1 + (Ncr / Ncr_x) - Math.Sqrt((1 + (Ncr / Ncr_x)).Power(2) + 4 * (xo_squared / io_squared) * (Ncr / Ncr_x)));
             var lambda_ft = Math.Sqrt((Ae * Fy) / (Ncr_ft));
             var phi_ft = 0.5 * (1 + alpha_w * (lambda_ft - 0.2) + lambda_ft.Power(2));
             var X_ft = (1.0) / (phi_ft + Math.Sqrt(phi_ft.Power(2) - lambda_ft.Power(2))).TakeMinWithOne();
@@ -523,7 +523,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 X_ft = 1;
             }
             var Pn = X_ft * Ae * Fy;
-            
+
             return new FTBEuroCompressionDto(X_ft, material.Fy, Ae, Pn);
         }
 
@@ -662,12 +662,12 @@ namespace ColdFormedChannelSection.Core.Helpers
                     x_lt = 1;
                 Mn = x_lt * Ze * Fy;
             }
-           
+
             return new LTBEuroMomentDto(Ze, x_lt * Fy, x_lt, Mn);
         }
 
 
-        private static LocalEuroMomentDto GetZe(this Section section, Material material, double be1, double be2, double ce, double Xd,double n)
+        private static LocalEuroMomentDto GetZe(this Section section, Material material, double be1, double be2, double ce, double Xd, double n, double kf, double kc)
         {
             var c_prime = section.Properties.CPrime;
             var b_prime = section.Properties.BPrime;
@@ -675,7 +675,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var t = section.Dimensions.ThicknessT;
             var Fy = material.Fy;
             var R = section.Dimensions.InternalRadiusR;
-            
+
 
             var epslon = Math.Sqrt(235.0 / Fy);
 
@@ -713,15 +713,15 @@ namespace ColdFormedChannelSection.Core.Helpers
                  + (h1 * t * (y_bar - (h1 / 2)).Power(2)) + (be1 * t * y_bar.Power(2)) + (be2 * Xd * t * y_bar.Power(2))
                  + (ce * Xd * t * (y_bar - (ce / 2)).Power(2));
 
-            if(R > 5*t || R > 0.1 * b_prime)
+            if (R > 5 * t || R > 0.1 * b_prime)
             {
                 var sumLe = be1 + be2 + ce + c_prime + b_prime + h1 + h2;
-                var delta = 0.43 * ((n*R) / sumLe);
+                var delta = 0.43 * ((n * R) / sumLe);
                 Ieff = Ieff * (1 - 2 * delta);
             }
 
             var Ze = Ieff / y_bar;
-            
+
             return new LocalEuroMomentDto(
                 ze: Ze,
                 fy: material.Fy,
@@ -729,9 +729,12 @@ namespace ColdFormedChannelSection.Core.Helpers
                 be: (be1 + be2),
                 ce: ce,
                 xd: Xd,
-                mn: (Ze * material.Fy)
+                mn: (Ze * material.Fy),
+                kw: kw,
+                kf: kf,
+                kc: kc
                 );
-            //return Tuple.Create(Ze, items);
+
 
         }
 
@@ -740,28 +743,18 @@ namespace ColdFormedChannelSection.Core.Helpers
             var t = section.Dimensions.ThicknessT;
             (var be1, var be2, var ce, var Xd, var Kf, var Kc) = section.GetEuroReducedFlange(material, 0);
 
-            var dto = section.GetZe(material, be1, be2, ce, Xd,4);
-            //local_items.Add(new ReportItem("Effective Lip (Ce)", ce.ToString("0.###"), Units.MM));
-            //local_items.Add(new ReportItem("Reduction Factor (Xd)", Xd.ToString("0.###"), Units.NONE));
-            //local_items.Add(new ReportItem("Effective Section Modulus (Ze)", Ze.ToString("0.###"), Units.MM_3));
-            //local_items.Add(new ReportItem("Yield Stress (Fy)", material.Fy.ToString("0.###"), Units.N_MM_2));
-            //local_items.Add(new ReportItem("Local Nominal Moment (Mn)", (Ze * material.Fy).ToString("0.###"), Units.N_MM));
+            var dto = section.GetZe(material, be1, be2, ce, Xd, 4, Kf, Kc);
 
-            //return Tuple.Create(Ze, local_items);
             return dto;
         }
 
         private static LocalEuroMomentDto GetZe(this UnStiffenedSection section, Material material)
         {
             var t = section.Dimensions.ThicknessT;
-            (var be1, var be2) = section.GetEuroReducedFlange(material);
+            (var be1, var be2 , var Kf) = section.GetEuroReducedFlange(material);
 
-            var dto = section.GetZe(material, be1, be2, 0, 1.0,2);
-            //local_items.Add(new ReportItem("Effective Section Modulus (Ze)", Ze.ToString("0.###"), Units.MM_3));
-            //local_items.Add(new ReportItem("Yield Stress (Fy)", material.Fy.ToString("0.###"), Units.N_MM_2));
-            //local_items.Add(new ReportItem("Local Nominal Moment (Mn)", (Ze * material.Fy).ToString("0.###"), Units.N_MM));
+            var dto = section.GetZe(material, be1, be2, 0, 1.0, 2,Kf , 0);
 
-            //return Tuple.Create(Ze, local_items);
             return dto;
         }
 

@@ -6,9 +6,15 @@
 
         #region Properties
 
+        public double Kw { get; }
+
         public double Ae { get;  }
 
+        public double Kf { get; }
+
         public double Be { get; }
+
+        public double Kc { get; }
 
         public double Ce { get; }
 
@@ -22,7 +28,7 @@
 
         #region Constructors
 
-        public LocalEuroMomentDto(double ze, double fy,double ae, double be, double ce, double mn, double xd)
+        public LocalEuroMomentDto(double ze, double fy,double ae, double be, double ce, double mn, double xd , double kw , double kf , double kc)
             : base(mn, Enums.FailureMode.LOCALBUCKLING)
         {
             Ze = ze;
@@ -31,6 +37,9 @@
             Be = be;
             Ce = ce;
             Xd = xd;
+            Kw = kw;
+            Kf = kf;
+            Kc = kc;
         }
 
         #endregion
