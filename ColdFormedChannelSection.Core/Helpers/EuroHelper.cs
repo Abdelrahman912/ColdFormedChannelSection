@@ -129,7 +129,7 @@ namespace ColdFormedChannelSection.Core.Helpers
         {
             var lbDto = section.GetEuroReducedArea(material);
             //var pn1 = Tuple.Create(section.GetEuroCompressionLBResistance(material, Ae), FailureMode.LOCALBUCKLING);
-            var fbDto = section.GetEuroCompressionFBResistance(material, bracingConditions, lbDto.AreaEffective, 0.34);
+            var fbDto = section.GetEuroCompressionFBResistance(material, bracingConditions, lbDto.AreaEffective, 0.34,(section.Properties as ZSectionProperties).IxPrincipal , (section.Properties as ZSectionProperties).IyPrincipal);
             var tbDto = section.GetEuroCompressionTBResistance(material, bracingConditions, lbDto.AreaEffective, 0.34);
             //var ftbDto = section.GetEuroCompressionTFBResistance(material, bracingConditions, lbDto.AreaEffective, 0.34, pu);
             return new EuroCompressionZDto(lbDto, fbDto, tbDto);
@@ -139,7 +139,7 @@ namespace ColdFormedChannelSection.Core.Helpers
         {
             var lbDto = section.GetEuroReducedArea(material);
             //var pn1 = Tuple.Create(section.GetEuroCompressionLBResistance(material, Ae), FailureMode.LOCALBUCKLING);
-            var fbDto = section.GetEuroCompressionFBResistance(material, bracingConditions, lbDto.AreaEffective, 0.49);
+            var fbDto = section.GetEuroCompressionFBResistance(material, bracingConditions, lbDto.AreaEffective, 0.49, (section.Properties as ZSectionProperties).IxPrincipal, (section.Properties as ZSectionProperties).IyPrincipal);
             var tbDto = section.GetEuroCompressionTBResistance(material, bracingConditions, lbDto.AreaEffective, 0.49);
             //var ftbDto = section.GetEuroCompressionTFBResistance(material, bracingConditions, lbDto.AreaEffective, 0.49, pu);
             return new EuroCompressionZDto(lbDto, fbDto, tbDto);
@@ -371,7 +371,7 @@ namespace ColdFormedChannelSection.Core.Helpers
         {
             var lbDto = section.GetEuroReducedArea(material);
             //var pn1 = Tuple.Create(section.GetEuroCompressionLBResistance(material, Ae), FailureMode.LOCALBUCKLING);
-            var fbDto = section.GetEuroCompressionFBResistance(material, bracingConditions, lbDto.AreaEffective, 0.34);
+            var fbDto = section.GetEuroCompressionFBResistance(material, bracingConditions, lbDto.AreaEffective, 0.34, section.Properties.Ix, section.Properties.Iy);
             var tbDto = section.GetEuroCompressionTBResistance(material, bracingConditions, lbDto.AreaEffective, 0.34);
             var ftbDto = section.GetEuroCompressionTFBResistance(material, bracingConditions, lbDto.AreaEffective, 0.34);
             return new EuroCompressionCDto(lbDto, fbDto, tbDto, ftbDto);
@@ -381,7 +381,7 @@ namespace ColdFormedChannelSection.Core.Helpers
         {
             var lbDto = section.GetEuroReducedArea(material);
             //var pn1 = Tuple.Create(section.GetEuroCompressionLBResistance(material, Ae), FailureMode.LOCALBUCKLING);
-            var fbDto = section.GetEuroCompressionFBResistance(material, bracingConditions, lbDto.AreaEffective, 0.49);
+            var fbDto = section.GetEuroCompressionFBResistance(material, bracingConditions, lbDto.AreaEffective, 0.49, section.Properties.Ix, section.Properties.Iy);
             var tbDto = section.GetEuroCompressionTBResistance(material, bracingConditions, lbDto.AreaEffective, 0.49);
             var ftbDto = section.GetEuroCompressionTFBResistance(material, bracingConditions, lbDto.AreaEffective, 0.49);
             return new EuroCompressionCDto(lbDto, fbDto, tbDto, ftbDto);
@@ -421,7 +421,7 @@ namespace ColdFormedChannelSection.Core.Helpers
         }
 
 
-        private static FBEuroCompressionDto GetEuroCompressionFBResistance(this Section section, Material material, LengthBracingConditions lengthBracingConditions, double Ae, double alpa_w)
+        private static FBEuroCompressionDto GetEuroCompressionFBResistance(this Section section, Material material, LengthBracingConditions lengthBracingConditions, double Ae, double alpa_w , double Ix , double Iy)
         {
             var E = material.E;
             var Fy = material.Fy;
@@ -431,8 +431,8 @@ namespace ColdFormedChannelSection.Core.Helpers
             var Lx = lengthBracingConditions.Lx;
             var ix = section.Properties.Rx;
             var iy = section.Properties.Ry;
-            var Ix = section.Properties.Ix;
-            var Iy = section.Properties.Iy;
+            //var Ix = section.Properties.Ix;
+            //var Iy = section.Properties.Iy;
             var A = section.Properties.A;
 
 
