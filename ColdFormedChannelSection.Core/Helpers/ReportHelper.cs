@@ -416,7 +416,6 @@ namespace ColdFormedChannelSection.Core.Helpers
             return dto.AsReport(lbSection, dimSection, propSection);
         }
 
-
         private static Report AsReport(this EgyptCompressionCDto dto, ListReportSection lbSection, ListReportSection dimSection, ListReportSection propSection)
         {
             var fbSection = dto.FB.AsReportSection();
@@ -488,8 +487,6 @@ namespace ColdFormedChannelSection.Core.Helpers
         #endregion
 
         #region Report Section
-
-
 
         public static ListReportSection AsReportSection(this InteractionDSCompressionDto dto)
         {
@@ -809,6 +806,7 @@ namespace ColdFormedChannelSection.Core.Helpers
                 new ReportItem("Effective Height (ae)",dto.Ae.ToString("0.###"),Units.MM),
                 new ReportItem("Kf",dto.Kf.ToString("0.###"),Units.NONE),
                 new ReportItem("Effective Flange Width (be)",dto.Be.ToString("0.###"),Units.MM),
+                new ReportItem("Kc",dto.Kc.ToString("0.###"),Units.NONE),
                 new ReportItem("Effective Lip (ce)",dto.Ce.ToString("0.###"),Units.MM),
                 new ReportItem("Reduction Factor (Xd)",dto.Xd.ToString("0.###"),Units.NONE),
                 new ReportItem("Effective Area (Ae)",dto.AreaEffective.ToString("0.###"),Units.MM_2),

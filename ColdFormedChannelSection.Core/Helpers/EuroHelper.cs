@@ -271,32 +271,32 @@ namespace ColdFormedChannelSection.Core.Helpers
             var lambda_f_limit = 0.5 + Math.Sqrt(0.085 - 0.055 * sai_f);
             var row_f = 1.0;
             var be1_lst = new List<double>();
-            do
-            {
-                if (lambda_f > lambda_f_limit)
-                    row_f = (((lambda_f - 0.055 * (3 + sai_f)) / (lambda_f.Power(2)))).IfNegativeReturnOne().TakeMinWithOne();
-                else
-                    row_f = 1.0;
-                var be = row_f * b_prime;
-                be1_lst.Add(0.5 * be);
-                be2 = 0.5 * be;
+            //do
+            //{
+            if (lambda_f > lambda_f_limit)
+                row_f = (((lambda_f - 0.055 * (3 + sai_f)) / (lambda_f.Power(2)))).IfNegativeReturnOne().TakeMinWithOne();
+            else
+                row_f = 1.0;
+            var be = row_f * b_prime;
+            be1_lst.Add(0.5 * be);
+            be2 = 0.5 * be;
 
-                var row_c = 1.0;
-                if (lambda_c > 0.748)
-                    row_c = ((lambda_c - 0.188) / (lambda_c.Power(2))).IfNegativeReturnOne().TakeMinWithOne();
-                else
-                    row_c = 1.0;
-                ce = row_c * c_prime;
+            var row_c = 1.0;
+            if (lambda_c > 0.748)
+                row_c = ((lambda_c - 0.188) / (lambda_c.Power(2))).IfNegativeReturnOne().TakeMinWithOne();
+            else
+                row_c = 1.0;
+            ce = row_c * c_prime;
 
-                Xd_new = section.ReduceLippedSection(material, kw, be2, ce);
-                if (Math.Abs(Xd_new - Xd) <= 0.0001)
-                    isEqual = true;
-                else
-                    Xd = Xd_new;
-                lambda_f = lambda_f_initial * Math.Sqrt(Xd);
-                lambda_c = lambda_c_initial * Math.Sqrt(Xd);
+            Xd_new = section.ReduceLippedSection(material, kw, be2, ce);
+            if (Math.Abs(Xd_new - Xd) <= 0.0001)
+                isEqual = true;
+            else
+                Xd = Xd_new;
+            lambda_f = lambda_f_initial * Math.Sqrt(Xd);
+            lambda_c = lambda_c_initial * Math.Sqrt(Xd);
 
-            } while (!isEqual);
+            //} while (!isEqual);
 
             return (be1: be1_lst.First(), be2: be2, ce: ce, Xd: Xd, Kf: kf, Kc: kc);
         }
@@ -510,7 +510,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var io_squared = ix.Power(2) + iy.Power(2) + xo_squared;
             var beta = 1 - (xo_squared / io_squared);
             var Ncr = (1 / io_squared) * (G * J + ((Math.PI.Power(2) * Cw * E) / (Kz * Lz).Power(2)));
-            var Ncr_x = (Math.PI.Power(2) * E*Ix) / (Kx * Lx).Power(2);
+            var Ncr_x = (Math.PI.Power(2) * E * Ix) / (Kx * Lx).Power(2);
             var Ncr_ft = (Ncr_x / (2 * beta)) * (1 + (Ncr / Ncr_x) - Math.Sqrt((1 - (Ncr / Ncr_x)).Power(2) + 4 * (xo_squared / io_squared) * (Ncr / Ncr_x)));
             var lambda_ft = Math.Sqrt((Ae * Fy) / (Ncr_ft));
             var phi_ft = 0.5 * (1 + alpha_w * (lambda_ft - 0.2) + lambda_ft.Power(2));
