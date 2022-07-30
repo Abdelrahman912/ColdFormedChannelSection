@@ -301,7 +301,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             return (be1: be1_lst.First(), be2: be2, ce: ce, Xd: Xd, Kf: kf, Kc: kc);
         }
 
-        private static (double be1, double be2 , double Kf) GetEuroReducedFlange(this UnStiffenedSection section, Material material)
+        private static (double be1, double be2, double Kf) GetEuroReducedFlange(this UnStiffenedSection section, Material material)
         {
             var Fy = material.Fy;
             var b_prime = section.Properties.BPrime;
@@ -317,7 +317,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             var be = row_f * b_prime;
             var be1 = 0.5 * be;
             var be2 = 0.5 * be;
-            return (be1, be2,kf);
+            return (be1, be2, kf);
         }
 
         private static LocalEuroCompressionDto GetEuroReducedArea(this LippedSection section, Material material)
@@ -348,8 +348,8 @@ namespace ColdFormedChannelSection.Core.Helpers
             var t = section.Dimensions.ThicknessT;
             var R = section.Dimensions.InternalRadiusR;
             var bPrime = section.Properties.BPrime;
-            
-            (var be1, var be2 , var Kf) = section.GetEuroReducedFlange(material);
+
+            (var be1, var be2, var Kf) = section.GetEuroReducedFlange(material);
 
             //Web.
             var Kw = 4.0;
@@ -431,15 +431,15 @@ namespace ColdFormedChannelSection.Core.Helpers
             var Lx = lengthBracingConditions.Lx;
             var ix = section.Properties.Rx;
             var iy = section.Properties.Ry;
+            var Ix = section.Properties.Ix;
+            var Iy = section.Properties.Iy;
             var A = section.Properties.A;
 
-            var lambda_1 = Math.PI * Math.Sqrt(E / Fy);
 
-            var lambda_y = ((ky * Ly) / iy) * (Math.Sqrt(Ae / A) / lambda_1);
-            var lambda_x = ((Kx * Lx) / ix) * (Math.Sqrt(Ae / A) / lambda_1);
 
-            var Ncr_x = (Math.PI.Power(2) * E) / ((Kx * Lx) / ix).Power(2);
-            var Ncr_y = (Math.PI.Power(2) * E) / ((ky * Ly) / iy).Power(2);
+
+            var Ncr_x = (Math.PI.Power(2) * E * Ix) / (Kx * Lx).Power(2);
+            var Ncr_y = (Math.PI.Power(2) * E * Iy) / (ky * Ly).Power(2);
 
             var Ncr_f = Ncr_x.TakeMinWith(Ncr_y);
             var lambdaPrime = Math.Sqrt((Ae * Fy) / Ncr_f);
@@ -504,16 +504,17 @@ namespace ColdFormedChannelSection.Core.Helpers
             var Lx = lengthBracingConditions.Lx;
             var Kz = lengthBracingConditions.Kz;
             var Lz = lengthBracingConditions.Lz;
+            var Ix = section.Properties.Ix;
 
             var xo_squared = Xo.Power(2);
             var io_squared = ix.Power(2) + iy.Power(2) + xo_squared;
             var beta = 1 - (xo_squared / io_squared);
             var Ncr = (1 / io_squared) * (G * J + ((Math.PI.Power(2) * Cw * E) / (Kz * Lz).Power(2)));
-            var Ncr_x = (Math.PI.Power(2) * E) / ((Kx * Lx) / ix).Power(2);
-            var Ncr_ft = (Ncr_x / (2 * beta)) * (1 + (Ncr / Ncr_x) - Math.Sqrt((1 + (Ncr / Ncr_x)).Power(2) + 4 * (xo_squared / io_squared) * (Ncr / Ncr_x)));
+            var Ncr_x = (Math.PI.Power(2) * E*Ix) / (Kx * Lx).Power(2);
+            var Ncr_ft = (Ncr_x / (2 * beta)) * (1 + (Ncr / Ncr_x) - Math.Sqrt((1 - (Ncr / Ncr_x)).Power(2) + 4 * (xo_squared / io_squared) * (Ncr / Ncr_x)));
             var lambda_ft = Math.Sqrt((Ae * Fy) / (Ncr_ft));
             var phi_ft = 0.5 * (1 + alpha_w * (lambda_ft - 0.2) + lambda_ft.Power(2));
-            var X_ft = (1.0) / (phi_ft + Math.Sqrt(phi_ft.Power(2) - lambda_ft.Power(2))).TakeMinWithOne();
+            var X_ft = ((1.0) / (phi_ft + Math.Sqrt(phi_ft.Power(2) - lambda_ft.Power(2)))).TakeMinWithOne();
             //if (pu != 0 && pu / Ncr_ft <= 0.04)
             //{
             //    X_ft = 1;
@@ -751,9 +752,9 @@ namespace ColdFormedChannelSection.Core.Helpers
         private static LocalEuroMomentDto GetZe(this UnStiffenedSection section, Material material)
         {
             var t = section.Dimensions.ThicknessT;
-            (var be1, var be2 , var Kf) = section.GetEuroReducedFlange(material);
+            (var be1, var be2, var Kf) = section.GetEuroReducedFlange(material);
 
-            var dto = section.GetZe(material, be1, be2, 0, 1.0, 2,Kf , 0);
+            var dto = section.GetZe(material, be1, be2, 0, 1.0, 2, Kf, 0);
 
             return dto;
         }
