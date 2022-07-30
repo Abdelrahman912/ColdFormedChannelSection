@@ -652,7 +652,7 @@ namespace ColdFormedChannelSection.Core.Helpers
             {
                 var Mcr = C1 * ((Math.PI.Power(2) * E * Iy) / (Lu.Power(2))) * ((Cw / Iy) + ((Lu.Power(2) * G * J) / (Math.PI.Power(2) * E * Iy))).Power(0.5);
 
-                var alpha_lt = 0.34;
+                var alpha_lt = 0.21;
                 var lambda_lt = Math.Sqrt((Ze * Fy) / (Mcr));
                 var phi_lt = 0.5 * (1 + alpha_lt * (lambda_lt - 0.2) + lambda_lt.Power(2));
                 x_lt = Math.Min(1.0, (1 / (phi_lt + Math.Sqrt(phi_lt.Power(2) - lambda_lt.Power(2)))));
