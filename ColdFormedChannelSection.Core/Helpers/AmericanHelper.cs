@@ -428,7 +428,7 @@ namespace ColdFormedChannelSection.Core.Helpers
 
             return new LocalAISIMomentDto(
                 kw: Kw,
-                ae: (ae - hneg),
+                ae: ae,
                 kc: kc,
                 ce: ce,
                 kf: Kf,
